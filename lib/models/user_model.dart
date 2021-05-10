@@ -8,7 +8,7 @@ class UserModel {
   String city;
   String zip_code;
   String mobile;
-  String image;
+  String? image;
   int? roleId;
   int? workDays;
   int? consumableHolidays;

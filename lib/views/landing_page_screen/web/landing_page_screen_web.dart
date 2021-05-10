@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/global/tabbar_item_class.dart';
 import 'package:ronan_pensec/global/templates/general_template.dart';
+import 'package:ronan_pensec/view_model/user_view_model.dart';
 import 'package:ronan_pensec/views/landing_page_screen/web/children/dashboard.dart';
 
 class LandingPageScreenWeb extends StatefulWidget {
@@ -11,9 +12,8 @@ class LandingPageScreenWeb extends StatefulWidget {
 
 class _LandingPageScreenWebState extends State<LandingPageScreenWeb>
     with SingleTickerProviderStateMixin {
-  bool _isMobile = false;
+  UserViewModel _userViewModel = UserViewModel.instance;
   int _currentTabIndex = 0;
-  bool _isWeb = false;
   final List<Widget> _contents = [
     WebDashboard(),
     Container(
@@ -28,8 +28,8 @@ class _LandingPageScreenWebState extends State<LandingPageScreenWeb>
   ];
   List<TabbarItem> _tabItems = [
     TabbarItem(
-        label: "Dashboard",
-        icon: Icons.dashboard_rounded,
+        label: "Planification",
+        icon: Icons.stacked_line_chart_sharp,
         key: new GlobalKey()),
     TabbarItem(
         label: "Centres",
@@ -56,13 +56,8 @@ class _LandingPageScreenWebState extends State<LandingPageScreenWeb>
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    if (size.width < 900) {
-      _isMobile = true;
-      _isWeb = false;
-    } else {
-      _isMobile = false;
-      _isWeb = true;
-    }
+    final bool _isMobile = size.width < 900;
+
     // xPos= box.localToGlobal(Offset.zero).dx;
     return Scaffold(
       body: Container(
@@ -93,45 +88,44 @@ class _LandingPageScreenWebState extends State<LandingPageScreenWeb>
                   const SizedBox(
                     width: 10,
                   ),
-                  if (_isWeb) ...{
+                  if (!_isMobile) ...{
                     Container(
                         width: size.width * .45,
-                        child: Column(
-                          children: [
-                            Expanded(
-                              child: Row(
-                                children: [
-                                  for (TabbarItem item in _tabItems) ...{
-                                    Expanded(
-                                      child: MaterialButton(
-                                        height: 80,
-                                        elevation: 0,
-                                        color: _currentTabIndex == _tabItems.indexOf(item) ? Colors.white : Colors.transparent,
-                                        onPressed: () {
-                                          setState(() {
-                                            _currentTabIndex =
-                                                _tabItems.indexOf(item);
-                                            _tabController.index = _tabItems.indexOf(item);
-                                          });
-                                        },
-                                        padding: const EdgeInsets.all(0),
-                                        child: Container(
-                                          key: item.key,
-                                          child: Text(
-                                            "${item.label}",
-                                            textAlign: TextAlign.center,
-                                            style:
-                                                TextStyle(color: _currentTabIndex == _tabItems.indexOf(item) ? Palette.textFieldColor : Colors.white),
-                                          ),
-                                        ),
+                        alignment: AlignmentDirectional.bottomCenter,
+                        child: TabBar(
+                          onTap: (index) {
+                            setState(() {
+                              _currentTabIndex = index;
+                            });
+                          },
+                          indicatorColor: Colors.white,
+                          controller: _tabController,
+                          unselectedLabelColor: Colors.grey.shade300,
+                          physics: NeverScrollableScrollPhysics(),
+                          tabs: [
+                            for(TabbarItem item in _tabItems)...{
+                              Tab(
+                                child: Column(
+                                  children: [
+                                    const SizedBox(
+                                      height: 7,
+                                    ),
+                                    Container(
+                                      width: double.infinity,
+                                      height: 20,
+                                      child: FittedBox(
+                                        child: Text("${item.label}",style: TextStyle(
+                                            letterSpacing: 1.5
+                                        )),
                                       ),
-                                    )
-                                  }
-                                ],
-                              ),
-                            ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            }
                           ],
-                        ))
+                        )
+                    )
                   }else...{
                     Text("Ronan Pensec",style: TextStyle(
                       letterSpacing: 2,
@@ -148,6 +142,7 @@ class _LandingPageScreenWebState extends State<LandingPageScreenWeb>
 
                   GeneralTemplate.badgedIcon(
                       isEnabled: true,
+                      tooltip: "Notifications",
                       onPress: (){
 
                       },
@@ -158,6 +153,7 @@ class _LandingPageScreenWebState extends State<LandingPageScreenWeb>
                   ),
                   GeneralTemplate.badgedIcon(
                       isEnabled: true,
+                      tooltip: "Messages",
                       onPress: (){
 
                       },
@@ -167,7 +163,8 @@ class _LandingPageScreenWebState extends State<LandingPageScreenWeb>
                     width: 10,
                   ),
                   GeneralTemplate.profileIcon(context,
-                      imageProvider: AssetImage("assets/images/icon.png"))
+                      imageProvider: _userViewModel.imageProvider,
+                  )
                 ],
               ),
             ),
@@ -207,7 +204,7 @@ class _LandingPageScreenWebState extends State<LandingPageScreenWeb>
               )
             },
             Expanded(
-                child: _isWeb ? _contents[_currentTabIndex] : TabBarView(
+                child: TabBarView(
                   controller: _tabController,
                   physics: NeverScrollableScrollPhysics(),
                   children: _contents,

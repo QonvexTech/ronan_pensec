@@ -32,28 +32,75 @@ class GeneralTemplate {
   static Widget profileIcon(context,
           {Color backgroundColor = Colors.grey,
           required ImageProvider imageProvider}) =>
-      Container(
-        width: 40,
-        height: 40,
-        child: MaterialButton(
-          onPressed: () {},
-          color: backgroundColor,
-          padding: const EdgeInsets.all(0),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(1000)),
-          child: Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                image: DecorationImage(image: imageProvider)),
+      PopupMenuButton<int>(
+        tooltip: "Afficher les options de paramètres",
+        padding: const EdgeInsets.all(0),
+        offset: Offset(0,40),
+        onSelected: (int value){
+          if(value == 0){
+            print("GO TO PROFILE");
+          }else if(value == 1){
+            print("GO TO SETTINGS");
+          }else{
+            print("LOGOUT");
+          }
+        },
+        icon: Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.grey,
+              image: DecorationImage(
+                  image: imageProvider
+              )
           ),
         ),
+        itemBuilder: (_) => <PopupMenuItem<int>>[
+          PopupMenuItem(
+            value: 0,
+            child: Row(
+              children: [
+                Icon(Icons.person),
+                const SizedBox(
+                  width: 10,
+                ),
+                Text("Profil")
+              ],
+            ),
+          ),
+          PopupMenuItem(
+            value: 1,
+            child: Row(
+              children: [
+                Icon(Icons.settings),
+                const SizedBox(
+                  width: 10,
+                ),
+                Text("Les paramètres")
+              ],
+            ),
+          ),
+          PopupMenuItem(
+            value: 1,
+            child: Row(
+              children: [
+                Icon(Icons.exit_to_app, color: Colors.red,),
+                const SizedBox(
+                  width: 10,
+                ),
+                Text("Déconnecter",style: TextStyle(
+                    color: Colors.red
+                ),)
+              ],
+            ),
+          )
+        ],
       );
 
   static Widget badgedIcon(
       {Color backgroundColor = Colors.grey,
-      String? badgeText,
+      String? tooltip,
       required bool isEnabled,
       required IconData icon,
       required Function onPress}) {
@@ -61,34 +108,37 @@ class GeneralTemplate {
       width: 40,
       height: 40,
       decoration: BoxDecoration(shape: BoxShape.circle),
-      child: MaterialButton(
-        color: backgroundColor,
-        onPressed: () {
-          onPress();
-        },
-        padding: const EdgeInsets.all(0),
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(1000)),
-        child: Stack(
-          children: [
-            Icon(
-              icon,
-              color: colorDecider.calculateTextColor(backgroundColor),
-              size: 25,
-            ),
-            if (isEnabled) ...{
-              Positioned(
-                top: 0,
-                right: 0,
-                child: Container(
-                  width: 10,
-                  height: 10,
-                  decoration:
-                      BoxDecoration(shape: BoxShape.circle, color: Colors.red),
-                ),
-              )
-            }
-          ],
+      child: Tooltip(
+        message: "$tooltip",
+        child: MaterialButton(
+          color: backgroundColor,
+          onPressed: () {
+            onPress();
+          },
+          padding: const EdgeInsets.all(0),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(1000)),
+          child: Stack(
+            children: [
+              Icon(
+                icon,
+                color: colorDecider.calculateTextColor(backgroundColor),
+                size: 25,
+              ),
+              if (isEnabled) ...{
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  child: Container(
+                    width: 10,
+                    height: 10,
+                    decoration:
+                        BoxDecoration(shape: BoxShape.circle, color: Colors.red),
+                  ),
+                )
+              }
+            ],
+          ),
         ),
       ),
     );
