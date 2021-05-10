@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "371760182349",
+    "project_id": "ronan-pensec",
+    "storage_bucket": "ronan-pensec.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:371760182349:android:0887fc407801b710091804",
+        "android_client_info": {
+          "package_name": "com.ohmconception.ronan_pensec"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "371760182349-r3pmrmacacu34r5jiv6sist5g170a1nl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfj4C0PqCuWvZpVXj6h9CFMyMmKpInGyU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "371760182349-r3pmrmacacu34r5jiv6sist5g170a1nl.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "371760182349-k8ece8og861lrracujhnacsgivf9fn2c.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.ohmconception.ronanPensec"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
