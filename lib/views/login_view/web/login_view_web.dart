@@ -19,142 +19,123 @@ class _LoginViewWebState extends State<LoginViewWeb> {
   bool _obscure = true;
   bool _remember = true;
   bool _isLoading = false;
-
+  bool _kMobile = false;
+  bool _kWeb = false;
+  late Size contextSize;
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    return Material(
-      child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: Palette.gradientColor,
-                stops: Palette.colorStops),
-          ),
-          child: Stack(
-            children: [
-              Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: size.width * .2, vertical: size.height * .1),
-                child: Center(
-                  child: Container(
-                    width: double.infinity,
-                    height: size.height,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: Palette.gradientColor,
-                            stops: Palette.colorStops),
-                        boxShadow: [
-                          BoxShadow(
-                              color: Colors.black26,
-                              blurRadius: 5,
-                              offset: Offset(3, 2))
-                        ]),
+    if(size.width * .38 < 500){
+      _kMobile = true;
+      _kWeb = false;
+    }else{
+      _kMobile = false;
+      _kWeb = true;
+    }
+    return Scaffold(
+      body: Container(
+        width: double.infinity,
+        height: size.height,
+        child: Row(
+          children: [
+            if(!_kMobile)...{
+              Expanded(
+                flex: 2,
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: Palette.gradientColor,
+                      // stops: Palette.colorStops,
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight
+                    ),
+                    // color: Colors.red
                   ),
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: size.width * .3, vertical: size.height * .1),
-                child: Center(
-                  child: Container(
-                    width: double.infinity,
-                    height: size.height,
-                    child: Container(
-                      height: double.infinity,
-                      width: double.infinity,
-                      child: Scrollbar(
-                        child: SingleChildScrollView(
-                          physics: AlwaysScrollableScrollPhysics(),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 40, vertical: 120),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
+            },
+            Container(
+              width: _kMobile ? size.width : size.width * .38,
+              child: Scrollbar(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        if(_kMobile)...{
+                          Container(
+                            width: double.infinity,
+                            height: size.height * .2,
+                            color: Colors.green,
+                          )
+                        },
+                        Container(
+                          width: double.infinity,
+                          margin: const EdgeInsets.symmetric(vertical: 45),
+                          child: Text("Bienvenu", style: TextStyle(
+                            fontSize: Theme.of(context).textTheme.headline5!.fontSize,
+                            color: Palette.textFieldColor,
+                            fontWeight: FontWeight.w600
+                          ),textAlign: TextAlign.center,),
+                        ),
+                        LoginTemplate.emailField(_email),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        LoginTemplate.passwordField((value) {
+                          setState(() {
+                            _obscure = value;
+                          });
+                        }, _obscure, _password),
+                        SizedBox(
+                          height: size.height * .02,
+                        ),
+                        Container(
+                          width: double.infinity,
+                          child: Row(
                             children: [
-                              Text(
-                                "S'identifier",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              const SizedBox(
-                                height: 30,
-                              ),
-                              LoginTemplate.emailField(_email),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              LoginTemplate.passwordField((value) {
+                              Expanded(child: LoginTemplate.rememberMeBtn(_remember, onChange: (value){
                                 setState(() {
-                                  _obscure = value;
+                                  _remember = value;
                                 });
-                              }, _obscure, _password),
-                              LoginTemplate.forgotPasswordBtn(() {
-                                print("PRESSED");
-                              }),
-                              LoginTemplate.rememberMeBtn(_remember,
-                                  onChange: (value) {
-                                setState(() {
-                                  _remember = value!;
-                                });
-                              }),
-                              const SizedBox(
-                                height: 30,
+                              })),
+
+                              Expanded(
+                                child: LoginTemplate.forgotPasswordBtn((){}),
                               ),
-                              _isLoading ? Container(
-                                width: double.infinity,
-                                child: Center(
-                                  child: CircularProgressIndicator(
-                                    valueColor: AlwaysStoppedAnimation<Color>(Palette.gradientColor[0]),
-                                  ),
-                                ),
-                              ) : LoginTemplate.loginBtn(context,
-                                  remember: _remember,
-                                  email: _email.text,
-                                  password: _password.text, onPress: () async {
-                                FocusScope.of(context).unfocus();
-                                if (_email.text.isNotEmpty) {
-                                  if (_password.text.isNotEmpty) {
-                                    setState(() {
-                                      _isLoading = true;
-                                    });
-                                    await loginService
-                                        .login(context,
-                                            email: _email.text,
-                                            password: _password.text,
-                                            isRemembered: _remember)
-                                        .whenComplete(() =>
-                                            setState(() => _isLoading = false));
-                                  } else {
-                                    loginService.notifier.showContextedBottomToast(
-                                        context,
-                                        msg: "Password field is required");
-                                  }
-                                } else {
-                                  loginService.notifier.showContextedBottomToast(
-                                      context,
-                                      msg: "Email field is required");
-                                }
-                              }),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              LoginTemplate.noAccntBtn(context)
+
                             ],
                           ),
                         ),
-                      ),
+                        SizedBox(
+                          height: size.height * .1,
+                        ),
+                        LoginTemplate.loginBtn(context, email: _email.text, password: _password.text, remember: _remember, onPress: (){
+                          if(_email.text.isNotEmpty && _password.text.isNotEmpty){
+                            setState(() {
+                              _isLoading = true;
+                            });
+                          }else{
+                            loginService.notifier.showContextedBottomToast(context, msg: "Email and password is required.");
+                          }
+                        }),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        LoginTemplate.noAccntBtn(context),
+                        SizedBox(
+                          height: size.height * .2,
+                        )
+                      ],
                     ),
                   ),
                 ),
               ),
-            ],
-          )),
+            )
+          ],
+        ),
+      ),
     );
   }
 }

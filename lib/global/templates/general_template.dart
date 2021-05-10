@@ -3,10 +3,13 @@ import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/services/color_decider.dart';
 
 class GeneralTemplate {
-  static Text kText(String text) => Text(
+  static Text kText(String text, {bool isUnderlined = false}) => Text(
         text,
         style: TextStyle(
-            fontWeight: FontWeight.w400, fontSize: 14.5, color: Colors.white),
+            fontWeight: FontWeight.w400,
+            fontSize: 14.5,
+            decoration: isUnderlined ? TextDecoration.underline : TextDecoration.none,
+            color: Palette.textFieldColor),
         textAlign: TextAlign.start,
       );
   static final BoxDecoration kBoxDecoration = BoxDecoration(
@@ -22,14 +25,12 @@ class GeneralTemplate {
   static Widget badgedIcon(
       {Color backgroundColor = Colors.grey,
       String? badgeText,
-      required  bool isEnabled,
+      required bool isEnabled,
       required IconData icon}) {
     return Container(
       width: 40,
       height: 40,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle
-      ),
+      decoration: BoxDecoration(shape: BoxShape.circle),
       child: MaterialButton(
         color: backgroundColor,
         onPressed: () {},
@@ -43,17 +44,15 @@ class GeneralTemplate {
               color: colorDecider.calculateTextColor(backgroundColor),
               size: 25,
             ),
-            if(isEnabled)...{
+            if (isEnabled) ...{
               Positioned(
                 top: 0,
                 right: 0,
                 child: Container(
                   width: 10,
                   height: 10,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.red
-                  ),
+                  decoration:
+                      BoxDecoration(shape: BoxShape.circle, color: Colors.red),
                 ),
               )
             }
