@@ -54,13 +54,6 @@ class _RegisterViewState extends State<RegisterView> {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIOverlays([]);
-    return Material(
-      child: LayoutBuilder(
-        builder: (_, constraint) => Container(
-            width: constraint.maxWidth,
-            height: constraint.maxHeight,
-            child: constraint.maxWidth > 900 && kIsWeb ? _web : _mobile),
-      ),
-    );
+    return kIsWeb ? _web : _mobile;
   }
 }

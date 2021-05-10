@@ -24,13 +24,14 @@ class _LandingPageScreenState extends State<LandingPageScreen> {
   }
   @override
   Widget build(BuildContext context) {
-
     try{
       return kIsWeb ? LandingPageScreen._webView : LandingPageScreen._mobileView;
     }catch(e){
       return Material(
         child: Container(
-          color: Colors.red,
+          child: Center(
+            child: Text("Oops! an error has occurred, please contact administrator or developer"),
+          ),
         ),
       );
     }

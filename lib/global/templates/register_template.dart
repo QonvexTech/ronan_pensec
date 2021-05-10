@@ -7,42 +7,45 @@ import 'general_template.dart';
 
 class RegisterTemplate {
   static Widget pickDate(context,
-          {required ValueChanged<DateTime> callback, DateTime? date}) =>
-      Column(
-        children: [
-          Container(
-            width: double.infinity,
-            child: GeneralTemplate.kText("Date d'anniversaire"),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Container(
-            alignment: Alignment.centerLeft,
-            height: 60,
-            decoration: GeneralTemplate.kBoxDecoration,
-            child: MaterialButton(
-              height: 60,
-              minWidth: double.infinity,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              onPressed: () {
-                showDatePicker(
-                    context: context,
-                    locale: const Locale("fr", "FR"),
-                    initialDate: DateTime.now().subtract(Duration(days: 5475)),
-                    firstDate: DateTime(1960, 01, 01),
-                    lastDate: DateTime.now().subtract(Duration(days: 5475))).then((value) => callback(value!));
-              },
-              child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: GeneralTemplate.kText(date == null
-                      ? "Choisissez la date de naissance"
-                      : DateFormat.yMMMMd('fr_FR').format(date))),
+          {required ValueChanged<DateTime?> callback, DateTime? date}) =>
+      Theme(
+        data: Theme.of(context),
+        child: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              child: GeneralTemplate.kText("Date d'anniversaire"),
             ),
-          )
-        ],
+            const SizedBox(
+              height: 10,
+            ),
+            Container(
+              alignment: Alignment.centerLeft,
+              height: 60,
+              decoration: GeneralTemplate.kBoxDecoration,
+              child: MaterialButton(
+                height: 60,
+                minWidth: double.infinity,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                onPressed: () {
+                  showDatePicker(
+                      context: context,
+                      locale: const Locale("fr", "FR"),
+                      initialDate: DateTime.now().subtract(Duration(days: 5475)),
+                      firstDate: DateTime(1960, 01, 01),
+                      lastDate: DateTime.now().subtract(Duration(days: 5475))).then((value) => callback(value));
+                },
+                child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: GeneralTemplate.kText(date == null
+                        ? "Choisissez la date de naissance"
+                        : DateFormat.yMMMMd('fr_FR').format(date))),
+              ),
+            )
+          ],
+        ),
       );
   static Widget passwordField(ValueChanged callback, bool _obscure,
       TextEditingController controller) =>
@@ -56,33 +59,30 @@ class RegisterTemplate {
           const SizedBox(
             height: 10,
           ),
-          Container(
-            alignment: Alignment.centerLeft,
-            height: 60,
-            decoration: GeneralTemplate.kBoxDecoration,
-            child: TextField(
-              controller: controller,
-              cursorColor: Colors.white,
-              obscureText: _obscure,
-              keyboardType: TextInputType.emailAddress,
-              style: TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                  border: InputBorder.none,
-                  contentPadding: const EdgeInsets.only(top: 14),
-                  prefixIcon: Icon(
-                    Icons.lock,
-                    color: Colors.white,
+          TextField(
+            controller: controller,
+            cursorColor: Palette.textFieldColor,
+            obscureText: _obscure,
+            keyboardType: TextInputType.emailAddress,
+            style: TextStyle(color: Palette.textFieldColor),
+            decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10)
+                ),
+                contentPadding: const EdgeInsets.only(top: 10,bottom: 10),
+                prefixIcon: Icon(
+                  Icons.lock,
+                  color: Palette.textFieldColor
+                ),
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _obscure ? Icons.visibility : Icons.visibility_off,
+                    color: Palette.textFieldColor.withOpacity(0.8),
                   ),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _obscure ? Icons.visibility : Icons.visibility_off,
-                      color: Colors.white54,
-                    ),
-                    onPressed: () => callback(_obscure = !_obscure),
-                  ),
-                  hintText: "Tapez votre mot de passe",
-                  hintStyle: TextStyle(color: Colors.white54)),
-            ),
+                  onPressed: () => callback(_obscure = !_obscure),
+                ),
+                hintText: "Tapez votre mot de passe",
+                hintStyle: TextStyle(color: Palette.textFieldColor.withOpacity(0.5))),
           )
         ],
       );
@@ -103,33 +103,30 @@ class RegisterTemplate {
           const SizedBox(
             height: 10,
           ),
-          Container(
-            alignment: minLine > 1 ? Alignment.topLeft : Alignment.centerLeft,
-            height: minLine > 1 ? 60.0 * (minLine - 1) : 60,
-            decoration: GeneralTemplate.kBoxDecoration,
-            child: TextField(
-              controller: controller,
-              maxLines: minLine + 3,
-              minLines: minLine,
-              cursorColor: Colors.white,
-              keyboardType: type,
-              style: TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                  alignLabelWithHint: true,
-                  border: InputBorder.none,
-                  contentPadding: const EdgeInsets.only(top: 14),
-                  prefixIcon: Icon(
-                    iconData,
-                    color: Colors.white,
-                  ),
-                  hintText: "$hintText",
-                  hintStyle: TextStyle(color: Colors.white54)),
-            ),
+          TextField(
+            controller: controller,
+            maxLines: minLine == 1 ? 1 : minLine + 2,
+            minLines: minLine,
+            cursorColor: Palette.textFieldColor,
+            keyboardType: type,
+            style: TextStyle(color: Palette.textFieldColor),
+            decoration: InputDecoration(
+                alignLabelWithHint: true,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10)
+                ),
+                contentPadding: minLine > 1 ? const EdgeInsets.symmetric(vertical: 20) : const EdgeInsets.only(top: 14),
+                prefixIcon: Icon(
+                  iconData,
+                  color: Palette.textFieldColor,
+                ),
+                hintText: "$hintText",
+                hintStyle: TextStyle(color: Palette.textFieldColor.withOpacity(0.5))),
           )
         ],
       );
   static Widget registerBtn(Function onPress) => MaterialButton(
-    color: Colors.white,
+    color: Palette.textFieldColor,
     shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(25)
     ),
@@ -153,7 +150,7 @@ static Widget get orLoginText => Container(
   child:   Column(
     children: [
       Text('- OU -',style: TextStyle(
-          color: Colors.white,
+          color: Palette.textFieldColor,
           fontWeight: FontWeight.w500
       ),),
       const SizedBox(

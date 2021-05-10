@@ -18,7 +18,7 @@ class LoginTemplate {
           ),
           TextField(
             controller: controller,
-            cursorColor: Colors.white,
+            cursorColor: Palette.textFieldColor,
             keyboardType: TextInputType.emailAddress,
             style: TextStyle(color: Palette.textFieldColor),
             decoration: InputDecoration(
@@ -86,7 +86,7 @@ class LoginTemplate {
           ),
           TextField(
             controller: controller,
-            cursorColor: Colors.white,
+            cursorColor: Palette.textFieldColor,
             obscureText: _obscure,
             keyboardType: TextInputType.emailAddress,
             style: TextStyle(color: Palette.textFieldColor),

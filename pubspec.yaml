@@ -43,6 +43,8 @@ dependencies:
     sdk: flutter
   fluttertoast: ^8.0.6
   page_transition: ^2.0.1-nullsafety.0
+  simple_animations: ^3.1.1
+  supercharged: ^2.0.0
 
   intl: ^0.17.0
 
@@ -54,6 +56,8 @@ dependencies:
   rxdart: ^0.26.0 # State management
 
   shared_preferences: ^2.0.5 #data cacher
+
+
 
 
 
