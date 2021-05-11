@@ -9,7 +9,7 @@ class UserModel {
   String zip_code;
   String mobile;
   String? image;
-  int? roleId;
+  int roleId;
   int? workDays;
   int? consumableHolidays;
   // List<int>? centerIds;
@@ -25,7 +25,7 @@ class UserModel {
     required this.zip_code,
     required this.mobile,
     required this.image,
-    this.roleId,
+    required this.roleId,
     required this.workDays,
     required this.consumableHolidays,
     // this.centerIds,
@@ -43,7 +43,7 @@ class UserModel {
       zip_code: parsedJson['zip_code'],
       mobile: parsedJson['mobile'],
       image: parsedJson['image'],
-      roleId: parsedJson['roleId'],
+      roleId: parsedJson['role_id'],
       workDays: parsedJson['workDays'],
       consumableHolidays: parsedJson['consumableHolidays'],
       // centerIds: stringListToInt(parsedJson['centerIds']),

@@ -44,7 +44,6 @@ class FirebaseMessagingService {
 
       return;
     });
-
     // on open
     FirebaseMessaging.onMessageOpenedApp.listen((event) {
       print("MESSAGE OPENED :${event.notification!.title}");
@@ -54,6 +53,7 @@ class FirebaseMessagingService {
     FirebaseMessaging.onBackgroundMessage((RemoteMessage message) async {
       print('Handling a background message ${message.messageId}');
     });
+    await _firebaseMessaging.getToken(vapidKey: "BC8n_Avs4PVWb4j2OCitENQpl_lz4fmkxzvILfCu8qQAfZdWCKZAU30uBC62V2axUbRU3WNi2UuKCL6Vd7lM9fI").then(print);
   }
 }
 

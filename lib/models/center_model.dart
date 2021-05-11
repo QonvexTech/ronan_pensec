@@ -1,6 +1,5 @@
-import 'dart:convert';
-
 class CenterModel{
+  final int id;
   String name;
   String city;
   String zipCode;
@@ -10,6 +9,7 @@ class CenterModel{
   int regionId;
 
   CenterModel({
+    required this.id,
     required this.name,
     required this.city,
     required this.zipCode,
@@ -22,17 +22,19 @@ class CenterModel{
 
   factory CenterModel.fromJson(Map<String,dynamic> parsedJson){
     return CenterModel(
+      id : parsedJson['id'],
       name : parsedJson['name'],
       city : parsedJson['city'],
       zipCode : parsedJson['zip_code'],
       address : parsedJson['address'],
       mobile : parsedJson['mobile'],
       email : parsedJson['email'],
-      regionId : int.parse(parsedJson['region_id']),
+      regionId : int.parse(parsedJson['region_id'].toString()),
     );
   }
 
   Map<String,dynamic> toJson()=>{
+    'id' : id,
     'name' : name,
     'city' : city,
     'zip_code' : zipCode,

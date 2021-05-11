@@ -119,8 +119,8 @@ class _RegisterViewWebState extends State<RegisterViewWeb> {
                       width: double.infinity,
                       child: Scrollbar(
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 15),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: _kMobile ? 20 : size.width * .03, vertical: 15),
                           child: SingleChildScrollView(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,

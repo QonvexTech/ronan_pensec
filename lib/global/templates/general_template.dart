@@ -24,24 +24,20 @@ class GeneralTemplate {
       color: Colors.white,
       boxShadow: [
         BoxShadow(
-            color: Colors.grey.shade300,
-            offset: Offset(1, 2),
-            blurRadius: 5)
+            color: Colors.grey.shade300, offset: Offset(1, 2), blurRadius: 5)
       ]);
 
-  static Widget profileIcon(context,
-          {Color backgroundColor = Colors.grey,
-          required ImageProvider imageProvider}) =>
+  static Widget profileIcon(context, {required ImageProvider imageProvider}) =>
       PopupMenuButton<int>(
         tooltip: "Afficher les options de paramètres",
         padding: const EdgeInsets.all(0),
-        offset: Offset(0,40),
-        onSelected: (int value){
-          if(value == 0){
+        offset: Offset(0, 40),
+        onSelected: (int value) {
+          if (value == 0) {
             print("GO TO PROFILE");
-          }else if(value == 1){
+          } else if (value == 1) {
             print("GO TO SETTINGS");
-          }else{
+          } else {
             print("LOGOUT");
           }
         },
@@ -50,11 +46,7 @@ class GeneralTemplate {
           height: 40,
           decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Colors.grey,
-              image: DecorationImage(
-                  image: imageProvider
-              )
-          ),
+              image: DecorationImage(image: imageProvider)),
         ),
         itemBuilder: (_) => <PopupMenuItem<int>>[
           PopupMenuItem(
@@ -85,13 +77,17 @@ class GeneralTemplate {
             value: 1,
             child: Row(
               children: [
-                Icon(Icons.exit_to_app, color: Colors.red,),
+                Icon(
+                  Icons.exit_to_app,
+                  color: Colors.red,
+                ),
                 const SizedBox(
                   width: 10,
                 ),
-                Text("Déconnecter",style: TextStyle(
-                    color: Colors.red
-                ),)
+                Text(
+                  "Déconnecter",
+                  style: TextStyle(color: Colors.red),
+                )
               ],
             ),
           )
@@ -132,8 +128,8 @@ class GeneralTemplate {
                   child: Container(
                     width: 10,
                     height: 10,
-                    decoration:
-                        BoxDecoration(shape: BoxShape.circle, color: Colors.red),
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle, color: Colors.red),
                   ),
                 )
               }

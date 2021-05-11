@@ -57,7 +57,7 @@ class LoginTemplate {
                   },
                 ),
               ),
-              GeneralTemplate.kText("Souviens-toi de moi")
+              Expanded(child: GeneralTemplate.kText("Souviens-toi de moi"))
             ],
           ));
 

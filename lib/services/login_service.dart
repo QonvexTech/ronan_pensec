@@ -6,8 +6,10 @@ import 'package:ronan_pensec/global/auth_endpoint.dart';
 import 'package:ronan_pensec/global/constants.dart';
 import 'package:ronan_pensec/models/user_model.dart';
 import 'package:ronan_pensec/services/credentials_preferences.dart';
+import 'package:ronan_pensec/services/dashboard_services/region_service.dart';
 import 'package:ronan_pensec/services/toast_notifier.dart';
 import 'package:ronan_pensec/views/landing_page_screen/landing_page_screen.dart';
+import 'package:ronan_pensec/views/login_view/login_view.dart';
 import 'http_request.dart';
 import 'dart:convert';
 
@@ -32,19 +34,20 @@ class LoginService {
     try {
       return await http.post(Uri.parse("$baseUrl${AuthEndpoint.login}"),
           headers: _rqst.defaultHeader,
-          body: {"email": email, "password": password}).then((respo) {
+          body: {"email": email, "password": password}).then((respo) async {
         var data = json.decode(respo.body);
         print(data);
         if (respo.statusCode == 200 || respo.statusCode == 201) {
           if(showNotif){
             _notifier.showContextedBottomToast(context, msg: "Login Successful");
           }
-          authToken = data['access_token'];
+          authToken = data['access_token'].toString().replaceAll("\n", "");
           loggedUser = UserModel.fromJson(parsedJson: data['user']);
           if (isRemembered) {
             _credentialsPreferences.saveCredentials(
                 email: email, password: password);
           }
+          await regionService.fetch(context);
           Navigator.pushReplacement(
               context,
               PageTransition(
@@ -52,25 +55,33 @@ class LoginService {
                   type: PageTransitionType.fade));
           return true;
         }
-        if (data['errors'] != null) {
+        if(showNotif){
+          if (data['errors'] != null) {
+            _notifier.showContextedBottomToast(context,
+                msg:
+                "Showing ${data['errors'].length} error(s), ${data['errors']}");
+            return false;
+          }
+          if (data['message'] != null) {
+            _notifier.showContextedBottomToast(context,
+                msg: "${data['message']}");
+            return false;
+          }
           _notifier.showContextedBottomToast(context,
-              msg:
-                  "Showing ${data['errors'].length} error(s), ${data['errors']}");
-          return false;
+              msg: "Error ${respo.statusCode}, ${respo.reasonPhrase}");
+        }else{
+          Navigator.pushReplacement(context, PageTransition(child: LoginView(), type: PageTransitionType.fade));
+          _credentialsPreferences.removeCredentials();
         }
-        if (data['message'] != null) {
-          _notifier.showContextedBottomToast(context,
-              msg: "${data['message']}");
-          return false;
-        }
-        _notifier.showContextedBottomToast(context,
-            msg: "Error ${respo.statusCode}, ${respo.reasonPhrase}");
         return false;
       });
     } catch (e) {
-      print("ERROR Login : $e");
       _notifier.showContextedBottomToast(context,
           msg: "An error has occurred, please contact the administrator.");
+      if(!showNotif){
+        Navigator.pushReplacement(context, PageTransition(child: LoginView(), type: PageTransitionType.fade));
+        _credentialsPreferences.removeCredentials();
+      }
       return false;
     }
   }

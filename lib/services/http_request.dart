@@ -19,7 +19,7 @@ class HttpRequest {
   /// static options header for normal http request
   final Options options = Options(headers: {"Accept": "application/json"});
   final Map<String, String>? defaultHeader = {"Accept": "application/json"};
-  final Map<String, String>? headerWithToker = {
+  final Map<String, String>? headerWithToken = {
     HttpHeaders.authorizationHeader: "Bearer $authToken",
     "Accept": "application/json"
   };
