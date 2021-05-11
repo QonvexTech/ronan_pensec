@@ -17,7 +17,6 @@ class RegionService {
   static final RegionService _instance = RegionService._internal();
 
   static RegionService get instance => _instance;
-  final HttpRequest _request = HttpRequest.instance;
   final ToastNotifier _notifier = ToastNotifier.instance;
 
   Future<void> fetch(context) async {

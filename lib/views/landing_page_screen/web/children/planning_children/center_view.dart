@@ -2,8 +2,10 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:ronan_pensec/global/auth.dart';
+import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/global/templates/general_template.dart';
 import 'package:ronan_pensec/models/center_model.dart';
+import 'package:ronan_pensec/view_model/center_view_model.dart';
 
 class CenterView extends StatefulWidget {
   final ValueChanged<int> onBack;
@@ -24,12 +26,20 @@ class CenterView extends StatefulWidget {
 class _CenterViewState extends State<CenterView> {
   /// 0 => List, 1 => Grid, 2 => Table
   int _currentView = 0;
-
+  @override
+  void initState() {
+    if(centerViewModel.current == null){}
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     final Size _size = MediaQuery.of(context).size;
-    final int _gridCount = ((_size.width * .01).ceil()/4).ceil();
-    final double _gridAspectRatio = _size.width < 600 ? 0.95 : _size.width < 900 ? 1.3 : 1.45;
+    final int _gridCount = ((_size.width * .01).ceil() / 4).ceil();
+    final double _gridAspectRatio = _size.width < 600
+        ? 0.95
+        : _size.width < 900
+            ? 1.3
+            : 1.45;
     int _max = 2;
     if (_size.width < 900) {
       _max = 1;
@@ -109,96 +119,145 @@ class _CenterViewState extends State<CenterView> {
         ),
         if (widget.centers != null) ...{
           if (_currentView == 0) ...{
-            this.listView(widget.centers!),
-          }else if(_currentView == 1)...{
-            this.gridView(widget.centers!, _gridCount, _gridAspectRatio),
+            this.listView(widget.centers!, true),
+          } else if (_currentView == 1) ...{
+            this.gridView(widget.centers!, _gridCount, _gridAspectRatio, true),
           }
-        }else...{
+        } else ...{
           SliverToBoxAdapter(
-            child: StreamBuilder(
-              // stream: ,
-              builder: (_, centersList) => Container(),
+            child: StreamBuilder<List<CenterModel>>(
+              stream: centerViewModel.stream,
+              builder: (_, centersList) =>
+                  !centersList.hasError && centersList.hasData
+                      ? _currentView == 0
+                          ? this.listView(centersList.data!, false)
+                          : this.gridView(centersList.data!, _gridCount,
+                              _gridAspectRatio, false)
+                      : Container(
+                          width: double.infinity,
+                          height: _size.height - 120,
+                          child: Center(
+                            child: centersList.hasError
+                                ? Text("${centersList.error}")
+                                : CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        Palette.textFieldColor),
+                                  ),
+                          ),
+                        ),
             ),
           )
         }
       ],
     );
   }
-  SliverGrid gridView(List<CenterModel> _data, int axisCount, double aspectRatio) => SliverGrid(
-    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: axisCount,
-        childAspectRatio: aspectRatio
-    ),
-    delegate: SliverChildBuilderDelegate((_, index){
-      return Padding(
+
+  Widget _gridData(List<CenterModel> _data, int axisCount, double aspectRatio,
+          int index) =>
+      Padding(
           padding: const EdgeInsets.all(20),
           child: Card(
               child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      ListTile(
-                        title: Text("${_data[index].name}",style: TextStyle(
-                            fontWeight: FontWeight.w700
-                        )),
-                        subtitle: Text("${_data[index].address}", maxLines: 2,overflow: TextOverflow.ellipsis,),
-                      ),
-                      ListTile(
-                        title: Text("Email",style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          color: Colors.grey.shade800,
-                          fontSize: Theme.of(context).textTheme.subtitle1!.fontSize! - 3,
-                        )),
-                        subtitle: Text("${_data[index].email}", maxLines: 2,overflow: TextOverflow.ellipsis,),
-                      ),
-                      ListTile(
-                        title: Text("Numéro de téléphone",style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          color: Colors.grey.shade800,
-                          fontSize: Theme.of(context).textTheme.subtitle1!.fontSize! - 3,
-                        )),
-                        subtitle: Text("${_data[index].mobile}", maxLines: 2,overflow: TextOverflow.ellipsis,),
-                      )
-                    ],
+            padding: const EdgeInsets.all(10),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  ListTile(
+                    title: Text("${_data[index].name}",
+                        style: TextStyle(fontWeight: FontWeight.w700)),
+                    subtitle: Text(
+                      "${_data[index].address}",
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
-                ),
-              )
-          )
-      );
-    },
-        childCount: _data.length
-    ),
-  );
-  SliverList listView(List<CenterModel> _list) => SliverList(
-    delegate: SliverChildListDelegate(List.generate(
-        _list.length,
-            (index) => Container(
-          margin: const EdgeInsets.only(bottom: 10),
-          child: Card(
-              child: MaterialButton(
-                  padding: const EdgeInsets.all(20),
-                  onPressed: () {
-                    // setState(() {
-                    //   _selectedRegion = regionList.data![index];
-                    //   _currentPage = 1;
-                    // });
-                  },
-                  child: Row(
-                    children: [
-                      CircleAvatar(
-                        backgroundColor: Colors.grey.shade200,
-                        child: Text("${_list[index].id}"),
+                  ListTile(
+                    title: Text("Email",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: Colors.grey.shade800,
+                          fontSize:
+                              Theme.of(context).textTheme.subtitle1!.fontSize! -
+                                  3,
+                        )),
+                    subtitle: Text(
+                      "${_data[index].email}",
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  ListTile(
+                    title: Text("Numéro de téléphone",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: Colors.grey.shade800,
+                          fontSize:
+                              Theme.of(context).textTheme.subtitle1!.fontSize! -
+                                  3,
+                        )),
+                    subtitle: Text(
+                      "${_data[index].mobile}",
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  )
+                ],
+              ),
+            ),
+          )));
+
+  Widget gridView(List<CenterModel> _data, int axisCount, double aspectRatio,
+          bool isSliver) =>
+      isSliver
+          ? SliverGrid(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: axisCount, childAspectRatio: aspectRatio),
+              delegate: SliverChildBuilderDelegate((_, index) {
+                return _gridData(_data, axisCount, aspectRatio, index);
+              }, childCount: _data.length),
+            )
+          : GridView(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: axisCount, childAspectRatio: aspectRatio),
+              children: List.generate(_data.length,
+                  (index) => _gridData(_data, axisCount, aspectRatio, index)),
+            );
+
+  Widget _listData(List<CenterModel> _list, int index) => Container(
+        margin: const EdgeInsets.only(bottom: 10),
+        child: Card(
+            child: MaterialButton(
+                padding: const EdgeInsets.all(20),
+                onPressed: () {
+                  // setState(() {
+                  //   _selectedRegion = regionList.data![index];
+                  //   _currentPage = 1;
+                  // });
+                },
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      backgroundColor: Colors.grey.shade200,
+                      child: Text("${_list[index].id}"),
+                    ),
+                    Expanded(
+                      child: ListTile(
+                        title: Text("${_list[index].name}"),
+                        subtitle: Text("${_list[index].address}"),
+                        trailing: Icon(Icons.chevron_right),
                       ),
-                      Expanded(
-                        child: ListTile(
-                          title: Text("${_list[index].name}"),
-                          subtitle: Text("${_list[index].address}"),
-                          trailing: Icon(Icons.chevron_right),
-                        ),
-                      )
-                    ],
-                  ))),
-        ))),
-  );
+                    )
+                  ],
+                ))),
+      );
+
+  Widget listView(List<CenterModel> _list, bool isSliver) => isSliver
+      ? SliverList(
+          delegate: SliverChildListDelegate(
+              List.generate(_list.length, (index) => _listData(_list, index))),
+        )
+      : ListView.builder(
+          itemCount: _list.length,
+          itemBuilder: (_, index) => _listData(_list, index),
+        );
 }
