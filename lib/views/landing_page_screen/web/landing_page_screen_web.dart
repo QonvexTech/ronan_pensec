@@ -5,6 +5,7 @@ import 'package:ronan_pensec/global/tabbar_item_class.dart';
 import 'package:ronan_pensec/global/templates/general_template.dart';
 import 'package:ronan_pensec/view_model/user_view_model.dart';
 import 'package:ronan_pensec/views/landing_page_screen/web/children/planning.dart';
+import 'package:ronan_pensec/views/landing_page_screen/web/children/planning_children/center_view.dart';
 
 class LandingPageScreenWeb extends StatefulWidget {
   @override
@@ -15,12 +16,46 @@ class _LandingPageScreenWebState extends State<LandingPageScreenWeb>
     with SingleTickerProviderStateMixin {
   UserViewModel _userViewModel = UserViewModel.instance;
   int _currentTabIndex = 0;
-  final List<Widget> _contents = [
-    WebPlanning(),
-    Container(
-      color: Colors.green,
+  final List<PopupMenuItem<int>> _menuItems = <PopupMenuItem<int>>[
+    PopupMenuItem<int>(
+      value: 0,
+      enabled: true,
+      child: Text("Région"),
     ),
-    if(loggedUser!.roleId < 3)...{
+    PopupMenuItem<int>(
+      value: 1,
+      enabled: true,
+      child: Text("Centre"),
+    ),
+    if (loggedUser!.roleId < 3) ...{
+      PopupMenuItem<int>(
+        value: 2,
+        enabled: true,
+        child: Text("Des employés"),
+      ),
+    }
+  ];
+  late final List<Widget> _contents = [
+    WebPlanning(
+      menuItems: _menuItems,
+      onFilterCallback: (val){
+        setState(() {
+          _currentTabIndex = val;
+          _tabController.index = val;
+        });
+      },
+    ),
+    CenterView(
+        onBack: (val) {},
+        onFilterCallback: (value) {
+          setState(() {
+            _currentTabIndex = value;
+            _tabController.index = value;
+          });
+        },
+        menuItems: _menuItems,
+    ),
+    if (loggedUser!.roleId < 3) ...{
       Container(
         color: Colors.blue,
       )
@@ -38,7 +73,7 @@ class _LandingPageScreenWebState extends State<LandingPageScreenWeb>
         label: "Centres",
         icon: Icons.location_city_rounded,
         key: new GlobalKey()),
-    if(loggedUser!.roleId < 3)...{
+    if (loggedUser!.roleId < 3) ...{
       TabbarItem(
         label: "Des employés",
         icon: Icons.supervisor_account_rounded,
@@ -148,24 +183,26 @@ class _LandingPageScreenWebState extends State<LandingPageScreenWeb>
 
                   Expanded(child: Container()),
 
-                  if(loggedUser!.roleId < 3)...{
+                  if (loggedUser!.roleId < 3) ...{
                     GeneralTemplate.badgedIcon(
                         isEnabled: true,
                         tooltip: "Notifications",
                         onPress: () {},
                         icon: Icons.notifications_rounded,
-                        backgroundColor: Palette.textFieldColor.withOpacity(0.4)),
+                        backgroundColor:
+                            Palette.textFieldColor.withOpacity(0.4)),
                   },
                   const SizedBox(
                     width: 10,
                   ),
-                  if(loggedUser!.roleId == 3)...{
+                  if (loggedUser!.roleId == 3) ...{
                     GeneralTemplate.badgedIcon(
                         isEnabled: true,
                         tooltip: "Messages",
                         onPress: () {},
                         icon: Icons.message,
-                        backgroundColor: Palette.textFieldColor.withOpacity(0.4)),
+                        backgroundColor:
+                            Palette.textFieldColor.withOpacity(0.4)),
                   },
                   const SizedBox(
                     width: 10,
