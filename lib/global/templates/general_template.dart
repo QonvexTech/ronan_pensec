@@ -2,10 +2,19 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/services/color_decider.dart';
+import 'package:ronan_pensec/services/firebase_messaging_service.dart';
+import 'package:ronan_pensec/services/firebase_messaging_token_service.dart';
+import 'package:ronan_pensec/views/login_view/login_view.dart';
 
 class GeneralTemplate {
+  static Text kTitle(String text, context) => Text(
+        text,
+        style: kTextStyle(context)
+      );
+
   static Text kText(String text, {bool isUnderlined = false}) => Text(
         text,
         style: TextStyle(
@@ -28,19 +37,22 @@ class GeneralTemplate {
             color: Colors.grey.shade300, offset: Offset(1, 2), blurRadius: 5)
       ]);
 
-  static Widget profileIcon(context, {required ImageProvider imageProvider}) =>
+  static Widget profileIcon(
+          {required ImageProvider imageProvider,
+          required ValueChanged<int> callback}) =>
       PopupMenuButton<int>(
         tooltip: "Afficher les options de paramètres",
         padding: const EdgeInsets.all(0),
         offset: Offset(0, 40),
-        onSelected: (int value) {
-          if (value == 0) {
-            print("GO TO PROFILE");
-          } else if (value == 1) {
-            print("GO TO SETTINGS");
-          } else {
-            print("LOGOUT");
-          }
+        onSelected: (int value) async {
+          callback(value);
+          // if (value == 0) {
+          //   print("GO TO PROFILE");
+          // } else if (value == 1) {
+          //   print("GO TO SETTINGS");
+          // } else {
+          //   ca
+          // }
         },
         icon: Container(
           width: 40,
@@ -75,7 +87,7 @@ class GeneralTemplate {
             ),
           ),
           PopupMenuItem(
-            value: 1,
+            value: 2,
             child: Row(
               children: [
                 Icon(
@@ -154,12 +166,17 @@ class GeneralTemplate {
           ),
         ),
       );
-  static showDialog(context,{required Widget child,required double width, required double height,required Widget title}) {
+
+  static showDialog(context,
+      {required Widget child,
+      required double width,
+      required double height,
+      required Widget title}) {
     showGeneralDialog(
         barrierColor: Colors.black.withOpacity(0.5),
         transitionBuilder: (context, a1, a2, widget) {
           return BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 4,sigmaY: 4),
+            filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
             child: Transform.scale(
               scale: a1.value,
               child: Opacity(
@@ -169,7 +186,7 @@ class GeneralTemplate {
                       borderRadius: BorderRadius.circular(5.0)),
                   title: title,
                   content: Container(
-                    width: width < 900 ? width *.65 : width * .45,
+                    width: width < 900 ? width * .65 : width * .45,
                     height: height,
                     child: child,
                   ),
@@ -183,24 +200,28 @@ class GeneralTemplate {
         barrierLabel: '',
         context: context,
         pageBuilder: (context, animation1, animation2) => Container());
-
-
   }
-  static List<IconSlideAction> sliders({required Function onEdit, required Function onDelete}) => [
-    IconSlideAction(
-      caption: "Supprimer",
-      icon: Icons.delete,
-      color: Colors.red,
-      onTap: (){
-        onDelete();
-      },
-    ),
-    IconSlideAction(
-      caption: "Éditer",
-      icon: Icons.edit,
-      color: Palette.textFieldColor,
-      onTap: (){
-        onEdit();
-      },
-    )];
+
+  static List<IconSlideAction> sliders(
+          {required Function onEdit,
+          required Function onDelete,
+          required showCaption}) =>
+      [
+        IconSlideAction(
+          caption: showCaption ? "Supprimer" : null,
+          icon: Icons.delete,
+          color: Colors.red,
+          onTap: () {
+            onDelete();
+          },
+        ),
+        IconSlideAction(
+          caption: showCaption ? "Éditer" : null,
+          icon: Icons.edit,
+          color: Palette.textFieldColor,
+          onTap: () {
+            onEdit();
+          },
+        )
+      ];
 }

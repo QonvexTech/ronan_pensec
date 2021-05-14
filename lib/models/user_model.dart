@@ -18,6 +18,7 @@ class UserModel {
   int? consumableHolidays;
   List<RTTModel>? rtts;
   List<HolidayModel>? holidays;
+  int isSilentOnPush;
 
   UserModel(
       {required this.id,
@@ -35,26 +36,29 @@ class UserModel {
       required this.workDays,
       required this.consumableHolidays,
       required this.holidays,
-      required this.rtts});
+      required this.rtts,
+      required this.isSilentOnPush});
 
   factory UserModel.fromJson({required Map<String, dynamic> parsedJson}) {
     return UserModel(
-        id: int.parse(parsedJson['id'].toString()),
-        first_name: parsedJson['first_name'],
-        last_name: parsedJson['last_name'],
-        email: parsedJson['email'],
-        address: parsedJson['address'],
-        birthdate: DateTime.parse(parsedJson['birth_date'].toString()),
-        city: parsedJson['city'],
-        zip_code: parsedJson['zip_code'],
-        mobile: parsedJson['mobile'],
-        image: parsedJson['image'],
-        roleId: parsedJson['role_id'],
-        workDays: parsedJson['workDays'],
-        consumableHolidays: parsedJson['consumableHolidays'],
-        rtts: rttToList(parsedJson['rtts']),
-        holidays: holidayToList(parsedJson['holidays']),
-        full_name: parsedJson['full_name']);
+      id: int.parse(parsedJson['id'].toString()),
+      first_name: parsedJson['first_name'],
+      last_name: parsedJson['last_name'],
+      email: parsedJson['email'],
+      address: parsedJson['address'],
+      birthdate: DateTime.parse(parsedJson['birth_date'].toString()),
+      city: parsedJson['city'],
+      zip_code: parsedJson['zip_code'],
+      mobile: parsedJson['mobile'],
+      image: parsedJson['image'],
+      roleId: parsedJson['role_id'],
+      workDays: parsedJson['workDays'],
+      consumableHolidays: parsedJson['consumableHolidays'],
+      rtts: rttToList(parsedJson['rtts']),
+      holidays: holidayToList(parsedJson['holidays']),
+      full_name: parsedJson['full_name'],
+      isSilentOnPush: int.parse(parsedJson['isSilent_onPush'].toString()),
+    );
   }
 
   static List<HolidayModel> holidayToList(List? data) {
@@ -99,6 +103,7 @@ class UserModel {
         'consumableHolidays': consumableHolidays,
         'rtts': rtts,
         'holidays': holidays,
-        'full_name': full_name
+        'full_name': full_name,
+    'isSilent_onPush' : isSilentOnPush
       };
 }

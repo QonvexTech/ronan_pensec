@@ -70,7 +70,7 @@ class LoginService {
               msg: "Error ${respo.statusCode}, ${respo.reasonPhrase}");
         }else{
           Navigator.pushReplacement(context, PageTransition(child: LoginView(), type: PageTransitionType.fade));
-          _credentialsPreferences.removeCredentials();
+          _credentialsPreferences.removeCredentials;
         }
         return false;
       });
@@ -79,7 +79,7 @@ class LoginService {
           msg: "An error has occurred, please contact the administrator.");
       if(!showNotif){
         Navigator.pushReplacement(context, PageTransition(child: LoginView(), type: PageTransitionType.fade));
-        _credentialsPreferences.removeCredentials();
+        _credentialsPreferences.removeCredentials;
       }
       return false;
     }

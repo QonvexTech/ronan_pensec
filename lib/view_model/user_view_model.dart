@@ -13,4 +13,10 @@ class UserViewModel {
     }
     return NetworkImage("${loggedUser!.image}");
   }
+  ImageProvider imageViewer({required String? imageUrl}) {
+    if(imageUrl == null){
+      return AssetImage("assets/images/icon.png");
+    }
+    return NetworkImage("$imageUrl");
+  }
 }

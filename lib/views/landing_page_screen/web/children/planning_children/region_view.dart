@@ -222,7 +222,7 @@ class _RegionViewState extends State<RegionView> {
                                   (index) => Slidable(
                                     controller: _slidableController,
                                     key: Key("$index"),
-                                    secondaryActions: GeneralTemplate.sliders(onEdit: (){}, onDelete: (){}),
+                                    secondaryActions: GeneralTemplate.sliders(onEdit: (){}, onDelete: (){}, showCaption: true),
                                     actionPane: SlidableDrawerActionPane(),
                                     child: MaterialButton(
                                       padding: const EdgeInsets.symmetric(vertical: 50),
@@ -255,7 +255,7 @@ class _RegionViewState extends State<RegionView> {
                                   child: Slidable(
                                     controller: _slidableController,
                                     actionPane: SlidableDrawerActionPane(),
-                                    secondaryActions: GeneralTemplate.sliders(onEdit: (){}, onDelete: (){}),
+                                    secondaryActions: GeneralTemplate.sliders(onEdit: (){}, onDelete: (){},showCaption: !(_size.width < 600)),
                                     child: Container(
                                         decoration: BoxDecoration(
                                             color: Colors.grey.shade200,

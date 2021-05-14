@@ -1,9 +1,8 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/global/palette.dart';
+import 'package:ronan_pensec/global/templates/center_template.dart';
 import 'package:ronan_pensec/global/templates/general_template.dart';
 import 'package:ronan_pensec/models/center_model.dart';
 import 'package:ronan_pensec/services/dashboard_services/center_service.dart';
@@ -28,12 +27,12 @@ class CenterView extends StatefulWidget {
 }
 
 class _CenterViewState extends State<CenterView> {
-  /// 0 => List, 1 => Grid, 2 => Table
-  int _currentView = 0;
+  /// 0 => List, 1 => Table
+  int _currentView = 1;
   int? _selectedIndex;
   CenterModel? _selectedCenter;
   final SlidableController _slidableController = new SlidableController();
-
+  final CenterTemplate _centerTemplate = CenterTemplate.instance;
   @override
   void initState() {
     if (!centerViewModel.hasFetched && widget.centers == null) {
@@ -56,10 +55,9 @@ class _CenterViewState extends State<CenterView> {
         : _size.width < 900
             ? 1.3
             : 1.45;
-    int _max = 2;
+    int _max = 1;
     if (_size.width < 900) {
-      _max = 1;
-      if (_currentView == 2) {
+      if (_currentView == 1) {
         _currentView = 0;
       }
     }
@@ -95,23 +93,24 @@ class _CenterViewState extends State<CenterView> {
                       style: GeneralTemplate.kTextStyle(context),
                     ),
                   ),
-                  IconButton(
-                      tooltip:
-                          "${_currentView == 0 ? "Vue de la grille" : _currentView == 1 && _max == 2 ? "Vue de tableau" : "Vue de liste"}",
-                      icon: Icon(_currentView == 0
-                          ? Icons.grid_view
-                          : _currentView == 1 && _max == 2
-                              ? Icons.table_chart_rounded
-                              : Icons.list),
-                      onPressed: () {
-                        setState(() {
-                          if (_currentView < _max) {
-                            _currentView++;
-                          } else {
-                            _currentView = 0;
-                          }
-                        });
-                      }),
+                  if(_size.width > 900)...{
+                    IconButton(
+                        tooltip:
+                        "${_currentView == 0 ? "Vue de tableau" : "Vue de liste"}",
+                        icon: Icon(_currentView == 0
+                            ? Icons.table_chart_rounded
+                            : Icons.list),
+                        onPressed: () {
+                          setState(() {
+                            if (_currentView < _max) {
+                              _currentView++;
+                            } else {
+                              _currentView = 0;
+                            }
+                          });
+                          print(_currentView);
+                        }),
+                  },
                   if (loggedUser!.roleId == 1 && widget.regionId != null) ...{
                     IconButton(
                       tooltip: "Creer Centrés",
@@ -127,19 +126,13 @@ class _CenterViewState extends State<CenterView> {
         if (widget.centers != null) ...{
           if (widget.centers!.length > 0) ...{
             if (_currentView == 0) ...{
-              centerViewModel.listView(widget.centers!, true,
+              _centerTemplate.listView(widget.centers!, true,
                   onDelete: () {},
                   onEdit: () {},
                   controller: _slidableController),
-            } else if (_currentView == 1) ...{
-              centerViewModel.gridView(
-                  context, widget.centers!, _gridCount, _gridAspectRatio, true,
-                  onDelete: () {}, onEdit: () {
-
-                  }),
             } else ...{
               SliverToBoxAdapter(
-                child: centerViewModel
+                child: _centerTemplate
                     .tableData(widget.centers!, _selectedIndex,
                         onPressed: (selectedIndex) {
                   setState(() {
@@ -167,24 +160,13 @@ class _CenterViewState extends State<CenterView> {
                       width: double.infinity,
                       height: _size.height - 120,
                       child: _currentView == 0
-                          ? centerViewModel.listView(centersList.data!, false,
+                          ? _centerTemplate.listView(centersList.data!, false,
                               onEdit: () {
 
                               },
                               onDelete: () {},
                               controller: _slidableController)
-                          : _currentView == 1
-                              ? centerViewModel.gridView(
-                                  context,
-                                  centersList.data!,
-                                  _gridCount,
-                                  _gridAspectRatio,
-                                  false,
-                                  onEdit: () {
-                                    onEdit(_size.width, _size.height * .75);
-                                  },
-                                  onDelete: () {})
-                              : centerViewModel
+                          : _centerTemplate
                                   .tableData(centersList.data!, _selectedIndex,
                                       onPressed: (selectedIndex) {
                                   setState(() {

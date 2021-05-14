@@ -19,7 +19,7 @@ class CredentialsPreferences {
   }
 
   /// remove saved credential details
-  void removeCredentials() async {
+  Future<void> get removeCredentials async {
     _preferences.remove("email");
     _preferences.remove("password");
   }
