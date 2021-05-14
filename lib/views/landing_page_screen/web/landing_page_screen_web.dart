@@ -3,7 +3,9 @@ import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/global/tabbar_item_class.dart';
 import 'package:ronan_pensec/global/templates/general_template.dart';
-import 'package:ronan_pensec/view_model/user_view_model.dart';
+import 'package:ronan_pensec/view_model/helpers/landing_page_main.dart';
+import 'package:ronan_pensec/views/landing_page_screen/web/children/calendar.dart';
+import 'package:ronan_pensec/views/landing_page_screen/web/children/employee_view.dart';
 import 'package:ronan_pensec/views/landing_page_screen/web/children/planning.dart';
 import 'package:ronan_pensec/views/landing_page_screen/web/children/planning_children/center_view.dart';
 
@@ -13,34 +15,14 @@ class LandingPageScreenWeb extends StatefulWidget {
 }
 
 class _LandingPageScreenWebState extends State<LandingPageScreenWeb>
-    with SingleTickerProviderStateMixin {
-  UserViewModel _userViewModel = UserViewModel.instance;
-  int _currentTabIndex = 0;
-  final List<PopupMenuItem<int>> _menuItems = <PopupMenuItem<int>>[
-    PopupMenuItem<int>(
-      value: 0,
-      enabled: true,
-      child: Text("Région"),
-    ),
-    PopupMenuItem<int>(
-      value: 1,
-      enabled: true,
-      child: Text("Centre"),
-    ),
-    if (loggedUser!.roleId < 3) ...{
-      PopupMenuItem<int>(
-        value: 2,
-        enabled: true,
-        child: Text("Des employés"),
-      ),
-    }
-  ];
+    with SingleTickerProviderStateMixin, LandingPageMainHelper {
+
   late final List<Widget> _contents = [
     WebPlanning(
-      menuItems: _menuItems,
+      menuItems: menuItems,
       onFilterCallback: (val){
         setState(() {
-          _currentTabIndex = val;
+          currentTabIndex = val;
           _tabController.index = val;
         });
       },
@@ -49,50 +31,21 @@ class _LandingPageScreenWebState extends State<LandingPageScreenWeb>
         onBack: (val) {},
         onFilterCallback: (value) {
           setState(() {
-            _currentTabIndex = value;
+            currentTabIndex = value;
             _tabController.index = value;
           });
         },
-        menuItems: _menuItems,
+        menuItems: menuItems,
     ),
     if (loggedUser!.roleId < 3) ...{
-      Container(
-        color: Colors.blue,
-      )
+      EmployeeView()
     },
-    Container(
-      color: Colors.orange,
-    ),
+    Calendar(),
   ];
-  late List<TabbarItem> _tabItems = [
-    TabbarItem(
-        label: "Planification",
-        icon: Icons.stacked_line_chart_sharp,
-        key: new GlobalKey()),
-    TabbarItem(
-        label: "Centres",
-        icon: Icons.location_city_rounded,
-        key: new GlobalKey()),
-    if (loggedUser!.roleId < 3) ...{
-      TabbarItem(
-        label: "Des employés",
-        icon: Icons.supervisor_account_rounded,
-        key: new GlobalKey(),
-      ),
-    },
-    TabbarItem(
-        label: "Calendrier",
-        icon: Icons.calendar_today_rounded,
-        key: new GlobalKey())
-  ];
+
 
   late final TabController _tabController =
-      TabController(length: _contents.length, vsync: this);
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  TabController(length: _contents.length, vsync: this);
 
   @override
   Widget build(BuildContext context) {
@@ -136,7 +89,7 @@ class _LandingPageScreenWebState extends State<LandingPageScreenWeb>
                         child: TabBar(
                           onTap: (index) {
                             setState(() {
-                              _currentTabIndex = index;
+                              currentTabIndex = index;
                             });
                           },
                           indicatorColor: Colors.white,
@@ -144,7 +97,7 @@ class _LandingPageScreenWebState extends State<LandingPageScreenWeb>
                           unselectedLabelColor: Colors.grey.shade400,
                           physics: NeverScrollableScrollPhysics(),
                           tabs: [
-                            for (TabbarItem item in _tabItems) ...{
+                            for (TabbarItem item in tabItems) ...{
                               Tab(
                                 child: Column(
                                   children: [
@@ -209,7 +162,7 @@ class _LandingPageScreenWebState extends State<LandingPageScreenWeb>
                   ),
                   GeneralTemplate.profileIcon(
                     context,
-                    imageProvider: _userViewModel.imageProvider,
+                    imageProvider: userViewModel.imageProvider,
                   )
                 ],
               ),
@@ -222,7 +175,7 @@ class _LandingPageScreenWebState extends State<LandingPageScreenWeb>
                   child: TabBar(
                     onTap: (index) {
                       setState(() {
-                        _currentTabIndex = index;
+                        currentTabIndex = index;
                       });
                     },
                     indicatorColor: Palette.textFieldColor,
@@ -230,11 +183,11 @@ class _LandingPageScreenWebState extends State<LandingPageScreenWeb>
                     unselectedLabelColor: Colors.grey.shade400,
                     physics: NeverScrollableScrollPhysics(),
                     tabs: [
-                      for (TabbarItem item in _tabItems) ...{
+                      for (TabbarItem item in tabItems) ...{
                         Tab(
                           icon: Icon(
                             item.icon,
-                            color: _tabItems.indexOf(item) == _currentTabIndex
+                            color: tabItems.indexOf(item) == currentTabIndex
                                 ? Palette.textFieldColor
                                 : Colors.grey.shade400,
                           ),
@@ -243,8 +196,8 @@ class _LandingPageScreenWebState extends State<LandingPageScreenWeb>
                               "${item.label}",
                               style: TextStyle(
                                   letterSpacing: 1.5,
-                                  color: _tabItems.indexOf(item) ==
-                                          _currentTabIndex
+                                  color: tabItems.indexOf(item) ==
+                                          currentTabIndex
                                       ? Palette.textFieldColor
                                       : Colors.grey.shade400),
                             ),

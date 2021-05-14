@@ -1,3 +1,4 @@
+import 'package:ronan_pensec/models/center_model.dart';
 import 'package:ronan_pensec/services/http_request.dart';
 import 'package:ronan_pensec/services/toast_notifier.dart';
 import 'package:rxdart/rxdart.dart';
@@ -24,6 +25,15 @@ class RegionViewModel {
   }
   remove(int id) {
     this.current.removeWhere((region) => region.id == id);
+    _list.add(this.current);
+  }
+  newCenter(Map<String, dynamic> center, int regionId){
+    this.current.where((element) {
+      if(element.id == regionId){
+        element.centers!.add(CenterModel.fromJson(center));
+      }
+      return true;
+    });
     _list.add(this.current);
   }
 }

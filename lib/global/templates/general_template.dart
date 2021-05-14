@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/services/color_decider.dart';
 
@@ -153,4 +154,53 @@ class GeneralTemplate {
           ),
         ),
       );
+  static showDialog(context,{required Widget child,required double width, required double height,required Widget title}) {
+    showGeneralDialog(
+        barrierColor: Colors.black.withOpacity(0.5),
+        transitionBuilder: (context, a1, a2, widget) {
+          return BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 4,sigmaY: 4),
+            child: Transform.scale(
+              scale: a1.value,
+              child: Opacity(
+                opacity: a1.value,
+                child: AlertDialog(
+                  shape: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0)),
+                  title: title,
+                  content: Container(
+                    width: width < 900 ? width *.65 : width * .45,
+                    height: height,
+                    child: child,
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+        transitionDuration: Duration(milliseconds: 200),
+        barrierDismissible: true,
+        barrierLabel: '',
+        context: context,
+        pageBuilder: (context, animation1, animation2) => Container());
+
+
+  }
+  static List<IconSlideAction> sliders({required Function onEdit, required Function onDelete}) => [
+    IconSlideAction(
+      caption: "Supprimer",
+      icon: Icons.delete,
+      color: Colors.red,
+      onTap: (){
+        onDelete();
+      },
+    ),
+    IconSlideAction(
+      caption: "Éditer",
+      icon: Icons.edit,
+      color: Palette.textFieldColor,
+      onTap: (){
+        onEdit();
+      },
+    )];
 }

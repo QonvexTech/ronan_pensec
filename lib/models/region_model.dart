@@ -18,10 +18,12 @@ class RegionModel {
       centers: centerToList(parsedJson['centers']),
     );
   }
-  static List<CenterModel> centerToList(List data) {
+  static List<CenterModel> centerToList(List? data) {
     List<CenterModel> _centers = [];
-    for(var datum in data){
-      _centers.add(CenterModel.fromJson(datum));
+    if(data != null){
+      for(var datum in data){
+        _centers.add(CenterModel.fromJson(datum));
+      }
     }
     return _centers;
   }

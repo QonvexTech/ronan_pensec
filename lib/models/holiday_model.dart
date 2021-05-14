@@ -25,7 +25,7 @@ class HolidayModel{
       start_date : DateTime.parse(parsedJson['start_date'].toString()),
       end_date : DateTime.parse(parsedJson['end_date'].toString()),
       status : int.parse(parsedJson['status'].toString()),
-      ishalf_day : int.parse(parsedJson['ishalf_day'].toString()),
+      ishalf_day : int.parse(parsedJson['isHalf_day'].toString()),
       user_id : int.parse(parsedJson['user_id'].toString()),
       comment : parsedJson['comment'],
     );
@@ -36,7 +36,7 @@ class HolidayModel{
     'start_date' : start_date,
     'end_date' : end_date,
     'status' : status,
-    'ishalf_day' : ishalf_day,
+    'isHalf_day' : ishalf_day,
     'user_id' : user_id,
     'comment' : comment,
   };

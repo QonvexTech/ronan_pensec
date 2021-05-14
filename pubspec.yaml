@@ -36,12 +36,12 @@ dependencies:
 
   # WEB COMPONENTS
   adaptive_container: ^0.0.3
-  calendar_data_timeline: ^0.0.7
 
   # APP Component
   flutter_localizations:
     sdk: flutter
   fluttertoast: ^8.0.6
+  flutter_slidable: ^0.6.0
   page_transition: ^2.0.1-nullsafety.0
   simple_animations: ^3.1.1
   supercharged: ^2.0.0

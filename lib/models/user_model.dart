@@ -1,7 +1,11 @@
+import 'package:ronan_pensec/models/calendar/holiday_model.dart';
+import 'package:ronan_pensec/models/calendar/rtt_model.dart';
+
 class UserModel {
   final int id;
   String first_name;
   String last_name;
+  String full_name;
   String email;
   String address;
   DateTime birthdate;
@@ -12,42 +16,66 @@ class UserModel {
   int roleId;
   int? workDays;
   int? consumableHolidays;
-  // List<int>? centerIds;
+  List<RTTModel>? rtts;
+  List<HolidayModel>? holidays;
 
-  UserModel({
-    required this.id,
-    required this.first_name,
-    required this.last_name,
-    required this.email,
-    required this.address,
-    required this.birthdate,
-    required this.city,
-    required this.zip_code,
-    required this.mobile,
-    required this.image,
-    required this.roleId,
-    required this.workDays,
-    required this.consumableHolidays,
-    // this.centerIds,
-  });
+  UserModel(
+      {required this.id,
+      required this.first_name,
+      required this.full_name,
+      required this.last_name,
+      required this.email,
+      required this.address,
+      required this.birthdate,
+      required this.city,
+      required this.zip_code,
+      required this.mobile,
+      required this.image,
+      required this.roleId,
+      required this.workDays,
+      required this.consumableHolidays,
+      required this.holidays,
+      required this.rtts});
 
   factory UserModel.fromJson({required Map<String, dynamic> parsedJson}) {
     return UserModel(
-      id: int.parse(parsedJson['id'].toString()),
-      first_name: parsedJson['first_name'],
-      last_name: parsedJson['last_name'],
-      email: parsedJson['email'],
-      address: parsedJson['address'],
-      birthdate: DateTime.parse(parsedJson['birth_date'].toString()),
-      city: parsedJson['city'],
-      zip_code: parsedJson['zip_code'],
-      mobile: parsedJson['mobile'],
-      image: parsedJson['image'],
-      roleId: parsedJson['role_id'],
-      workDays: parsedJson['workDays'],
-      consumableHolidays: parsedJson['consumableHolidays'],
-      // centerIds: stringListToInt(parsedJson['centerIds']),
-    );
+        id: int.parse(parsedJson['id'].toString()),
+        first_name: parsedJson['first_name'],
+        last_name: parsedJson['last_name'],
+        email: parsedJson['email'],
+        address: parsedJson['address'],
+        birthdate: DateTime.parse(parsedJson['birth_date'].toString()),
+        city: parsedJson['city'],
+        zip_code: parsedJson['zip_code'],
+        mobile: parsedJson['mobile'],
+        image: parsedJson['image'],
+        roleId: parsedJson['role_id'],
+        workDays: parsedJson['workDays'],
+        consumableHolidays: parsedJson['consumableHolidays'],
+        rtts: rttToList(parsedJson['rtts']),
+        holidays: holidayToList(parsedJson['holidays']),
+        full_name: parsedJson['full_name']);
+  }
+
+  static List<HolidayModel> holidayToList(List? data) {
+    List<HolidayModel> _holidays = [];
+    if (data != null) {
+      for (var holiday in data) {
+        print(holiday);
+        _holidays.add(HolidayModel.fromJson(holiday));
+      }
+    }
+    return _holidays;
+  }
+
+  static List<RTTModel> rttToList(List? data) {
+    List<RTTModel> _rtts = [];
+    if (data != null) {
+      for (var item in data) {
+        _rtts.add(RTTModel.fromJson(item));
+      }
+    }
+    return _rtts;
   }
 
   static List<int>? stringListToInt(List data) {
@@ -56,7 +84,7 @@ class UserModel {
   }
 
   Map<String, dynamic> toJson() => {
-        'int': int,
+        'id': id,
         'first_name': first_name,
         'last_name': last_name,
         'email': email,
@@ -69,6 +97,8 @@ class UserModel {
         'roleId': roleId,
         'workDays': workDays,
         'consumableHolidays': consumableHolidays,
-        // 'centerIds': centerIds,
+        'rtts': rtts,
+        'holidays': holidays,
+        'full_name': full_name
       };
 }

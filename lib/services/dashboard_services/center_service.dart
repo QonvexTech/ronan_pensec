@@ -15,23 +15,39 @@ class CenterService {
 
   static CenterService get instance => _instance;
 
-  Future<void> fetch(context) async {
+  Future<bool> fetch(context) async {
     try {
-      await http.get(Uri.parse("$baseUrl${CenterEndpoint.viewAll}"), headers: {
+      return await http.get(Uri.parse("$baseUrl${CenterEndpoint.viewAll}"), headers: {
         "Accept": "application/json",
         HttpHeaders.authorizationHeader: "Bearer $authToken"
       }).then((response) {
-        List data = json.decode(response.body);
-        print("CENTER DATA : $data");
+        var data = json.decode(response.body);
         if (response.statusCode == 200) {
           centerViewModel.populateAll(data);
+          return true;
         } else {
           _notifier.showContextedBottomToast(context,
               msg: "Erreur ${response.statusCode}, ${response.reasonPhrase}");
+          return false;
         }
       });
     } catch (e) {
       _notifier.showContextedBottomToast(context, msg: "Erreur $e");
+      return false;
+    }
+  }
+  Future create(context, Map body) async {
+    try{
+      await http.post(Uri.parse("$baseUrl${CenterEndpoint.create}"),headers: {
+        "Accept": "application/json",
+        HttpHeaders.authorizationHeader: "Bearer $authToken"
+      }, body: body).then((response) {
+        var data = json.decode(response.body);
+        print("Created Center $data");
+      });
+    }catch(e){
+      _notifier.showContextedBottomToast(context, msg: "Erreur $e");
     }
   }
 }
+CenterService centerService = CenterService.instance;
