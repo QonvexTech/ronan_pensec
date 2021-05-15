@@ -71,7 +71,53 @@ class CenterTemplate {
     physics: NeverScrollableScrollPhysics(),
     itemBuilder: (_, index) => listData(_list, index, onEdit: onEdit, onDelete: onDelete, controller: controller),
   );
-
+  List<DataColumn> get kDataColumn => [
+    DataColumn(
+      label: Text(
+        "ID",
+        style: TextStyle(
+          color: Colors.white,
+        ),
+      ),
+    ),
+    DataColumn(
+      label: Text(
+        "Nom",
+        style: TextStyle(
+          color: Colors.white,
+        ),
+      ),
+    ),
+    DataColumn(
+      label: Text(
+        "Addresse",
+        style: TextStyle(
+          color: Colors.white,
+        ),
+      ),
+    ),
+    DataColumn(
+      label: Text(
+        "Numéro",
+        style: TextStyle(
+          color: Colors.white,
+        ),
+      ),
+    ),
+    DataColumn(
+      label: Text(
+        "Email",
+        style: TextStyle(
+          color: Colors.white,
+        ),
+      ),
+    ),
+    DataColumn(
+      label: Text(
+        "",
+      ),
+    ),
+  ];
   Widget tableData(List<CenterModel> _list, int? _selectedIndex,
       {required ValueChanged<int?> onPressed, required Function onDelete, required Function onEdit}) =>
       Container(
@@ -81,57 +127,12 @@ class CenterTemplate {
           headingRowColor: MaterialStateProperty.resolveWith(
                   (states) => Palette.textFieldColor),
           dataRowColor: MaterialStateProperty.resolveWith(
-                  (states) => Colors.grey.shade100),
-          columns: [
-            DataColumn(
-              label: Text(
-                "ID",
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            DataColumn(
-              label: Text(
-                "Nom",
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            DataColumn(
-              label: Text(
-                "Addresse",
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            DataColumn(
-              label: Text(
-                "Numéro",
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            DataColumn(
-              label: Text(
-                "Email",
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            DataColumn(
-              label: Text(
-                "",
-              ),
-            ),
-          ],
+                  (states) =>  Colors.grey.shade100),
+          columns: kDataColumn,
           rows: List.generate(
               _list.length,
                   (index) => DataRow(
+                    color: MaterialStateProperty.resolveWith((states) => index % 2 == 0 ? Palette.gradientColor[0].withOpacity(0.3) : Colors.grey.shade100),
                   onSelectChanged: (data) {
                     onPressed(_selectedIndex == index ? null : index);
                   },

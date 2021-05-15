@@ -261,6 +261,7 @@ class _CalendarFullState extends State<CalendarFull> {
                                     itemBuilder: (_, index) => Container(
                                           width: double.infinity,
                                           height: 30,
+                                          color: index % 2 == 0 ? Palette.gradientColor[0].withOpacity(0.3) : Colors.transparent,
                                           child: Row(
                                             children: [
                                               Container(

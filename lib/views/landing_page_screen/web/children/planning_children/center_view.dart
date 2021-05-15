@@ -7,6 +7,7 @@ import 'package:ronan_pensec/global/templates/general_template.dart';
 import 'package:ronan_pensec/models/center_model.dart';
 import 'package:ronan_pensec/services/dashboard_services/center_service.dart';
 import 'package:ronan_pensec/view_model/center_view_model.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 
 class CenterView extends StatefulWidget {
   final ValueChanged<int> onBack;
@@ -33,6 +34,7 @@ class _CenterViewState extends State<CenterView> {
   CenterModel? _selectedCenter;
   final SlidableController _slidableController = new SlidableController();
   final CenterTemplate _centerTemplate = CenterTemplate.instance;
+
   @override
   void initState() {
     if (!centerViewModel.hasFetched && widget.centers == null) {
@@ -42,8 +44,10 @@ class _CenterViewState extends State<CenterView> {
     }
     super.initState();
   }
+
   void onEdit(double width, double height) {
-    GeneralTemplate.showDialog(context, child: Container(), width: width, height: height, title: Container());
+    GeneralTemplate.showDialog(context,
+        child: Container(), width: width, height: height, title: Container());
   }
 
   @override
@@ -93,10 +97,10 @@ class _CenterViewState extends State<CenterView> {
                       style: GeneralTemplate.kTextStyle(context),
                     ),
                   ),
-                  if(_size.width > 900)...{
+                  if (_size.width > 900) ...{
                     IconButton(
                         tooltip:
-                        "${_currentView == 0 ? "Vue de tableau" : "Vue de liste"}",
+                            "${_currentView == 0 ? "Vue de tableau" : "Vue de liste"}",
                         icon: Icon(_currentView == 0
                             ? Icons.table_chart_rounded
                             : Icons.list),
@@ -154,38 +158,32 @@ class _CenterViewState extends State<CenterView> {
           SliverToBoxAdapter(
             child: StreamBuilder<List<CenterModel>?>(
               stream: centerViewModel.stream,
-              builder: (_, centersList) => !centersList.hasError &&
-                      centersList.hasData
-                  ? Container(
-                      width: double.infinity,
-                      height: _size.height - 120,
-                      child: _currentView == 0
-                          ? _centerTemplate.listView(centersList.data!, false,
-                              onEdit: () {
-
-                              },
-                              onDelete: () {},
-                              controller: _slidableController)
-                          : _centerTemplate
+              builder: (_, centersList) =>
+                  !centersList.hasError && centersList.hasData
+                      ? Container(
+                          width: double.infinity,
+                          height: _size.height - 120,
+                          child: _currentView == 0
+                              ? _centerTemplate.listView(
+                                  centersList.data!, false,
+                                  onEdit: () {},
+                                  onDelete: () {},
+                                  controller: _slidableController)
+                              : _centerTemplate
                                   .tableData(centersList.data!, _selectedIndex,
                                       onPressed: (selectedIndex) {
                                   setState(() {
                                     _selectedIndex = selectedIndex;
                                   });
                                 }, onEdit: () {}, onDelete: () {}),
-                    )
-                  : Container(
-                      width: double.infinity,
-                      height: _size.height - 180,
-                      child: Center(
-                        child: centersList.hasError
-                            ? Text("${centersList.error}")
-                            : CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                    Palette.textFieldColor),
-                              ),
-                      ),
-                    ),
+                        )
+                      : Container(
+                          width: double.infinity,
+                          height: _size.height - 180,
+                          child: centersList.hasError
+                              ? Center(child: Text("${centersList.error}"))
+                              : GeneralTemplate.tableLoader(_centerTemplate.kDataColumn.length, _centerTemplate.kDataColumn, _size.width),
+                        ),
             ),
           )
         }

@@ -8,6 +8,7 @@ import 'package:ronan_pensec/services/color_decider.dart';
 import 'package:ronan_pensec/services/firebase_messaging_service.dart';
 import 'package:ronan_pensec/services/firebase_messaging_token_service.dart';
 import 'package:ronan_pensec/views/login_view/login_view.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 
 class GeneralTemplate {
   static Text kTitle(String text, context) => Text(
@@ -224,4 +225,30 @@ class GeneralTemplate {
           },
         )
       ];
+  static Shimmer tableLoader(int rowLength,List<DataColumn> column, double maxWidth) => Shimmer(
+    child: DataTable(
+      columns: column,
+      rows: [
+        for(var x=0;x<10;x++)...{
+          DataRow(
+              cells: [
+                for(var i = 0;i<rowLength;i++)...{
+                  DataCell(
+                      Container(
+                        width: maxWidth/5,
+                        height: 30,
+                        decoration: BoxDecoration(
+                            color: Colors.grey.shade300,
+                            shape: i == 0 ? BoxShape.circle : BoxShape.rectangle,
+                            borderRadius: i == 0 ? null : BorderRadius.circular(30)
+                        ),
+                      )
+                  )
+                }
+              ]
+          )
+        }
+      ],
+    ),
+  );
 }

@@ -101,6 +101,7 @@ class _EmployeeViewState extends State<EmployeeView> {
                             rows: List.generate(
                                 userList.data!.length,
                                 (index) => DataRow(
+                                  color: MaterialStateProperty.resolveWith((states) => index % 2 == 0 ? Palette.gradientColor[0].withOpacity(0.3) : Colors.grey.shade100),
                                     cells: _template
                                         .kDataCell(userList.data![index]))),
                           ),
@@ -115,25 +116,22 @@ class _EmployeeViewState extends State<EmployeeView> {
                             ),
                           ),
                         )
-                  : Center(
-                      child: !userList.hasData
-                          ? CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                  Palette.textFieldColor),
-                            )
-                          : Text(
-                              userList.hasError
-                                  ? "${userList.error}"
-                                  : "Aucune donnée disponible",
-                              style: TextStyle(
-                                  fontSize: Theme.of(context)
-                                      .textTheme
-                                      .headline6!
-                                      .fontSize,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.black54),
-                            ),
-                    ),
+                  : !userList.hasData
+                      ? GeneralTemplate.tableLoader(_template.kDataColumn.length, _template.kDataColumn, _size.width)
+                      : Center(
+                        child: Text(
+                            userList.hasError
+                                ? "${userList.error}"
+                                : "Aucune donnée disponible",
+                            style: TextStyle(
+                                fontSize: Theme.of(context)
+                                    .textTheme
+                                    .headline6!
+                                    .fontSize,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.black54),
+                          ),
+                      ),
             ))
           ],
         ),
