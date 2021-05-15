@@ -4,7 +4,6 @@ import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/global/templates/general_template.dart';
 import 'package:ronan_pensec/models/region_model.dart';
-import 'package:ronan_pensec/services/dashboard_services/region_service.dart';
 import 'package:ronan_pensec/view_model/region_view_model.dart';
 import 'package:ronan_pensec/views/landing_page_screen/web/children/planning_children/center_view.dart';
 
@@ -18,23 +17,25 @@ class RegionView extends StatefulWidget {
   _RegionViewState createState() => _RegionViewState();
 }
 
-class _RegionViewState extends State<RegionView> {
-  final TextEditingController _name = new TextEditingController();
-  final SlidableController _slidableController = new SlidableController();
-  bool _isList = true;
-  int _currentPage = 0;
-  bool _isLoading = false;
-  RegionModel? _selectedRegion;
+class _RegionViewState extends State<RegionView> with RegionViewModel {
+
+  @override
+  void initState() {
+    if(!control.hasFetched){
+      service.fetch(context).then((value) => setState(() => control.hasFetched = true));
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     final Size _size = MediaQuery.of(context).size;
     final int _gridCount = ((_size.width * .01).ceil() / 4).ceil();
-    if (_currentPage == 0) {
+    if (currentPage == 0) {
       return Stack(
         children: [
           StreamBuilder<List<RegionModel>>(
-              stream: regionViewModel.stream$,
+              stream: control.stream$,
               builder: (context, regionList) {
                 // if(!regionList.hasError && regionList.hasData){
                 return CustomScrollView(
@@ -68,12 +69,12 @@ class _RegionViewState extends State<RegionView> {
                                   itemBuilder: (_) => widget.menuItems),
                               IconButton(
                                   tooltip:
-                                      "${!_isList ? "Vue de liste" : "Vue de la grille"}",
+                                      "${!isList ? "Vue de liste" : "Vue de la grille"}",
                                   icon: Icon(
-                                      !_isList ? Icons.list : Icons.grid_view),
+                                      !isList ? Icons.list : Icons.grid_view),
                                   onPressed: () {
                                     setState(() {
-                                      _isList = !_isList;
+                                      setIsList = !isList;
                                     });
                                   }),
                               if (loggedUser!.roleId == 1) ...{
@@ -88,7 +89,7 @@ class _RegionViewState extends State<RegionView> {
                                           child: Column(
                                             children: [
                                               TextField(
-                                                controller: _name,
+                                                controller: name,
                                                 decoration: InputDecoration(
                                                     border: OutlineInputBorder(
                                                       borderRadius:
@@ -156,19 +157,19 @@ class _RegionViewState extends State<RegionView> {
                                                             const EdgeInsets
                                                                 .all(0),
                                                         onPressed: () {
-                                                          if(_name.text.isNotEmpty){
+                                                          if(name.text.isNotEmpty){
                                                             /// pop alert dialog
                                                             Navigator.of(context)
                                                                 .pop(null);
                                                             setState(() {
-                                                              _isLoading = true;
+                                                              setIsLoading = true;
                                                             });
-                                                            regionService.create(
+                                                            service.create(
                                                                 context, {
-                                                              "name": _name.text
+                                                              "name": name.text
                                                             }).whenComplete(() =>
                                                                 setState(() =>
-                                                                _isLoading =
+                                                                setIsLoading =
                                                                 false));
                                                           }
                                                         },
@@ -214,13 +215,13 @@ class _RegionViewState extends State<RegionView> {
                           ),
                         )
                       } else ...{
-                        if (_isList) ...{
+                        if (isList) ...{
                           SliverList(
                             delegate: SliverChildListDelegate(
                               List.generate(
                                   regionList.data!.length,
                                   (index) => Slidable(
-                                    controller: _slidableController,
+                                    controller: slideController,
                                     key: Key("$index"),
                                     secondaryActions: GeneralTemplate.sliders(onEdit: (){}, onDelete: (){}, showCaption: true),
                                     actionPane: SlidableDrawerActionPane(),
@@ -228,9 +229,8 @@ class _RegionViewState extends State<RegionView> {
                                       padding: const EdgeInsets.symmetric(vertical: 50),
                                       onPressed: () {
                                         setState(() {
-                                          _selectedRegion =
-                                          regionList.data![index];
-                                          _currentPage = 1;
+                                          setRegion = regionList.data![index];
+                                          setPage = 1;
                                         });
                                       },
                                       child: Container(
@@ -253,7 +253,7 @@ class _RegionViewState extends State<RegionView> {
                                 return Padding(
                                   padding: const EdgeInsets.all(20.0),
                                   child: Slidable(
-                                    controller: _slidableController,
+                                    controller: slideController,
                                     actionPane: SlidableDrawerActionPane(),
                                     secondaryActions: GeneralTemplate.sliders(onEdit: (){}, onDelete: (){},showCaption: !(_size.width < 600)),
                                     child: Container(
@@ -263,9 +263,8 @@ class _RegionViewState extends State<RegionView> {
                                         child: MaterialButton(
                                           onPressed: () {
                                             setState(() {
-                                              _selectedRegion =
-                                              regionList.data![index];
-                                              _currentPage = 1;
+                                              setRegion=regionList.data![index];
+                                              setPage = 1;
                                             });
                                           },
                                           child: Center(
@@ -302,7 +301,7 @@ class _RegionViewState extends State<RegionView> {
                   ],
                 );
               }),
-          _isLoading ? GeneralTemplate.loader(_size) : Container()
+          isLoading ? GeneralTemplate.loader(_size) : Container()
         ],
       );
     } else {
@@ -310,18 +309,18 @@ class _RegionViewState extends State<RegionView> {
         width: double.infinity,
         height: _size.height,
         child: CenterView(
-          regionId: _selectedRegion!.id,
+          regionId: selectedRegion!.id,
           onBack: (int value) {
             setState(() {
-              _currentPage = value;
-              _selectedRegion = null;
+              setPage = value;
+              setRegion = null;
             });
           },
           onFilterCallback: (int value) {
             widget.onFilterCallback(value);
           },
           menuItems: List<PopupMenuItem<int>>.from(widget.menuItems),
-          centers: _selectedRegion!.centers,
+          centers: selectedRegion!.centers,
         ),
       );
     }

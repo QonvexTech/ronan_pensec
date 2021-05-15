@@ -2,18 +2,22 @@ import 'dart:io';
 import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/global/auth_endpoint.dart';
 import 'package:ronan_pensec/global/center_endpoint.dart';
+import 'package:ronan_pensec/services/data_controls/center_data_control.dart';
 import 'package:ronan_pensec/services/toast_notifier.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:ronan_pensec/view_model/center_view_model.dart';
 
 class CenterService {
+  late CenterDataControl _centerDataControl;
   CenterService._singleton();
 
   static final CenterService _instance = CenterService._singleton();
   final ToastNotifier _notifier = ToastNotifier.instance;
 
-  static CenterService get instance => _instance;
+  static CenterService instance(CenterDataControl control){
+    _instance._centerDataControl = control;
+    return _instance;
+  }
 
   Future<bool> fetch(context) async {
     try {
@@ -23,7 +27,7 @@ class CenterService {
       }).then((response) {
         var data = json.decode(response.body);
         if (response.statusCode == 200) {
-          centerViewModel.populateAll(data);
+          _centerDataControl.populateAll(data);
           return true;
         } else {
           _notifier.showContextedBottomToast(context,
@@ -50,4 +54,3 @@ class CenterService {
     }
   }
 }
-CenterService centerService = CenterService.instance;

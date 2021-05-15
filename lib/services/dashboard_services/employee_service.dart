@@ -1,19 +1,17 @@
 import 'dart:convert';
 import 'dart:io';
-
-import 'package:flutter/material.dart';
 import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/global/auth_endpoint.dart';
 import 'package:ronan_pensec/global/user_endpoint.dart';
+import 'package:ronan_pensec/services/data_controls/employee_data_control.dart';
 import 'package:ronan_pensec/services/toast_notifier.dart';
-import 'package:ronan_pensec/view_model/employee_view_model.dart';
 import 'package:http/http.dart' as http;
 class EmployeeService {
-  late EmployeeViewModel _model;
+  late EmployeeDataControl _model;
   EmployeeService._privateConstructor();
   static final EmployeeService _instance = EmployeeService._privateConstructor();
   final ToastNotifier _notifier = ToastNotifier.instance;
-  static EmployeeService instance(EmployeeViewModel model){
+  static EmployeeService instance(EmployeeDataControl model){
     _instance._model = model;
     return _instance;
   }

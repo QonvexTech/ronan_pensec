@@ -1,41 +1,30 @@
-import 'package:ronan_pensec/models/center_model.dart';
-import 'package:ronan_pensec/services/http_request.dart';
-import 'package:ronan_pensec/services/toast_notifier.dart';
-import 'package:rxdart/rxdart.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:ronan_pensec/models/region_model.dart';
+import 'package:ronan_pensec/services/dashboard_services/region_service.dart';
+import 'package:ronan_pensec/services/data_controls/region_data_control.dart';
 
 class RegionViewModel {
-  RegionViewModel._internal();
+  final TextEditingController name = new TextEditingController();
+  final SlidableController slideController = new SlidableController();
+  bool _isList = true;
+  int _currentPage = 0;
+  bool _isLoading = false;
+  RegionModel? _selectedRegion;
+  final RegionDataControl control = RegionDataControl.instance;
+  late final RegionService _service = RegionService.instance(control);
 
-  static final RegionViewModel _instance = RegionViewModel._internal();
+  /// GETTERS
+  RegionService get service => _service;
 
-  static RegionViewModel get instance => _instance;
-  BehaviorSubject<List<RegionModel>> _list = BehaviorSubject();
+  bool get isList => _isList;
+  int get currentPage => _currentPage;
+  bool get isLoading => _isLoading;
+  RegionModel? get selectedRegion=> _selectedRegion;
 
-  Stream<List<RegionModel>> get stream$ => _list.stream;
-
-  List<RegionModel> get current => _list.value!;
-
-  populateAll(List data){
-    _list.add(data.map((e) => RegionModel.fromJson(e)).toList());
-  }
-  append(Map<String, dynamic> data){
-    this.current.add(RegionModel.fromJson(data));
-    _list.add(this.current);
-  }
-  remove(int id) {
-    this.current.removeWhere((region) => region.id == id);
-    _list.add(this.current);
-  }
-  newCenter(Map<String, dynamic> center, int regionId){
-    this.current.where((element) {
-      if(element.id == regionId){
-        element.centers!.add(CenterModel.fromJson(center));
-      }
-      return true;
-    });
-    _list.add(this.current);
-  }
+  ///SETTERS
+  set setRegion(RegionModel? model) => _selectedRegion = model;
+  set setIsList(bool list) => _isList = list;
+  set setPage(int i) => _currentPage = i;
+  set setIsLoading(bool l) => _isLoading = l;
 }
-
-RegionViewModel regionViewModel = RegionViewModel.instance;

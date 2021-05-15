@@ -1,20 +1,27 @@
-import 'package:ronan_pensec/models/user_model.dart';
-import 'package:rxdart/rxdart.dart';
+import 'package:ronan_pensec/services/dashboard_services/calendar_service.dart';
+import 'package:ronan_pensec/services/data_controls/calendar_data_control.dart';
+import 'package:ronan_pensec/views/landing_page_screen/web/children/calendar_view_children/calendar_full.dart';
+import 'package:ronan_pensec/views/landing_page_screen/web/children/calendar_view_children/employee_calendar_list.dart';
 
 class CalendarViewModel {
-  CalendarViewModel._singleton();
+  final CalendarDataControl calendarDataControl = CalendarDataControl.instance;
+  late final CalendarService _service =
+      CalendarService.instance(calendarDataControl);
 
-  static final CalendarViewModel _instance = CalendarViewModel._singleton();
+  CalendarService get service => _service;
+  final CalendarFull calendarFull = CalendarFull();
+  final EmployeeCalendarList employeeCalendarList = EmployeeCalendarList();
+  int _currentYear = DateTime.now().year;
+  int _currentMonth = DateTime.now().month;
 
-  static CalendarViewModel get instance => _instance;
-  bool hasFetch = false;
+  int get currentMonth => _currentMonth;
 
-  BehaviorSubject<List<UserModel>> _list = BehaviorSubject();
-  Stream<List<UserModel>> get stream => _list.stream;
-  List<UserModel> get current => _list.value!;
+  int get currentYear => _currentYear;
 
-  populateAll(List data){
-    _list.add(data.map((e) => UserModel.fromJson(parsedJson: e)).toList());
-  }
+  set setMonth(int m) => _currentMonth = m;
+
+  set setYear(int y) => _currentYear = y;
+
+  late int numOfDays =
+      service.daysCounter(currentYear: currentYear, currentMonth: currentMonth);
 }
-CalendarViewModel calendarViewModel = CalendarViewModel.instance;

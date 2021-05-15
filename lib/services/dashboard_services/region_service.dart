@@ -4,38 +4,42 @@ import 'dart:io';
 import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/global/auth_endpoint.dart';
 import 'package:ronan_pensec/global/region_endpoint.dart';
-import 'package:ronan_pensec/services/http_request.dart';
+import 'package:ronan_pensec/services/data_controls/region_data_control.dart';
 import 'package:ronan_pensec/services/toast_notifier.dart';
-import 'package:ronan_pensec/view_model/region_view_model.dart';
-import 'package:rxdart/rxdart.dart';
-import 'package:ronan_pensec/models/region_model.dart';
 import 'package:http/http.dart' as http;
 
 class RegionService {
+  late RegionDataControl _regionDataControl;
   RegionService._internal();
 
   static final RegionService _instance = RegionService._internal();
 
-  static RegionService get instance => _instance;
+  static RegionService instance(RegionDataControl control) {
+    _instance._regionDataControl = control;
+    return _instance;
+  }
   final ToastNotifier _notifier = ToastNotifier.instance;
 
-  Future<void> fetch(context) async {
+  Future<bool> fetch(context) async {
     try {
-      await http.get(Uri.parse("$baseUrl${RegionEndpoint.base}"), headers: {
+      return await http.get(Uri.parse("$baseUrl${RegionEndpoint.base}"), headers: {
         "Accept": "application/json",
         HttpHeaders.authorizationHeader: "Bearer $authToken"
       }).then((response) {
         List data = json.decode(response.body);
         if (response.statusCode == 200) {
-          regionViewModel.populateAll(data);
+          _regionDataControl.populateAll(data);
+          return true;
         }else {
           _notifier.showContextedBottomToast(context,
               msg: "Erreur ${response.statusCode}, ${response.reasonPhrase}");
+          return false;
         }
       });
     } catch (e) {
       print("Erreur : $e");
       _notifier.showContextedBottomToast(context,msg:"Erreur $e");
+      return false;
     }
   }
 
@@ -47,7 +51,7 @@ class RegionService {
       },body: body).then((response) {
         var data = json.decode(response.body);
         if(response.statusCode == 200 || response.statusCode == 201){
-          regionViewModel.append(data);
+          _regionDataControl.append(data);
         }else{
           _notifier.showContextedBottomToast(context, msg: "Erreur ${response.statusCode}, ${response.reasonPhrase}");
         }
@@ -56,8 +60,4 @@ class RegionService {
       _notifier.showContextedBottomToast(context,msg:"Erreur $e");
     }
   }
-
-
 }
-
-RegionService regionService = RegionService.instance;

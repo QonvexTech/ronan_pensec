@@ -4,7 +4,7 @@ import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/global/tabbar_item_class.dart';
 import 'package:ronan_pensec/global/templates/general_template.dart';
 import 'package:ronan_pensec/services/landing_page_service.dart';
-import 'package:ronan_pensec/view_model/helpers/landing_page_main.dart';
+import 'package:ronan_pensec/view_model/landing_page_main.dart';
 import 'package:ronan_pensec/views/landing_page_screen/web/children/calendar.dart';
 import 'package:ronan_pensec/views/landing_page_screen/web/children/employee_view.dart';
 import 'package:ronan_pensec/views/landing_page_screen/web/children/planning.dart';
@@ -165,7 +165,7 @@ class _LandingPageScreenWebState extends State<LandingPageScreenWeb>
                     callback: (value) async {
                       await _service.profileIconOnChoose(context, value);
                     },
-                    imageProvider: userViewModel.imageProvider,
+                    imageProvider: userDataControl.imageProvider,
                   )
                 ],
               ),

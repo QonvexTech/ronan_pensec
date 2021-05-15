@@ -13,17 +13,11 @@ class CalendarFull extends StatefulWidget {
   _CalendarFullState createState() => _CalendarFullState();
 }
 
-class _CalendarFullState extends State<CalendarFull> {
-  int currentYear = DateTime.now().year;
-  int currentMonth = DateTime.now().month;
-  CalendarService _service = CalendarService.instance;
-  late int numOfDays = _service.daysCounter(currentYear: currentYear, currentMonth: currentMonth);
-
+class _CalendarFullState extends State<CalendarFull> with CalendarViewModel{
   @override
   void initState() {
     super.initState();
   }
-
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -48,12 +42,12 @@ class _CalendarFullState extends State<CalendarFull> {
                             onPressed: () {
                               setState(() {
                                 if (currentMonth > 1) {
-                                  currentMonth--;
+                                  setMonth = currentMonth-1;
                                 } else {
-                                  currentYear--;
-                                  currentMonth = 12;
+                                  setYear = currentYear-1;
+                                  setMonth = 12;
                                 }
-                                numOfDays = _service.daysCounter(currentYear: currentYear, currentMonth: currentMonth);
+                                numOfDays = service.daysCounter(currentYear: currentYear, currentMonth: currentMonth);
                               });
                             }),
                         Text(DateFormat.yMMM('fr_FR')
@@ -68,12 +62,12 @@ class _CalendarFullState extends State<CalendarFull> {
                             onPressed: () {
                               setState(() {
                                 if (currentMonth < 12) {
-                                  currentMonth++;
+                                  setMonth = currentMonth+1;
                                 } else {
-                                  currentYear++;
-                                  currentMonth = 1;
+                                  setYear = currentYear+1;
+                                  setMonth = 1;
                                 }
-                                numOfDays = _service.daysCounter(currentYear: currentYear, currentMonth: currentMonth);
+                                numOfDays = service.daysCounter(currentYear: currentYear, currentMonth: currentMonth);
                               });
                             }),
                       ],
@@ -217,7 +211,7 @@ class _CalendarFullState extends State<CalendarFull> {
                                   children: [
                                     Expanded(
                                         child: Container(
-                                      color: _service.isSunday(DateTime(
+                                      color: service.isSunday(DateTime(
                                               currentYear,
                                               currentMonth,
                                               index + 1))
@@ -230,7 +224,7 @@ class _CalendarFullState extends State<CalendarFull> {
                                     )),
                                     Expanded(
                                         child: Container(
-                                      color: _service.isSunday(DateTime(
+                                      color: service.isSunday(DateTime(
                                               currentYear,
                                               currentMonth,
                                               index + 1))
@@ -252,7 +246,7 @@ class _CalendarFullState extends State<CalendarFull> {
                   /// Body
                   Expanded(
                     child: StreamBuilder<List<UserModel>>(
-                        stream: calendarViewModel.stream,
+                        stream: calendarDataControl.stream,
                         builder: (context, snapshot) {
                           if (!snapshot.hasError && snapshot.hasData) {
                             return Scrollbar(
@@ -304,8 +298,8 @@ class _CalendarFullState extends State<CalendarFull> {
                                                                           .data![
                                                                               index]
                                                                           .holidays!) ...{
-                                                                        if (!_service.isSunday(DateTime(currentYear, currentMonth, dayIndex + 1)) &&
-                                                                            _service.isInRange(
+                                                                        if (!service.isSunday(DateTime(currentYear, currentMonth, dayIndex + 1)) &&
+                                                                            service.isInRange(
                                                                                 holiday.startDate,
                                                                                 holiday.endDate,
                                                                                 DateTime(currentYear, currentMonth, dayIndex + 1)) && holiday.status == 1) ...{
@@ -314,15 +308,15 @@ class _CalendarFullState extends State<CalendarFull> {
                                                                                 "${holiday.reason}",
                                                                             child:
                                                                                 Container(
-                                                                              width: _service.isSunday(DateTime(currentYear, currentMonth, dayIndex + 1)) || holiday.isHalfDay == 0
+                                                                              width: service.isSunday(DateTime(currentYear, currentMonth, dayIndex + 1)) || holiday.isHalfDay == 0
                                                                                   ? ((constraint.maxWidth - 150) / numOfDays) < 40
                                                                                       ? 40
                                                                                       : (constraint.maxWidth - 150) / numOfDays
                                                                                   : ((constraint.maxWidth - 150) / numOfDays) < 40
                                                                                       ? 40
                                                                                       : ((constraint.maxWidth - 150) / numOfDays) / 2,
-                                                                              color: !_service.isSunday(DateTime(currentYear, currentMonth, dayIndex + 1))
-                                                                                  ? _service.isInRange(holiday.startDate, holiday.endDate, DateTime(currentYear, currentMonth, dayIndex + 1))
+                                                                              color: !service.isSunday(DateTime(currentYear, currentMonth, dayIndex + 1))
+                                                                                  ? service.isInRange(holiday.startDate, holiday.endDate, DateTime(currentYear, currentMonth, dayIndex + 1))
                                                                                       ? Colors.blue
                                                                                       : Colors.transparent
                                                                                   : Colors.grey.shade400,
@@ -336,15 +330,15 @@ class _CalendarFullState extends State<CalendarFull> {
                                                                           .data![
                                                                               index]
                                                                           .rtts!) ...{
-                                                                        if(rtt.status == 1 && !_service.isSunday(DateTime(currentYear, currentMonth, dayIndex + 1)) && _service.isSameDay(DateTime(currentYear, currentMonth, dayIndex + 1), rtt.date))...{
+                                                                        if(rtt.status == 1 && !service.isSunday(DateTime(currentYear, currentMonth, dayIndex + 1)) && service.isSameDay(DateTime(currentYear, currentMonth, dayIndex + 1), rtt.date))...{
                                                                           Tooltip(
                                                                             message: "${rtt.no_of_hrs} hrs",
                                                                             child: Container(
                                                                               width: ((constraint.maxWidth - 150) / numOfDays) < 40
                                                                                   ? 40
                                                                                   : (constraint.maxWidth - 150) / numOfDays,
-                                                                              color: !_service.isSunday(DateTime(currentYear, currentMonth, dayIndex + 1))
-                                                                                  ? _service.isSameDay(DateTime(currentYear, currentMonth, dayIndex + 1), rtt.date)
+                                                                              color: !service.isSunday(DateTime(currentYear, currentMonth, dayIndex + 1))
+                                                                                  ? service.isSameDay(DateTime(currentYear, currentMonth, dayIndex + 1), rtt.date)
                                                                                   ? Colors.green
                                                                                   : Colors.transparent
                                                                                   : Colors.grey.shade400,
@@ -353,7 +347,7 @@ class _CalendarFullState extends State<CalendarFull> {
                                                                         },
 
                                                                       },
-                                                                      if(_service.isSunday(DateTime(currentYear, currentMonth, dayIndex + 1)))...{
+                                                                      if(service.isSunday(DateTime(currentYear, currentMonth, dayIndex + 1)))...{
                                                                         Container(
                                                                           width: ((constraint.maxWidth - 150) / numOfDays) < 40
                                                                               ? 40

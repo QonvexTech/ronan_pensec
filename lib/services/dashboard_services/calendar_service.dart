@@ -4,13 +4,18 @@ import 'package:intl/intl.dart';
 import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/global/auth_endpoint.dart';
 import 'package:ronan_pensec/global/leave_request_endpoint.dart';
+import 'package:ronan_pensec/services/data_controls/calendar_data_control.dart';
 import 'package:ronan_pensec/services/toast_notifier.dart';
 import 'package:http/http.dart' as http;
-import 'package:ronan_pensec/view_model/calendar_view_model.dart';
 class CalendarService {
+  late CalendarDataControl _calendarDataControl;
   CalendarService._singleton();
   static final CalendarService _instance = CalendarService._singleton();
-  static CalendarService get instance => _instance;
+
+  static CalendarService instance(CalendarDataControl control) {
+    _instance._calendarDataControl = control;
+    return _instance;
+  }
   final ToastNotifier _notifier = ToastNotifier.instance;
 
   bool isSameMonth(DateTime d1, DateTime d2) => d1.year == d2.year && d1.month == d2.month;
@@ -31,9 +36,9 @@ class CalendarService {
         var data = json.decode(response.body);
         if(response.statusCode == 200){
           if(data is List){
-            calendarViewModel.populateAll(data);
+            _calendarDataControl.populateAll(data);
           }else{
-            calendarViewModel.populateAll([data]);
+            _calendarDataControl.populateAll([data]);
           }
           return true;
         }else{

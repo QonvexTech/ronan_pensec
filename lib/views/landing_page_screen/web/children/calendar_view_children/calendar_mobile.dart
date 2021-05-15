@@ -5,7 +5,7 @@ import 'package:ronan_pensec/models/calendar/holiday_model.dart';
 import 'package:ronan_pensec/models/calendar/rtt_model.dart';
 import 'package:ronan_pensec/models/user_model.dart';
 import 'package:flutter/material.dart';
-import 'package:ronan_pensec/services/dashboard_services/calendar_service.dart';
+import 'package:ronan_pensec/view_model/calendar_view_model.dart';
 
 class CalendarMobile extends StatefulWidget {
   final UserModel userData;
@@ -16,37 +16,30 @@ class CalendarMobile extends StatefulWidget {
   _CalendarMobileState createState() => _CalendarMobileState();
 }
 
-class _CalendarMobileState extends State<CalendarMobile> {
+class _CalendarMobileState extends State<CalendarMobile> with CalendarViewModel {
   @override
   void initState() {
     populator();
     super.initState();
   }
 
-  int currentYear = DateTime.now().year;
-  int currentMonth = DateTime.now().month;
-  CalendarService _service = CalendarService.instance;
-  late int numOfDays = _service.daysCounter(
-      currentYear: currentYear, currentMonth: currentMonth);
+  // int currentYear = DateTime.now().year;
+  // int currentMonth = DateTime.now().month;
+  // // CalendarService service = CalendarService.instance;
+  // late int numOfDays = service.daysCounter(
+  //     currentYear: currentYear, currentMonth: currentMonth);
   late List<int> days;
   int noOfWeeks = 5;
   List<List<int?>> _weeksData = [];
   List _week = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
 
-  bool listValuesAreNull(List<int?> _list) {
-    for (int? item in _list) {
-      if (item != null) {
-        return false;
-      }
-    }
-    return true;
-  }
+
 
   populator() {
     setState(() {
       _weeksData.clear();
       days = List.generate(
-          _service.daysCounter(
+          service.daysCounter(
               currentYear: currentYear, currentMonth: currentMonth),
           (index) => index + 1);
       for (var x = 0; x < 6; x++) {
@@ -71,7 +64,7 @@ class _CalendarMobileState extends State<CalendarMobile> {
           }
         }
 
-        if (!listValuesAreNull(_toAdd)) {
+        if (!calendarDataControl.listValuesAreNull(_toAdd)) {
           _weeksData.add(_toAdd);
         }
       }
@@ -113,10 +106,10 @@ class _CalendarMobileState extends State<CalendarMobile> {
                         onPressed: () {
                           setState(() {
                             if (currentMonth > 1) {
-                              currentMonth--;
+                              setMonth = currentMonth-1;
                             } else {
-                              currentYear--;
-                              currentMonth = 12;
+                              setYear = currentYear-1;
+                              setMonth = 12;
                             }
                           });
                           populator();
@@ -131,14 +124,12 @@ class _CalendarMobileState extends State<CalendarMobile> {
                         ),
                         padding: const EdgeInsets.all(0),
                         onPressed: () {
-                          setState(() {
-                            if (currentMonth < 12) {
-                              currentMonth++;
-                            } else {
-                              currentYear++;
-                              currentMonth = 1;
-                            }
-                          });
+                          if (currentMonth < 12) {
+                            setMonth = currentMonth+1;
+                          } else {
+                            setYear = currentYear+1;
+                            setMonth = 1;
+                          }
                           populator();
                         }),
                   ],
@@ -252,18 +243,18 @@ class _CalendarMobileState extends State<CalendarMobile> {
                                 ///Holiday
                                 for (HolidayModel holiday
                                     in widget.userData.holidays!) ...{
-                                  if ((_service.isSameMonth(
+                                  if ((service.isSameMonth(
                                               DateTime(
                                                   currentYear, currentMonth),
                                               holiday.startDate) ||
-                                          _service.isSameMonth(
+                                          service.isSameMonth(
                                               DateTime(
                                                   currentYear, currentMonth),
                                               holiday.endDate)) &&
-                                      !_service.isSunday(DateTime(
+                                      !service.isSunday(DateTime(
                                           currentYear, currentMonth, d ?? 0)) &&
                                       holiday.status == 1 &&
-                                      _service.isInRange(
+                                      service.isInRange(
                                           holiday.startDate,
                                           holiday.endDate,
                                           DateTime(currentYear, currentMonth,
@@ -271,16 +262,16 @@ class _CalendarMobileState extends State<CalendarMobile> {
                                     Tooltip(
                                       message: "${holiday.reason}",
                                       child: Container(
-                                        width: _service.isSunday(DateTime(
+                                        width: service.isSunday(DateTime(
                                                     currentYear,
                                                     currentMonth,
                                                     d!)) ||
                                                 holiday.isHalfDay == 0
                                             ? size.width / 7
                                             : (size.width / 7) / 2,
-                                        color: !_service.isSunday(DateTime(
+                                        color: !service.isSunday(DateTime(
                                                 currentYear, currentMonth, d))
-                                            ? _service.isInRange(
+                                            ? service.isInRange(
                                                     holiday.startDate,
                                                     holiday.endDate,
                                                     DateTime(currentYear,
@@ -295,13 +286,13 @@ class _CalendarMobileState extends State<CalendarMobile> {
 
                                 ///RTT
                                 for (RTTModel rtt in widget.userData.rtts!) ...{
-                                  if (_service.isSameMonth(
+                                  if (service.isSameMonth(
                                           DateTime(currentYear, currentMonth),
                                           rtt.date) &&
                                       rtt.status == 1 &&
-                                      !_service.isSunday(DateTime(
+                                      !service.isSunday(DateTime(
                                           currentYear, currentMonth, d ?? 0)) &&
-                                      _service.isSameDay(
+                                      service.isSameDay(
                                           DateTime(currentYear, currentMonth,
                                               d ?? 0),
                                           rtt.date)) ...{
@@ -309,11 +300,11 @@ class _CalendarMobileState extends State<CalendarMobile> {
                                       message: "${rtt.no_of_hrs} hrs",
                                       child: Container(
                                         width: size.width / 7,
-                                        color: !_service.isSunday(DateTime(
+                                        color: !service.isSunday(DateTime(
                                                 currentYear,
                                                 currentMonth,
                                                 d ?? 0))
-                                            ? _service.isSameDay(
+                                            ? service.isSameDay(
                                                     DateTime(currentYear,
                                                         currentMonth, d ?? 0),
                                                     rtt.date)
@@ -327,7 +318,7 @@ class _CalendarMobileState extends State<CalendarMobile> {
 
                                 /// Day of the month
                                 Container(
-                                  color: _service.isSunday(DateTime(
+                                  color: service.isSunday(DateTime(
                                           currentYear, currentMonth, d ?? 0))
                                       ? Colors.grey.shade300
                                       : Colors.transparent,

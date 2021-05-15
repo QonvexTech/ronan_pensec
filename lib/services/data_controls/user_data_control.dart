@@ -2,10 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/global/auth_endpoint.dart';
 
-class UserViewModel {
-  UserViewModel._private();
-  static final UserViewModel _instance = UserViewModel._private();
-  static UserViewModel get instance => _instance;
+class UserDataControl {
+  UserDataControl._private();
+  static final UserDataControl _instance = UserDataControl._private();
+  static UserDataControl get instance => _instance;
   
   ImageProvider get imageProvider {
     if(loggedUser!.image == null){

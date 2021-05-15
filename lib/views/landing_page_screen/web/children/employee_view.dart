@@ -1,32 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/global/palette.dart';
-import 'package:ronan_pensec/global/templates/employee_template.dart';
 import 'package:ronan_pensec/global/templates/general_template.dart';
 import 'package:ronan_pensec/models/user_model.dart';
-import 'package:ronan_pensec/services/dashboard_services/employee_service.dart';
 import 'package:ronan_pensec/view_model/employee_view_model.dart';
-import 'package:ronan_pensec/view_model/user_view_model.dart';
-import 'package:ronan_pensec/views/landing_page_screen/web/children/calendar_view_children/calendar_full.dart';
 
 class EmployeeView extends StatefulWidget {
   @override
   _EmployeeViewState createState() => _EmployeeViewState();
 }
 
-class _EmployeeViewState extends State<EmployeeView> {
-  final EmployeeTemplate _template = EmployeeTemplate.instance;
-  final EmployeeViewModel _employeeViewModel = EmployeeViewModel.instance;
-  late final EmployeeService _service =
-      EmployeeService.instance(_employeeViewModel);
-  bool _isTable = true;
+class _EmployeeViewState extends State<EmployeeView> with EmployeeViewModel{
+
 
   @override
   void initState() {
-    if (!_employeeViewModel.hasFetched) {
-      _service.fetchAll(context).then(
-          (value) => setState(() => _employeeViewModel.hasFetched = value));
+    if (!employeeDataControl.hasFetched) {
+      service.fetchAll(context).then(
+          (value) => setState(() => employeeDataControl.hasFetched = value));
     }
     super.initState();
   }
@@ -34,8 +25,8 @@ class _EmployeeViewState extends State<EmployeeView> {
   @override
   Widget build(BuildContext context) {
     final Size _size = MediaQuery.of(context).size;
-    if (_size.width < 900 && _isTable) {
-      _isTable = false;
+    if (_size.width < 900 && isTable) {
+      setTable = false;
     }
     return Scaffold(
       body: Container(
@@ -53,16 +44,16 @@ class _EmployeeViewState extends State<EmployeeView> {
                   Spacer(),
                   if (_size.width > 900) ...{
                     IconButton(
-                      tooltip: _isTable ? "Vue de liste" : "Vue de tableau",
+                      tooltip: isTable ? "Vue de liste" : "Vue de tableau",
                       onPressed: () {
                         setState(() {
-                          _isTable = !_isTable;
+                          setTable = !isTable;
                         });
                       },
                       padding: const EdgeInsets.all(0),
                       icon: Center(
                         child: Icon(
-                          _isTable ? Icons.list : Icons.table_chart_rounded,
+                          isTable ? Icons.list : Icons.table_chart_rounded,
                           color: Colors.black,
                         ),
                       ),
@@ -86,15 +77,15 @@ class _EmployeeViewState extends State<EmployeeView> {
             ),
             Expanded(
                 child: StreamBuilder<List<UserModel>>(
-              stream: _employeeViewModel.stream,
+              stream: employeeDataControl.stream,
               builder: (_, userList) => !userList.hasError &&
                       userList.hasData &&
                       userList.data!.length > 0
-                  ? _isTable
+                  ? isTable
                       ? Container(
                           width: double.infinity,
                           child: DataTable(
-                            columns: _template.kDataColumn,
+                            columns: template.kDataColumn,
                             headingRowColor: MaterialStateProperty.resolveWith(
                                 (states) => Palette.textFieldColor),
                             showCheckboxColumn: false,
@@ -102,7 +93,7 @@ class _EmployeeViewState extends State<EmployeeView> {
                                 userList.data!.length,
                                 (index) => DataRow(
                                   color: MaterialStateProperty.resolveWith((states) => index % 2 == 0 ? Palette.gradientColor[0].withOpacity(0.3) : Colors.grey.shade100),
-                                    cells: _template
+                                    cells: template
                                         .kDataCell(userList.data![index]))),
                           ),
                         )
@@ -111,13 +102,13 @@ class _EmployeeViewState extends State<EmployeeView> {
                             userList.data!.length,
                             (index) => MaterialButton(
                               onPressed: () {},
-                              child: _template.kDataList(
+                              child: template.kDataList(
                                   user: userList.data![index]),
                             ),
                           ),
                         )
                   : !userList.hasData
-                      ? GeneralTemplate.tableLoader(_template.kDataColumn.length, _template.kDataColumn, _size.width)
+                      ? GeneralTemplate.tableLoader(template.kDataColumn.length, template.kDataColumn, _size.width)
                       : Center(
                         child: Text(
                             userList.hasError

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:ronan_pensec/models/user_model.dart';
-import 'package:ronan_pensec/view_model/user_view_model.dart';
+import 'package:ronan_pensec/services/data_controls/user_data_control.dart';
 
 class EmployeeTemplate {
   EmployeeTemplate._privateConstructor();
   static final EmployeeTemplate _instance = EmployeeTemplate._privateConstructor();
   static EmployeeTemplate get instance => _instance;
-  final UserViewModel _userViewModel = UserViewModel.instance;
+  final UserDataControl _userViewModel = UserDataControl.instance;
   List<DataColumn> get kDataColumn => [
     DataColumn(
       label: Text(

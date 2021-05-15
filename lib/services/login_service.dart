@@ -15,7 +15,6 @@ import 'dart:convert';
 
 class LoginService {
   LoginService._singleton();
-
   final ToastNotifier _notifier = ToastNotifier.instance;
 
   ToastNotifier get notifier => _notifier;
@@ -46,7 +45,6 @@ class LoginService {
             _credentialsPreferences.saveCredentials(
                 email: email, password: password);
           }
-          await regionService.fetch(context);
           Navigator.pushReplacement(
               context,
               PageTransition(

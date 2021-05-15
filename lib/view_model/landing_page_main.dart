@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/global/tabbar_item_class.dart';
-import 'package:ronan_pensec/view_model/user_view_model.dart';
+import 'package:ronan_pensec/services/data_controls/user_data_control.dart';
 
 class LandingPageMainHelper {
   int currentTabIndex = 0;
-  UserViewModel userViewModel = UserViewModel.instance;
+
+  UserDataControl userDataControl = UserDataControl.instance;
   late List<TabbarItem> tabItems = [
     TabbarItem(
         label: "Planification",
