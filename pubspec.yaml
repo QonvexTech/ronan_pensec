@@ -78,6 +78,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
+    - assets/images/role/
   fonts:
     - family: Noto_Sans
       fonts:

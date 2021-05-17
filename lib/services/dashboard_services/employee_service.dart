@@ -16,22 +16,24 @@ class EmployeeService {
     return _instance;
   }
 
-  Future<bool> fetchAll(context) async {
+  Future fetchAll(context, {required String subDomain}) async {
     try{
-      return await http.get(Uri.parse("$baseUrl${UserEndpoint.viewAllUsers}"), headers: {
+      print("FETCHING $subDomain");
+      return await http.get(Uri.parse("$baseUrl${UserEndpoint.paginated(subDomain)}"), headers: {
         "accept" : "application/json",
         HttpHeaders.authorizationHeader : "Bearer $authToken"
       }).then((res) {
         var data = json.decode(res.body);
-        if(res.statusCode == 200 && data is List){
-          _model.populateAll(data);
-          return true;
+
+        if(res.statusCode == 200){
+          _model.populateAll(data['data']);
+          return data;
         }
-        return false;
+        return null;
       });
     }catch(e){
       _notifier.showContextedBottomToast(context, msg: "Erreur : $e");
-      return false;
+      return null;
     }
   }
 }

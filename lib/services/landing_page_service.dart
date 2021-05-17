@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:ronan_pensec/routes/credential_route.dart';
 import 'package:ronan_pensec/services/credentials_preferences.dart';
 import 'package:ronan_pensec/services/firebase_messaging_service.dart';
 import 'package:ronan_pensec/views/login_view/login_view.dart';
@@ -16,7 +17,7 @@ class LandingPageService {
     }else if(value == 1){
       print("GO TO SETTINGS");
     }else{
-      Navigator.pushReplacement(context, PageTransition(child: LoginView(), type: PageTransitionType.leftToRightWithFade));
+      Navigator.pushReplacement(context, CredentialRoute.login);
       await _credentialsPreferences.removeCredentials;
       await firebaseMessagingService.removeToken;
     }

@@ -1,3 +1,4 @@
+import 'package:ronan_pensec/models/calendar/attendance_model.dart';
 import 'package:ronan_pensec/models/calendar/holiday_model.dart';
 import 'package:ronan_pensec/models/calendar/rtt_model.dart';
 
@@ -18,6 +19,7 @@ class UserModel {
   int? consumableHolidays;
   List<RTTModel>? rtts;
   List<HolidayModel>? holidays;
+  List<AttendanceModel> attendances;
   int isSilentOnPush;
 
   UserModel(
@@ -37,6 +39,7 @@ class UserModel {
       required this.consumableHolidays,
       required this.holidays,
       required this.rtts,
+        required this.attendances,
       required this.isSilentOnPush});
 
   factory UserModel.fromJson({required Map<String, dynamic> parsedJson}) {
@@ -57,15 +60,22 @@ class UserModel {
       rtts: rttToList(parsedJson['rtts']),
       holidays: holidayToList(parsedJson['holidays']),
       full_name: parsedJson['full_name'],
+      attendances: attendanceToList(parsedJson['attendances']),
       isSilentOnPush: int.parse(parsedJson['isSilent_onPush'].toString()),
     );
   }
 
+  static List<AttendanceModel> attendanceToList(List? data) {
+    List<AttendanceModel> _attendance = [];
+    if(data != null){
+      return data.map((e) => AttendanceModel.fromJson(e)).toList();
+    }
+    return _attendance;
+  }
   static List<HolidayModel> holidayToList(List? data) {
     List<HolidayModel> _holidays = [];
     if (data != null) {
       for (var holiday in data) {
-        print(holiday);
         _holidays.add(HolidayModel.fromJson(holiday));
       }
     }

@@ -1,7 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:ronan_pensec/services/dashboard_services/calendar_service.dart';
 import 'package:ronan_pensec/services/data_controls/calendar_data_control.dart';
-import 'package:ronan_pensec/views/landing_page_screen/web/children/calendar_view_children/calendar_full.dart';
-import 'package:ronan_pensec/views/landing_page_screen/web/children/calendar_view_children/employee_calendar_list.dart';
+import 'package:ronan_pensec/views/landing_page_screen/web/children/calendar_planning_view_children/calendar_full.dart';
+import 'package:ronan_pensec/views/landing_page_screen/web/children/calendar_planning_view_children/employee_calendar_list.dart';
 
 class CalendarViewModel {
   final CalendarDataControl calendarDataControl = CalendarDataControl.instance;
@@ -24,4 +25,10 @@ class CalendarViewModel {
 
   late int numOfDays =
       service.daysCounter(currentYear: currentYear, currentMonth: currentMonth);
+
+  TextEditingController searchBy = new TextEditingController();
+  int _viewBy = 0;
+
+  int get type => _viewBy;
+  set setType(int t) => _viewBy = t;
 }

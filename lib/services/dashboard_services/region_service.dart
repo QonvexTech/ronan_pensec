@@ -22,11 +22,15 @@ class RegionService {
 
   Future<bool> fetch(context) async {
     try {
-      return await http.get(Uri.parse("$baseUrl${RegionEndpoint.base}"), headers: {
+      /// Test URL
+      // String url = "http://127.0.0.1:8000/${RegionEndpoint.base}"; // Test
+      /// Live URL
+      String url = "$baseUrl${RegionEndpoint.base}";
+      return await http.get(Uri.parse("$url"), headers: {
         "Accept": "application/json",
         HttpHeaders.authorizationHeader: "Bearer $authToken"
       }).then((response) {
-        List data = json.decode(response.body);
+        var data = json.decode(response.body);
         if (response.statusCode == 200) {
           _regionDataControl.populateAll(data);
           return true;

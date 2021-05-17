@@ -1,29 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:ronan_pensec/view_model/calendar_view_model.dart';
 
 class Calendar extends StatefulWidget {
   @override
   _CalendarState createState() => _CalendarState();
 }
 
-class _CalendarState extends State<Calendar> with CalendarViewModel{
-
-
-  @override
-  void initState() {
-    if (!calendarDataControl.hasFetch) {
-      service
-          .fetchAll(context)
-          .then((value) => setState(() => calendarDataControl.hasFetch = value));
-    }
-    super.initState();
-  }
-
+class _CalendarState extends State<Calendar> {
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (_, constraint) => constraint.maxWidth < 900
-            ? employeeCalendarList
-            : calendarFull);
+    return Scaffold();
   }
 }

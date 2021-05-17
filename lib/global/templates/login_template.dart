@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:ronan_pensec/global/palette.dart';
-import 'package:ronan_pensec/views/login_view/login_view.dart';
-import 'package:ronan_pensec/views/register_view/register_view.dart';
+import 'package:ronan_pensec/routes/credential_route.dart';
 import 'general_template.dart';
 
 class LoginTemplate {
@@ -30,12 +28,6 @@ class LoginTemplate {
                 hintStyle:
                     TextStyle(color: Palette.textFieldColor.withOpacity(0.5))),
           )
-          // Container(
-          //   alignment: Alignment.centerLeft,
-          //   height: 60,
-          //   decoration: GeneralTemplate.kBoxDecoration,
-          //   child: ,
-          // )
         ],
       );
 
@@ -140,14 +132,7 @@ class LoginTemplate {
   static Widget noAccntBtn(context) => TextButton(
         onPressed: () {
           Navigator.push(
-              context,
-              PageTransition(
-                child: RegisterView(),
-                type: PageTransitionType.leftToRightJoined,
-                childCurrent: LoginView(),
-                duration: Duration(milliseconds: 700),
-                reverseDuration: Duration(milliseconds: 700),
-              ));
+              context, CredentialRoute.register);
         },
         child: RichText(
             text: TextSpan(

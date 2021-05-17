@@ -5,6 +5,7 @@ import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/global/auth_endpoint.dart';
 import 'package:ronan_pensec/global/constants.dart';
 import 'package:ronan_pensec/models/user_model.dart';
+import 'package:ronan_pensec/routes/credential_route.dart';
 import 'package:ronan_pensec/services/credentials_preferences.dart';
 import 'package:ronan_pensec/services/dashboard_services/region_service.dart';
 import 'package:ronan_pensec/services/toast_notifier.dart';
@@ -67,7 +68,7 @@ class LoginService {
           _notifier.showContextedBottomToast(context,
               msg: "Error ${respo.statusCode}, ${respo.reasonPhrase}");
         }else{
-          Navigator.pushReplacement(context, PageTransition(child: LoginView(), type: PageTransitionType.fade));
+          Navigator.pushReplacement(context, CredentialRoute.login);
           _credentialsPreferences.removeCredentials;
         }
         return false;
@@ -76,7 +77,7 @@ class LoginService {
       _notifier.showContextedBottomToast(context,
           msg: "An error has occurred, please contact the administrator.");
       if(!showNotif){
-        Navigator.pushReplacement(context, PageTransition(child: LoginView(), type: PageTransitionType.fade));
+        Navigator.pushReplacement(context, CredentialRoute.login);
         _credentialsPreferences.removeCredentials;
       }
       return false;

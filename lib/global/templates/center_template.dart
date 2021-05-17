@@ -68,7 +68,6 @@ class CenterTemplate {
       : ListView.builder(
     itemCount: _list.length,
     shrinkWrap: true,
-    physics: NeverScrollableScrollPhysics(),
     itemBuilder: (_, index) => listData(_list, index, onEdit: onEdit, onDelete: onDelete, controller: controller),
   );
   List<DataColumn> get kDataColumn => [

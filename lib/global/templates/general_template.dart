@@ -47,13 +47,6 @@ class GeneralTemplate {
         offset: Offset(0, 40),
         onSelected: (int value) async {
           callback(value);
-          // if (value == 0) {
-          //   print("GO TO PROFILE");
-          // } else if (value == 1) {
-          //   print("GO TO SETTINGS");
-          // } else {
-          //   ca
-          // }
         },
         icon: Container(
           width: 40,

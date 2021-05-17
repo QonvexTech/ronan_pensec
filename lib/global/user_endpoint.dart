@@ -9,6 +9,9 @@ class UserEndpoint {
   /// Method : GET
   static final String viewAllUsers = "$_baseSubDomain";
 
+  ///Method : GET
+  static String paginated(String sub) => "$_baseSubDomain/$sub";
+
   /// Method : GET
   static final String getMessages = "api/user_messages";
 

@@ -31,4 +31,13 @@ class HolidayModel{
       userId : int.parse(parsedJson['user_id'].toString()),
     );
   }
+  Map<String,dynamic> toJson()=>{
+    'reason' : reason,
+    'start_date' : startDate,
+    'end_date' : endDate,
+    'status' : status,
+    'isHalf_day' : isHalfDay,
+    'user_id' : userId,
+    'comment' : comment,
+  };
 }
