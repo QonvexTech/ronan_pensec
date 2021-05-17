@@ -374,11 +374,13 @@ class _CalendarFullState extends State<CalendarFull>
                                       children: List.generate(
                                         _displayData!.length,
                                         (regionIndex) => Container(
-                                            width: constraint.maxWidth,
+                                            width: double.infinity,
+                                            decoration: BoxDecoration(
+                                              color: Colors.transparent
+                                            ),
                                             child: Column(
                                               children: [
                                                 ///Regions
-                                                if(type == 0)...{
                                                   AnimatedContainer(
                                                     width: double.infinity,
                                                     padding:
@@ -405,8 +407,6 @@ class _CalendarFullState extends State<CalendarFull>
                                                           letterSpacing: 0.5),
                                                     ),
                                                   ),
-                                                },
-                                                if(type <= 1)...{
                                                   ///Center
                                                   for (CenterModel center
                                                   in _displayData![regionIndex]
@@ -440,7 +440,8 @@ class _CalendarFullState extends State<CalendarFull>
                                                           duration: Duration(
                                                               milliseconds: 600),
                                                           decoration: BoxDecoration(
-                                                              border: Border(bottom: BorderSide(color: Colors.black54,width: 0.5), top: BorderSide(color: type <=1 ? Colors.black54 : Colors.transparent,width: 0.5))
+                                                            color: Colors.transparent,
+                                                              // border: Border(bottom: BorderSide(color: Colors.black54,width: 0.5), top: BorderSide(color: type <=1 ? Colors.black54 : Colors.transparent,width: 0.5))
                                                           ),
                                                           child: Row(
                                                             children: [
@@ -547,7 +548,6 @@ class _CalendarFullState extends State<CalendarFull>
                                                         )
                                                       }
                                                   },
-                                                }
                                               ],
                                             )),
                                       )),

@@ -161,10 +161,16 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                   fontWeight: FontWeight.w700
                                 ),),
                               ),
-                              Container(
-                                height: 60,
-                                width: 60,
-                                child: Image.asset("assets/images/role/${widget.employee.roleId}.png"),
+                              Align(
+                                alignment: AlignmentDirectional.centerStart,
+                                child: Tooltip(
+                                  message: widget.employee.roleId == 1 ? "Admin" : widget.employee.roleId == 2 ? "Accountant" : "Employee",
+                                  child: Container(
+                                    height: 60,
+                                    width: 60,
+                                    child: Image.asset("assets/images/role/${widget.employee.roleId}.png"),
+                                  ),
+                                ),
                               )
                             ],
                           ),
