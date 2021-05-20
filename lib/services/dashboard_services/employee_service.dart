@@ -45,9 +45,16 @@ class EmployeeService {
         HttpHeaders.authorizationHeader : "Bearer $authToken"
       }).then((response) {
         var data = json.decode(response.body);
-        return data['data'].map((e) => UserModel.fromJson(parsedJson: e)).toList();
+        List<UserModel> _lst = [];
+        if(response.statusCode == 200 && data['data'] != null){
+          for(var item in data['data']){
+            _lst.add(UserModel.fromJson(parsedJson: item));
+          }
+        }
+        return _lst;
       });
     }catch(e){
+      print(e);
       _notifier.showContextedBottomToast(context, msg: "Erreur : $e");
       return [];
     }
