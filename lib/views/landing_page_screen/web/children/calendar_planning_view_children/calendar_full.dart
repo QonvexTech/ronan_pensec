@@ -376,7 +376,7 @@ class _CalendarFullState extends State<CalendarFull>
                                         (regionIndex) => Container(
                                             width: double.infinity,
                                             decoration: BoxDecoration(
-                                              color: Colors.transparent
+                                              color: Colors.transparent,
                                             ),
                                             child: Column(
                                               children: [

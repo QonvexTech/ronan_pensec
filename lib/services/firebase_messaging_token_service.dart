@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/global/auth_endpoint.dart';
+import 'package:ronan_pensec/global/constants.dart';
+import 'package:ronan_pensec/global/constants.dart';
 
 class FirebaseMessagingTokenService {
   FirebaseMessagingTokenService._singleton();
@@ -22,7 +24,7 @@ class FirebaseMessagingTokenService {
 
   Future<void> add(String token) async {
     try {
-      await http.post(Uri.parse("$baseUrl$_apiAdd"), headers: {
+      await http.post(Uri.parse("${BaseEnpoint.URL}$_apiAdd"), headers: {
         "Accept": "application/json",
         HttpHeaders.authorizationHeader: "Bearer $authToken"
       }, body: {
@@ -36,7 +38,7 @@ class FirebaseMessagingTokenService {
 
   Future<void> remove(String token) async {
     try {
-      await http.post(Uri.parse("$baseUrl$_apiDelete"), headers: {
+      await http.post(Uri.parse("${BaseEnpoint.URL}$_apiDelete"), headers: {
         "Accept": "application/json",
         HttpHeaders.authorizationHeader: "Bearer $authToken"
       }, body: {

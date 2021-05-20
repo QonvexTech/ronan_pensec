@@ -5,6 +5,7 @@ import 'package:ronan_pensec/global/auth_endpoint.dart';
 import 'package:ronan_pensec/global/user_endpoint.dart';
 import 'package:ronan_pensec/services/data_controls/employee_data_control.dart';
 import 'package:ronan_pensec/services/toast_notifier.dart';
+import 'package:ronan_pensec/models/user_model.dart';
 import 'package:http/http.dart' as http;
 class EmployeeService {
   late EmployeeDataControl _model;
@@ -19,7 +20,7 @@ class EmployeeService {
   Future fetchAll(context, {required String subDomain}) async {
     try{
       print("FETCHING $subDomain");
-      return await http.get(Uri.parse("$baseUrl${UserEndpoint.paginated(subDomain)}"), headers: {
+      return await http.get(Uri.parse("${BaseEnpoint.URL}${UserEndpoint.paginated(subDomain)}"), headers: {
         "accept" : "application/json",
         HttpHeaders.authorizationHeader : "Bearer $authToken"
       }).then((res) {
@@ -34,6 +35,21 @@ class EmployeeService {
     }catch(e){
       _notifier.showContextedBottomToast(context, msg: "Erreur : $e");
       return null;
+    }
+  }
+
+  Future<List<UserModel>> getData(context, {required String subDomain}) async {
+    try{
+      return await http.get(Uri.parse("${BaseEnpoint.URL}${UserEndpoint.paginated(subDomain)}"), headers: {
+        "accept" : "application/json",
+        HttpHeaders.authorizationHeader : "Bearer $authToken"
+      }).then((response) {
+        var data = json.decode(response.body);
+        return data['data'].map((e) => UserModel.fromJson(parsedJson: e)).toList();
+      });
+    }catch(e){
+      _notifier.showContextedBottomToast(context, msg: "Erreur : $e");
+      return [];
     }
   }
 }

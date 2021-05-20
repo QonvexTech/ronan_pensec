@@ -4,6 +4,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/global/auth_endpoint.dart';
 import 'package:http/http.dart' as http;
+import 'package:ronan_pensec/global/constants.dart';
 import 'package:ronan_pensec/models/user_model.dart';
 import 'package:ronan_pensec/services/credentials_preferences.dart';
 import 'package:ronan_pensec/services/http_request.dart';
@@ -24,7 +25,7 @@ class RegisterService {
   Future<bool> register(Map body, context) async {
     try {
       return await http
-          .post(Uri.parse("$baseUrl${AuthEndpoint.register}"), headers: _rqst.defaultHeader,body: body)
+          .post(Uri.parse("${BaseEnpoint.URL}${AuthEndpoint.register}"), headers: _rqst.defaultHeader,body: body)
           .then((respo) {
         var data = json.decode(respo.body);
         print(data);

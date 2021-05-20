@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/models/center_model.dart';
+import 'package:ronan_pensec/routes/center_route.dart';
 
 class CenterTemplate {
   CenterTemplate._privateConstructor();
@@ -9,7 +10,7 @@ class CenterTemplate {
   static CenterTemplate get instance => _instance;
 
 
-  Widget listData(List<CenterModel> _list, int index,{required Function onDelete, required Function onEdit, required SlidableController controller}) => Slidable(
+  Widget listData(context,List<CenterModel> _list, int index,{required ValueChanged onDelete, required ValueChanged onEdit, required SlidableController controller}) => Slidable(
     actionPane: SlidableDrawerActionPane(),
     key: Key("$index"),
     controller: controller,
@@ -19,7 +20,7 @@ class CenterTemplate {
         color: Colors.red,
         icon: Icons.delete,
         onTap: () {
-          onDelete();
+          onDelete(index);
         },
       ),
       IconSlideAction(
@@ -27,7 +28,7 @@ class CenterTemplate {
         color: Palette.textFieldColor,
         icon: Icons.edit,
         onTap: () {
-          onEdit();
+          onEdit(index);
         },
       ),
     ],
@@ -36,6 +37,7 @@ class CenterTemplate {
         child: MaterialButton(
           padding: const EdgeInsets.all(20),
           onPressed: () {
+            Navigator.push(context, CenterRoute.details(_list[index]));
             // onPressed(_list[index]);
             // setState(() {
             //   _selectedRegion = regionList.data![index];
@@ -60,15 +62,15 @@ class CenterTemplate {
         )),
   );
 
-  Widget listView(List<CenterModel> _list, bool isSliver,{required Function onDelete, required Function onEdit, required SlidableController controller}) => isSliver
+  Widget listView(context,List<CenterModel> _list, bool isSliver,{required ValueChanged onDelete, required ValueChanged onEdit, required SlidableController controller}) => isSliver
       ? SliverList(
     delegate: SliverChildListDelegate(
-        List.generate(_list.length, (index) => listData(_list, index, onEdit: onEdit, onDelete: onDelete, controller: controller))),
+        List.generate(_list.length, (index) => listData(context,_list, index, onEdit: onEdit, onDelete: onDelete, controller: controller))),
   )
       : ListView.builder(
     itemCount: _list.length,
     shrinkWrap: true,
-    itemBuilder: (_, index) => listData(_list, index, onEdit: onEdit, onDelete: onDelete, controller: controller),
+    itemBuilder: (_, index) => listData(context,_list, index, onEdit: onEdit, onDelete: onDelete, controller: controller),
   );
   List<DataColumn> get kDataColumn => [
     DataColumn(
@@ -117,8 +119,8 @@ class CenterTemplate {
       ),
     ),
   ];
-  Widget tableData(List<CenterModel> _list, int? _selectedIndex,
-      {required ValueChanged<int?> onPressed, required Function onDelete, required Function onEdit}) =>
+  Widget tableData(context,List<CenterModel> _list,
+      {required ValueChanged onDelete, required ValueChanged onEdit}) =>
       Container(
         width: double.infinity,
         child: DataTable(
@@ -133,9 +135,9 @@ class CenterTemplate {
                   (index) => DataRow(
                     color: MaterialStateProperty.resolveWith((states) => index % 2 == 0 ? Palette.gradientColor[0].withOpacity(0.3) : Colors.grey.shade100),
                   onSelectChanged: (data) {
-                    onPressed(_selectedIndex == index ? null : index);
+                    // onPressed(index);
+                    Navigator.push(context, CenterRoute.details(_list[index]));
                   },
-                  selected: _selectedIndex == index,
                   cells: [
                     DataCell(
                       Text("${_list[index].id}"),
@@ -162,13 +164,17 @@ class CenterTemplate {
                                 Icons.edit,
                                 color: Palette.textFieldColor,
                               ),
-                              onPressed: () {}),
+                              onPressed: () {
+                                onEdit(index);
+                              }),
                           IconButton(
                               icon: Icon(
                                 Icons.delete,
                                 color: Colors.red,
                               ),
-                              onPressed: () {}),
+                              onPressed: () {
+                                onDelete(index);
+                              }),
                         ],
                       ),
                     ))

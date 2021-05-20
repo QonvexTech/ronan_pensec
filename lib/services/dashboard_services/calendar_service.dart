@@ -92,7 +92,7 @@ class CalendarService {
       // String url = "http://127.0.0.1:8000/${LeaveRequestEndpoint.getAll}";
 
       ///Live URL
-      String url = "$baseUrl${LeaveRequestEndpoint.getAll}";
+      String url = "${BaseEnpoint.URL}${LeaveRequestEndpoint.getAll}";
       return await http.get(Uri.parse("$url"),headers: {
         "Accept" : "application/json",
         HttpHeaders.authorizationHeader : "Bearer $authToken"

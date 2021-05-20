@@ -73,9 +73,12 @@ class EmployeeTemplate {
       Container(
         width: 40,
         height: 40,
-        child: CircleAvatar(
-          backgroundColor: Colors.transparent,
-          backgroundImage: _userViewModel.imageViewer(imageUrl: user.image),
+        child: Hero(
+          tag: "${user.id}",
+          child: CircleAvatar(
+            backgroundColor: Colors.transparent,
+            backgroundImage: _userViewModel.imageViewer(imageUrl: user.image),
+          ),
         ),
       ),
     ),
@@ -89,9 +92,12 @@ class EmployeeTemplate {
     leading: Container(
       width: 40,
       height: 40,
-      child: CircleAvatar(
-        backgroundColor: Colors.transparent,
-        backgroundImage: _userViewModel.imageViewer(imageUrl: user.image),
+      child: Hero(
+        tag: "${user.id}",
+        child: CircleAvatar(
+          backgroundColor: Colors.transparent,
+          backgroundImage: _userViewModel.imageViewer(imageUrl: user.image),
+        ),
       ),
     ),
   );

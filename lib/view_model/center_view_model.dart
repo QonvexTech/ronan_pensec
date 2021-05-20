@@ -7,7 +7,6 @@ import 'package:ronan_pensec/services/data_controls/center_data_control.dart';
 class CenterViewModel {
   /// 0 => List, 1 => Table
   int _currentView = 1;
-  int? _selectedIndex;
   final CenterDataControl centerDataControl = CenterDataControl.instance;
 
   late CenterService _service = CenterService.instance(centerDataControl);
@@ -23,10 +22,9 @@ class CenterViewModel {
 
   int get currentView => _currentView;
 
-  int? get selectedIndex => _selectedIndex;
+
 
   set setView(int v) => _currentView = v;
 
-  set setIndex(int? i) => _selectedIndex = i;
   CenterService get service => _service;
 }

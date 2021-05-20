@@ -21,7 +21,7 @@ class CenterService {
 
   Future<bool> fetch(context) async {
     try {
-      return await http.get(Uri.parse("$baseUrl${CenterEndpoint.viewAll}"), headers: {
+      return await http.get(Uri.parse("${BaseEnpoint.URL}${CenterEndpoint.viewAll}"), headers: {
         "Accept": "application/json",
         HttpHeaders.authorizationHeader: "Bearer $authToken"
       }).then((response) {
@@ -40,14 +40,29 @@ class CenterService {
       return false;
     }
   }
+  Future delete(context, {required int centerId}) async {
+    try{
+      await http.delete(Uri.parse("${BaseEnpoint.URL}${CenterEndpoint.deleteCenter(centerId: centerId)}"),headers: {
+        "Accept": "application/json",
+        HttpHeaders.authorizationHeader: "Bearer $authToken"
+      }).then((response) {
+        if(response.statusCode == 200){
+          _centerDataControl.remove(centerId);
+        }
+      });
+    }catch(e){
+      _notifier.showContextedBottomToast(context, msg: "Erreur $e");
+    }
+  }
   Future create(context, Map body) async {
     try{
-      await http.post(Uri.parse("$baseUrl${CenterEndpoint.create}"),headers: {
+      await http.post(Uri.parse("${BaseEnpoint.URL}${CenterEndpoint.create}"),headers: {
         "Accept": "application/json",
         HttpHeaders.authorizationHeader: "Bearer $authToken"
       }, body: body).then((response) {
         var data = json.decode(response.body);
         print("Created Center $data");
+        _centerDataControl.append(data);
       });
     }catch(e){
       _notifier.showContextedBottomToast(context, msg: "Erreur $e");

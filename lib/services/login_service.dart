@@ -32,10 +32,11 @@ class LoginService {
       required bool isRemembered,
       bool showNotif = true}) async {
     try {
-      return await http.post(Uri.parse("$baseUrl${AuthEndpoint.login}"),
+      return await http.post(Uri.parse("${BaseEnpoint.URL}${AuthEndpoint.login}"),
           headers: _rqst.defaultHeader,
           body: {"email": email, "password": password}).then((respo) async {
         var data = json.decode(respo.body);
+        print(data);
         if (respo.statusCode == 200 || respo.statusCode == 201) {
           if(showNotif){
             _notifier.showContextedBottomToast(context, msg: "Login Successful");

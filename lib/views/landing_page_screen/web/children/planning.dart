@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ronan_pensec/view_model/region_view_model.dart';
 import 'package:ronan_pensec/views/landing_page_screen/web/children/calendar_planning.dart';
-import 'package:ronan_pensec/views/landing_page_screen/web/children/planning_children/region_view.dart';
+import 'package:ronan_pensec/views/landing_page_screen/web/children/region_view.dart';
 
 class WebPlanning extends StatefulWidget {
   final List<PopupMenuItem<int>> menuItems;

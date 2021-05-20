@@ -22,10 +22,7 @@ class RegionService {
 
   Future<bool> fetch(context) async {
     try {
-      /// Test URL
-      // String url = "http://127.0.0.1:8000/${RegionEndpoint.base}"; // Test
-      /// Live URL
-      String url = "$baseUrl${RegionEndpoint.base}";
+      String url = "${BaseEnpoint.URL}${RegionEndpoint.base}";
       return await http.get(Uri.parse("$url"), headers: {
         "Accept": "application/json",
         HttpHeaders.authorizationHeader: "Bearer $authToken"
@@ -49,7 +46,7 @@ class RegionService {
 
   Future create(context,Map body) async {
     try {
-      await http.post(Uri.parse("$baseUrl${RegionEndpoint.base}"),headers: {
+      await http.post(Uri.parse("${BaseEnpoint.URL}${RegionEndpoint.base}"),headers: {
         "Accept": "application/json",
         HttpHeaders.authorizationHeader: "Bearer $authToken"
       },body: body).then((response) {

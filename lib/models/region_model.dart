@@ -21,9 +21,7 @@ class RegionModel {
   static List<CenterModel> centerToList(List? data) {
     List<CenterModel> _centers = [];
     if(data != null){
-      for(var datum in data){
-        _centers.add(CenterModel.fromJson(datum));
-      }
+      return data.map((e) => CenterModel.fromJson(e)).toList();
     }
     return _centers;
   }

@@ -8,7 +8,7 @@ import 'package:ronan_pensec/view_model/landing_page_main.dart';
 import 'package:ronan_pensec/views/landing_page_screen/web/children/calendar.dart';
 import 'package:ronan_pensec/views/landing_page_screen/web/children/employee_view.dart';
 import 'package:ronan_pensec/views/landing_page_screen/web/children/planning.dart';
-import 'package:ronan_pensec/views/landing_page_screen/web/children/planning_children/center_view.dart';
+import 'package:ronan_pensec/views/landing_page_screen/web/children/center_view.dart';
 
 class LandingPageScreenWeb extends StatefulWidget {
   @override

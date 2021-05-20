@@ -5,7 +5,7 @@ import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/global/templates/general_template.dart';
 import 'package:ronan_pensec/models/region_model.dart';
 import 'package:ronan_pensec/view_model/region_view_model.dart';
-import 'package:ronan_pensec/views/landing_page_screen/web/children/planning_children/center_view.dart';
+import 'package:ronan_pensec/views/landing_page_screen/web/children/center_view.dart';
 
 class RegionView extends StatefulWidget {
   final ValueChanged<int> onFilterCallback;
