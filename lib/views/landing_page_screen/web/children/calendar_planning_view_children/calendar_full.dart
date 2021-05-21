@@ -15,23 +15,23 @@ class CalendarFull extends StatefulWidget {
   _CalendarFullState createState() => _CalendarFullState();
 }
 
-class _CalendarFullState extends State<CalendarFull>
-    with CalendarViewModel, PlanningViewModel {
+class _CalendarFullState extends State<CalendarFull> {
+  final CalendarViewModel _calendarViewModel = CalendarViewModel.instance;
+  final PlanningViewModel _planningViewModel = PlanningViewModel.instance;
   /// 0 = Region
   /// 1 = Center
   /// 2 = Employees
   late List<RegionModel>? _displayData =
-      List<RegionModel>.from(planningControl.current);
+      List<RegionModel>.from(_planningViewModel.planningControl.current);
 
   @override
   void initState() {
     super.initState();
   }
-
   @override
   void dispose() {
     _displayData = null;
-    searchBy.dispose();
+    _calendarViewModel.searchBy.dispose();
     super.dispose();
   }
 
@@ -60,20 +60,20 @@ class _CalendarFullState extends State<CalendarFull>
                             padding: const EdgeInsets.all(0),
                             onPressed: () {
                               setState(() {
-                                if (currentMonth > 1) {
-                                  setMonth = currentMonth - 1;
+                                if (_calendarViewModel.currentMonth > 1) {
+                                  _calendarViewModel.setMonth = _calendarViewModel.currentMonth - 1;
                                 } else {
-                                  setYear = currentYear - 1;
-                                  setMonth = 12;
+                                  _calendarViewModel.setYear = _calendarViewModel.currentYear - 1;
+                                  _calendarViewModel.setMonth = 12;
                                 }
-                                numOfDays = service.daysCounter(
-                                    currentYear: currentYear,
-                                    currentMonth: currentMonth);
+                                _calendarViewModel.numOfDays = _calendarViewModel.service.daysCounter(
+                                    currentYear: _calendarViewModel.currentYear,
+                                    currentMonth: _calendarViewModel.currentMonth);
                               });
                             }),
                         /// Current Month Text
                         Text(DateFormat.yMMM('fr_FR')
-                            .format(DateTime(currentYear, currentMonth, 01))
+                            .format(DateTime(_calendarViewModel.currentYear, _calendarViewModel.currentMonth, 01))
                             .toUpperCase()),
 
                         /// Go to Next month
@@ -85,15 +85,15 @@ class _CalendarFullState extends State<CalendarFull>
                             padding: const EdgeInsets.all(0),
                             onPressed: () {
                               setState(() {
-                                if (currentMonth < 12) {
-                                  setMonth = currentMonth + 1;
+                                if (_calendarViewModel.currentMonth < 12) {
+                                  _calendarViewModel.setMonth = _calendarViewModel.currentMonth + 1;
                                 } else {
-                                  setYear = currentYear + 1;
-                                  setMonth = 1;
+                                  _calendarViewModel.setYear = _calendarViewModel.currentYear + 1;
+                                  _calendarViewModel.setMonth = 1;
                                 }
-                                numOfDays = service.daysCounter(
-                                    currentYear: currentYear,
-                                    currentMonth: currentMonth);
+                                _calendarViewModel.numOfDays = _calendarViewModel.service.daysCounter(
+                                    currentYear: _calendarViewModel.currentYear,
+                                    currentMonth: _calendarViewModel.currentMonth);
                               });
                             }),
                       ],
@@ -127,10 +127,10 @@ class _CalendarFullState extends State<CalendarFull>
                           tooltip: "Filtre",
                           onSelected: (int value){
                             if(this.mounted){
-                              setState(() => setType = value);
+                              setState(() => _calendarViewModel.setType = value);
                             }
                           },
-                          initialValue: type,
+                          initialValue: _calendarViewModel.type,
                         ),
                         Spacer(),
                         Container(
@@ -139,29 +139,29 @@ class _CalendarFullState extends State<CalendarFull>
                               data: ThemeData(
                                   primaryColor: Palette.textFieldColor),
                               child: TextField(
-                                controller: searchBy,
+                                controller: _calendarViewModel.searchBy,
                                 onChanged: (text) {
                                   if(this.mounted){
                                     setState(() {
-                                      if (type == 0) {
+                                      if (_calendarViewModel.type == 0) {
                                         _displayData = List<RegionModel>.from(
-                                            planningControl.current)
+                                            _planningViewModel.planningControl.current)
                                             .where((element) => element.name
                                             .toLowerCase()
                                             .contains(text.toLowerCase()))
                                             .toList();
                                       } else {
-                                        _displayData = service.searchResult(
+                                        _displayData = _calendarViewModel.service.searchResult(
                                             List<RegionModel>.from(
-                                                planningControl.current),
+                                                _planningViewModel.planningControl.current),
                                             text,
-                                            type);
+                                            _calendarViewModel.type);
                                       }
                                     });
                                   }
                                 },
                                 decoration: InputDecoration(
-                                    hintText: "Rechercher ${type == 0 ? "\"Région\"" : type == 1 ? "\"Centre\"" : "\"Employé\""}",
+                                    hintText: "Rechercher ${_calendarViewModel.type == 0 ? "\"Région\"" : _calendarViewModel.type == 1 ? "\"Centre\"" : "\"Employé\""}",
                                     border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(5)),
                                     prefixIcon: Icon(Icons.search)),
@@ -274,13 +274,13 @@ class _CalendarFullState extends State<CalendarFull>
                               scrollDirection: Axis.horizontal,
                               physics: NeverScrollableScrollPhysics(),
                               children: List.generate(
-                                numOfDays,
+                                _calendarViewModel.numOfDays,
                                 (index) => Container(
                                   width: ((constraint.maxWidth - 150) /
-                                              numOfDays) <
+                                      _calendarViewModel.numOfDays) <
                                           40
                                       ? 40
-                                      : (constraint.maxWidth - 150) / numOfDays,
+                                      : (constraint.maxWidth - 150) / _calendarViewModel.numOfDays,
                                   height: 60,
                                   child: Column(
                                     children: [
@@ -290,10 +290,10 @@ class _CalendarFullState extends State<CalendarFull>
                                           color: Palette.gradientColor[0],
                                           child: Center(
                                             child: Text(
-                                              service.topHeaderText(
+                                              _calendarViewModel.service.topHeaderText(
                                                 DateTime(
-                                                  currentYear,
-                                                  currentMonth,
+                                                  _calendarViewModel.currentYear,
+                                                  _calendarViewModel.currentMonth,
                                                   index + 1,
                                                 ),
                                               ),
@@ -311,15 +311,15 @@ class _CalendarFullState extends State<CalendarFull>
                                       Expanded(
                                         child: Container(
                                           decoration: BoxDecoration(
-                                              color: service.isSunday(DateTime(
-                                                      currentYear,
-                                                      currentMonth,
+                                              color: _calendarViewModel.service.isSunday(DateTime(
+                                                  _calendarViewModel.currentYear,
+                                                  _calendarViewModel.currentMonth,
                                                       index + 1))
                                                   ? Colors.grey.shade300
-                                                  : service.isSameDay(
+                                                  : _calendarViewModel.service.isSameDay(
                                                           DateTime(
-                                                              currentYear,
-                                                              currentMonth,
+                                                              _calendarViewModel.currentYear,
+                                                              _calendarViewModel.currentMonth,
                                                               index + 1),
                                                           DateTime.now())
                                                       ? Palette.gradientColor[3]
@@ -333,10 +333,10 @@ class _CalendarFullState extends State<CalendarFull>
                                             child: Text(
                                               (index + 1).toString(),
                                               style: TextStyle(
-                                                  color: service.isSameDay(
+                                                  color: _calendarViewModel.service.isSameDay(
                                                           DateTime(
-                                                              currentYear,
-                                                              currentMonth,
+                                                              _calendarViewModel.currentYear,
+                                                              _calendarViewModel.currentMonth,
                                                               index + 1),
                                                           DateTime.now())
                                                       ? Colors.white
@@ -360,7 +360,7 @@ class _CalendarFullState extends State<CalendarFull>
                   ),
                   Expanded(
                     child: StreamBuilder<List<RegionModel>>(
-                        stream: planningControl.stream$,
+                        stream: _planningViewModel.planningControl.stream$,
                         builder: (_, snapshot) {
                           if (!snapshot.hasError &&
                               snapshot.hasData &&
@@ -386,7 +386,7 @@ class _CalendarFullState extends State<CalendarFull>
                                                     padding:
                                                     const EdgeInsets.symmetric(
                                                         horizontal: 5),
-                                                    height: type == 0 ? 40 : 0,
+                                                    height: _calendarViewModel.type == 0 ? 40 : 0,
                                                     duration:
                                                     Duration(milliseconds: 600),
                                                     alignment: AlignmentDirectional.centerStart,
@@ -415,7 +415,7 @@ class _CalendarFullState extends State<CalendarFull>
                                                       width: double.infinity,
                                                       duration: Duration(
                                                           milliseconds: 600),
-                                                      height: type <= 1 ? 40 : 0,
+                                                      height: _calendarViewModel.type <= 1 ? 40 : 0,
                                                       child: Container(
                                                         width: double.infinity,
                                                         padding: const EdgeInsets
@@ -436,7 +436,7 @@ class _CalendarFullState extends State<CalendarFull>
                                                       in center.users) ...{
                                                         AnimatedContainer(
                                                           width: double.infinity,
-                                                          height: type <= 2 ? 50 : 0,
+                                                          height:_calendarViewModel.type <= 2 ? 50 : 0,
                                                           duration: Duration(
                                                               milliseconds: 600),
                                                           decoration: BoxDecoration(
@@ -464,30 +464,30 @@ class _CalendarFullState extends State<CalendarFull>
                                                                   child: ListView(
                                                                     physics: NeverScrollableScrollPhysics(),
                                                                     scrollDirection: Axis.horizontal,
-                                                                    children: List.generate(numOfDays, (daysIndex) => Container(
+                                                                    children: List.generate(_calendarViewModel.numOfDays, (daysIndex) => Container(
                                                                         width: ((constraint.maxWidth - 150) /
-                                                                            numOfDays) <
+                                                                            _calendarViewModel.numOfDays) <
                                                                             40
                                                                             ? 40
-                                                                            : (constraint.maxWidth - 150) / numOfDays,
+                                                                            : (constraint.maxWidth - 150) / _calendarViewModel.numOfDays,
                                                                         child: Stack(
                                                                           children: [
                                                                             ///Holiday
                                                                             if(user.holidays != null && user.holidays!.length > 0)...{
                                                                               for(HolidayModel holiday in user.holidays!)...{
-                                                                                if(!service.isSunday(DateTime(currentYear, currentMonth, daysIndex + 1)) &&
-                                                                                    service.isInRange(
+                                                                                if(!_calendarViewModel.service.isSunday(DateTime(_calendarViewModel.currentYear, _calendarViewModel.currentMonth, daysIndex + 1)) &&
+                                                                                    _calendarViewModel.service.isInRange(
                                                                                         holiday.startDate,
                                                                                         holiday.endDate,
-                                                                                        DateTime(currentYear, currentMonth, daysIndex + 1)) && holiday.status == 1)...{
+                                                                                        DateTime(_calendarViewModel.currentYear, _calendarViewModel.currentMonth, daysIndex + 1)) && holiday.status == 1)...{
                                                                                   Tooltip(
                                                                                     message: "${holiday.reason}",
                                                                                     child: Container(
                                                                                       width: ((constraint.maxWidth - 150) /
-                                                                                          numOfDays) <
+                                                                                          _calendarViewModel.numOfDays) <
                                                                                           40
                                                                                           ? 40
-                                                                                          : (constraint.maxWidth - 150) / numOfDays,
+                                                                                          : (constraint.maxWidth - 150) / _calendarViewModel.numOfDays,
                                                                                       height: holiday.isHalfDay == 1 ? 25 : 50,
                                                                                       color: Colors.blue,
                                                                                     ),
@@ -500,15 +500,15 @@ class _CalendarFullState extends State<CalendarFull>
                                                                             ///RTT
                                                                             if(user.rtts != null && user.rtts!.length > 0)...{
                                                                               for(RTTModel rtt in user.rtts!)...{
-                                                                                if(rtt.status == 1 && !service.isSunday(DateTime(currentYear, currentMonth, daysIndex + 1)) && service.isSameDay(DateTime(currentYear, currentMonth, daysIndex + 1), rtt.date))...{
+                                                                                if(rtt.status == 1 && !_calendarViewModel.service.isSunday(DateTime(_calendarViewModel.currentYear, _calendarViewModel.currentMonth, daysIndex + 1)) && _calendarViewModel.service.isSameDay(DateTime(_calendarViewModel.currentYear, _calendarViewModel.currentMonth, daysIndex + 1), rtt.date))...{
                                                                                   Tooltip(
                                                                                     message: "${rtt.no_of_hrs} hrs.",
                                                                                     child: Container(
                                                                                       width: ((constraint.maxWidth - 150) /
-                                                                                          numOfDays) <
+                                                                                          _calendarViewModel.numOfDays) <
                                                                                           40
                                                                                           ? 40
-                                                                                          : (constraint.maxWidth - 150) / numOfDays,
+                                                                                          : (constraint.maxWidth - 150) / _calendarViewModel.numOfDays,
                                                                                       color: Colors.green,
                                                                                     ),
                                                                                   )
@@ -518,22 +518,22 @@ class _CalendarFullState extends State<CalendarFull>
                                                                             /// Absences & Late
                                                                             if(user.attendances.length > 0)...{
                                                                               for(AttendanceModel attendance in user.attendances)...{
-                                                                                if(service.isSameDay(DateTime(currentYear, currentMonth, daysIndex + 1), attendance.date))...{
+                                                                                if(_calendarViewModel.service.isSameDay(DateTime(_calendarViewModel.currentYear, _calendarViewModel.currentMonth, daysIndex + 1), attendance.date))...{
                                                                                   Tooltip(
                                                                                     message: attendance.status == 1 ? "En retard" : "Absent",
                                                                                     child: Container(
                                                                                       width: ((constraint.maxWidth - 150) /
-                                                                                          numOfDays) <
+                                                                                          _calendarViewModel.numOfDays) <
                                                                                           40
                                                                                           ? 40
-                                                                                          : (constraint.maxWidth - 150) / numOfDays,
+                                                                                          : (constraint.maxWidth - 150) / _calendarViewModel.numOfDays,
                                                                                       color: attendance.status == 1 ? Colors.grey.shade800 : Colors.red,
                                                                                     ),
                                                                                   )
                                                                                 }
                                                                               }
                                                                             },
-                                                                            if(service.isSunday(DateTime(currentYear, currentMonth, daysIndex+1)))...{
+                                                                            if(_calendarViewModel.service.isSunday(DateTime(_calendarViewModel.currentYear, _calendarViewModel.currentMonth, daysIndex+1)))...{
                                                                               Container(
                                                                                   color: Colors.grey.shade300
                                                                               )

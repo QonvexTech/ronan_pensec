@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/global/auth_endpoint.dart';
 import 'package:ronan_pensec/global/region_endpoint.dart';
@@ -11,6 +10,7 @@ import 'package:http/http.dart' as http;
 class RegionService {
   late RegionDataControl _regionDataControl;
   RegionService._internal();
+  static final Auth _auth = Auth.instance;
 
   static final RegionService _instance = RegionService._internal();
 
@@ -18,14 +18,14 @@ class RegionService {
     _instance._regionDataControl = control;
     return _instance;
   }
-  final ToastNotifier _notifier = ToastNotifier.instance;
+  late final ToastNotifier _notifier= ToastNotifier.instance;
 
   Future<bool> fetch(context) async {
     try {
       String url = "${BaseEnpoint.URL}${RegionEndpoint.base}";
       return await http.get(Uri.parse("$url"), headers: {
         "Accept": "application/json",
-        HttpHeaders.authorizationHeader: "Bearer $authToken"
+        HttpHeaders.authorizationHeader: "Bearer ${_auth.token}"
       }).then((response) {
         var data = json.decode(response.body);
         if (response.statusCode == 200) {
@@ -48,13 +48,13 @@ class RegionService {
     try {
       await http.post(Uri.parse("${BaseEnpoint.URL}${RegionEndpoint.base}"),headers: {
         "Accept": "application/json",
-        HttpHeaders.authorizationHeader: "Bearer $authToken"
+        HttpHeaders.authorizationHeader: "Bearer ${_auth.token}"
       },body: body).then((response) {
         var data = json.decode(response.body);
         if(response.statusCode == 200 || response.statusCode == 201){
           _regionDataControl.append(data);
         }else{
-          _notifier.showContextedBottomToast(context, msg: "Erreur ${response.statusCode}, ${response.reasonPhrase}");
+          _notifier.showContextedBottomToast(context,msg: "Erreur ${response.statusCode}, ${response.reasonPhrase}");
         }
       });
     } catch (e) {

@@ -1,5 +1,4 @@
 import 'package:intl/intl.dart';
-import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/models/calendar/holiday_model.dart';
 import 'package:ronan_pensec/models/calendar/rtt_model.dart';
@@ -16,7 +15,9 @@ class CalendarMobile extends StatefulWidget {
   _CalendarMobileState createState() => _CalendarMobileState();
 }
 
-class _CalendarMobileState extends State<CalendarMobile> with CalendarViewModel {
+class _CalendarMobileState extends State<CalendarMobile> {
+  final CalendarViewModel _calendarViewModel = CalendarViewModel.instance;
+
   @override
   void initState() {
     populator();
@@ -39,14 +40,14 @@ class _CalendarMobileState extends State<CalendarMobile> with CalendarViewModel 
     setState(() {
       _weeksData.clear();
       days = List.generate(
-          service.daysCounter(
-              currentYear: currentYear, currentMonth: currentMonth),
+          _calendarViewModel.service.daysCounter(
+              currentYear: _calendarViewModel.currentYear, currentMonth: _calendarViewModel.currentMonth),
           (index) => index + 1);
       for (var x = 0; x < 6; x++) {
         List<int?> _toAdd = [];
         for (var i = 0; i < 7; i++) {
           if (x == 0) {
-            if (DateTime(currentYear, currentMonth, days[0]).weekday == i) {
+            if (DateTime(_calendarViewModel.currentYear, _calendarViewModel.currentMonth, days[0]).weekday == i) {
               // _toAdd[i] = days[0];
               _toAdd.add(days[0]);
               days.removeAt(0);
@@ -64,7 +65,7 @@ class _CalendarMobileState extends State<CalendarMobile> with CalendarViewModel 
           }
         }
 
-        if (!calendarDataControl.listValuesAreNull(_toAdd)) {
+        if (!_calendarViewModel.calendarDataControl.listValuesAreNull(_toAdd)) {
           _weeksData.add(_toAdd);
         }
       }
@@ -105,17 +106,17 @@ class _CalendarMobileState extends State<CalendarMobile> with CalendarViewModel 
                         padding: const EdgeInsets.all(0),
                         onPressed: () {
                           setState(() {
-                            if (currentMonth > 1) {
-                              setMonth = currentMonth-1;
+                            if (_calendarViewModel.currentMonth > 1) {
+                              _calendarViewModel.setMonth = _calendarViewModel.currentMonth-1;
                             } else {
-                              setYear = currentYear-1;
-                              setMonth = 12;
+                              _calendarViewModel.setYear = _calendarViewModel.currentYear-1;
+                              _calendarViewModel.setMonth = 12;
                             }
                           });
                           populator();
                         }),
                     Text(DateFormat.yMMM('fr_FR')
-                        .format(DateTime(currentYear, currentMonth, 01))
+                        .format(DateTime(_calendarViewModel.currentYear, _calendarViewModel.currentMonth, 01))
                         .toUpperCase()),
                     IconButton(
                         icon: Icon(
@@ -124,11 +125,11 @@ class _CalendarMobileState extends State<CalendarMobile> with CalendarViewModel 
                         ),
                         padding: const EdgeInsets.all(0),
                         onPressed: () {
-                          if (currentMonth < 12) {
-                            setMonth = currentMonth+1;
+                          if (_calendarViewModel.currentMonth < 12) {
+                            _calendarViewModel.setMonth = _calendarViewModel.currentMonth+1;
                           } else {
-                            setYear = currentYear+1;
-                            setMonth = 1;
+                            _calendarViewModel.setYear = _calendarViewModel.currentYear+1;
+                            _calendarViewModel.setMonth = 1;
                           }
                           populator();
                         }),
@@ -143,7 +144,7 @@ class _CalendarMobileState extends State<CalendarMobile> with CalendarViewModel 
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 child: Row(
                   children: [
-                    if (loggedUser!.roleId == 3) ...{
+                    if (_calendarViewModel.auth.loggedUser!.roleId == 3) ...{
                       Container(
                         width: 120,
                         child: MaterialButton(

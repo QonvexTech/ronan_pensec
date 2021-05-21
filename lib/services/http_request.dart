@@ -15,17 +15,17 @@ class HttpRequest {
 
   /// instance of Dio
   final Dio request = new Dio();
-
+  static final Auth _auth = Auth.instance;
   /// static options header for normal http request
   final Options options = Options(headers: {"Accept": "application/json"});
   final Map<String, String>? defaultHeader = {"Accept": "application/json"};
   final Map<String, String>? headerWithToken = {
-    HttpHeaders.authorizationHeader: "Bearer $authToken",
+    HttpHeaders.authorizationHeader: "Bearer ${_auth.token}",
     "Accept": "application/json"
   };
   /// static options header for http request with access token
   final Options optionsWithToken = Options(headers: {
-    HttpHeaders.authorizationHeader: "Bearer $authToken",
+    HttpHeaders.authorizationHeader: "Bearer ${_auth.token}",
     "Accept": "application/json"
   });
 

@@ -9,21 +9,28 @@ import 'package:ronan_pensec/services/data_controls/center_data_control.dart';
 import 'package:ronan_pensec/services/data_controls/user_data_control.dart';
 
 class CenterViewWidgetHelper {
-  final CenterDataControl _control = CenterDataControl.instance;
-  late final CenterService _service = CenterService.instance(_control);
+  static final CenterDataControl _control = CenterDataControl.instance;
+  final CenterService _service = CenterService.instance(_control);
   UserDataControl _userController = UserDataControl.instance;
+
+  UserDataControl get userController => _userController;
+
+  CenterService get service => _service;
 
   CenterViewWidgetHelper._singleton();
 
   static final CenterViewWidgetHelper _instance =
       CenterViewWidgetHelper._singleton();
 
-  static CenterViewWidgetHelper get instance => _instance;
+  static CenterViewWidgetHelper get instance{
+    return _instance;
+  }
   TextEditingController _name = new TextEditingController();
   TextEditingController _address = new TextEditingController();
   TextEditingController _number = new TextEditingController();
   TextEditingController _email = new TextEditingController();
   final Duration duration = new Duration(milliseconds: 700);
+  static final Auth _auth = Auth.instance;
 
   void showEditDialog(context,
       {required CenterModel center,
@@ -261,13 +268,47 @@ class CenterViewWidgetHelper {
         ));
   }
 
-  List<Widget> children(
+  Container addressText(String address) => Container(
+        width: double.infinity,
+        height: 50,
+        margin: const EdgeInsets.symmetric(vertical: 5),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Row(
+          children: [
+            Icon(Icons.location_city_rounded),
+            const SizedBox(
+              width: 10,
+            ),
+            Expanded(child: Text(address))
+          ],
+        ),
+      );
+
+  Container mobileText(String mobile) => Container(
+        width: double.infinity,
+        margin: const EdgeInsets.symmetric(vertical: 5),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Row(
+          children: [
+            Icon(Icons.phone_android_rounded),
+            const SizedBox(
+              width: 10,
+            ),
+            Expanded(child: Text(mobile))
+          ],
+        ),
+      );
+
+  List<Widget> children(context,
       {UserModel? selectedUser,
       bool isRow = true,
       required Size size,
       required List<UserModel> assignedUsers,
       List<UserModel>? displayData,
-      required ValueChanged<UserModel?> callback}) {
+      required ValueChanged<int> assignUserCallback,
+      required ValueChanged<UserModel?> callback,
+      required int centerId,
+      required ValueChanged<List<UserModel>> removeAssignCallback}) {
     return [
       AnimatedContainer(
         duration: duration - Duration(milliseconds: 400),
@@ -305,7 +346,36 @@ class CenterViewWidgetHelper {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  Spacer()
+                  Container(
+                    child: Text(
+                      "${selectedUser.email}",
+                      style: TextStyle(
+                          color: Colors.black54,
+                          fontWeight: FontWeight.w400,
+                          fontStyle: FontStyle.italic,
+                          fontSize: 14),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  this.addressText(selectedUser.address),
+                  this.mobileText(selectedUser.mobile),
+                  Spacer(),
+                  MaterialButton(
+                    height: 50,
+                    onPressed: () {
+                      assignUserCallback(selectedUser.id);
+                    },
+                    color: Palette.gradientColor[0],
+                    child: Center(
+                      child: Text(
+                        "Assign".toUpperCase(),
+                        style: TextStyle(
+                            color: Colors.white,
+                            letterSpacing: 1,
+                            fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  )
                 ],
               ),
       ),
@@ -324,24 +394,29 @@ class CenterViewWidgetHelper {
                     ]),
                 child: Column(
                   children: [
-                    this.viewHeaderDetail(),
+                    this.viewHeaderDetail(top: true, isAll: false),
                     Expanded(
                       child: assignedUsers.length > 0
                           ? ListView(
                               children: List.generate(
-                                  assignedUsers.length,
-                                  (index) => this
-                                      .viewBodyDetail(assignedUsers[index])),
+                                assignedUsers.length,
+                                (index) => this.viewBodyDetail(context,
+                                    assignedUsers[index], false, false,
+                                    source: assignedUsers, onRemoveCallback:
+                                        (List<UserModel> removed) {
+                                  removeAssignCallback(removed);
+                                }, centerId: centerId),
+                              ),
                             )
                           : Center(
-                              child: Text("No data found"),
+                              child: Text("Aucun employé trouvé"),
                             ),
                     )
                   ],
                 ),
               ),
             ),
-            if (loggedUser!.roleId == 1) ...{
+            if (_auth.loggedUser!.roleId == 1) ...{
               const SizedBox(
                 height: 10,
               ),
@@ -365,7 +440,7 @@ class CenterViewWidgetHelper {
                           children: [
                             Container(
                               child: Text(
-                                "List of all employees",
+                                "Liste de tous les employés",
                                 style: TextStyle(
                                     color: Colors.white,
                                     letterSpacing: 1,
@@ -414,26 +489,45 @@ class CenterViewWidgetHelper {
                       ),
                       this.viewHeaderDetail(bottom: true),
                       Expanded(
-                        child: displayData == null ? Center(
-                          child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(Palette.gradientColor[0]),
-                          ),
-                        ) : displayData.length == 0 ? Center(
-                          child: Text("NO DATA FOUND")
-                        ) : ListView(
-                          children: List.generate(
-                            displayData.length,
-                            (index) => MaterialButton(
-                              onPressed: () {
-                                callback(
-                                    selectedUser?.id != displayData[index].id
-                                        ? displayData[index]
-                                        : null);
-                              },
-                              child: this.viewBodyDetail(displayData[index]),
-                            ),
-                          ),
-                        ),
+                        child: displayData == null
+                            ? Center(
+                                child: CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      Palette.gradientColor[0]),
+                                ),
+                              )
+                            : displayData.length == 0
+                                ? Center(
+                                    child: Text("AUCUNE DONNÉE DISPONIBLE"))
+                                : ListView(
+                                    children: List.generate(
+                                      displayData.length,
+                                      (index) => MaterialButton(
+                                        onPressed: service.userIsAssigned(
+                                                sauce: assignedUsers,
+                                                id: displayData[index].id)
+                                            ? null
+                                            : () {
+                                                callback(selectedUser?.id !=
+                                                        displayData[index].id
+                                                    ? displayData[index]
+                                                    : null);
+                                              },
+                                        child: this.viewBodyDetail(context,
+                                            displayData[index],
+                                            service.userIsAssigned(
+                                                sauce: assignedUsers,
+                                                id: displayData[index].id),
+                                            true,
+                                            centerId: centerId,
+                                            source: assignedUsers,
+                                            onRemoveCallback:
+                                                (List<UserModel> removed) {
+                                          removeAssignCallback(removed);
+                                        }),
+                                      ),
+                                    ),
+                                  ),
                       )
                     ],
                   ),
@@ -446,7 +540,11 @@ class CenterViewWidgetHelper {
     ];
   }
 
-  Widget viewBodyDetail(UserModel user) => Container(
+  Widget viewBodyDetail(context,UserModel user, bool isAssigned, bool isAll,
+          {required ValueChanged<List<UserModel>> onRemoveCallback,
+          required List<UserModel> source,
+          required int centerId}) =>
+      Container(
         width: double.infinity,
         height: 50,
         child: Row(
@@ -455,39 +553,68 @@ class CenterViewWidgetHelper {
               flex: 1,
               child: Text(
                 "${user.id}",
-                style: TextStyle(color: Colors.black54),
+                style: TextStyle(
+                    color: isAssigned ? Colors.green : Colors.black54),
                 textAlign: TextAlign.center,
               ),
             ),
             Expanded(
               flex: 2,
               child: Text("${user.first_name}",
-                  style: TextStyle(color: Colors.black54),
+                  style: TextStyle(
+                      color: isAssigned ? Colors.green : Colors.black54),
                   textAlign: TextAlign.center),
             ),
             Expanded(
               flex: 2,
               child: Text("${user.last_name}",
-                  style: TextStyle(color: Colors.black54),
+                  style: TextStyle(
+                      color: isAssigned ? Colors.green : Colors.black54),
                   textAlign: TextAlign.center),
             ),
             Expanded(
               flex: 3,
               child: Text("${user.address}",
-                  style: TextStyle(color: Colors.black54),
+                  style: TextStyle(
+                      color: isAssigned ? Colors.green : Colors.black54),
                   textAlign: TextAlign.center),
             ),
             Expanded(
               flex: 2,
               child: Text("${user.mobile}",
-                  style: TextStyle(color: Colors.black54),
+                  style: TextStyle(
+                      color: isAssigned ? Colors.green : Colors.black54),
                   textAlign: TextAlign.center),
-            )
+            ),
+            if (!isAll && _auth.loggedUser!.roleId == 1) ...{
+              Expanded(
+                flex: 1,
+                child: IconButton(
+                  onPressed: () async {
+                    await service
+                        .removeAssignment(context,userId: user.id, centerId: centerId)
+                        .then((value) {
+                      if (value) {
+                        onRemoveCallback(_control.removeLocal(source, user.id));
+                      } else {
+                        onRemoveCallback(source);
+                      }
+                    });
+                  },
+                  icon: Icon(
+                    Icons.clear,
+                    color: Colors.red,
+                  ),
+                ),
+              )
+            },
           ],
         ),
       );
 
-  Widget viewHeaderDetail({bool bottom = false}) => Container(
+  Widget viewHeaderDetail(
+          {bool bottom = false, bool isAll = true, bool top = true}) =>
+      Container(
         width: double.infinity,
         height: 50,
         decoration: BoxDecoration(
@@ -525,10 +652,18 @@ class CenterViewWidgetHelper {
             ),
             Expanded(
               flex: 2,
-              child: Text("Phone",
+              child: Text("Numéro de téléphone",
                   style: TextStyle(color: Colors.white),
                   textAlign: TextAlign.center),
-            )
+            ),
+            if (!isAll && top && _auth.loggedUser!.roleId == 1) ...{
+              Expanded(
+                flex: 1,
+                child: Text("Action",
+                    style: TextStyle(color: Colors.white),
+                    textAlign: TextAlign.center),
+              )
+            }
           ],
         ),
       );

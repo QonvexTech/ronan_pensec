@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ronan_pensec/global/palette.dart';
+import 'package:ronan_pensec/global/templates/general_template.dart';
 import 'package:ronan_pensec/global/templates/register_template.dart';
 import 'package:ronan_pensec/services/data_validator.dart';
 import 'package:ronan_pensec/services/register_service.dart';
@@ -210,7 +211,8 @@ class _RegisterViewMobileState extends State<RegisterViewMobile> {
                     ),
                   ],
                 ),
-              )
+              ),
+              _isLoading ? GeneralTemplate.loader(size) : Container()
             ],
           ),
         ),

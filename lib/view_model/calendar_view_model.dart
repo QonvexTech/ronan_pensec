@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/services/dashboard_services/calendar_service.dart';
 import 'package:ronan_pensec/services/data_controls/calendar_data_control.dart';
 import 'package:ronan_pensec/views/landing_page_screen/web/children/calendar_planning_view_children/calendar_full.dart';
 import 'package:ronan_pensec/views/landing_page_screen/web/children/calendar_planning_view_children/employee_calendar_list.dart';
 
 class CalendarViewModel {
-  final CalendarDataControl calendarDataControl = CalendarDataControl.instance;
-  late final CalendarService _service =
-      CalendarService.instance(calendarDataControl);
+  CalendarViewModel._singleton();
+  static final CalendarViewModel _instance = CalendarViewModel._singleton();
+  static CalendarViewModel get instance {
+    return _instance;
+  }
+  static final CalendarDataControl _calendarDataControl = CalendarDataControl.instance;
+  CalendarDataControl get calendarDataControl => _calendarDataControl;
+  final CalendarService _service = CalendarService.instance(_calendarDataControl);
 
+  static final Auth _auth = Auth.instance;
+  Auth get auth => _auth;
   CalendarService get service => _service;
   final CalendarFull calendarFull = CalendarFull();
   final EmployeeCalendarList employeeCalendarList = EmployeeCalendarList();

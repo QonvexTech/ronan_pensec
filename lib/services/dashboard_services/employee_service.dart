@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/global/auth_endpoint.dart';
 import 'package:ronan_pensec/global/user_endpoint.dart';
@@ -11,8 +12,9 @@ class EmployeeService {
   late EmployeeDataControl _model;
   EmployeeService._privateConstructor();
   static final EmployeeService _instance = EmployeeService._privateConstructor();
-  final ToastNotifier _notifier = ToastNotifier.instance;
-  static EmployeeService instance(EmployeeDataControl model){
+  late final ToastNotifier _notifier= ToastNotifier.instance;
+  static final Auth _auth = Auth.instance;
+  static EmployeeService instance(EmployeeDataControl model, BuildContext context){
     _instance._model = model;
     return _instance;
   }
@@ -22,7 +24,7 @@ class EmployeeService {
       print("FETCHING $subDomain");
       return await http.get(Uri.parse("${BaseEnpoint.URL}${UserEndpoint.paginated(subDomain)}"), headers: {
         "accept" : "application/json",
-        HttpHeaders.authorizationHeader : "Bearer $authToken"
+        HttpHeaders.authorizationHeader : "Bearer ${_auth.token}"
       }).then((res) {
         var data = json.decode(res.body);
 
@@ -33,7 +35,7 @@ class EmployeeService {
         return null;
       });
     }catch(e){
-      _notifier.showContextedBottomToast(context, msg: "Erreur : $e");
+      _notifier.showContextedBottomToast(context,msg: "Erreur : $e");
       return null;
     }
   }
@@ -42,7 +44,7 @@ class EmployeeService {
     try{
       return await http.get(Uri.parse("${BaseEnpoint.URL}${UserEndpoint.paginated(subDomain)}"), headers: {
         "accept" : "application/json",
-        HttpHeaders.authorizationHeader : "Bearer $authToken"
+        HttpHeaders.authorizationHeader : "Bearer ${_auth.token}"
       }).then((response) {
         var data = json.decode(response.body);
         List<UserModel> _lst = [];
@@ -55,7 +57,7 @@ class EmployeeService {
       });
     }catch(e){
       print(e);
-      _notifier.showContextedBottomToast(context, msg: "Erreur : $e");
+      _notifier.showContextedBottomToast(context,msg: "Erreur : $e");
       return [];
     }
   }

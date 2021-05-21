@@ -11,14 +11,15 @@ class EmployeeCalendarList extends StatefulWidget {
   _EmployeeCalendarListState createState() => _EmployeeCalendarListState();
 }
 
-class _EmployeeCalendarListState extends State<EmployeeCalendarList> with CalendarViewModel {
+class _EmployeeCalendarListState extends State<EmployeeCalendarList> {
+  final CalendarViewModel _calendarViewModel = CalendarViewModel.instance;
   final UserDataControl _userDataControl = UserDataControl.instance;
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     return Scaffold(
       body: StreamBuilder<List<UserModel>>(
-        stream: calendarDataControl.stream,
+        stream: _calendarViewModel.calendarDataControl.stream,
         builder: (_, calendarData) => !calendarData.hasError &&
                 calendarData.hasData &&
                 calendarData.data!.length > 0

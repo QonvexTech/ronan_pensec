@@ -19,9 +19,9 @@ class RegisterService {
 
   static final RegisterService _instance = RegisterService._singleton();
   final HttpRequest _rqst = HttpRequest.instance;
-  final CredentialsPreferences _credentialsPreferences = CredentialsPreferences.instance;
+  late final CredentialsPreferences _credentialsPreferences = CredentialsPreferences.instance;
   static RegisterService get instance => _instance;
-
+  static final Auth _auth = Auth.instance;
   Future<bool> register(Map body, context) async {
     try {
       return await http
@@ -32,14 +32,14 @@ class RegisterService {
         if (respo.statusCode == 200 || respo.statusCode == 201) {
           _notifier.showContextedBottomToast(context,
               msg: "Registration Successful");
-          authToken = data['access_token'];
-          loggedUser = UserModel.fromJson(parsedJson: data['user']);
+          _auth.setToken = data['access_token'];
+          _auth.setUser = UserModel.fromJson(parsedJson: data['user']);
           _credentialsPreferences.saveCredentials(email: body['email'], password: body['password']);
           Navigator.pushReplacement(context, PageTransition(child: LandingPageScreen(), type: PageTransitionType.topToBottom));
           return true;
         }
         if(data['errors'] != null){
-          _notifier.showContextedBottomToast(context, msg: "Showing ${data['errors'].length} error(s), ${data['errors']}");
+          _notifier.showContextedBottomToast(context,msg: "Showing ${data['errors'].length} error(s), ${data['errors']}");
           return false;
         }
         _notifier.showContextedBottomToast(context, msg: "Error ${respo.statusCode}, ${respo.reasonPhrase}");

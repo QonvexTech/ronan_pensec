@@ -6,12 +6,12 @@ class UserDataControl {
   UserDataControl._private();
   static final UserDataControl _instance = UserDataControl._private();
   static UserDataControl get instance => _instance;
-  
+  static final Auth _auth = Auth.instance;
   ImageProvider get imageProvider {
-    if(loggedUser!.image == null){
+    if(_auth.loggedUser!.image == null){
       return AssetImage("assets/images/icon.png");
     }
-    return NetworkImage("${loggedUser!.image}");
+    return NetworkImage("${_auth.loggedUser!.image}");
   }
   ImageProvider imageViewer({required String? imageUrl}) {
     if(imageUrl == null){

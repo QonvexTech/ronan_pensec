@@ -9,6 +9,7 @@ class FirebaseMessagingService {
   static final FirebaseMessagingService _instance =
       FirebaseMessagingService._privateConstructor();
 
+  static final Auth _auth = Auth.instance;
   ///saved Token
   String? _fcmToken;
 
@@ -61,7 +62,7 @@ class FirebaseMessagingService {
     FirebaseMessaging.onBackgroundMessage((RemoteMessage message) async {
       print('Handling a background message ${message.messageId}');
     });
-    if (loggedUser!.isSilentOnPush == 0) {
+    if (_auth.loggedUser!.isSilentOnPush == 0) {
       await _firebaseMessaging
           .getToken(
               vapidKey:

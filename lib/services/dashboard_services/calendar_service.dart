@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/global/auth_endpoint.dart';
@@ -14,12 +15,12 @@ class CalendarService {
   late CalendarDataControl _calendarDataControl;
   CalendarService._singleton();
   static final CalendarService _instance = CalendarService._singleton();
-
+  static final Auth _auth = Auth.instance;
   static CalendarService instance(CalendarDataControl control) {
     _instance._calendarDataControl = control;
     return _instance;
   }
-  final ToastNotifier _notifier = ToastNotifier.instance;
+  late final ToastNotifier _notifier= ToastNotifier.instance;
 
   bool isSameMonth(DateTime d1, DateTime d2) => d1.year == d2.year && d1.month == d2.month;
   bool isSameDay(DateTime d1, DateTime d2) =>
@@ -95,7 +96,7 @@ class CalendarService {
       String url = "${BaseEnpoint.URL}${LeaveRequestEndpoint.getAll}";
       return await http.get(Uri.parse("$url"),headers: {
         "Accept" : "application/json",
-        HttpHeaders.authorizationHeader : "Bearer $authToken"
+        HttpHeaders.authorizationHeader : "Bearer ${_auth.token}"
       }).then((response) {
         var data = json.decode(response.body);
         if(response.statusCode == 200){
@@ -106,13 +107,13 @@ class CalendarService {
           }
           return true;
         }else{
-          _notifier.showContextedBottomToast(context, msg: "Erreur ${response.statusCode}, ${response.reasonPhrase}");
+          _notifier.showContextedBottomToast(context,msg: "Erreur ${response.statusCode}, ${response.reasonPhrase}");
           return false;
         }
       });
     }catch(e){
       print(e);
-      _notifier.showContextedBottomToast(context, msg: "Erreur $e");
+      _notifier.showContextedBottomToast(context,msg: "Erreur $e");
       return false;
     }
   }

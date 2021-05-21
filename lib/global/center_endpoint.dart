@@ -13,6 +13,9 @@ class CenterEndpoint {
       "$_baseEndpoint/$centerId";
 
   /// Method : POST
+  static  String get assignUsersToCenter => "$_baseEndpoint/add_users";
+  static String removeAssignedUser(int centerId) => "$_baseEndpoint/delete_users/$centerId";
+  /// Method : POST
   static final String create = "$_baseEndpoint";
 
   /// Method : PUT

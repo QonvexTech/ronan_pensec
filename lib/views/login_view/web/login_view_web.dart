@@ -16,6 +16,7 @@ class LoginViewWeb extends StatefulWidget {
 }
 
 class _LoginViewWebState extends State<LoginViewWeb> {
+  final LoginService _loginService = LoginService.instance;
   late TextEditingController _email = widget.email;
   late TextEditingController _password = widget.password;
   bool _toRegister = true;
@@ -33,7 +34,6 @@ class _LoginViewWebState extends State<LoginViewWeb> {
       _password.dispose();
     }
   }
-
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -47,6 +47,7 @@ class _LoginViewWebState extends State<LoginViewWeb> {
             if (!_kMobile) ...{
               Expanded(
                 flex: 3,
+
                 child: Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -54,46 +55,114 @@ class _LoginViewWebState extends State<LoginViewWeb> {
                         // stops: Palette.colorStops,
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight),
+                    image: DecorationImage(
+                      fit: BoxFit.fitWidth,
+                      image: AssetImage("assets/images/background.jpeg")
+                    )
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      children: [
-                        AnimatedWidgetX(
-                            child: Container(
-                              width: double.infinity,
-                              child: Text(
-                                  "Lorem ipsum dolor sit amet, consectetur adipiscing elit, \nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: Theme.of(context).textTheme.headline6!.fontSize! - 3,
-                                  fontWeight: FontWeight.w600
+                  child: Stack(
+                    children: [
+                      // AnimatedWidgetX(
+                      //     child: Container(
+                      //       width: size.width,
+                      //       alignment: AlignmentDirectional.center,
+                      //       child: Image.asset("assets/images/background.jpeg", fit: BoxFit.cover,),
+                      //     ),
+                      //     delay: 2.5,
+                      //     duration: duration),
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Column(
+                          children: [
+                            AnimatedWidgetX(
+                                child: Container(
+                                  width: double.infinity,
+                                  child: Text(
+                                    "Sécur AUTO".toUpperCase(),
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: Theme.of(context)
+                                                .textTheme
+                                                .headline6!
+                                                .fontSize! -
+                                            1,
+                                        fontWeight: FontWeight.w600,
+                                        letterSpacing: 1.5),
+                                    textAlign: TextAlign.left,
+                                  ),
                                 ),
-                                textAlign: TextAlign.left,
-                              ),
+                                delay: 1,
+                                duration: duration),
+                            const SizedBox(
+                              height: 10,
                             ),
-                            delay: 1,
-                            duration: duration),
-                        const SizedBox(
-                          height: 20,
+                            AnimatedWidgetX(
+                                child: Container(
+                                  width: double.infinity,
+                                  child: Text(
+                                    "Planning & Gestion d'équipe",
+                                    style: TextStyle(
+                                        color: Colors.grey.shade300,
+                                        fontSize: Theme.of(context)
+                                                .textTheme
+                                                .headline6!
+                                                .fontSize! -
+                                            5,
+                                        fontWeight: FontWeight.w300),
+                                    textAlign: TextAlign.left,
+                                  ),
+                                ),
+                                delay: 2,
+                                duration: duration),
+                            Expanded(
+                              child: Container(
+                                  child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  AnimatedWidgetX(
+                                      child: Container(
+                                        width: double.infinity,
+                                        child: Text(
+                                          "C'est un plaisir de vous revoir",
+                                          style: TextStyle(
+                                            color: Colors.grey.shade300,
+                                            fontSize: Theme.of(context)
+                                                    .textTheme
+                                                    .headline6!
+                                                    .fontSize! -
+                                                3,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                      delay: 2.3,
+                                      duration: duration),
+                                  AnimatedWidgetX(
+                                      child: Container(
+                                        width: double.infinity,
+                                        child: Text(
+                                          "CONTENT DE TE REVOIR",
+                                          style: TextStyle(
+                                              color: Colors.grey.shade300,
+                                              fontSize: Theme.of(context)
+                                                  .textTheme
+                                                  .headline3!
+                                                  .fontSize!,
+                                              fontWeight: FontWeight.w600,
+                                              letterSpacing: 2.5),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                      delay: 2.3,
+                                      duration: duration),
+                                ],
+                              )),
+                            )
+                          ],
                         ),
-                        AnimatedWidgetX(
-                            child: Container(
-                              width: double.infinity,
-                              child: Text(
-                                "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-                                style: TextStyle(
-                                  color: Colors.grey.shade300,
-                                    fontSize: Theme.of(context).textTheme.headline6!.fontSize! - 5,
-                                    fontWeight: FontWeight.w300
-                                ),
-                                textAlign: TextAlign.left,
-                              ),
-                            ),
-                            delay: 2,
-                            duration: duration)
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -107,33 +176,32 @@ class _LoginViewWebState extends State<LoginViewWeb> {
                     child: Scrollbar(
                       child: Padding(
                         padding: EdgeInsets.symmetric(
-                            horizontal: _kMobile ? 20 : size.width * .03, vertical: 15),
+                            horizontal: size.width * .1, vertical: 15),
                         child: SingleChildScrollView(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              if (_kMobile) ...{
-                                AnimatedWidgetX(
+                              AnimatedWidgetX(
+                                child: Hero(
+                                  tag: "logo",
                                   child: Container(
                                     width: double.infinity,
                                     height: size.height * .2,
-                                    color: Colors.green,
+                                    child: Center(
+                                      child:
+                                          Image.asset("assets/images/logo.png"),
+                                    ),
                                   ),
-                                  delay: 0.5,
-                                  duration: duration,
                                 ),
-                              } else ...{
-                                SizedBox(
-                                  height: size.height * .2,
-                                )
-                              },
+                                delay: 0.5,
+                                duration: duration,
+                              ),
                               AnimatedWidgetX(
                                 child: Container(
                                   width: double.infinity,
-                                  margin:
-                                      const EdgeInsets.symmetric(vertical: 45),
+                                  margin: const EdgeInsets.only(top: 30),
                                   child: Text(
-                                    "Content de te revoir",
+                                    "Compte de connexion",
                                     style: TextStyle(
                                         fontSize: Theme.of(context)
                                             .textTheme
@@ -145,6 +213,26 @@ class _LoginViewWebState extends State<LoginViewWeb> {
                                   ),
                                 ),
                                 delay: 1,
+                                duration: duration,
+                              ),
+                              AnimatedWidgetX(
+                                child: Container(
+                                  margin: const EdgeInsets.only(
+                                      bottom: 45, top: 10),
+                                  width: double.infinity,
+                                  child: Text(
+                                    "Entrez vos informations d'identification et assurez-vous qu'elles sont valides avant de pouvoir continuer à utiliser notre application",
+                                    style: TextStyle(
+                                        fontSize: Theme.of(context)
+                                            .textTheme
+                                            .subtitle2!
+                                            .fontSize,
+                                        color: Colors.grey.shade400,
+                                        fontWeight: FontWeight.w400),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                delay: 1.3,
                                 duration: duration,
                               ),
                               AnimatedWidgetX(
@@ -200,7 +288,7 @@ class _LoginViewWebState extends State<LoginViewWeb> {
                                       setState(() {
                                         _isLoading = true;
                                       });
-                                      loginService
+                                      _loginService
                                           .login(context,
                                               email: _email.text,
                                               password: _password.text,
@@ -210,9 +298,8 @@ class _LoginViewWebState extends State<LoginViewWeb> {
                                           .whenComplete(() => setState(
                                               () => _isLoading = false));
                                     } else {
-                                      loginService.notifier
-                                          .showContextedBottomToast(context,
-                                              msg:
+                                      _loginService.notifier!
+                                          .showContextedBottomToast(context,msg:
                                                   "Email and password is required.");
                                     }
                                   }),

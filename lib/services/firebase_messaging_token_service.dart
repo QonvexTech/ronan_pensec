@@ -22,13 +22,15 @@ class FirebaseMessagingTokenService {
 
   static FirebaseMessagingTokenService get instance => _instance;
 
+  static final Auth _auth = Auth.instance;
+
   Future<void> add(String token) async {
     try {
       await http.post(Uri.parse("${BaseEnpoint.URL}$_apiAdd"), headers: {
         "Accept": "application/json",
-        HttpHeaders.authorizationHeader: "Bearer $authToken"
+        HttpHeaders.authorizationHeader: "Bearer ${_auth.token}"
       }, body: {
-        "user_id": loggedUser!.id.toString(),
+        "user_id": _auth.loggedUser!.id.toString(),
         "token": token
       });
     } catch (e) {
@@ -40,7 +42,7 @@ class FirebaseMessagingTokenService {
     try {
       await http.post(Uri.parse("${BaseEnpoint.URL}$_apiDelete"), headers: {
         "Accept": "application/json",
-        HttpHeaders.authorizationHeader: "Bearer $authToken"
+        HttpHeaders.authorizationHeader: "Bearer ${_auth.token}"
       }, body: {
         "token": token
       });

@@ -2,9 +2,10 @@ import 'package:ronan_pensec/global/auth.dart';
 
 class UserEndpoint {
   static final String _baseSubDomain = "api/users";
-
+  /// instance of auth
+  static final Auth _auth = Auth.instance;
   /// Method : PUT
-  static final String update = "$_baseSubDomain/${loggedUser!.id}";
+  static final String update = "$_baseSubDomain/${_auth.loggedUser!.id}";
 
   /// Method : GET
   static final String viewAllUsers = "$_baseSubDomain";

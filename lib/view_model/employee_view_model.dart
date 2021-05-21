@@ -1,16 +1,25 @@
+import 'package:flutter/cupertino.dart';
 import 'package:ronan_pensec/global/templates/employee_template.dart';
 import 'package:ronan_pensec/models/pagination_model.dart';
 import 'package:ronan_pensec/services/dashboard_services/employee_service.dart';
 import 'package:ronan_pensec/services/data_controls/employee_data_control.dart';
 
 class EmployeeViewModel{
+  EmployeeViewModel._privateConstructor();
+  static final EmployeeViewModel _instance = EmployeeViewModel._privateConstructor();
+  static EmployeeViewModel instance(BuildContext context){
+    _instance._service = EmployeeService.instance(_employeeDataControl, context);
+    return _instance;
+  }
   final EmployeeTemplate template = EmployeeTemplate.instance;
-  final EmployeeDataControl employeeDataControl = EmployeeDataControl.instance;
-  late final EmployeeService _service = EmployeeService.instance(employeeDataControl);
+  static final EmployeeDataControl _employeeDataControl = EmployeeDataControl.instance;
+  EmployeeDataControl get employeeDataControl => _employeeDataControl;
+  late final EmployeeService _service;
   EmployeeService get service => _service;
   bool _isTable = true;
   bool get isTable => _isTable;
   set setTable(bool b) => _isTable = b;
+  PaginationModel employeePagination = PaginationModel();
   // ///checks and sets number of data to be fetched from the server
   // int _initPage = 10;
   // int get page => _initPage;
@@ -34,4 +43,3 @@ class EmployeeViewModel{
   // late String currentPageUrl = firstPageUrl;
   // String? previousPageUrl;
 }
-PaginationModel employeePagination = PaginationModel();

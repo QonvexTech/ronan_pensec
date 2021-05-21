@@ -1,41 +1,49 @@
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/global/templates/general_template.dart';
 import 'package:ronan_pensec/models/user_model.dart';
 import 'package:ronan_pensec/routes/employee_route.dart';
 import 'package:ronan_pensec/view_model/employee_view_model.dart';
-import 'package:ronan_pensec/views/landing_page_screen/web/children/employee_view_children/employee_details.dart';
 
 class EmployeeView extends StatefulWidget {
   @override
   _EmployeeViewState createState() => _EmployeeViewState();
 }
 
-class _EmployeeViewState extends State<EmployeeView> with EmployeeViewModel {
+class _EmployeeViewState extends State<EmployeeView> {
+  late final EmployeeViewModel _viewModel = EmployeeViewModel.instance(context);
+  final Auth _auth = Auth.instance;
   @override
   void initState() {
-    if(!employeeDataControl.hasFetched){
-      this.fetcher(employeePagination.firstPageUrl);
+    if (!_viewModel.employeeDataControl.hasFetched) {
+      this.fetcher(_viewModel.employeePagination.firstPageUrl);
     }
     super.initState();
   }
+
   Future<void> fetcher(String subDomain) async {
-    await service.fetchAll(context, subDomain: subDomain).then((value) {
+    await _viewModel.service
+        .fetchAll(context, subDomain: subDomain)
+        .then((value) {
       if (this.mounted) {
         setState(() {
-          employeeDataControl.hasFetched = value != null;
-          employeePagination.lastPageUrl = value['last_page_url'].toString().split('users/')[1];
-          employeePagination.firstPageUrl =
-          value['first_page_url'].toString().split('users/')[1];
-          employeePagination.nextPageUrl = value['next_page_url'] == null ? null : value['next_page_url'].toString().split('users/')[1];
-          employeePagination.prevPageUrl = value['prev_page_url'] != null
-              ? value['prev_page_url'].toString().split('users/')[1]
-              : null;
-          employeePagination.totalDataCount = value['total'];
-          employeePagination.currentPage = value['current_page'];
-          employeePagination.lastPage = value['last_page'];
+          _viewModel.employeeDataControl.hasFetched = value != null;
+          _viewModel.employeePagination.lastPageUrl =
+              value['last_page_url'].toString().split('users/')[1];
+          _viewModel.employeePagination.firstPageUrl =
+              value['first_page_url'].toString().split('users/')[1];
+          _viewModel.employeePagination.nextPageUrl =
+              value['next_page_url'] == null
+                  ? null
+                  : value['next_page_url'].toString().split('users/')[1];
+          _viewModel.employeePagination.prevPageUrl =
+              value['prev_page_url'] != null
+                  ? value['prev_page_url'].toString().split('users/')[1]
+                  : null;
+          _viewModel.employeePagination.totalDataCount = value['total'];
+          _viewModel.employeePagination.currentPage = value['current_page'];
+          _viewModel.employeePagination.lastPage = value['last_page'];
         });
       }
     });
@@ -44,8 +52,8 @@ class _EmployeeViewState extends State<EmployeeView> with EmployeeViewModel {
   @override
   Widget build(BuildContext context) {
     final Size _size = MediaQuery.of(context).size;
-    if (_size.width < 900 && isTable) {
-      setTable = false;
+    if (_size.width < 900 && _viewModel.isTable) {
+      _viewModel.setTable = false;
     }
     return Scaffold(
       body: Container(
@@ -63,22 +71,26 @@ class _EmployeeViewState extends State<EmployeeView> with EmployeeViewModel {
                   Spacer(),
                   if (_size.width > 900) ...{
                     IconButton(
-                      tooltip: isTable ? "Vue de liste" : "Vue de tableau",
+                      tooltip: _viewModel.isTable
+                          ? "Vue de liste"
+                          : "Vue de tableau",
                       onPressed: () {
                         setState(() {
-                          setTable = !isTable;
+                          _viewModel.setTable = !_viewModel.isTable;
                         });
                       },
                       padding: const EdgeInsets.all(0),
                       icon: Center(
                         child: Icon(
-                          isTable ? Icons.list : Icons.table_chart_rounded,
+                          _viewModel.isTable
+                              ? Icons.list
+                              : Icons.table_chart_rounded,
                           color: Colors.black,
                         ),
                       ),
                     )
                   },
-                  if (loggedUser!.roleId == 1) ...{
+                  if (_auth.loggedUser!.roleId == 1) ...{
                     IconButton(
                       tooltip: "Créer un nouvel employé",
                       onPressed: () {},
@@ -96,18 +108,18 @@ class _EmployeeViewState extends State<EmployeeView> with EmployeeViewModel {
             ),
             Expanded(
                 child: StreamBuilder<List<UserModel>>(
-              stream: employeeDataControl.stream,
+              stream: _viewModel.employeeDataControl.stream,
               builder: (_, userList) => !userList.hasError &&
                       userList.hasData &&
                       userList.data!.length > 0
-                  ? isTable
+                  ? _viewModel.isTable
                       ? Container(
                           width: double.infinity,
                           child: ListView(
                             physics: ClampingScrollPhysics(),
                             children: [
                               DataTable(
-                                columns: template.kDataColumn,
+                                columns: _viewModel.template.kDataColumn,
                                 headingRowColor:
                                     MaterialStateProperty.resolveWith(
                                         (states) => Palette.textFieldColor),
@@ -121,10 +133,13 @@ class _EmployeeViewState extends State<EmployeeView> with EmployeeViewModel {
                                                     ? Palette.gradientColor[0]
                                                         .withOpacity(0.3)
                                                     : Colors.grey.shade100),
-                                        onSelectChanged: (selected){
-                                          Navigator.push(context, EmployeeRoute.details(userList.data![index]));
+                                        onSelectChanged: (selected) {
+                                          Navigator.push(
+                                              context,
+                                              EmployeeRoute.details(
+                                                  userList.data![index]));
                                         },
-                                        cells: template
+                                        cells: _viewModel.template
                                             .kDataCell(userList.data![index]))),
                               ),
                               Container(
@@ -132,127 +147,197 @@ class _EmployeeViewState extends State<EmployeeView> with EmployeeViewModel {
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 20),
                                 height: 50,
-                                child: employeePagination.totalDataCount == null ? Text("Loading...") : Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text("Showing "),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    PopupMenuButton(
-                                      padding: const EdgeInsets.all(0),
-                                      initialValue: employeePagination.dataToShow,
-                                      onSelected: (int value) {
-                                        if (this.mounted) {
-                                          setState(() {
-                                            employeePagination.dataToShow = value;
-                                            employeePagination.firstPageUrl = "${employeePagination.dataToShow}" + "?page=1";
-                                            employeePagination.currentPageUrl = employeePagination.firstPageUrl;
-                                            employeeDataControl.hasFetched =
-                                                false;
-                                          });
-                                          this.fetcher(employeePagination.currentPageUrl);
-                                        }
-                                      },
-                                      icon: Container(
-                                        width: 50,
-                                        child: Row(
-                                          children: [
-                                            Text("${employeePagination.dataToShow}"),
-                                            Spacer(),
-                                            Icon(Icons.arrow_drop_down),
-                                          ],
-                                        ),
-                                      ),
-                                      itemBuilder: (_) => [
-                                        PopupMenuItem(
-                                          value: 10,
-                                          child: Text("10"),
-                                        ),
-                                        PopupMenuItem(
-                                          value: 20,
-                                          child: Text("20"),
-                                        ),
-                                        PopupMenuItem(
-                                          value: 30,
-                                          child: Text("30"),
-                                        ),
-                                        PopupMenuItem(
-                                          value: 40,
-                                          child: Text("40"),
-                                        ),
-                                        PopupMenuItem(
-                                          value: 50,
-                                          child: Text("50"),
-                                        )
-                                      ],
-                                    ),
-                                    Text("Out of ${employeePagination.totalDataCount}"),
-                                    Spacer(),
-                                    if(employeePagination.currentPage > employeePagination.lastPage!/2)...{
-                                      IconButton(
-                                        icon: Icon(Icons.first_page),
-                                        tooltip: "Aller à la première page",
-                                        onPressed: () {
-                                          setState(() {
-                                            employeePagination.currentPage = 1;
-                                          });
-                                          this.fetcher("${employeePagination.dataToShow}?page=1");
-                                        },
-                                      ),
-                                    },
-                                    if(employeePagination.currentPage > 1)...{
-                                      IconButton(
-                                        icon: Icon(Icons.chevron_left),
-                                        tooltip: "Précédent",
-                                        onPressed: () {
-                                          setState(() {
-                                            employeePagination.currentPage = employeePagination.currentPage-1;
-                                          });
-                                          this.fetcher("${employeePagination.dataToShow}?page=${employeePagination.currentPage}");
-                                        },
-                                      ),
-                                    },
-                                    for(int i = 0;i<employeePagination.lastPage!;i++)...{
-                                      if(i+1 == 1 || i+1 == employeePagination.lastPage || (i+1 > employeePagination.currentPage-2 && i+1 < (employeePagination.currentPage+5)))...{
-                                        IconButton(
-                                          icon: Text("${i+1}",style: TextStyle(
-                                              color: i+1 == employeePagination.currentPage ? Palette.textFieldColor : Colors.black54
-                                          ),),
-                                          onPressed: (){
-                                            setState(() {
-                                              employeePagination.currentPage = i+1;
-                                            });
-                                            this.fetcher("${employeePagination.dataToShow}?page=${i+1}");
+                                child: _viewModel.employeePagination
+                                            .totalDataCount ==
+                                        null
+                                    ? Text("Loading...")
+                                    : Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Text("Showing "),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          PopupMenuButton(
+                                            padding: const EdgeInsets.all(0),
+                                            initialValue: _viewModel
+                                                .employeePagination.dataToShow,
+                                            onSelected: (int value) {
+                                              if (this.mounted) {
+                                                setState(() {
+                                                  _viewModel.employeePagination
+                                                      .dataToShow = value;
+                                                  _viewModel.employeePagination
+                                                          .firstPageUrl =
+                                                      "${_viewModel.employeePagination.dataToShow}" +
+                                                          "?page=1";
+                                                  _viewModel.employeePagination
+                                                          .currentPageUrl =
+                                                      _viewModel
+                                                          .employeePagination
+                                                          .firstPageUrl;
+                                                  _viewModel.employeeDataControl
+                                                      .hasFetched = false;
+                                                });
+                                                this.fetcher(_viewModel
+                                                    .employeePagination
+                                                    .currentPageUrl);
+                                              }
+                                            },
+                                            icon: Container(
+                                              width: 50,
+                                              child: Row(
+                                                children: [
+                                                  Text(
+                                                      "${_viewModel.employeePagination.dataToShow}"),
+                                                  Spacer(),
+                                                  Icon(Icons.arrow_drop_down),
+                                                ],
+                                              ),
+                                            ),
+                                            itemBuilder: (_) => [
+                                              PopupMenuItem(
+                                                value: 10,
+                                                child: Text("10"),
+                                              ),
+                                              PopupMenuItem(
+                                                value: 20,
+                                                child: Text("20"),
+                                              ),
+                                              PopupMenuItem(
+                                                value: 30,
+                                                child: Text("30"),
+                                              ),
+                                              PopupMenuItem(
+                                                value: 40,
+                                                child: Text("40"),
+                                              ),
+                                              PopupMenuItem(
+                                                value: 50,
+                                                child: Text("50"),
+                                              )
+                                            ],
+                                          ),
+                                          Text(
+                                              "Out of ${_viewModel.employeePagination.totalDataCount}"),
+                                          Spacer(),
+                                          if (_viewModel.employeePagination
+                                                  .currentPage >
+                                              _viewModel.employeePagination
+                                                      .lastPage! /
+                                                  2) ...{
+                                            IconButton(
+                                              icon: Icon(Icons.first_page),
+                                              tooltip:
+                                                  "Aller à la première page",
+                                              onPressed: () {
+                                                setState(() {
+                                                  _viewModel.employeePagination
+                                                      .currentPage = 1;
+                                                });
+                                                this.fetcher(
+                                                    "${_viewModel.employeePagination.dataToShow}?page=1");
+                                              },
+                                            ),
                                           },
-                                        )
-                                      }
-
-                                    },
-                                    if(employeePagination.currentPage < employeePagination.lastPage!)...{
-                                      IconButton(
-                                        icon: Icon(Icons.chevron_right),
-                                        tooltip: "Suivant",
-                                        onPressed: () {
-                                          setState(() {
-                                            employeePagination.currentPage++;
-                                          });
-                                          this.fetcher("${employeePagination.dataToShow}?page=${employeePagination.currentPage}");
-                                        },
+                                          if (_viewModel.employeePagination
+                                                  .currentPage >
+                                              1) ...{
+                                            IconButton(
+                                              icon: Icon(Icons.chevron_left),
+                                              tooltip: "Précédent",
+                                              onPressed: () {
+                                                setState(() {
+                                                  _viewModel.employeePagination
+                                                      .currentPage = _viewModel
+                                                          .employeePagination
+                                                          .currentPage -
+                                                      1;
+                                                });
+                                                this.fetcher(
+                                                    "${_viewModel.employeePagination.dataToShow}?page=${_viewModel.employeePagination.currentPage}");
+                                              },
+                                            ),
+                                          },
+                                          for (int i = 0;
+                                              i <
+                                                  _viewModel.employeePagination
+                                                      .lastPage!;
+                                              i++) ...{
+                                            if (i + 1 == 1 ||
+                                                i + 1 ==
+                                                    _viewModel
+                                                        .employeePagination
+                                                        .lastPage ||
+                                                (i + 1 >
+                                                        _viewModel
+                                                                .employeePagination
+                                                                .currentPage -
+                                                            2 &&
+                                                    i + 1 <
+                                                        (_viewModel
+                                                                .employeePagination
+                                                                .currentPage +
+                                                            5))) ...{
+                                              IconButton(
+                                                icon: Text(
+                                                  "${i + 1}",
+                                                  style: TextStyle(
+                                                      color: i + 1 ==
+                                                              _viewModel
+                                                                  .employeePagination
+                                                                  .currentPage
+                                                          ? Palette
+                                                              .textFieldColor
+                                                          : Colors.black54),
+                                                ),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    _viewModel
+                                                        .employeePagination
+                                                        .currentPage = i + 1;
+                                                  });
+                                                  this.fetcher(
+                                                      "${_viewModel.employeePagination.dataToShow}?page=${i + 1}");
+                                                },
+                                              )
+                                            }
+                                          },
+                                          if (_viewModel.employeePagination
+                                                  .currentPage <
+                                              _viewModel.employeePagination
+                                                  .lastPage!) ...{
+                                            IconButton(
+                                              icon: Icon(Icons.chevron_right),
+                                              tooltip: "Suivant",
+                                              onPressed: () {
+                                                setState(() {
+                                                  _viewModel.employeePagination
+                                                      .currentPage++;
+                                                });
+                                                this.fetcher(
+                                                    "${_viewModel.employeePagination.dataToShow}?page=${_viewModel.employeePagination.currentPage}");
+                                              },
+                                            ),
+                                          },
+                                          IconButton(
+                                            icon: Icon(Icons.last_page),
+                                            tooltip: "Aller à la dernière page",
+                                            onPressed: () {
+                                              setState(() {
+                                                _viewModel.employeePagination
+                                                        .currentPage =
+                                                    _viewModel
+                                                        .employeePagination
+                                                        .lastPage!;
+                                              });
+                                              this.fetcher(
+                                                  "${_viewModel.employeePagination.dataToShow}?page=${_viewModel.employeePagination.lastPage}");
+                                            },
+                                          )
+                                        ],
                                       ),
-                                    },
-                                    IconButton(
-                                      icon: Icon(Icons.last_page),
-                                      tooltip: "Aller à la dernière page",
-                                      onPressed: () {
-                                        setState(() {
-                                          employeePagination.currentPage = employeePagination.lastPage!;
-                                        });
-                                        this.fetcher("${employeePagination.dataToShow}?page=${employeePagination.lastPage}");
-                                      },
-                                    )
-                                  ],
-                                ),
                               )
                             ],
                           ))
@@ -261,16 +346,21 @@ class _EmployeeViewState extends State<EmployeeView> with EmployeeViewModel {
                             userList.data!.length,
                             (index) => MaterialButton(
                               onPressed: () {
-                                Navigator.push(context, EmployeeRoute.details(userList.data![index]));
+                                Navigator.push(
+                                    context,
+                                    EmployeeRoute.details(
+                                        userList.data![index]));
                               },
-                              child: template.kDataList(
-                                  user: userList.data![index]),
+                              child: _viewModel.template
+                                  .kDataList(user: userList.data![index]),
                             ),
                           ),
                         )
                   : !userList.hasData
-                      ? GeneralTemplate.tableLoader(template.kDataColumn.length,
-                          template.kDataColumn, _size.width)
+                      ? GeneralTemplate.tableLoader(
+                          _viewModel.template.kDataColumn.length,
+                          _viewModel.template.kDataColumn,
+                          _size.width)
                       : Center(
                           child: Text(
                             userList.hasError

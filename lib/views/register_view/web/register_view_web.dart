@@ -57,6 +57,10 @@ class _RegisterViewWebState extends State<RegisterViewWeb> {
                         // stops: Palette.colorStops,
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight),
+                      image: DecorationImage(
+                          fit: BoxFit.fitWidth,
+                          image: AssetImage("assets/images/background.jpeg")
+                      )
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
@@ -66,15 +70,16 @@ class _RegisterViewWebState extends State<RegisterViewWeb> {
                             child: Container(
                               width: double.infinity,
                               child: Text(
-                                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, \nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                                "Sécur AUTO".toUpperCase(),
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontSize: Theme.of(context)
-                                            .textTheme
-                                            .headline6!
-                                            .fontSize! -
-                                        3,
-                                    fontWeight: FontWeight.w600),
+                                        .textTheme
+                                        .headline6!
+                                        .fontSize! -
+                                        1,
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 1.5),
                                 textAlign: TextAlign.left,
                               ),
                             ),
@@ -87,13 +92,13 @@ class _RegisterViewWebState extends State<RegisterViewWeb> {
                           child: Container(
                             width: double.infinity,
                             child: Text(
-                              "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+                              "Planning & Gestion d'équipe",
                               style: TextStyle(
                                   color: Colors.grey.shade300,
                                   fontSize: Theme.of(context)
-                                          .textTheme
-                                          .headline6!
-                                          .fontSize! -
+                                      .textTheme
+                                      .headline6!
+                                      .fontSize! -
                                       5,
                                   fontWeight: FontWeight.w300),
                               textAlign: TextAlign.left,
@@ -120,7 +125,7 @@ class _RegisterViewWebState extends State<RegisterViewWeb> {
                       child: Scrollbar(
                         child: Padding(
                           padding: EdgeInsets.symmetric(
-                              horizontal: _kMobile ? 20 : size.width * .03, vertical: 15),
+                              horizontal: size.width * .06, vertical: 15),
                           child: SingleChildScrollView(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -130,7 +135,9 @@ class _RegisterViewWebState extends State<RegisterViewWeb> {
                                     child: Container(
                                       width: double.infinity,
                                       height: size.height * .2,
-                                      color: Colors.green,
+                                      child: Center(
+                                        child: Image.asset("assets/images/logo.png"),
+                                      ),
                                     ),
                                     duration: duration,
                                     delay: 0.5,
@@ -308,13 +315,11 @@ class _RegisterViewWebState extends State<RegisterViewWeb> {
                                                   () => _isLoading = false));
                                         } else {
                                           _service.notifier
-                                              .showContextedBottomToast(context,
-                                                  msg: "Invalid phone number");
+                                              .showContextedBottomToast(context,msg: "Invalid phone number");
                                         }
                                       } else {
                                         _service.notifier
-                                            .showContextedBottomToast(context,
-                                                msg: "Invalid email");
+                                            .showContextedBottomToast(context,msg: "Invalid email");
                                       }
                                     }),
                                     delay: 3.3,

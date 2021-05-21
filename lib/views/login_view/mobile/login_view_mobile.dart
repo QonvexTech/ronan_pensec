@@ -15,6 +15,7 @@ class LoginViewMobile extends StatefulWidget {
 }
 
 class _LoginViewMobileState extends State<LoginViewMobile> {
+  final LoginService _loginService = LoginService.instance;
   bool _obscure = true;
   bool _remember = true;
   bool _isLoading = false;
@@ -103,7 +104,7 @@ class _LoginViewMobileState extends State<LoginViewMobile> {
                                   setState(() {
                                     _isLoading = true;
                                   });
-                                  await loginService
+                                  await _loginService
                                       .login(context,
                                       email: _email.text,
                                       password: _password.text,
@@ -111,14 +112,10 @@ class _LoginViewMobileState extends State<LoginViewMobile> {
                                       .whenComplete(() =>
                                       setState(() => _isLoading = false));
                                 } else {
-                                  loginService.notifier.showContextedBottomToast(
-                                      context,
-                                      msg: "Password field is required");
+                                  _loginService.notifier!.showContextedBottomToast(context,msg: "Password field is required");
                                 }
                               } else {
-                                loginService.notifier.showContextedBottomToast(
-                                    context,
-                                    msg: "Email field is required");
+                                _loginService.notifier!.showContextedBottomToast(context,msg: "Email field is required");
                               }
                             }),
                         const SizedBox(

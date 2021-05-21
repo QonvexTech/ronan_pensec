@@ -13,12 +13,12 @@ class WebPlanning extends StatefulWidget {
   _WebDashboardState createState() => _WebDashboardState();
 }
 
-class _WebDashboardState extends State<WebPlanning> with RegionViewModel {
-  int _currentVal = 0;
+class _WebDashboardState extends State<WebPlanning> {
+  final RegionViewModel _regionViewModel = RegionViewModel.instance;
   @override
   void initState() {
-    if(!control.hasFetched){
-      service.fetch(context).then((value) => setState(() => control.hasFetched = true));
+    if(!_regionViewModel.control.hasFetched){
+      _regionViewModel.service.fetch(context).then((value) => setState(() => _regionViewModel.control.hasFetched = true));
     }
     super.initState();
   }

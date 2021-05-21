@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/global/tabbar_item_class.dart';
 import 'package:ronan_pensec/global/templates/general_template.dart';
@@ -17,7 +16,7 @@ class LandingPageScreenWeb extends StatefulWidget {
 
 class _LandingPageScreenWebState extends State<LandingPageScreenWeb>
     with SingleTickerProviderStateMixin, LandingPageMainHelper {
-  final LandingPageService _service = LandingPageService.instance;
+  late final LandingPageService _service = LandingPageService.instance(context);
   late final List<Widget> _contents = [
     WebPlanning(
       menuItems: menuItems,
@@ -38,7 +37,7 @@ class _LandingPageScreenWebState extends State<LandingPageScreenWeb>
         },
         menuItems: menuItems,
     ),
-    if (loggedUser!.roleId < 3) ...{
+    if (auth.loggedUser!.roleId < 3) ...{
       EmployeeView()
     },
     Calendar(),
@@ -71,13 +70,16 @@ class _LandingPageScreenWebState extends State<LandingPageScreenWeb>
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  //Logo
+                  ///Logo
                   Container(
                     width: 60,
                     height: double.infinity,
-                    color: Colors.red,
+                    padding: const EdgeInsets.all(5),
                     child: Center(
-                      child: Text("LOGO"),
+                      child: Hero(
+                        tag: "logo",
+                        child: Image.asset("assets/images/logo.png"),
+                      ),
                     ),
                   ),
                   const SizedBox(
@@ -137,7 +139,7 @@ class _LandingPageScreenWebState extends State<LandingPageScreenWeb>
 
                   Expanded(child: Container()),
 
-                  if (loggedUser!.roleId < 3) ...{
+                  if (auth.loggedUser!.roleId < 3) ...{
                     GeneralTemplate.badgedIcon(
                         isEnabled: true,
                         tooltip: "Notifications",
@@ -149,7 +151,7 @@ class _LandingPageScreenWebState extends State<LandingPageScreenWeb>
                   const SizedBox(
                     width: 10,
                   ),
-                  if (loggedUser!.roleId == 3) ...{
+                  if (auth.loggedUser!.roleId == 3) ...{
                     GeneralTemplate.badgedIcon(
                         isEnabled: true,
                         tooltip: "Messages",

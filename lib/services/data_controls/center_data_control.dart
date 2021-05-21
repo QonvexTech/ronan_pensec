@@ -3,6 +3,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/global/templates/general_template.dart';
 import 'package:ronan_pensec/models/center_model.dart';
+import 'package:ronan_pensec/models/user_model.dart';
 import 'package:rxdart/rxdart.dart';
 
 class CenterDataControl {
@@ -31,5 +32,8 @@ class CenterDataControl {
   void remove(int id) {
     this.current.removeWhere((element) => element.id == id);
     _list.add(this.current);
+  }
+  List<UserModel> removeLocal(List<UserModel> sauce, int idToRemove){
+    return sauce.where((element) => element.id != idToRemove).toList();
   }
 }
