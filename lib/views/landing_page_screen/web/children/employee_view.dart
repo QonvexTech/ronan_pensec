@@ -12,7 +12,7 @@ class EmployeeView extends StatefulWidget {
 }
 
 class _EmployeeViewState extends State<EmployeeView> {
-  late final EmployeeViewModel _viewModel = EmployeeViewModel.instance(context);
+  final EmployeeViewModel _viewModel = EmployeeViewModel.instance;
   final Auth _auth = Auth.instance;
   @override
   void initState() {

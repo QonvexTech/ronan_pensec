@@ -26,6 +26,7 @@ class _CalendarFullState extends State<CalendarFull> {
 
   @override
   void initState() {
+    _calendarViewModel.searchBy = new TextEditingController();
     super.initState();
   }
   @override

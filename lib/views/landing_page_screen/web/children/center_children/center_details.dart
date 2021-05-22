@@ -16,7 +16,7 @@ class CenterDetails extends StatefulWidget {
 }
 
 class _CenterDetailsState extends State<CenterDetails> {
-  late final EmployeeViewModel _viewModel = EmployeeViewModel.instance(context);
+  final EmployeeViewModel _viewModel = EmployeeViewModel.instance;
   final UserAssignCenter _assignCenter = UserAssignCenter.instance;
   UserModel? _selectedUser;
   List<UserModel> _pendingUsers = [];

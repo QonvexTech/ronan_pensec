@@ -15,6 +15,7 @@ class WebPlanning extends StatefulWidget {
 
 class _WebDashboardState extends State<WebPlanning> {
   final RegionViewModel _regionViewModel = RegionViewModel.instance;
+  final CalendarPlanning _calendarPlanning = CalendarPlanning();
   @override
   void initState() {
     if(!_regionViewModel.control.hasFetched){
@@ -29,7 +30,7 @@ class _WebDashboardState extends State<WebPlanning> {
     return Container(
         width: double.infinity,
         height: _size.height,
-        child: CalendarPlanning(),
+        child: _calendarPlanning,
     );
   }
 }

@@ -12,9 +12,9 @@ class EmployeeService {
   late EmployeeDataControl _model;
   EmployeeService._privateConstructor();
   static final EmployeeService _instance = EmployeeService._privateConstructor();
-  late final ToastNotifier _notifier= ToastNotifier.instance;
+  final ToastNotifier _notifier= ToastNotifier.instance;
   static final Auth _auth = Auth.instance;
-  static EmployeeService instance(EmployeeDataControl model, BuildContext context){
+  static EmployeeService instance(EmployeeDataControl model){
     _instance._model = model;
     return _instance;
   }
