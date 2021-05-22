@@ -35,8 +35,9 @@ class UserAssignCenter{
         print(response.statusCode);
         var data = json.decode(response.body);
         if(response.statusCode == 200){
-
-          return toAssign;
+          List user = data['centers'][0]['users'];
+          print(user);
+          return user.map((e) => UserModel.fromJson(parsedJson: e)).toList();
         }
         return [];
       });

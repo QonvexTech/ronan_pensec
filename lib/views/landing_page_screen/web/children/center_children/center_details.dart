@@ -166,7 +166,7 @@ class _CenterDetailsState extends State<CenterDetails> {
                                 _assignCenter.assign(toAssign: _pendingUsers, centerId: widget.model.id).then((value) {
                                   if(value.isNotEmpty){
                                     setState(() {
-                                      widget.model.users += value;
+                                      widget.model.users = value;
                                       _pendingUsers.clear();
                                     });
                                   }

@@ -8,6 +8,8 @@ import 'package:ronan_pensec/services/data_controls/region_data_control.dart';
 import 'package:ronan_pensec/view_model/employee_view_model.dart';
 
 class EmployeeView extends StatefulWidget {
+  final RegionDataControl regionDataControl;
+  EmployeeView({required this.regionDataControl});
   @override
   _EmployeeViewState createState() => _EmployeeViewState();
 }
@@ -138,7 +140,7 @@ class _EmployeeViewState extends State<EmployeeView> {
                                           Navigator.push(
                                               context,
                                               EmployeeRoute.details(
-                                                  userList.data![index]));
+                                                  userList.data![index], widget.regionDataControl));
                                         },
                                         cells: _viewModel.template
                                             .kDataCell(userList.data![index]))),
@@ -350,7 +352,7 @@ class _EmployeeViewState extends State<EmployeeView> {
                                 Navigator.push(
                                     context,
                                     EmployeeRoute.details(
-                                        userList.data![index]));
+                                        userList.data![index], widget.regionDataControl));
                               },
                               child: _viewModel.template
                                   .kDataList(user: userList.data![index]),

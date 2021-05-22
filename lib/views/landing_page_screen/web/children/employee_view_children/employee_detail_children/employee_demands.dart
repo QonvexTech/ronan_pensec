@@ -3,6 +3,7 @@ import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/models/calendar/attendance_model.dart';
 import 'package:ronan_pensec/models/calendar/holiday_model.dart';
 import 'package:ronan_pensec/models/calendar/rtt_model.dart';
+import 'package:ronan_pensec/services/data_controls/region_data_control.dart';
 import 'package:ronan_pensec/view_model/employee_children/employee_demands_view_model.dart';
 import 'package:ronan_pensec/views/landing_page_screen/web/children/employee_view_children/employee_detail_children/demand_children/employee_attendance.dart';
 import 'package:ronan_pensec/views/landing_page_screen/web/children/employee_view_children/employee_detail_children/demand_children/holiday_request.dart';
@@ -10,7 +11,8 @@ import 'package:ronan_pensec/views/landing_page_screen/web/children/employee_vie
 
 class EmployeeDemands extends StatefulWidget {
   final int userId;
-  EmployeeDemands({Key? key, required this.userId}) : super(key:  key);
+  final RegionDataControl regionDataControl;
+  EmployeeDemands({Key? key, required this.userId, required this.regionDataControl}) : super(key:  key);
   @override
   _EmployeeDemandsState createState() => _EmployeeDemandsState();
 }
@@ -20,7 +22,7 @@ class _EmployeeDemandsState extends State<EmployeeDemands> with SingleTickerProv
   late final TabController _tabController = new TabController(length: 3, vsync: this);
   late final HolidayRequest _holidayRequest = new HolidayRequest(holidays: _employeeDemandsViewModel.holidays!,);
   late final RTTRequest _rttRequest = new RTTRequest(rtts: _employeeDemandsViewModel.rtts!,);
-  late final EmployeeAttendance _attendance = new EmployeeAttendance(attendance: _employeeDemandsViewModel.attendance!,);
+  late final EmployeeAttendance _attendance = new EmployeeAttendance(attendance: _employeeDemandsViewModel.attendance!,regionDataControl: widget.regionDataControl,);
 
   int _currentIndex=0;
   @override

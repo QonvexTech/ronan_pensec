@@ -8,7 +8,8 @@ import 'package:ronan_pensec/views/landing_page_screen/web/children/employee_vie
 
 class EmployeeDetails extends StatefulWidget {
   final UserModel employee;
-  EmployeeDetails({Key? key, required this.employee}) : super(key: key);
+  final RegionDataControl regionDataControl;
+  EmployeeDetails({Key? key, required this.employee, required this.regionDataControl}) : super(key: key);
 
   @override
   _EmployeeDetailsState createState() => _EmployeeDetailsState();
@@ -16,7 +17,7 @@ class EmployeeDetails extends StatefulWidget {
 
 class _EmployeeDetailsState extends State<EmployeeDetails> {
   final EmployeeDetailsViewModel _viewModel = EmployeeDetailsViewModel.instance;
-  late final EmployeeDemands _employeeDemands = EmployeeDemands(userId: widget.employee.id,);
+  late final EmployeeDemands _employeeDemands = EmployeeDemands(userId: widget.employee.id,regionDataControl: widget.regionDataControl,);
 
   void populate() {
     setState(() {

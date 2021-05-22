@@ -41,7 +41,7 @@ class _LandingPageScreenWebState extends State<LandingPageScreenWeb>
     _webPlanning,
     _centerView,
     if (auth.loggedUser!.roleId < 3) ...{
-      EmployeeView()
+      EmployeeView(regionDataControl: _webPlanning.regionViewModel.control,)
     },
     Calendar(),
   ];
