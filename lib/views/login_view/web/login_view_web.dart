@@ -305,13 +305,13 @@ class _LoginViewWebState extends State<LoginViewWeb> {
                                   }),
                                   delay: 2.5,
                                   duration: duration),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              AnimatedWidgetX(
-                                  child: LoginTemplate.noAccntBtn(context),
-                                  delay: 3,
-                                  duration: duration),
+                              // const SizedBox(
+                              //   height: 20,
+                              // ),
+                              // AnimatedWidgetX(
+                              //     child: LoginTemplate.noAccntBtn(context),
+                              //     delay: 3,
+                              //     duration: duration),
                               SizedBox(
                                 height: size.height * .2,
                               )

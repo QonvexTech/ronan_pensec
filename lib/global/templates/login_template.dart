@@ -129,26 +129,26 @@ class LoginTemplate {
         ),
       );
 
-  static Widget noAccntBtn(context) => TextButton(
-        onPressed: () {
-          Navigator.push(
-              context, CredentialRoute.register);
-        },
-        child: RichText(
-            text: TextSpan(
-                text: "Vous n'avez pas de compte? ",
-                style: TextStyle(
-                    color: Palette.textFieldColor,
-                    fontSize: 16.5,
-                    fontWeight: FontWeight.w400),
-                children: [
-              TextSpan(
-                  text: "S'inscrire",
-                  style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold))
-            ])),
-      );
+  // static Widget noAccntBtn(context) => TextButton(
+  //       onPressed: () {
+  //         Navigator.push(
+  //             context, CredentialRoute.register);
+  //       },
+  //       child: RichText(
+  //           text: TextSpan(
+  //               text: "Vous n'avez pas de compte? ",
+  //               style: TextStyle(
+  //                   color: Palette.textFieldColor,
+  //                   fontSize: 16.5,
+  //                   fontWeight: FontWeight.w400),
+  //               children: [
+  //             TextSpan(
+  //                 text: "S'inscrire",
+  //                 style: TextStyle(
+  //                     fontSize: 17,
+  //                     fontWeight: FontWeight.bold))
+  //           ])),
+  //     );
 // static Widget get signInWith => Column(
 //   children: [
 //     Text('- OU -',style: TextStyle(

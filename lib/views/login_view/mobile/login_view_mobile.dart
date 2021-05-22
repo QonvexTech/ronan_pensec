@@ -121,7 +121,7 @@ class _LoginViewMobileState extends State<LoginViewMobile> {
                         const SizedBox(
                           height: 20,
                         ),
-                        LoginTemplate.noAccntBtn(context)
+                        // LoginTemplate.noAccntBtn(context)
                       ],
                     ),
                   ),
