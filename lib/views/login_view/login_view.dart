@@ -24,15 +24,6 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setEnabledSystemUIOverlays([]);
-    return Scaffold(
-      body: LayoutBuilder(
-        builder: (_, constraint) => Container(
-          width: constraint.maxWidth,
-          height: constraint.maxHeight,
-          child: constraint.maxWidth > 900 && kIsWeb ? _webView : _mobile,
-        ),
-      ),
-    );
+    return kIsWeb ? _webView : _mobile;
   }
 }
