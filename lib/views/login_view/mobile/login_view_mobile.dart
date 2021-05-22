@@ -112,10 +112,10 @@ class _LoginViewMobileState extends State<LoginViewMobile> {
                                       .whenComplete(() =>
                                       setState(() => _isLoading = false));
                                 } else {
-                                  _loginService.notifier!.showContextedBottomToast(context,msg: "Password field is required");
+                                  _loginService.notifier!.showContextedBottomToast(context,msg: "Le champ du mot de passe est obligatoire");
                                 }
                               } else {
-                                _loginService.notifier!.showContextedBottomToast(context,msg: "Email field is required");
+                                _loginService.notifier!.showContextedBottomToast(context,msg: "Le champ e-mail est obligatoire");
                               }
                             }),
                         const SizedBox(
