@@ -3,11 +3,16 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/models/center_model.dart';
 import 'package:ronan_pensec/routes/center_route.dart';
+import 'package:ronan_pensec/services/data_controls/region_data_control.dart';
 
 class CenterTemplate {
   CenterTemplate._privateConstructor();
+  late RegionDataControl _regionDataControl;
   static final CenterTemplate _instance = CenterTemplate._privateConstructor();
-  static CenterTemplate get instance => _instance;
+  static CenterTemplate instance({required RegionDataControl regionDataControl}) {
+    _instance._regionDataControl = regionDataControl;
+    return _instance;
+  }
 
 
   Widget listData(context,List<CenterModel> _list, int index,{required ValueChanged onDelete, required ValueChanged onEdit, required SlidableController controller}) => Slidable(
@@ -37,7 +42,7 @@ class CenterTemplate {
         child: MaterialButton(
           padding: const EdgeInsets.all(20),
           onPressed: () {
-            Navigator.push(context, CenterRoute.details(_list[index]));
+            Navigator.push(context, CenterRoute.details(_list[index],_regionDataControl));
             // onPressed(_list[index]);
             // setState(() {
             //   _selectedRegion = regionList.data![index];
@@ -136,7 +141,7 @@ class CenterTemplate {
                     color: MaterialStateProperty.resolveWith((states) => index % 2 == 0 ? Palette.gradientColor[0].withOpacity(0.3) : Colors.grey.shade100),
                   onSelectChanged: (data) {
                     // onPressed(index);
-                    Navigator.push(context, CenterRoute.details(_list[index]));
+                    Navigator.push(context, CenterRoute.details(_list[index],_regionDataControl));
                   },
                   cells: [
                     DataCell(

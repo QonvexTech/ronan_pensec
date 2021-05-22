@@ -17,26 +17,29 @@ class LandingPageScreenWeb extends StatefulWidget {
 class _LandingPageScreenWebState extends State<LandingPageScreenWeb>
     with SingleTickerProviderStateMixin, LandingPageMainHelper {
   late final LandingPageService _service = LandingPageService.instance(context);
+  late final WebPlanning _webPlanning = WebPlanning(
+    menuItems: menuItems,
+    onFilterCallback: (val){
+      setState(() {
+        currentTabIndex = val;
+        _tabController.index = val;
+      });
+    },
+  );
+  late final CenterView _centerView = CenterView(
+    onBack: (val) {},
+    control: _webPlanning.regionViewModel.control,
+    onFilterCallback: (value) {
+      setState(() {
+        currentTabIndex = value;
+        _tabController.index = value;
+      });
+    },
+    menuItems: menuItems,
+  );
   late final List<Widget> _contents = [
-    WebPlanning(
-      menuItems: menuItems,
-      onFilterCallback: (val){
-        setState(() {
-          currentTabIndex = val;
-          _tabController.index = val;
-        });
-      },
-    ),
-    CenterView(
-        onBack: (val) {},
-        onFilterCallback: (value) {
-          setState(() {
-            currentTabIndex = value;
-            _tabController.index = value;
-          });
-        },
-        menuItems: menuItems,
-    ),
+    _webPlanning,
+    _centerView,
     if (auth.loggedUser!.roleId < 3) ...{
       EmployeeView()
     },

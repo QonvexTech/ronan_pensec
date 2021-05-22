@@ -474,8 +474,8 @@ class _CalendarFullState extends State<CalendarFull> {
                                                                         child: Stack(
                                                                           children: [
                                                                             ///Holiday
-                                                                            if(user.holidays != null && user.holidays!.length > 0)...{
-                                                                              for(HolidayModel holiday in user.holidays!)...{
+                                                                            if(user.holidays.length > 0)...{
+                                                                              for(HolidayModel holiday in user.holidays)...{
                                                                                 if(!_calendarViewModel.service.isSunday(DateTime(_calendarViewModel.currentYear, _calendarViewModel.currentMonth, daysIndex + 1)) &&
                                                                                     _calendarViewModel.service.isInRange(
                                                                                         holiday.startDate,
@@ -499,8 +499,8 @@ class _CalendarFullState extends State<CalendarFull> {
                                                                               }
                                                                             },
                                                                             ///RTT
-                                                                            if(user.rtts != null && user.rtts!.length > 0)...{
-                                                                              for(RTTModel rtt in user.rtts!)...{
+                                                                            if(user.rtts.length > 0)...{
+                                                                              for(RTTModel rtt in user.rtts)...{
                                                                                 if(rtt.status == 1 && !_calendarViewModel.service.isSunday(DateTime(_calendarViewModel.currentYear, _calendarViewModel.currentMonth, daysIndex + 1)) && _calendarViewModel.service.isSameDay(DateTime(_calendarViewModel.currentYear, _calendarViewModel.currentMonth, daysIndex + 1), rtt.date))...{
                                                                                   Tooltip(
                                                                                     message: "${rtt.no_of_hrs} hrs.",

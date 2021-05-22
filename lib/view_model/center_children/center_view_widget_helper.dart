@@ -308,7 +308,8 @@ class CenterViewWidgetHelper {
       required ValueChanged<int> assignUserCallback,
       required ValueChanged<UserModel?> callback,
       required int centerId,
-      required ValueChanged<List<UserModel>> removeAssignCallback}) {
+      required ValueChanged<List<UserModel>> removeAssignCallback,
+      required ValueChanged<int> toRemoveUserId}) {
     return [
       AnimatedContainer(
         duration: duration - Duration(milliseconds: 400),
@@ -405,7 +406,9 @@ class CenterViewWidgetHelper {
                                     source: assignedUsers, onRemoveCallback:
                                         (List<UserModel> removed) {
                                   removeAssignCallback(removed);
-                                }, centerId: centerId),
+                                }, centerId: centerId, onRemoveUser: (int userId){
+                                  toRemoveUserId(userId);
+                                    }),
                               ),
                             )
                           : Center(
@@ -519,6 +522,9 @@ class CenterViewWidgetHelper {
                                                 sauce: assignedUsers,
                                                 id: displayData[index].id),
                                             true,
+                                            onRemoveUser: (int userId){
+                                              toRemoveUserId(userId);
+                                            },
                                             centerId: centerId,
                                             source: assignedUsers,
                                             onRemoveCallback:
@@ -543,7 +549,7 @@ class CenterViewWidgetHelper {
   Widget viewBodyDetail(context,UserModel user, bool isAssigned, bool isAll,
           {required ValueChanged<List<UserModel>> onRemoveCallback,
           required List<UserModel> source,
-          required int centerId}) =>
+          required int centerId,required ValueChanged<int> onRemoveUser}) =>
       Container(
         width: double.infinity,
         height: 50,
@@ -595,10 +601,12 @@ class CenterViewWidgetHelper {
                         .removeAssignment(context,userId: user.id, centerId: centerId)
                         .then((value) {
                       if (value) {
+                        onRemoveUser(user.id);
                         onRemoveCallback(_control.removeLocal(source, user.id));
                       } else {
                         onRemoveCallback(source);
                       }
+
                     });
                   },
                   icon: Icon(

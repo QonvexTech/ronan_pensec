@@ -4,6 +4,7 @@ import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/global/templates/general_template.dart';
 import 'package:ronan_pensec/models/user_model.dart';
 import 'package:ronan_pensec/routes/employee_route.dart';
+import 'package:ronan_pensec/services/data_controls/region_data_control.dart';
 import 'package:ronan_pensec/view_model/employee_view_model.dart';
 
 class EmployeeView extends StatefulWidget {

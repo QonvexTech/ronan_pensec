@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ronan_pensec/global/templates/general_template.dart';
 import 'package:ronan_pensec/models/center_model.dart';
+import 'package:ronan_pensec/services/data_controls/region_data_control.dart';
 import 'package:ronan_pensec/view_model/center_children/center_view_widget_helper.dart';
 import 'package:ronan_pensec/view_model/center_view_model.dart';
 
@@ -10,9 +11,10 @@ class CenterView extends StatefulWidget {
   final ValueChanged<int> onFilterCallback;
   final List<PopupMenuItem<int>> menuItems;
   final int? regionId;
-
+  final RegionDataControl control;
   CenterView(
       {required this.onBack,
+        required this.control,
       this.centers,
       required this.onFilterCallback,
       required this.menuItems,
@@ -23,7 +25,7 @@ class CenterView extends StatefulWidget {
 }
 
 class _CenterViewState extends State<CenterView> {
-  final CenterViewModel _centerViewModel = CenterViewModel.instance;
+  late final CenterViewModel _centerViewModel = CenterViewModel.instance(widget.control);
   final CenterViewWidgetHelper _helper = CenterViewWidgetHelper.instance;
   bool _isLoading = false;
 

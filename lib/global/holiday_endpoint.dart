@@ -4,4 +4,5 @@ class HolidayEndpoint {
   static String approveRequest({required int holidayId}) => "$_baseEndpoint/approve_request/$holidayId";
   static final String create = "$_baseEndpoint/request_holiday";
   static String deleteHoliday({required int holidayId}) => "$_baseEndpoint/decline_holiday";
+  static String getEmployeeHoliday({required int employeeId}) => "$_baseEndpoint/user_requests/$employeeId";
 }

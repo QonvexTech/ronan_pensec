@@ -3,6 +3,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/models/region_model.dart';
 import 'package:ronan_pensec/services/dashboard_services/region_service.dart';
+import 'package:ronan_pensec/services/data_controls/calendar_data_control.dart';
 import 'package:ronan_pensec/services/data_controls/region_data_control.dart';
 
 class RegionViewModel {
@@ -19,7 +20,9 @@ class RegionViewModel {
   int _currentPage = 0;
   bool _isLoading = false;
   RegionModel? _selectedRegion;
-  static final RegionDataControl _control = RegionDataControl.instance;
+
+  static final CalendarDataControl _calendarDataControl = CalendarDataControl.instance;
+  static final RegionDataControl _control = RegionDataControl.instance(_calendarDataControl);
   RegionDataControl get control => _control;
    final RegionService _service = RegionService.instance(_control);
 

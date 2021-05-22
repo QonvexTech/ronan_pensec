@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:ronan_pensec/models/calendar/rtt_model.dart';
 
 class RTTRequest extends StatefulWidget {
-  final int userId;
-  RTTRequest({Key? key, required this.userId}) : super(key: key);
+  final List<RTTModel> rtts;
+  RTTRequest({Key? key, required this.rtts}) : super(key: key);
   @override
   _RTTRequestState createState() => _RTTRequestState();
 }

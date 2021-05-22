@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:ronan_pensec/services/data_controls/region_data_control.dart';
 import 'package:ronan_pensec/services/data_controls/user_data_control.dart';
 
 class EmployeeDetailsViewModel {

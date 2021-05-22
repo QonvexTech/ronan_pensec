@@ -1,14 +1,13 @@
-import 'package:adaptive_container/adaptive_container.dart';
 import 'package:flutter/material.dart';
 import 'package:ronan_pensec/global/palette.dart';
-import 'package:ronan_pensec/global/templates/animated_widget.dart';
 import 'package:ronan_pensec/models/user_model.dart';
+import 'package:ronan_pensec/services/data_controls/calendar_data_control.dart';
+import 'package:ronan_pensec/services/data_controls/region_data_control.dart';
 import 'package:ronan_pensec/view_model/employee_children/employee_details_view_model.dart';
 import 'package:ronan_pensec/views/landing_page_screen/web/children/employee_view_children/employee_detail_children/employee_demands.dart';
 
 class EmployeeDetails extends StatefulWidget {
   final UserModel employee;
-
   EmployeeDetails({Key? key, required this.employee}) : super(key: key);
 
   @override

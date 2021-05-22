@@ -3,13 +3,14 @@ import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/models/center_model.dart';
 import 'package:ronan_pensec/models/user_model.dart';
 import 'package:ronan_pensec/services/dashboard_services/user_assign_center.dart';
+import 'package:ronan_pensec/services/data_controls/region_data_control.dart';
 import 'package:ronan_pensec/view_model/center_children/center_view_widget_helper.dart';
 import 'package:ronan_pensec/view_model/employee_view_model.dart';
 
 class CenterDetails extends StatefulWidget {
   final CenterModel model;
-
-  CenterDetails({Key? key, required this.model}) : super(key: key);
+  final RegionDataControl regionDataControl;
+  CenterDetails({Key? key, required this.model,required this.regionDataControl}) : super(key: key);
 
   @override
   _CenterDetailsState createState() => _CenterDetailsState();
@@ -51,6 +52,12 @@ class _CenterDetailsState extends State<CenterDetails> {
 
   List<Widget> children(Size size) => _helper.children(context,
     centerId: widget.model.id,
+    toRemoveUserId: (int id){
+    print(id);
+      setState(() {
+        widget.regionDataControl.removeUserFromCenter(id, widget.model.id);
+      });
+    },
     removeAssignCallback: (removed){
       setState(() {
         widget.model.users = removed;
@@ -63,7 +70,9 @@ class _CenterDetailsState extends State<CenterDetails> {
           }else{
             _helper.service.notifier.showContextedBottomToast(context,msg: "Cet utilisateur est déjà affecté à ce centre");
           }
+          widget.regionDataControl.appendUserToCenter(_selectedUser!, widget.model.id);
           _selectedUser = null;
+
         });
       },
       isRow: size.width > 700,

@@ -7,12 +7,15 @@ import 'package:ronan_pensec/view_model/calendar_view_model.dart';
 import 'package:ronan_pensec/views/landing_page_screen/web/children/calendar_planning_view_children/calendar_mobile.dart';
 
 class EmployeeCalendarList extends StatefulWidget {
+
+  final CalendarViewModel calendarViewModel;
+  EmployeeCalendarList({required this.calendarViewModel});
   @override
   _EmployeeCalendarListState createState() => _EmployeeCalendarListState();
 }
 
 class _EmployeeCalendarListState extends State<EmployeeCalendarList> {
-  final CalendarViewModel _calendarViewModel = CalendarViewModel.instance;
+  late final CalendarViewModel _calendarViewModel = widget.calendarViewModel;
   final UserDataControl _userDataControl = UserDataControl.instance;
   @override
   Widget build(BuildContext context) {
@@ -35,7 +38,7 @@ class _EmployeeCalendarListState extends State<EmployeeCalendarList> {
                                   child: CalendarMobile(
                                       userData: calendarData.data![index]),
                                   type: PageTransitionType.leftToRightJoined,
-                                  childCurrent: EmployeeCalendarList()));
+                                  childCurrent: EmployeeCalendarList(calendarViewModel: _calendarViewModel,)));
                         },
                       child: ListTile(
                         leading: Container(
@@ -51,47 +54,6 @@ class _EmployeeCalendarListState extends State<EmployeeCalendarList> {
                         title: Text("${calendarData.data![index].full_name}"),
                         subtitle: Text("${calendarData.data![index].address}",maxLines: 2, overflow: TextOverflow.ellipsis,),
                       )
-                        // child: ListTile(
-                        //   title: Text("${calendarData.data![index].full_name}"),
-                        //   subtitle: Column(
-                        //     children: [
-                        //       Container(
-                        //         width: double.infinity,
-                        //         child: Text(
-                        //           "${calendarData.data![index].address}",
-                        //           maxLines: 2,
-                        //           overflow: TextOverflow.ellipsis,
-                        //         ),
-                        //       ),
-                        //       const SizedBox(
-                        //         height: 10,
-                        //       ),
-                        //       Container(
-                        //         width: double.infinity,
-                        //         child: Row(
-                        //           children: [
-                        //             Expanded(
-                        //               child: Container(
-                        //                 alignment:
-                        //                     AlignmentDirectional.centerStart,
-                        //                 child: Text(
-                        //                     "Total des RTT : ${calendarData.data![index].rtts!.length}"),
-                        //               ),
-                        //             ),
-                        //             Expanded(
-                        //               child: Container(
-                        //                 alignment:
-                        //                     AlignmentDirectional.centerStart,
-                        //                 child: Text(
-                        //                     "Vacances totales : ${calendarData.data![index].holidays!.length}"),
-                        //               ),
-                        //             )
-                        //           ],
-                        //         ),
-                        //       )
-                        //     ],
-                        //   ),
-                        // ),
                     ),
                   ),
                   itemCount: calendarData.data!.length,

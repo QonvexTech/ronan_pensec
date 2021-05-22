@@ -100,11 +100,11 @@ class CalendarService {
       }).then((response) {
         var data = json.decode(response.body);
         if(response.statusCode == 200){
-          if(data is List){
-            _calendarDataControl.populateAll(data);
-          }else{
-            _calendarDataControl.populateAll([data]);
-          }
+          // if(data is List){
+          //   _calendarDataControl.populateAll(data);
+          // }else{
+          //   _calendarDataControl.populateAll([data]);
+          // }
           return true;
         }else{
           _notifier.showContextedBottomToast(context,msg: "Erreur ${response.statusCode}, ${response.reasonPhrase}");
