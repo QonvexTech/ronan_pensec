@@ -9,7 +9,7 @@ class UserEndpoint {
 
   /// Method : GET
   static final String viewAllUsers = "$_baseSubDomain";
-
+  static String get base => _baseSubDomain;
   ///Method : GET
   static String paginated(String sub) => "$_baseSubDomain/$sub";
 

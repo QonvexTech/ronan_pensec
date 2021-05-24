@@ -165,7 +165,7 @@ class GeneralTemplate {
       {required Widget child,
       required double width,
       required double height,
-      required Widget title}) {
+      required Widget title, Function? onDismissed}) {
     showGeneralDialog(
         barrierColor: Colors.black.withOpacity(0.5),
         transitionBuilder: (context, a1, a2, widget) {
@@ -193,7 +193,9 @@ class GeneralTemplate {
         barrierDismissible: true,
         barrierLabel: '',
         context: context,
-        pageBuilder: (context, animation1, animation2) => Container());
+        pageBuilder: (context, animation1, animation2) => Container()).then((value) {
+          onDismissed!();
+    });
   }
 
   static List<IconSlideAction> sliders(

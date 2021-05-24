@@ -9,14 +9,19 @@ import 'package:ronan_pensec/view_model/employee_view_model.dart';
 
 class EmployeeView extends StatefulWidget {
   final RegionDataControl regionDataControl;
+
   EmployeeView({required this.regionDataControl});
+
   @override
   _EmployeeViewState createState() => _EmployeeViewState();
 }
 
 class _EmployeeViewState extends State<EmployeeView> {
+
   final EmployeeViewModel _viewModel = EmployeeViewModel.instance;
   final Auth _auth = Auth.instance;
+
+
   @override
   void initState() {
     if (!_viewModel.employeeDataControl.hasFetched) {
@@ -70,7 +75,8 @@ class _EmployeeViewState extends State<EmployeeView> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
                 children: [
-                  GeneralTemplate.kTitle("Liste de tous les employés", context),
+                  GeneralTemplate.kTitle(
+                      "Liste de tous les employés", context),
                   Spacer(),
                   if (_size.width > 900) ...{
                     IconButton(
@@ -96,7 +102,9 @@ class _EmployeeViewState extends State<EmployeeView> {
                   if (_auth.loggedUser!.roleId == 1) ...{
                     IconButton(
                       tooltip: "Créer un nouvel employé",
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(context, EmployeeRoute.create(widget.regionDataControl));
+                      },
                       padding: const EdgeInsets.all(0),
                       icon: Center(
                         child: Icon(
@@ -130,25 +138,29 @@ class _EmployeeViewState extends State<EmployeeView> {
                                 rows: List.generate(
                                     userList.data!.length,
                                     (index) => DataRow(
-                                        color:
-                                            MaterialStateProperty.resolveWith(
-                                                (states) => index % 2 == 0
-                                                    ? Palette.gradientColor[0]
+                                        color: MaterialStateProperty
+                                            .resolveWith((states) =>
+                                                index % 2 == 0
+                                                    ? Palette
+                                                        .gradientColor[0]
                                                         .withOpacity(0.3)
                                                     : Colors.grey.shade100),
                                         onSelectChanged: (selected) {
                                           Navigator.push(
                                               context,
                                               EmployeeRoute.details(
-                                                  userList.data![index], widget.regionDataControl));
+                                                  userList.data![index],
+                                                  widget
+                                                      .regionDataControl));
                                         },
                                         cells: _viewModel.template
-                                            .kDataCell(userList.data![index]))),
+                                            .kDataCell(
+                                                userList.data![index]))),
                               ),
                               Container(
                                 width: double.infinity,
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 20),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20),
                                 height: 50,
                                 child: _viewModel.employeePagination
                                             .totalDataCount ==
@@ -163,24 +175,30 @@ class _EmployeeViewState extends State<EmployeeView> {
                                             width: 10,
                                           ),
                                           PopupMenuButton(
-                                            padding: const EdgeInsets.all(0),
+                                            padding:
+                                                const EdgeInsets.all(0),
                                             initialValue: _viewModel
-                                                .employeePagination.dataToShow,
+                                                .employeePagination
+                                                .dataToShow,
                                             onSelected: (int value) {
                                               if (this.mounted) {
                                                 setState(() {
-                                                  _viewModel.employeePagination
+                                                  _viewModel
+                                                      .employeePagination
                                                       .dataToShow = value;
-                                                  _viewModel.employeePagination
+                                                  _viewModel
+                                                          .employeePagination
                                                           .firstPageUrl =
                                                       "${_viewModel.employeePagination.dataToShow}" +
                                                           "?page=1";
-                                                  _viewModel.employeePagination
+                                                  _viewModel
+                                                          .employeePagination
                                                           .currentPageUrl =
                                                       _viewModel
                                                           .employeePagination
                                                           .firstPageUrl;
-                                                  _viewModel.employeeDataControl
+                                                  _viewModel
+                                                      .employeeDataControl
                                                       .hasFetched = false;
                                                 });
                                                 this.fetcher(_viewModel
@@ -195,7 +213,8 @@ class _EmployeeViewState extends State<EmployeeView> {
                                                   Text(
                                                       "${_viewModel.employeePagination.dataToShow}"),
                                                   Spacer(),
-                                                  Icon(Icons.arrow_drop_down),
+                                                  Icon(Icons
+                                                      .arrow_drop_down),
                                                 ],
                                               ),
                                             ),
@@ -236,7 +255,8 @@ class _EmployeeViewState extends State<EmployeeView> {
                                                   "Aller à la première page",
                                               onPressed: () {
                                                 setState(() {
-                                                  _viewModel.employeePagination
+                                                  _viewModel
+                                                      .employeePagination
                                                       .currentPage = 1;
                                                 });
                                                 this.fetcher(
@@ -248,11 +268,13 @@ class _EmployeeViewState extends State<EmployeeView> {
                                                   .currentPage >
                                               1) ...{
                                             IconButton(
-                                              icon: Icon(Icons.chevron_left),
+                                              icon:
+                                                  Icon(Icons.chevron_left),
                                               tooltip: "Précédent",
                                               onPressed: () {
                                                 setState(() {
-                                                  _viewModel.employeePagination
+                                                  _viewModel
+                                                      .employeePagination
                                                       .currentPage = _viewModel
                                                           .employeePagination
                                                           .currentPage -
@@ -265,7 +287,8 @@ class _EmployeeViewState extends State<EmployeeView> {
                                           },
                                           for (int i = 0;
                                               i <
-                                                  _viewModel.employeePagination
+                                                  _viewModel
+                                                      .employeePagination
                                                       .lastPage!;
                                               i++) ...{
                                             if (i + 1 == 1 ||
@@ -312,11 +335,13 @@ class _EmployeeViewState extends State<EmployeeView> {
                                               _viewModel.employeePagination
                                                   .lastPage!) ...{
                                             IconButton(
-                                              icon: Icon(Icons.chevron_right),
+                                              icon:
+                                                  Icon(Icons.chevron_right),
                                               tooltip: "Suivant",
                                               onPressed: () {
                                                 setState(() {
-                                                  _viewModel.employeePagination
+                                                  _viewModel
+                                                      .employeePagination
                                                       .currentPage++;
                                                 });
                                                 this.fetcher(
@@ -326,10 +351,12 @@ class _EmployeeViewState extends State<EmployeeView> {
                                           },
                                           IconButton(
                                             icon: Icon(Icons.last_page),
-                                            tooltip: "Aller à la dernière page",
+                                            tooltip:
+                                                "Aller à la dernière page",
                                             onPressed: () {
                                               setState(() {
-                                                _viewModel.employeePagination
+                                                _viewModel
+                                                        .employeePagination
                                                         .currentPage =
                                                     _viewModel
                                                         .employeePagination
@@ -352,7 +379,8 @@ class _EmployeeViewState extends State<EmployeeView> {
                                 Navigator.push(
                                     context,
                                     EmployeeRoute.details(
-                                        userList.data![index], widget.regionDataControl));
+                                        userList.data![index],
+                                        widget.regionDataControl));
                               },
                               child: _viewModel.template
                                   .kDataList(user: userList.data![index]),

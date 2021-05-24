@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:ronan_pensec/global/templates/employee_template.dart';
 import 'package:ronan_pensec/models/pagination_model.dart';
 import 'package:ronan_pensec/services/dashboard_services/employee_service.dart';
@@ -10,6 +9,7 @@ class EmployeeViewModel{
   static EmployeeViewModel get instance{
     return _instance;
   }
+
   final EmployeeTemplate template = EmployeeTemplate.instance;
   static final EmployeeDataControl _employeeDataControl = EmployeeDataControl.instance;
   EmployeeDataControl get employeeDataControl => _employeeDataControl;

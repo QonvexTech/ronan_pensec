@@ -29,7 +29,28 @@ class EmployeeService {
     _instance._model = model;
     return _instance;
   }
+  
+  Future<UserModel?> create(context, {required Map body}) async {
+    try{
+      return await http.post(Uri.parse("${BaseEnpoint.URL}${UserEndpoint.base}"),headers: {
+        "Accept" : "application/json",
+        HttpHeaders.authorizationHeader : "Bearer ${_auth.token}"
+      }, body: body).then((response) {
+        var data = json.decode(response.body);
+        print("CREATED USER: $data");
+        if(response.statusCode == 200){
+          _notifier.showContextedBottomToast(context, msg: "Créé avec succès");
+          return UserModel.fromJson(parsedJson: data['user']);
 
+        }
+        _notifier.showContextedBottomToast(context, msg: "Erreur ${response.statusCode}, ${response.reasonPhrase}");
+        return null;
+      });
+    }catch(e){
+      _notifier.showContextedBottomToast(context, msg: "Erreur : $e");
+      return null;
+    }
+  }
   Future fetchAll(context, {required String subDomain}) async {
     try {
       print("FETCHING $subDomain");
