@@ -113,6 +113,4 @@ class EmployeeCreateViewModel{
     print(body);
     return await _instance.service.create(context, body: _instance.body);
   }
-
-
 }

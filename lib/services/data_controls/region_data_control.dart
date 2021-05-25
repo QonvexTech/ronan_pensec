@@ -74,6 +74,30 @@ class RegionDataControl {
     });
     _list.add(this.current);
   }
+  appendAttendancePureUser(AttendanceModel attendanceModel, userId,){
+    for(RegionModel region in this.current){
+      for(CenterModel center in region.centers!){
+        for(UserModel user in center.users){
+          if(user.id == userId){
+            user.attendances.add(attendanceModel);
+          }
+        }
+      }
+    }
+    _list.add(this.current);
+  }
+  removeAttendancePureUser(int attendanceId, int userId) {
+    for(RegionModel region in this.current){
+      for(CenterModel center in region.centers!){
+        for(UserModel user in center.users){
+          if(user.id == userId){
+            user.attendances.removeWhere((element) => element.id == attendanceId);
+          }
+        }
+      }
+    }
+    _list.add(this.current);
+  }
   appendAttendance(AttendanceModel attendanceModel, userId, centerId) {
     for(RegionModel region in this.current){
       for(CenterModel center in region.centers!){
@@ -88,6 +112,7 @@ class RegionDataControl {
     }
     _list.add(this.current);
   }
+
   appendRTT(RTTModel rtt, userId, centerId){
     for(RegionModel region in this.current){
       for(CenterModel center in region.centers!){

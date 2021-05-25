@@ -5,7 +5,7 @@ class UserEndpoint {
   /// instance of auth
   static final Auth _auth = Auth.instance;
   /// Method : PUT
-  static final String update = "$_baseSubDomain/${_auth.loggedUser!.id}";
+  static String update(int userId) => "$_baseSubDomain/$userId";
 
   /// Method : GET
   static final String viewAllUsers = "$_baseSubDomain";

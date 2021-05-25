@@ -1,9 +1,11 @@
 import 'package:intl/intl.dart';
 import 'package:ronan_pensec/global/palette.dart';
+import 'package:ronan_pensec/models/calendar/attendance_model.dart';
 import 'package:ronan_pensec/models/calendar/holiday_model.dart';
 import 'package:ronan_pensec/models/calendar/rtt_model.dart';
 import 'package:ronan_pensec/models/user_model.dart';
 import 'package:flutter/material.dart';
+import 'package:ronan_pensec/view_model/calendar_half_day_clip.dart';
 import 'package:ronan_pensec/view_model/calendar_view_model.dart';
 
 class CalendarMobile extends StatefulWidget {
@@ -200,6 +202,48 @@ class _CalendarMobileState extends State<CalendarMobile> {
                           Text("Vacance")
                         ],
                       ),
+                    ),
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    Container(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: 10,
+                            height: 10,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(3),
+                                color: Colors.red),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Text("Absent")
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    Container(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: 10,
+                            height: 10,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(3),
+                                color: Colors.grey.shade900),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Text("En retard")
+                        ],
+                      ),
                     )
                   ],
                 ),
@@ -316,17 +360,72 @@ class _CalendarMobileState extends State<CalendarMobile> {
                                     )
                                   },
                                 },
-
+                                ///Attendance
+                                for (AttendanceModel attendance in widget.userData.attendances) ...{
+                                  if (_calendarViewModel.service.isSameMonth(
+                                      DateTime(_calendarViewModel.currentYear, _calendarViewModel.currentMonth),
+                                      attendance.date) &&
+                                      !_calendarViewModel.service.isSunday(DateTime(
+                                          _calendarViewModel.currentYear, _calendarViewModel.currentMonth, d ?? 0)) &&
+                                      _calendarViewModel.service.isSameDay(
+                                          DateTime(_calendarViewModel.currentYear, _calendarViewModel.currentMonth,
+                                              d ?? 0),
+                                          attendance.date)) ...{
+                                    Tooltip(
+                                      message: "${attendance.status == 0 ? "Absent" : "En retard"}",
+                                      child: attendance.status == 0 ? Container(
+                                        width: size.width / 7,
+                                        color: !_calendarViewModel.service.isSunday(DateTime(
+                                            _calendarViewModel.currentYear,
+                                            _calendarViewModel.currentMonth,
+                                            d ?? 0))
+                                            ? _calendarViewModel.service.isSameDay(
+                                            DateTime(_calendarViewModel.currentYear,
+                                                _calendarViewModel.currentMonth, d ?? 0),
+                                            attendance.date)
+                                            ? Colors.red
+                                            : Colors.transparent
+                                            : Colors.grey.shade400,
+                                      ) : ClipPath(
+                                        clipper: CalendarHalfdayClip(),
+                                        child: Container(
+                                          width: size.width / 7,
+                                          color: !_calendarViewModel.service.isSunday(DateTime(
+                                              _calendarViewModel.currentYear,
+                                              _calendarViewModel.currentMonth,
+                                              d ?? 0))
+                                              ? _calendarViewModel.service.isSameDay(
+                                              DateTime(_calendarViewModel.currentYear,
+                                                  _calendarViewModel.currentMonth, d ?? 0),
+                                              attendance.date)
+                                              ? Colors.grey.shade900
+                                              : Colors.transparent
+                                              : Colors.grey.shade400,
+                                        ),
+                                      ),
+                                    )
+                                  },
+                                },
                                 /// Day of the month
-                                Container(
-                                  color: _calendarViewModel.service.isSunday(DateTime(
-                                          _calendarViewModel.currentYear, _calendarViewModel.currentMonth, d ?? 0))
-                                      ? Colors.grey.shade300
-                                      : Colors.transparent,
-                                  child: Center(
+                                if(_calendarViewModel.service.isSunday(DateTime(
+                                    _calendarViewModel.currentYear, _calendarViewModel.currentMonth, d ?? 0)))...{
+                                  Center(
                                     child: Text("${d ?? ""}"),
-                                  ),
-                                )
+                                  )
+                                }else...{
+                                  Center(
+                                    child: Text("${d ?? ""}"),
+                                  )
+                                }
+                                // Container(
+                                //   color: _calendarViewModel.service.isSunday(DateTime(
+                                //           _calendarViewModel.currentYear, _calendarViewModel.currentMonth, d ?? 0))
+                                //       ? Colors.grey.shade300
+                                //       : Colors.transparent,
+                                //   child: Center(
+                                //     child: Text("${d ?? ""}"),
+                                //   ),
+                                // )
                                 // Container(
                                 //   width: double.infinity,
                                 //   height: widget.bodySettings.height,
@@ -497,6 +596,8 @@ class _CalendarMobileState extends State<CalendarMobile> {
                   ),
                 )
               },
+              /// Attendance Date Data
+              ///
 
               ///Holiday Date Data
               Container(

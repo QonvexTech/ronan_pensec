@@ -11,11 +11,11 @@ class _CalendarState extends State<CalendarPlanning> {
 
   @override
   void initState() {
-    if (!_calendarViewModel.calendarDataControl.hasFetch) {
-      _calendarViewModel.service
-          .fetchAll(context)
-          .then((value) => setState(() => _calendarViewModel.calendarDataControl.hasFetch = value));
-    }
+    // if (!_calendarViewModel.calendarDataControl.hasFetch) {
+    //   _calendarViewModel.service
+    //       .fetchAll(context)
+    //       .then((value) => setState(() => _calendarViewModel.calendarDataControl.hasFetch = value));
+    // }
     super.initState();
   }
 

@@ -22,7 +22,7 @@ class _EmployeeDemandsState extends State<EmployeeDemands> with SingleTickerProv
   late final TabController _tabController = new TabController(length: 3, vsync: this);
   late final HolidayRequest _holidayRequest = new HolidayRequest(holidays: _employeeDemandsViewModel.holidays!,);
   late final RTTRequest _rttRequest = new RTTRequest(rtts: _employeeDemandsViewModel.rtts!,);
-  late final EmployeeAttendance _attendance = new EmployeeAttendance(attendance: _employeeDemandsViewModel.attendance!,regionDataControl: widget.regionDataControl,);
+  late final EmployeeAttendance _attendance = new EmployeeAttendance(attendance: _employeeDemandsViewModel.attendance!,regionDataControl: widget.regionDataControl,userId: widget.userId,);
 
   int _currentIndex=0;
   @override

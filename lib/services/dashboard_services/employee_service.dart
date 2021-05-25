@@ -7,6 +7,7 @@ import 'package:ronan_pensec/global/holiday_endpoint.dart';
 import 'package:ronan_pensec/global/rtt_endpoint.dart';
 import 'package:ronan_pensec/global/templates/attendance_endpoint.dart';
 import 'package:ronan_pensec/global/user_endpoint.dart';
+import 'package:ronan_pensec/models/pagination_model.dart';
 import 'package:ronan_pensec/services/data_controls/employee_data_control.dart';
 import 'package:ronan_pensec/services/toast_notifier.dart';
 import 'package:ronan_pensec/models/user_model.dart';
@@ -29,7 +30,27 @@ class EmployeeService {
     _instance._model = model;
     return _instance;
   }
-  
+  Future<bool> update(context, {required Map body, required int userId}) async {
+    try{
+      print(body);
+      return await http.put(Uri.parse("${BaseEnpoint.URL}${UserEndpoint.update(userId)}"),body: body,headers: {
+        "Accept" : "application/json",
+        HttpHeaders.authorizationHeader : "Bearer ${_auth.token}"
+      }).then((value) {
+        _notifier.showContextedBottomToast(context, msg: "${value.reasonPhrase}");
+        var data = json.decode(value.body);
+        print("UPDATE DATA : $data");
+        if(value.statusCode == 200){
+          return true;
+        }
+        return false;
+      });
+    }catch(e){
+      print("UPDATE Erreur : $e");
+      _notifier.showContextedBottomToast(context, msg: "UPDATE Erreur : $e");
+      return false;
+    }
+  }
   Future<UserModel?> create(context, {required Map body}) async {
     try{
       return await http.post(Uri.parse("${BaseEnpoint.URL}${UserEndpoint.base}"),headers: {
@@ -74,7 +95,7 @@ class EmployeeService {
     }
   }
 
-  Future<List<UserModel>> getData(context, {required String subDomain}) async {
+  Future<PaginationModel?> getData(context, {required String subDomain}) async {
     try {
       return await http.get(
           Uri.parse("${BaseEnpoint.URL}${UserEndpoint.paginated(subDomain)}"),
@@ -83,18 +104,19 @@ class EmployeeService {
             HttpHeaders.authorizationHeader: "Bearer ${_auth.token}"
           }).then((response) {
         var data = json.decode(response.body);
-        List<UserModel> _lst = [];
-        if (response.statusCode == 200 && data['data'] != null) {
-          for (var item in data['data']) {
-            _lst.add(UserModel.fromJson(parsedJson: item));
-          }
-        }
-        return _lst;
+        print(data);
+        // List<UserModel> _lst = [];
+        // if (response.statusCode == 200 && data['data'] != null) {
+        //   for (var item in data['data']) {
+        //     _lst.add(UserModel.fromJson(parsedJson: item));
+        //   }
+        // }
+        return PaginationModel.fromJson(data);
       });
     } catch (e) {
       print(e);
       _notifier.showContextedBottomToast(context, msg: "Erreur : $e");
-      return [];
+      return null;
     }
   }
 
@@ -178,6 +200,49 @@ class EmployeeService {
       print("ERREUR ATTENDANCE : $e ");
       _notifier.showContextedBottomToast(context, msg: "Erreur : $e");
       return [];
+    }
+  }
+  Future<AttendanceModel?> addAttendance(context, {required int userId, required DateTime date, required int type}) async {
+    try{
+      return await http.post(Uri.parse("${BaseEnpoint.URL}${AttendanceEndpoint.base}"),body: {
+        "user_id" : userId.toString(),
+        "date" : date.toString(),
+        "status" : type.toString()
+      },headers: {
+        "accept" : "application/json",
+        HttpHeaders.authorizationHeader : "Bearer ${_auth.token}"
+      }).then((response) {
+        var data = json.decode(response.body);
+        print(data);
+        if(response.statusCode == 200){
+          _notifier.showContextedBottomToast(context, msg: "Créé avec succès");
+          return AttendanceModel.fromJson(data['status']);
+        }else if(response.statusCode == 402){
+          _notifier.showContextedBottomToast(context, msg: "${data['message']}");
+        }
+        return null;
+      });
+    }catch(e){
+      _notifier.showContextedBottomToast(context, msg: "Erreur : $e");
+      return null;
+    }
+  }
+  Future<bool> removeAttendance(context, {required int id}) async {
+    try{
+      return await http.delete(Uri.parse("${BaseEnpoint.URL}${AttendanceEndpoint.base}/$id"),headers: {
+        "Accept" : "application/json",
+        HttpHeaders.authorizationHeader : "Bearer ${_auth.token}"
+      }).then((response) {
+        if(response.statusCode == 200){
+          _notifier.showContextedBottomToast(context, msg: "Supprimé avec succès");
+          return true;
+        }
+        _notifier.showContextedBottomToast(context, msg: "Erreur ${response.statusCode}, ${response.reasonPhrase}");
+        return false;
+      });
+    }catch(e){
+      _notifier.showContextedBottomToast(context, msg: "Erreur : $e");
+      return false;
     }
   }
 }

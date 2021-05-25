@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/global/templates/general_template.dart';
+import 'package:ronan_pensec/models/pagination_model.dart';
 import 'package:ronan_pensec/models/user_model.dart';
 import 'package:ronan_pensec/routes/employee_route.dart';
 import 'package:ronan_pensec/services/data_controls/region_data_control.dart';
@@ -20,38 +21,40 @@ class _EmployeeViewState extends State<EmployeeView> {
 
   final EmployeeViewModel _viewModel = EmployeeViewModel.instance;
   final Auth _auth = Auth.instance;
+  PaginationModel employeePagination = new PaginationModel();
 
 
   @override
   void initState() {
     if (!_viewModel.employeeDataControl.hasFetched) {
-      this.fetcher(_viewModel.employeePagination.firstPageUrl);
+      this.fetcher(this.employeePagination.firstPageUrl);
     }
     super.initState();
   }
 
   Future<void> fetcher(String subDomain) async {
-    await _viewModel.service
-        .fetchAll(context, subDomain: subDomain)
+    await _viewModel.service.getData(context, subDomain: subDomain)
         .then((value) {
       if (this.mounted) {
         setState(() {
-          _viewModel.employeeDataControl.hasFetched = value != null;
-          _viewModel.employeePagination.lastPageUrl =
-              value['last_page_url'].toString().split('users/')[1];
-          _viewModel.employeePagination.firstPageUrl =
-              value['first_page_url'].toString().split('users/')[1];
-          _viewModel.employeePagination.nextPageUrl =
-              value['next_page_url'] == null
-                  ? null
-                  : value['next_page_url'].toString().split('users/')[1];
-          _viewModel.employeePagination.prevPageUrl =
-              value['prev_page_url'] != null
-                  ? value['prev_page_url'].toString().split('users/')[1]
-                  : null;
-          _viewModel.employeePagination.totalDataCount = value['total'];
-          _viewModel.employeePagination.currentPage = value['current_page'];
-          _viewModel.employeePagination.lastPage = value['last_page'];
+          this.employeePagination = value!;
+          _viewModel.employeeDataControl.populateAll(this.employeePagination.data!);
+          // _viewModel.employeeDataControl.hasFetched = value != null;
+          // this.employeePagination.lastPageUrl =
+          //     value['last_page_url'].toString().split('users/')[1];
+          // this.employeePagination.firstPageUrl =
+          //     value['first_page_url'].toString().split('users/')[1];
+          // this.employeePagination.nextPageUrl =
+          //     value['next_page_url'] == null
+          //         ? null
+          //         : value['next_page_url'].toString().split('users/')[1];
+          // this.employeePagination.prevPageUrl =
+          //     value['prev_page_url'] != null
+          //         ? value['prev_page_url'].toString().split('users/')[1]
+          //         : null;
+          // this.employeePagination.totalDataCount = value['total'];
+          // this.employeePagination.currentPage = value['current_page'];
+          // this.employeePagination.lastPage = value['last_page'];
         });
       }
     });
@@ -162,7 +165,7 @@ class _EmployeeViewState extends State<EmployeeView> {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 20),
                                 height: 50,
-                                child: _viewModel.employeePagination
+                                child: this.employeePagination
                                             .totalDataCount ==
                                         null
                                     ? Text("Loading...")
@@ -174,34 +177,34 @@ class _EmployeeViewState extends State<EmployeeView> {
                                           const SizedBox(
                                             width: 10,
                                           ),
-                                          PopupMenuButton(
+                                          PopupMenuButton<int>(
                                             padding:
                                                 const EdgeInsets.all(0),
-                                            initialValue: _viewModel
+                                            initialValue: this
                                                 .employeePagination
                                                 .dataToShow,
                                             onSelected: (int value) {
                                               if (this.mounted) {
                                                 setState(() {
-                                                  _viewModel
+                                                  this
                                                       .employeePagination
                                                       .dataToShow = value;
-                                                  _viewModel
+                                                  this
                                                           .employeePagination
                                                           .firstPageUrl =
-                                                      "${_viewModel.employeePagination.dataToShow}" +
+                                                      "${this.employeePagination.dataToShow}" +
                                                           "?page=1";
-                                                  _viewModel
+                                                  this
                                                           .employeePagination
                                                           .currentPageUrl =
-                                                      _viewModel
+                                                      this
                                                           .employeePagination
                                                           .firstPageUrl;
                                                   _viewModel
                                                       .employeeDataControl
                                                       .hasFetched = false;
                                                 });
-                                                this.fetcher(_viewModel
+                                                this.fetcher(this
                                                     .employeePagination
                                                     .currentPageUrl);
                                               }
@@ -211,7 +214,7 @@ class _EmployeeViewState extends State<EmployeeView> {
                                               child: Row(
                                                 children: [
                                                   Text(
-                                                      "${_viewModel.employeePagination.dataToShow}"),
+                                                      "${this.employeePagination.dataToShow}"),
                                                   Spacer(),
                                                   Icon(Icons
                                                       .arrow_drop_down),
@@ -242,11 +245,11 @@ class _EmployeeViewState extends State<EmployeeView> {
                                             ],
                                           ),
                                           Text(
-                                              "Out of ${_viewModel.employeePagination.totalDataCount}"),
+                                              "Out of ${this.employeePagination.totalDataCount}"),
                                           Spacer(),
-                                          if (_viewModel.employeePagination
+                                          if (this.employeePagination
                                                   .currentPage >
-                                              _viewModel.employeePagination
+                                              this.employeePagination
                                                       .lastPage! /
                                                   2) ...{
                                             IconButton(
@@ -255,16 +258,16 @@ class _EmployeeViewState extends State<EmployeeView> {
                                                   "Aller à la première page",
                                               onPressed: () {
                                                 setState(() {
-                                                  _viewModel
+                                                  this
                                                       .employeePagination
                                                       .currentPage = 1;
                                                 });
                                                 this.fetcher(
-                                                    "${_viewModel.employeePagination.dataToShow}?page=1");
+                                                    "${this.employeePagination.dataToShow}?page=1");
                                               },
                                             ),
                                           },
-                                          if (_viewModel.employeePagination
+                                          if (this.employeePagination
                                                   .currentPage >
                                               1) ...{
                                             IconButton(
@@ -273,36 +276,36 @@ class _EmployeeViewState extends State<EmployeeView> {
                                               tooltip: "Précédent",
                                               onPressed: () {
                                                 setState(() {
-                                                  _viewModel
+                                                  this
                                                       .employeePagination
-                                                      .currentPage = _viewModel
+                                                      .currentPage = this
                                                           .employeePagination
                                                           .currentPage -
                                                       1;
                                                 });
                                                 this.fetcher(
-                                                    "${_viewModel.employeePagination.dataToShow}?page=${_viewModel.employeePagination.currentPage}");
+                                                    "${this.employeePagination.dataToShow}?page=${this.employeePagination.currentPage}");
                                               },
                                             ),
                                           },
                                           for (int i = 0;
                                               i <
-                                                  _viewModel
+                                                  this
                                                       .employeePagination
                                                       .lastPage!;
                                               i++) ...{
                                             if (i + 1 == 1 ||
                                                 i + 1 ==
-                                                    _viewModel
+                                                    this
                                                         .employeePagination
                                                         .lastPage ||
                                                 (i + 1 >
-                                                        _viewModel
+                                                        this
                                                                 .employeePagination
                                                                 .currentPage -
                                                             2 &&
                                                     i + 1 <
-                                                        (_viewModel
+                                                        (this
                                                                 .employeePagination
                                                                 .currentPage +
                                                             5))) ...{
@@ -311,7 +314,7 @@ class _EmployeeViewState extends State<EmployeeView> {
                                                   "${i + 1}",
                                                   style: TextStyle(
                                                       color: i + 1 ==
-                                                              _viewModel
+                                                              this
                                                                   .employeePagination
                                                                   .currentPage
                                                           ? Palette
@@ -320,19 +323,19 @@ class _EmployeeViewState extends State<EmployeeView> {
                                                 ),
                                                 onPressed: () {
                                                   setState(() {
-                                                    _viewModel
+                                                    this
                                                         .employeePagination
                                                         .currentPage = i + 1;
                                                   });
                                                   this.fetcher(
-                                                      "${_viewModel.employeePagination.dataToShow}?page=${i + 1}");
+                                                      "${this.employeePagination.dataToShow}?page=${i + 1}");
                                                 },
                                               )
                                             }
                                           },
-                                          if (_viewModel.employeePagination
+                                          if (this.employeePagination
                                                   .currentPage <
-                                              _viewModel.employeePagination
+                                              this.employeePagination
                                                   .lastPage!) ...{
                                             IconButton(
                                               icon:
@@ -340,12 +343,12 @@ class _EmployeeViewState extends State<EmployeeView> {
                                               tooltip: "Suivant",
                                               onPressed: () {
                                                 setState(() {
-                                                  _viewModel
+                                                  this
                                                       .employeePagination
                                                       .currentPage++;
                                                 });
                                                 this.fetcher(
-                                                    "${_viewModel.employeePagination.dataToShow}?page=${_viewModel.employeePagination.currentPage}");
+                                                    "${this.employeePagination.dataToShow}?page=${this.employeePagination.currentPage}");
                                               },
                                             ),
                                           },
@@ -355,15 +358,15 @@ class _EmployeeViewState extends State<EmployeeView> {
                                                 "Aller à la dernière page",
                                             onPressed: () {
                                               setState(() {
-                                                _viewModel
+                                                this
                                                         .employeePagination
                                                         .currentPage =
-                                                    _viewModel
+                                                    this
                                                         .employeePagination
                                                         .lastPage!;
                                               });
                                               this.fetcher(
-                                                  "${_viewModel.employeePagination.dataToShow}?page=${_viewModel.employeePagination.lastPage}");
+                                                  "${this.employeePagination.dataToShow}?page=${this.employeePagination.lastPage}");
                                             },
                                           )
                                         ],

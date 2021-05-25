@@ -1,13 +1,8 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/services/color_decider.dart';
-import 'package:ronan_pensec/services/firebase_messaging_service.dart';
-import 'package:ronan_pensec/services/firebase_messaging_token_service.dart';
-import 'package:ronan_pensec/views/login_view/login_view.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 
 class GeneralTemplate {

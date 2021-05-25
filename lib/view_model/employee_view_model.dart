@@ -18,5 +18,5 @@ class EmployeeViewModel{
   bool _isTable = true;
   bool get isTable => _isTable;
   set setTable(bool b) => _isTable = b;
-  PaginationModel employeePagination = PaginationModel();
+
 }
