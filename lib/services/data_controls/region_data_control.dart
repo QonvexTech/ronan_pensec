@@ -125,6 +125,18 @@ class RegionDataControl {
     }
     _list.add(this.current);
   }
+  removeRTT(int rttId, userId){
+    for(RegionModel region in this.current){
+      for(CenterModel center in region.centers!){
+        for(UserModel user in center.users){
+          if(user.id == userId){
+            user.rtts.removeWhere((element) => element.id == rttId);
+          }
+        }
+      }
+    }
+    _list.add(this.current);
+  }
 
   appendHoliday(HolidayModel holiday,int userId){
     for(RegionModel region in this.current){
@@ -132,6 +144,18 @@ class RegionDataControl {
         for(UserModel user in center.users){
           if(user.id == userId){
             user.holidays.add(holiday);
+          }
+        }
+      }
+    }
+    _list.add(this.current);
+  }
+  removeHoliday(int holidayId, int userId) {
+    for(RegionModel region in this.current){
+      for(CenterModel center in region.centers!){
+        for(UserModel user in center.users){
+          if(user.id == userId){
+            user.holidays.removeWhere((element) => element.id == holidayId);
           }
         }
       }

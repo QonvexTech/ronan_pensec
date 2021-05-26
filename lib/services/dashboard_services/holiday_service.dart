@@ -53,11 +53,10 @@ class HolidayService {
         "Accept" : "application/json",
         HttpHeaders.authorizationHeader : "Bearer ${auth.token}"
       },body: {
-        "holiday_id" : holidayId.toString(),
+        "id" : holidayId.toString(),
         "admin_comment" : reason
       }).then((response) {
         if(response.statusCode == 200){
-
           notifier.showWebContextedBottomToast(context, msg: "Demande rejetée!");
           return true;
         }

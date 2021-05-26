@@ -6,6 +6,7 @@ import 'package:ronan_pensec/routes/calendar_route.dart';
 import 'package:ronan_pensec/views/landing_page_screen/web/children/calendar_children/employee_holidays.dart';
 import 'package:ronan_pensec/views/landing_page_screen/web/children/calendar_children/employee_rtt.dart';
 import 'package:ronan_pensec/views/landing_page_screen/web/children/calendar_children/pending_holiday_requests.dart';
+import 'package:ronan_pensec/views/landing_page_screen/web/children/calendar_children/pending_rtt_requests.dart';
 
 class Calendar extends StatefulWidget {
   @override
@@ -52,19 +53,17 @@ class _CalendarState extends State<Calendar> with SingleTickerProviderStateMixin
                     if(_auth.loggedUser!.roleId == 1)...{
                       Tab(
                         // text: "Demandes de Congés",
-                        child: FittedBox(
-                          child: Text("Toutes les demandes de congés",style: TextStyle(
-                              color: _currentIndex == 0 ? Colors.grey.shade800 : Colors.grey,
-                              fontSize: Theme.of(context).textTheme.headline6!.fontSize! - 5,
-                              fontWeight: FontWeight.w700
-                          ),),
-                        ),
+                        child: Text("Toutes les demandes de congés",style: TextStyle(
+                            color: _currentIndex == 0 ? Colors.grey.shade800 : Colors.grey,
+                            fontSize: Theme.of(context).textTheme.subtitle1!.fontSize! - 5,
+                            fontWeight: FontWeight.w700
+                        ),),
                       ),
                       Tab(
                         // text: "Demandes de Congés",
                         child: Text("Toutes les demandes RTT",style: TextStyle(
                             color: _currentIndex == 1 ? Colors.grey.shade800 : Colors.grey,
-                            fontSize: Theme.of(context).textTheme.headline6!.fontSize! - 5,
+                            fontSize: Theme.of(context).textTheme.subtitle1!.fontSize! - 5,
                             fontWeight: FontWeight.w700
                         ),),
                       ),
@@ -73,7 +72,7 @@ class _CalendarState extends State<Calendar> with SingleTickerProviderStateMixin
                       // text: "Demandes de Congés",
                       child: Text("Demandes de Congés",style: TextStyle(
                         color: (_auth.loggedUser!.roleId == 1 && _currentIndex == 3) || (_auth.loggedUser!.roleId != 1 && _currentIndex == 0) ? Colors.grey.shade800 : Colors.grey,
-                        fontSize: Theme.of(context).textTheme.headline6!.fontSize! - 5,
+                        fontSize: Theme.of(context).textTheme.subtitle1!.fontSize! - 5,
                         fontWeight: FontWeight.w700
                       ),),
                     ),
@@ -81,7 +80,7 @@ class _CalendarState extends State<Calendar> with SingleTickerProviderStateMixin
                       // text: "Demandes de RTT",
                       child: Text("Demandes de RTT",style: TextStyle(
                           color: (_auth.loggedUser!.roleId == 1 && _currentIndex == 4) || (_auth.loggedUser!.roleId != 1 && _currentIndex == 1) ? Colors.grey.shade800 : Colors.grey,
-                          fontSize: Theme.of(context).textTheme.headline6!.fontSize! - 5,
+                          fontSize: Theme.of(context).textTheme.subtitle1!.fontSize! - 5,
                           fontWeight: FontWeight.w700
                       ),),
                     ),
@@ -157,9 +156,7 @@ class _CalendarState extends State<Calendar> with SingleTickerProviderStateMixin
           children: [
             if(_auth.loggedUser!.roleId == 1)...{
               PendingHolidayRequests(),
-              Container(
-                color: Colors.red,
-              ),
+              PendingRTTRequests(),
               //PendingRTTRequests()
             },
             EmployeeHolidays(),
