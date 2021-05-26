@@ -5,11 +5,11 @@ class UserEndpoint {
   /// instance of auth
   static final Auth _auth = Auth.instance;
   /// Method : PUT
-  static final String update = "$_baseSubDomain/${_auth.loggedUser!.id}";
+  static String update(int userId) => "$_baseSubDomain/$userId";
 
   /// Method : GET
   static final String viewAllUsers = "$_baseSubDomain";
-
+  static String get base => _baseSubDomain;
   ///Method : GET
   static String paginated(String sub) => "$_baseSubDomain/$sub";
 

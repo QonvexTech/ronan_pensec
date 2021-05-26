@@ -1,23 +1,30 @@
-import 'package:adaptive_container/adaptive_container.dart';
 import 'package:flutter/material.dart';
 import 'package:ronan_pensec/global/palette.dart';
-import 'package:ronan_pensec/global/templates/animated_widget.dart';
 import 'package:ronan_pensec/models/user_model.dart';
+import 'package:ronan_pensec/services/data_controls/calendar_data_control.dart';
+import 'package:ronan_pensec/services/data_controls/region_data_control.dart';
 import 'package:ronan_pensec/view_model/employee_children/employee_details_view_model.dart';
 import 'package:ronan_pensec/views/landing_page_screen/web/children/employee_view_children/employee_detail_children/employee_demands.dart';
 
 class EmployeeDetails extends StatefulWidget {
   final UserModel employee;
+  final RegionDataControl regionDataControl;
 
-  EmployeeDetails({Key? key, required this.employee}) : super(key: key);
+  EmployeeDetails(
+      {Key? key, required this.employee, required this.regionDataControl})
+      : super(key: key);
 
   @override
   _EmployeeDetailsState createState() => _EmployeeDetailsState();
 }
 
 class _EmployeeDetailsState extends State<EmployeeDetails> {
-  final EmployeeDetailsViewModel _viewModel = EmployeeDetailsViewModel.instance;
-  late final EmployeeDemands _employeeDemands = EmployeeDemands(userId: widget.employee.id,);
+  late final EmployeeDetailsViewModel _viewModel =
+      EmployeeDetailsViewModel.instance(widget.employee);
+  late final EmployeeDemands _employeeDemands = EmployeeDemands(
+    userId: widget.employee.id,
+    regionDataControl: widget.regionDataControl,
+  );
 
   void populate() {
     setState(() {
@@ -56,34 +63,26 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                     width: size.width > 900 ? size.width * .35 : size.width,
                     child: Column(
                       children: [
-                        MaterialButton(
-                          padding: const EdgeInsets.all(0),
-                          onPressed: () {},
-                          shape: RoundedRectangleBorder(
-                              borderRadius:
-                              BorderRadius.circular(100000)),
-                          child: Hero(
-                            tag: "${widget.employee.id}",
-                            child: Container(
-                              margin: const EdgeInsets.all(20),
-                              width: size.width > 900
-                                  ? 300
-                                  : size.width < 700
-                                  ? _contentLeftWidth * .17
-                                  : _contentLeftWidth,
-                              height: size.width > 900
-                                  ? 300
-                                  : size.width < 700
-                                  ? _contentLeftWidth * .17
-                                  : _contentLeftWidth * .96,
-                              decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  image: DecorationImage(
-                                      image: _viewModel.userDataControl
-                                          .imageViewer(
-                                          imageUrl:
-                                          widget.employee.image))),
-                            ),
+                        Hero(
+                          tag: "${widget.employee.id}",
+                          child: Container(
+                            margin: const EdgeInsets.all(20),
+                            width: size.width > 900
+                                ? 300
+                                : size.width < 700
+                                    ? _contentLeftWidth * .17
+                                    : _contentLeftWidth,
+                            height: size.width > 900
+                                ? 300
+                                : size.width < 700
+                                    ? _contentLeftWidth * .17
+                                    : _contentLeftWidth * .96,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                    image: _viewModel.userDataControl
+                                        .imageViewer(
+                                            imageUrl: widget.employee.image))),
                           ),
                         ),
                         Container(
@@ -133,9 +132,8 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                     decoration: InputDecoration(
                                         border: OutlineInputBorder(
                                             borderRadius:
-                                            BorderRadius.circular(5)),
-                                        hintText:
-                                        "Entrez votre nouveau prénom",
+                                                BorderRadius.circular(5)),
+                                        hintText: "Entrez votre nouveau prénom",
                                         prefixIcon: Icon(Icons.person),
                                         suffixIcon: IconButton(
                                           icon: Icon(Icons.clear),
@@ -146,8 +144,8 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                   ),
                                 ),
                                 Container(
-                                  margin: const EdgeInsets.symmetric(
-                                      vertical: 10),
+                                  margin:
+                                      const EdgeInsets.symmetric(vertical: 10),
                                   width: double.infinity,
                                   child: TextField(
                                     controller: _viewModel.lastName,
@@ -155,7 +153,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                         prefixIcon: Icon(Icons.person),
                                         border: OutlineInputBorder(
                                             borderRadius:
-                                            BorderRadius.circular(5)),
+                                                BorderRadius.circular(5)),
                                         hintText: "Entrez votre nouveau nom",
                                         suffixIcon: IconButton(
                                           icon: Icon(Icons.clear),
@@ -173,16 +171,15 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                     maxLines: 3,
                                     decoration: InputDecoration(
                                         alignLabelWithHint: true,
-                                        prefixIcon: Icon(
-                                            Icons.location_city_outlined),
+                                        prefixIcon:
+                                            Icon(Icons.location_city_outlined),
                                         border: OutlineInputBorder(
                                             borderRadius:
-                                            BorderRadius.circular(5)),
+                                                BorderRadius.circular(5)),
                                         hintText:
-                                        "Entrez votre nouveau adressé",
+                                            "Entrez votre nouveau adressé",
                                         suffixIcon: IconButton(
-                                          icon:
-                                          Icon(Icons.clear_all_outlined),
+                                          icon: Icon(Icons.clear_all_outlined),
                                           onPressed: () {
                                             _viewModel.address.clear();
                                           },
@@ -190,25 +187,58 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                   ),
                                 ),
                                 Container(
-                                  margin: const EdgeInsets.symmetric(
-                                      vertical: 10),
+                                  margin:
+                                      const EdgeInsets.symmetric(vertical: 10),
                                   width: double.infinity,
                                   child: TextField(
                                     controller: _viewModel.mobile,
                                     decoration: InputDecoration(
-                                        prefixIcon: Icon(
-                                            Icons.phone_android_outlined),
+                                        prefixIcon:
+                                            Icon(Icons.phone_android_outlined),
                                         border: OutlineInputBorder(
                                             borderRadius:
-                                            BorderRadius.circular(5)),
-                                        hintText:
-                                        "Entrez votre nouveau numéro",
+                                                BorderRadius.circular(5)),
+                                        hintText: "Entrez votre nouveau numéro",
                                         suffixIcon: IconButton(
                                           icon: Icon(Icons.clear),
                                           onPressed: () {
                                             _viewModel.mobile.clear();
                                           },
                                         )),
+                                  ),
+                                ),
+                                Container(
+                                  width: double.infinity,
+                                  padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    border: Border.all(
+                                      color: Colors.grey.shade400
+                                    )
+                                  ),
+                                  child: DropdownButtonHideUnderline(
+                                    child: DropdownButton<String>(
+                                      items: <DropdownMenuItem<String>>[
+                                        DropdownMenuItem<String>(
+                                            child: Text("1 - Admin"),
+                                          value: "1 - Admin",
+                                        ),
+                                        DropdownMenuItem<String>(
+                                          child: Text("2 - Accountant"),
+                                          value: "2 - Accountant",
+                                        ),
+                                        DropdownMenuItem<String>(
+                                          child: Text("3 - Employee"),
+                                          value: "3 - Employee",
+                                        ),
+                                      ],
+                                      onChanged: (val){
+                                        setState(() {
+                                          _viewModel.setRole = int.parse(val.toString()[0]);
+                                        });
+                                      },
+                                      value: _viewModel.roleId == 1 ? "1 - Admin" : _viewModel.roleId == 2 ? "2 - Accountant" : "3 - Employee",
+                                    ),
                                   ),
                                 ),
                                 Container(
@@ -223,7 +253,37 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                           child: MaterialButton(
                                             padding: const EdgeInsets.all(0),
                                             color: Palette.gradientColor[0],
-                                            onPressed: () {
+                                            onPressed: () async {
+                                              print(_viewModel.body);
+                                              await _viewModel
+                                                  .userUpdate(context,
+                                                      widget.employee.id)
+                                                  .then((value) {
+                                                if (value) {
+                                                  setState(() {
+                                                    widget.employee.roleId = _viewModel.roleId;
+                                                    widget.employee.first_name =
+                                                        _viewModel
+                                                            .firstName.text;
+                                                    widget.employee.last_name =
+                                                        _viewModel
+                                                            .lastName.text;
+                                                    widget.employee.address =
+                                                        _viewModel.address.text;
+                                                    widget.employee.mobile =
+                                                        _viewModel.mobile.text;
+                                                    widget.employee.full_name =
+                                                        _viewModel.firstName
+                                                                .text +
+                                                            " " +
+                                                            _viewModel
+                                                                .lastName.text;
+                                                    _viewModel.setIsEditing =
+                                                        false;
+                                                  });
+                                                  this.populate();
+                                                }
+                                              });
                                               // setState(() {
                                               //   _viewModel.setIsEditing = true;
                                               // });
@@ -248,8 +308,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                             color: Colors.red,
                                             onPressed: () {
                                               setState(() {
-                                                _viewModel.setIsEditing =
-                                                false;
+                                                _viewModel.setIsEditing = false;
                                               });
                                               populate();
                                             },
@@ -266,28 +325,30 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                       ],
                                     ))
                               } else ...{
-                                Container(
-                                  width: double.infinity,
-                                  height: 40,
-                                  child: MaterialButton(
-                                    color: Palette.gradientColor[0],
-                                    onPressed: () {
-                                      setState(() {
-                                        _viewModel.setIsEditing = true;
-                                      });
-                                    },
-                                    child: Center(
-                                      child: Text(
-                                        "Edit profile",
-                                        style: TextStyle(color: Colors.white),
+                                if(_viewModel.auth.loggedUser!.roleId == 1)...{
+                                  Container(
+                                    width: double.infinity,
+                                    height: 40,
+                                    child: MaterialButton(
+                                      color: Palette.gradientColor[0],
+                                      onPressed: () {
+                                        setState(() {
+                                          _viewModel.setIsEditing = true;
+                                        });
+                                      },
+                                      child: Center(
+                                        child: Text(
+                                          "Edit profile",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
+                                },
                                 Container(
                                   width: double.infinity,
-                                  margin: const EdgeInsets.symmetric(
-                                      vertical: 10),
+                                  margin:
+                                      const EdgeInsets.symmetric(vertical: 10),
                                   child: Row(
                                     children: [
                                       Icon(
@@ -299,17 +360,17 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                       ),
                                       Expanded(
                                           child: Text(
-                                            widget.employee.address,
-                                            style: TextStyle(
-                                                color: Colors.grey.shade700),
-                                          ))
+                                        widget.employee.address,
+                                        style: TextStyle(
+                                            color: Colors.grey.shade700),
+                                      ))
                                     ],
                                   ),
                                 ),
                                 Container(
                                   width: double.infinity,
-                                  margin: const EdgeInsets.symmetric(
-                                      vertical: 10),
+                                  margin:
+                                      const EdgeInsets.symmetric(vertical: 10),
                                   child: Row(
                                     children: [
                                       Icon(
@@ -321,37 +382,39 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                       ),
                                       Expanded(
                                           child: Text(
-                                            widget.employee.mobile,
-                                            style: TextStyle(
-                                                color: Colors.grey.shade700),
-                                          ))
+                                        widget.employee.mobile,
+                                        style: TextStyle(
+                                            color: Colors.grey.shade700),
+                                      ))
                                     ],
                                   ),
                                 ),
                               },
-                              Container(
-                                margin:
-                                const EdgeInsets.symmetric(vertical: 10),
-                                width: double.infinity,
-                                child: Text(
-                                  "Role :",
-                                  style: TextStyle(
-                                      fontSize: Theme.of(context)
-                                          .textTheme
-                                          .headline6!
-                                          .fontSize! -
-                                          2,
-                                      fontWeight: FontWeight.w700),
+                              if(!_viewModel.isEditing)...{
+                                Container(
+                                  margin:
+                                  const EdgeInsets.symmetric(vertical: 10),
+                                  width: double.infinity,
+                                  child: Text(
+                                    "Role :",
+                                    style: TextStyle(
+                                        fontSize: Theme.of(context)
+                                            .textTheme
+                                            .headline6!
+                                            .fontSize! -
+                                            2,
+                                        fontWeight: FontWeight.w700),
+                                  ),
                                 ),
-                              ),
+                              },
                               Align(
                                 alignment: AlignmentDirectional.centerStart,
                                 child: Tooltip(
                                   message: widget.employee.roleId == 1
                                       ? "Admin"
                                       : widget.employee.roleId == 2
-                                      ? "Accountant"
-                                      : "Employee",
+                                          ? "Accountant"
+                                          : "Employee",
                                   child: Container(
                                     height: 60,
                                     width: 60,
@@ -367,7 +430,9 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                     ),
                   ),
                   Container(
-                    margin: size.width > 900 ? const EdgeInsets.symmetric(vertical: 50) : const EdgeInsets.all(0),
+                    margin: size.width > 900
+                        ? const EdgeInsets.symmetric(vertical: 50)
+                        : const EdgeInsets.all(0),
                     height: 800,
                     width: size.width > 900 ? size.width * .65 : size.width,
                     child: _employeeDemands,

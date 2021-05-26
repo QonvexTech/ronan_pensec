@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ronan_pensec/routes/credential_route.dart';
+import 'package:ronan_pensec/routes/landing_page_route.dart';
 import 'package:ronan_pensec/services/credentials_preferences.dart';
 import 'package:ronan_pensec/services/firebase_messaging_service.dart';
 
@@ -17,7 +18,7 @@ class LandingPageService {
 
   Future<void> profileIconOnChoose(context,int value) async {
     if(value == 0){
-      print("GO TO PROFILE");
+      Navigator.push(context, landingPageRoute.profilePage);
     }else if(value == 1){
       print("GO TO SETTINGS");
     }else{

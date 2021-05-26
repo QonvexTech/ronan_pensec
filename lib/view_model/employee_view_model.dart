@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:ronan_pensec/global/templates/employee_template.dart';
 import 'package:ronan_pensec/models/pagination_model.dart';
 import 'package:ronan_pensec/services/dashboard_services/employee_service.dart';
@@ -7,9 +6,11 @@ import 'package:ronan_pensec/services/data_controls/employee_data_control.dart';
 class EmployeeViewModel{
   EmployeeViewModel._privateConstructor();
   static final EmployeeViewModel _instance = EmployeeViewModel._privateConstructor();
+  late PaginationModel paginationModel;
   static EmployeeViewModel get instance{
     return _instance;
   }
+
   final EmployeeTemplate template = EmployeeTemplate.instance;
   static final EmployeeDataControl _employeeDataControl = EmployeeDataControl.instance;
   EmployeeDataControl get employeeDataControl => _employeeDataControl;
@@ -18,5 +19,5 @@ class EmployeeViewModel{
   bool _isTable = true;
   bool get isTable => _isTable;
   set setTable(bool b) => _isTable = b;
-  PaginationModel employeePagination = PaginationModel();
+
 }

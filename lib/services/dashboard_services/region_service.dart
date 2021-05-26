@@ -33,12 +33,12 @@ class RegionService {
           return true;
         }else {
           _notifier.showContextedBottomToast(context,
-              msg: "Erreur ${response.statusCode}, ${response.reasonPhrase}");
+              msg: "REGION Erreur ${response.statusCode}, ${response.reasonPhrase}");
           return false;
         }
       });
     } catch (e) {
-      print("Erreur : $e");
+      print("ERRErreur : $e");
       _notifier.showContextedBottomToast(context,msg:"Erreur $e");
       return false;
     }

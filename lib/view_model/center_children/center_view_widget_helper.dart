@@ -3,6 +3,7 @@ import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/global/templates/general_template.dart';
 import 'package:ronan_pensec/models/center_model.dart';
+import 'package:ronan_pensec/models/pagination_model.dart';
 import 'package:ronan_pensec/models/user_model.dart';
 import 'package:ronan_pensec/services/dashboard_services/center_service.dart';
 import 'package:ronan_pensec/services/data_controls/center_data_control.dart';
@@ -31,7 +32,7 @@ class CenterViewWidgetHelper {
   TextEditingController _email = new TextEditingController();
   final Duration duration = new Duration(milliseconds: 700);
   static final Auth _auth = Auth.instance;
-
+  final List<int> popupMenuPageItems = [10,20,30,40,50];
   void showEditDialog(context,
       {required CenterModel center,
       required double width,
@@ -304,11 +305,20 @@ class CenterViewWidgetHelper {
       bool isRow = true,
       required Size size,
       required List<UserModel> assignedUsers,
+        required PaginationModel pagination,
       List<UserModel>? displayData,
       required ValueChanged<int> assignUserCallback,
       required ValueChanged<UserModel?> callback,
       required int centerId,
-      required ValueChanged<List<UserModel>> removeAssignCallback}) {
+        required ValueChanged<int> onChangePageCount,
+        required ValueChanged<int> onChangePageNumber,
+        required Function onLastPage,
+        required Function onFirstPage,
+        required Function onNextPage,
+        required Function onPrevPage,
+        required ValueChanged<int> onPagePress,
+      required ValueChanged<List<UserModel>> removeAssignCallback,
+      required ValueChanged<int> toRemoveUserId}) {
     return [
       AnimatedContainer(
         duration: duration - Duration(milliseconds: 400),
@@ -405,7 +415,9 @@ class CenterViewWidgetHelper {
                                     source: assignedUsers, onRemoveCallback:
                                         (List<UserModel> removed) {
                                   removeAssignCallback(removed);
-                                }, centerId: centerId),
+                                }, centerId: centerId, onRemoveUser: (int userId){
+                                  toRemoveUserId(userId);
+                                    }),
                               ),
                             )
                           : Center(
@@ -519,6 +531,9 @@ class CenterViewWidgetHelper {
                                                 sauce: assignedUsers,
                                                 id: displayData[index].id),
                                             true,
+                                            onRemoveUser: (int userId){
+                                              toRemoveUserId(userId);
+                                            },
                                             centerId: centerId,
                                             source: assignedUsers,
                                             onRemoveCallback:
@@ -528,6 +543,53 @@ class CenterViewWidgetHelper {
                                       ),
                                     ),
                                   ),
+                      ),
+                      Container(
+                        width: double.infinity,
+                        height: 40,
+                        child: Row(
+                          children: [
+                            Text("Showing "),
+                            PopupMenuButton<int>(
+                              icon: Text("${pagination.dataToShow}"),
+                              padding: const EdgeInsets.all(0),
+                              onSelected: (int val){
+                                onChangePageCount(val);
+                              },
+                              itemBuilder: (_) => popupMenuPageItems.map((e) => PopupMenuItem<int>(
+                                value: e,
+                                  child: Text("$e")
+                              )).toList(),
+                            ),
+                            Text(" Out of  ${pagination.totalDataCount}"),
+                            Spacer(),
+
+                            IconButton(icon: Icon(Icons.first_page), onPressed: (){
+                              onFirstPage();
+                            }),
+                            IconButton(icon: Icon(Icons.chevron_left), onPressed: (){
+                              onPrevPage();
+                            }),
+                            if(pagination.lastPage != null)...{
+                              for(int x = 1; x<=pagination.lastPage!;x++)...{
+                                IconButton(
+                                    onPressed: (){
+                                      onPagePress(x);
+                                    },
+                                    icon: Text("$x",style: TextStyle(
+                                        color: pagination.currentPage == x ? Palette.gradientColor[0] : Colors.black
+                                    ),)
+                                )
+                              },
+                            },
+                            IconButton(icon: Icon(Icons.chevron_right), onPressed: (){
+                              onNextPage();
+                            }),
+                            IconButton(icon: Icon(Icons.last_page), onPressed: (){
+                              onLastPage();
+                            }),
+                          ],
+                        ),
                       )
                     ],
                   ),
@@ -543,7 +605,7 @@ class CenterViewWidgetHelper {
   Widget viewBodyDetail(context,UserModel user, bool isAssigned, bool isAll,
           {required ValueChanged<List<UserModel>> onRemoveCallback,
           required List<UserModel> source,
-          required int centerId}) =>
+          required int centerId,required ValueChanged<int> onRemoveUser}) =>
       Container(
         width: double.infinity,
         height: 50,
@@ -595,10 +657,12 @@ class CenterViewWidgetHelper {
                         .removeAssignment(context,userId: user.id, centerId: centerId)
                         .then((value) {
                       if (value) {
+                        onRemoveUser(user.id);
                         onRemoveCallback(_control.removeLocal(source, user.id));
                       } else {
                         onRemoveCallback(source);
                       }
+
                     });
                   },
                   icon: Icon(

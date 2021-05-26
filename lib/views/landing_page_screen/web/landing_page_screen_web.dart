@@ -17,35 +17,39 @@ class LandingPageScreenWeb extends StatefulWidget {
 class _LandingPageScreenWebState extends State<LandingPageScreenWeb>
     with SingleTickerProviderStateMixin, LandingPageMainHelper {
   late final LandingPageService _service = LandingPageService.instance(context);
+  late final WebPlanning _webPlanning = WebPlanning(
+    menuItems: menuItems,
+    onFilterCallback: (val) {
+      setState(() {
+        currentTabIndex = val;
+        _tabController.index = val;
+      });
+    },
+  );
+  late final CenterView _centerView = CenterView(
+    onBack: (val) {},
+    control: _webPlanning.regionViewModel.control,
+    onFilterCallback: (value) {
+      setState(() {
+        currentTabIndex = value;
+        _tabController.index = value;
+      });
+    },
+    menuItems: menuItems,
+  );
   late final List<Widget> _contents = [
-    WebPlanning(
-      menuItems: menuItems,
-      onFilterCallback: (val){
-        setState(() {
-          currentTabIndex = val;
-          _tabController.index = val;
-        });
-      },
-    ),
-    CenterView(
-        onBack: (val) {},
-        onFilterCallback: (value) {
-          setState(() {
-            currentTabIndex = value;
-            _tabController.index = value;
-          });
-        },
-        menuItems: menuItems,
-    ),
+    _webPlanning,
+    _centerView,
     if (auth.loggedUser!.roleId < 3) ...{
-      EmployeeView()
+      EmployeeView(
+        regionDataControl: _webPlanning.regionViewModel.control,
+      )
     },
     Calendar(),
   ];
 
-
   late final TabController _tabController =
-  TabController(length: _contents.length, vsync: this);
+      TabController(length: _contents.length, vsync: this);
 
   @override
   Widget build(BuildContext context) {
@@ -61,11 +65,12 @@ class _LandingPageScreenWebState extends State<LandingPageScreenWeb>
             Container(
               width: double.infinity,
               height: 60,
-              decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      colors: Palette.gradientColor,
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter)),
+              // decoration: BoxDecoration(
+              //   gradient: LinearGradient(
+              //       colors: Palette.gradientColor,
+              //       begin: Alignment.topCenter,
+              //       end: Alignment.bottomCenter),
+              // ),
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -95,9 +100,10 @@ class _LandingPageScreenWebState extends State<LandingPageScreenWeb>
                               currentTabIndex = index;
                             });
                           },
-                          indicatorColor: Colors.white,
+                          indicatorColor: Palette.gradientColor[0],
                           controller: _tabController,
-                          unselectedLabelColor: Colors.grey.shade400,
+                          labelColor: Palette.gradientColor[0],
+                          unselectedLabelColor: Colors.grey.shade700,
                           physics: NeverScrollableScrollPhysics(),
                           tabs: [
                             for (TabbarItem item in tabItems) ...{
@@ -127,7 +133,7 @@ class _LandingPageScreenWebState extends State<LandingPageScreenWeb>
                       "Ronan Pensec",
                       style: TextStyle(
                           letterSpacing: 2,
-                          color: Colors.white,
+                          color: Palette.gradientColor[0],
                           fontWeight: FontWeight.w700,
                           fontSize:
                               Theme.of(context).textTheme.headline6!.fontSize),
@@ -141,24 +147,24 @@ class _LandingPageScreenWebState extends State<LandingPageScreenWeb>
 
                   if (auth.loggedUser!.roleId < 3) ...{
                     GeneralTemplate.badgedIcon(
-                        isEnabled: true,
-                        tooltip: "Notifications",
-                        onPress: () {},
-                        icon: Icons.notifications_rounded,
-                        backgroundColor:
-                            Palette.textFieldColor.withOpacity(0.4)),
+                      isEnabled: true,
+                      tooltip: "Notifications",
+                      onPress: () {},
+                      icon: Icons.notifications_rounded,
+                      backgroundColor: Colors.grey.shade200,
+                    ),
                   },
                   const SizedBox(
                     width: 10,
                   ),
                   if (auth.loggedUser!.roleId == 3) ...{
                     GeneralTemplate.badgedIcon(
-                        isEnabled: true,
-                        tooltip: "Messages",
-                        onPress: () {},
-                        icon: Icons.message,
-                        backgroundColor:
-                            Palette.textFieldColor.withOpacity(0.4)),
+                      isEnabled: true,
+                      tooltip: "Messages",
+                      onPress: () {},
+                      icon: Icons.message,
+                      backgroundColor: Colors.grey.shade200,
+                    ),
                   },
                   const SizedBox(
                     width: 10,
@@ -201,10 +207,10 @@ class _LandingPageScreenWebState extends State<LandingPageScreenWeb>
                               "${item.label}",
                               style: TextStyle(
                                   letterSpacing: 1.5,
-                                  color: tabItems.indexOf(item) ==
-                                          currentTabIndex
-                                      ? Palette.textFieldColor
-                                      : Colors.grey.shade400),
+                                  color:
+                                      tabItems.indexOf(item) == currentTabIndex
+                                          ? Palette.textFieldColor
+                                          : Colors.grey.shade400),
                             ),
                           ),
                         )

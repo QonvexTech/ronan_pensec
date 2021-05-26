@@ -29,6 +29,8 @@ class LoginService {
       required bool isRemembered,
       bool showNotif = true}) async {
     try {
+      print("$email");
+      print(password);
       return await http.post(Uri.parse("${BaseEnpoint.URL}${AuthEndpoint.login}"),
           headers: _rqst.defaultHeader,
           body: {"email": email, "password": password}).then((respo) async {

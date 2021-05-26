@@ -1,13 +1,8 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/services/color_decider.dart';
-import 'package:ronan_pensec/services/firebase_messaging_service.dart';
-import 'package:ronan_pensec/services/firebase_messaging_token_service.dart';
-import 'package:ronan_pensec/views/login_view/login_view.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 
 class GeneralTemplate {
@@ -165,7 +160,7 @@ class GeneralTemplate {
       {required Widget child,
       required double width,
       required double height,
-      required Widget title}) {
+      Widget? title, Function? onDismissed}) {
     showGeneralDialog(
         barrierColor: Colors.black.withOpacity(0.5),
         transitionBuilder: (context, a1, a2, widget) {
@@ -193,7 +188,9 @@ class GeneralTemplate {
         barrierDismissible: true,
         barrierLabel: '',
         context: context,
-        pageBuilder: (context, animation1, animation2) => Container());
+        pageBuilder: (context, animation1, animation2) => Container()).then((value) {
+          onDismissed!();
+    });
   }
 
   static List<IconSlideAction> sliders(

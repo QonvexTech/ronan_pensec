@@ -7,6 +7,7 @@ import 'package:ronan_pensec/models/calendar/rtt_model.dart';
 import 'package:ronan_pensec/models/center_model.dart';
 import 'package:ronan_pensec/models/region_model.dart';
 import 'package:ronan_pensec/models/user_model.dart';
+import 'package:ronan_pensec/view_model/calendar_half_day_clip.dart';
 import 'package:ronan_pensec/view_model/calendar_view_model.dart';
 import 'package:ronan_pensec/view_model/planning_view_model.dart';
 
@@ -442,6 +443,7 @@ class _CalendarFullState extends State<CalendarFull> {
                                                               milliseconds: 600),
                                                           decoration: BoxDecoration(
                                                             color: Colors.transparent,
+                                                              border: center.users.indexOf(user) == 0 ? Border.symmetric(horizontal: BorderSide(color: Colors.grey.shade300)) : Border(bottom: BorderSide(color: Colors.grey.shade300))
                                                               // border: Border(bottom: BorderSide(color: Colors.black54,width: 0.5), top: BorderSide(color: type <=1 ? Colors.black54 : Colors.transparent,width: 0.5))
                                                           ),
                                                           child: Row(
@@ -466,6 +468,9 @@ class _CalendarFullState extends State<CalendarFull> {
                                                                     physics: NeverScrollableScrollPhysics(),
                                                                     scrollDirection: Axis.horizontal,
                                                                     children: List.generate(_calendarViewModel.numOfDays, (daysIndex) => Container(
+                                                                        decoration: BoxDecoration(
+                                                                            border: daysIndex == 0 ? Border.symmetric(vertical: BorderSide(color: Colors.grey.shade200)) : Border(right: BorderSide(color: Colors.grey.shade200))
+                                                                        ),
                                                                         width: ((constraint.maxWidth - 150) /
                                                                             _calendarViewModel.numOfDays) <
                                                                             40
@@ -474,8 +479,8 @@ class _CalendarFullState extends State<CalendarFull> {
                                                                         child: Stack(
                                                                           children: [
                                                                             ///Holiday
-                                                                            if(user.holidays != null && user.holidays!.length > 0)...{
-                                                                              for(HolidayModel holiday in user.holidays!)...{
+                                                                            if(user.holidays.length > 0)...{
+                                                                              for(HolidayModel holiday in user.holidays)...{
                                                                                 if(!_calendarViewModel.service.isSunday(DateTime(_calendarViewModel.currentYear, _calendarViewModel.currentMonth, daysIndex + 1)) &&
                                                                                     _calendarViewModel.service.isInRange(
                                                                                         holiday.startDate,
@@ -483,24 +488,31 @@ class _CalendarFullState extends State<CalendarFull> {
                                                                                         DateTime(_calendarViewModel.currentYear, _calendarViewModel.currentMonth, daysIndex + 1)) && holiday.status == 1)...{
                                                                                   Tooltip(
                                                                                     message: "${holiday.reason}",
-                                                                                    child: Container(
+                                                                                    child: holiday.isHalfDay == 1 ? ClipPath(
+                                                                                      clipper: CalendarHalfdayClip(),
+                                                                                      child: Container(
+                                                                                        width: ((constraint.maxWidth - 150) /
+                                                                                            _calendarViewModel.numOfDays) <
+                                                                                            40
+                                                                                            ? 40
+                                                                                            : (constraint.maxWidth - 150) / _calendarViewModel.numOfDays,
+                                                                                        color: Colors.blue,
+                                                                                      ),
+                                                                                    ) : Container(
                                                                                       width: ((constraint.maxWidth - 150) /
                                                                                           _calendarViewModel.numOfDays) <
                                                                                           40
                                                                                           ? 40
                                                                                           : (constraint.maxWidth - 150) / _calendarViewModel.numOfDays,
-                                                                                      height: holiday.isHalfDay == 1 ? 25 : 50,
                                                                                       color: Colors.blue,
                                                                                     ),
                                                                                   )
-
                                                                                 }
-
                                                                               }
                                                                             },
                                                                             ///RTT
-                                                                            if(user.rtts != null && user.rtts!.length > 0)...{
-                                                                              for(RTTModel rtt in user.rtts!)...{
+                                                                            if(user.rtts.length > 0)...{
+                                                                              for(RTTModel rtt in user.rtts)...{
                                                                                 if(rtt.status == 1 && !_calendarViewModel.service.isSunday(DateTime(_calendarViewModel.currentYear, _calendarViewModel.currentMonth, daysIndex + 1)) && _calendarViewModel.service.isSameDay(DateTime(_calendarViewModel.currentYear, _calendarViewModel.currentMonth, daysIndex + 1), rtt.date))...{
                                                                                   Tooltip(
                                                                                     message: "${rtt.no_of_hrs} hrs.",
@@ -522,14 +534,24 @@ class _CalendarFullState extends State<CalendarFull> {
                                                                                 if(_calendarViewModel.service.isSameDay(DateTime(_calendarViewModel.currentYear, _calendarViewModel.currentMonth, daysIndex + 1), attendance.date))...{
                                                                                   Tooltip(
                                                                                     message: attendance.status == 1 ? "En retard" : "Absent",
-                                                                                    child: Container(
+                                                                                    child: attendance.status == 1 ? ClipPath(
+                                                                                      clipper: CalendarHalfdayClip(),
+                                                                                      child: Container(
+                                                                                        width: ((constraint.maxWidth - 150) /
+                                                                                            _calendarViewModel.numOfDays) <
+                                                                                            40
+                                                                                            ? 40
+                                                                                            : (constraint.maxWidth - 150) / _calendarViewModel.numOfDays,
+                                                                                        color: Colors.grey.shade800,
+                                                                                      ),
+                                                                                    ) : Container(
                                                                                       width: ((constraint.maxWidth - 150) /
                                                                                           _calendarViewModel.numOfDays) <
                                                                                           40
                                                                                           ? 40
                                                                                           : (constraint.maxWidth - 150) / _calendarViewModel.numOfDays,
-                                                                                      color: attendance.status == 1 ? Colors.grey.shade800 : Colors.red,
-                                                                                    ),
+                                                                                      color: Colors.red,
+                                                                                    )
                                                                                   )
                                                                                 }
                                                                               }

@@ -6,7 +6,7 @@ import 'package:ronan_pensec/views/landing_page_screen/web/children/region_view.
 class WebPlanning extends StatefulWidget {
   final List<PopupMenuItem<int>> menuItems;
   final ValueChanged<int> onFilterCallback;
-
+  final RegionViewModel regionViewModel = RegionViewModel.instance;
   WebPlanning({required this.menuItems, required this.onFilterCallback});
 
   @override
@@ -14,7 +14,7 @@ class WebPlanning extends StatefulWidget {
 }
 
 class _WebDashboardState extends State<WebPlanning> {
-  final RegionViewModel _regionViewModel = RegionViewModel.instance;
+  late final RegionViewModel _regionViewModel = widget.regionViewModel;
   final CalendarPlanning _calendarPlanning = CalendarPlanning();
   @override
   void initState() {

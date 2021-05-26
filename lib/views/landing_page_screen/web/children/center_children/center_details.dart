@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/models/center_model.dart';
+import 'package:ronan_pensec/models/pagination_model.dart';
 import 'package:ronan_pensec/models/user_model.dart';
 import 'package:ronan_pensec/services/dashboard_services/user_assign_center.dart';
+import 'package:ronan_pensec/services/data_controls/region_data_control.dart';
 import 'package:ronan_pensec/view_model/center_children/center_view_widget_helper.dart';
 import 'package:ronan_pensec/view_model/employee_view_model.dart';
 
 class CenterDetails extends StatefulWidget {
   final CenterModel model;
+  final RegionDataControl regionDataControl;
 
-  CenterDetails({Key? key, required this.model}) : super(key: key);
+  CenterDetails(
+      {Key? key, required this.model, required this.regionDataControl})
+      : super(key: key);
 
   @override
   _CenterDetailsState createState() => _CenterDetailsState();
@@ -17,14 +22,15 @@ class CenterDetails extends StatefulWidget {
 
 class _CenterDetailsState extends State<CenterDetails> {
   final EmployeeViewModel _viewModel = EmployeeViewModel.instance;
-  final UserAssignCenter _assignCenter = UserAssignCenter.instance;
+  UserAssignCenter _assignCenter = UserAssignCenter.instance;
   UserModel? _selectedUser;
   List<UserModel> _pendingUsers = [];
   final CenterViewWidgetHelper _helper = CenterViewWidgetHelper.instance;
+  PaginationModel employeePagination = new PaginationModel();
 
   @override
   void initState() {
-    this.fetcher(_viewModel.employeePagination.firstPageUrl);
+    this.fetcher(this.employeePagination.firstPageUrl);
     super.initState();
   }
 
@@ -37,32 +43,87 @@ class _CenterDetailsState extends State<CenterDetails> {
   }
 
   Future<void> fetcher(String subDomain) async {
-    print(subDomain);
     await _viewModel.service
         .getData(context, subDomain: subDomain)
         .then((value) {
       if (this.mounted) {
         setState(() {
-          _displayData = value;
+          this.employeePagination = value!;
+          this.employeePagination.currentPageUrl = subDomain;
+          _displayData = value.data;
         });
       }
     });
   }
 
   List<Widget> children(Size size) => _helper.children(context,
-    centerId: widget.model.id,
-    removeAssignCallback: (removed){
-      setState(() {
-        widget.model.users = removed;
-      });
-    },
+      centerId: widget.model.id,
+      pagination: this.employeePagination,
+      onPagePress: (int val){
+        setState(() {
+          this.employeePagination.currentPageUrl = '${this.employeePagination.dataToShow}?page=$val';
+        });
+        this.fetcher(this.employeePagination.currentPageUrl);
+      },
+      onFirstPage: (){
+        setState(() {
+          this.employeePagination.currentPageUrl = '${this.employeePagination.dataToShow}?page=1';
+        });
+        this.fetcher(this.employeePagination.currentPageUrl);
+      },
+      onLastPage: (){
+        setState(() {
+          this.employeePagination.currentPageUrl = '${this.employeePagination.dataToShow}?page=${this.employeePagination.lastPage}';
+        });
+        this.fetcher(this.employeePagination.currentPageUrl);
+      },
+      onNextPage: (){
+        if(this.employeePagination.currentPage < this.employeePagination.lastPage!){
+          setState(() {
+            this.employeePagination.currentPageUrl = '${this.employeePagination.dataToShow}?page=${this.employeePagination.currentPage + 1}';
+          });
+          this.fetcher(this.employeePagination.currentPageUrl);
+        }
+      },
+      onPrevPage: (){
+        if(this.employeePagination.currentPage > 1 ){
+          setState(() {
+            this.employeePagination.currentPageUrl = '${this.employeePagination.dataToShow}?page=${this.employeePagination.currentPage - 1}';
+          });
+          this.fetcher(this.employeePagination.currentPageUrl);
+        }
+      },
+      onChangePageCount: (int val) {
+        setState(() {
+          this.employeePagination.dataToShow = val;
+          this.employeePagination.currentPageUrl = '${this.employeePagination.dataToShow}?page=${this.employeePagination.currentPage}';
+        });
+        this.fetcher(this.employeePagination.currentPageUrl);
+      },
+      onChangePageNumber: (int val) {},
+      toRemoveUserId: (int id) {
+        print(id);
+        setState(() {
+          widget.regionDataControl.removeUserFromCenter(id, widget.model.id);
+        });
+      },
+      removeAssignCallback: (removed) {
+        setState(() {
+          widget.model.users = removed;
+        });
+      },
       assignUserCallback: (int id) {
         setState(() {
-          if(!_pendingUsers.contains(_selectedUser!) && !_helper.service.userIsAssigned(sauce: widget.model.users, id: _selectedUser!.id)){
+          if (!_pendingUsers.contains(_selectedUser!) &&
+              !_helper.service.userIsAssigned(
+                  sauce: widget.model.users, id: _selectedUser!.id)) {
             _pendingUsers.add(_selectedUser!);
-          }else{
-            _helper.service.notifier.showContextedBottomToast(context,msg: "Cet utilisateur est déjà affecté à ce centre");
+          } else {
+            _helper.service.notifier.showContextedBottomToast(context,
+                msg: "Cet utilisateur est déjà affecté à ce centre");
           }
+          widget.regionDataControl
+              .appendUserToCenter(_selectedUser!, widget.model.id);
           _selectedUser = null;
         });
       },
@@ -85,7 +146,7 @@ class _CenterDetailsState extends State<CenterDetails> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Palette.gradientColor[0],
-          title: Text("Retour"),
+          title: Text("${widget.model.name}"),
           centerTitle: false,
         ),
         body: Container(
@@ -100,36 +161,38 @@ class _CenterDetailsState extends State<CenterDetails> {
                 child: Column(
                   children: [
                     Expanded(
-                      child: ListView(
-                        children: [
-                          for(UserModel toAssign in _pendingUsers)...{
-                            ListTile(
-                              leading: Container(
-                                width: 40,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    image: DecorationImage(
-                                        image: _helper.userController.imageViewer(imageUrl: toAssign.image)
-                                    )
-                                ),
-                              ),
-                              trailing: IconButton(
-                                onPressed: (){
-                                  setState(() {
-                                    _pendingUsers.removeAt(_pendingUsers.indexOf(toAssign));
-                                  });
-                                },
-                                icon: Icon(Icons.close,color: Colors.red,),
-                              ),
-                              title: Text("${toAssign.full_name}"),
-                              subtitle: Text("${toAssign.email}"),
+                        child: ListView(
+                      children: [
+                        for (UserModel toAssign in _pendingUsers) ...{
+                          ListTile(
+                            leading: Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                      image: _helper.userController.imageViewer(
+                                          imageUrl: toAssign.image))),
                             ),
-                          }
-                        ],
-                      )
-                    ),
-                    if(_pendingUsers.isNotEmpty)...{
+                            trailing: IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  _pendingUsers.removeAt(
+                                      _pendingUsers.indexOf(toAssign));
+                                });
+                              },
+                              icon: Icon(
+                                Icons.close,
+                                color: Colors.red,
+                              ),
+                            ),
+                            title: Text("${toAssign.full_name}"),
+                            subtitle: Text("${toAssign.email}"),
+                          ),
+                        }
+                      ],
+                    )),
+                    if (_pendingUsers.isNotEmpty) ...{
                       Container(
                         margin: const EdgeInsets.symmetric(vertical: 10),
                         width: double.infinity,
@@ -149,24 +212,31 @@ class _CenterDetailsState extends State<CenterDetails> {
                                 child: Text("Dégager"),
                               ),
                             ),
-                            const SizedBox(width: 20,),
+                            const SizedBox(
+                              width: 20,
+                            ),
                             MaterialButton(
                               color: Palette.gradientColor[0],
                               minWidth: 120,
                               onPressed: () {
-                                _assignCenter.assign(toAssign: _pendingUsers, centerId: widget.model.id).then((value) {
-                                  if(value.isNotEmpty){
+                                _assignCenter
+                                    .assign(
+                                        toAssign: _pendingUsers,
+                                        centerId: widget.model.id)
+                                    .then((value) {
+                                  if (value.isNotEmpty) {
                                     setState(() {
-                                      widget.model.users += value;
+                                      widget.model.users = value;
                                       _pendingUsers.clear();
                                     });
                                   }
                                 });
                               },
                               child: Center(
-                                child: Text("Soumettre",style: TextStyle(
-                                    color: Colors.white
-                                ),),
+                                child: Text(
+                                  "Soumettre",
+                                  style: TextStyle(color: Colors.white),
+                                ),
                               ),
                             )
                           ],

@@ -308,6 +308,7 @@ class _RegionViewState extends State<RegionView> {
         width: double.infinity,
         height: _size.height,
         child: CenterView(
+          control: _regionViewModel.control,
           regionId: _regionViewModel.selectedRegion!.id,
           onBack: (int value) {
             setState(() {

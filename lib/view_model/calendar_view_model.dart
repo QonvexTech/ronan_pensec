@@ -19,7 +19,7 @@ class CalendarViewModel {
   Auth get auth => _auth;
   CalendarService get service => _service;
   final CalendarFull calendarFull = CalendarFull();
-  final EmployeeCalendarList employeeCalendarList = EmployeeCalendarList();
+  late final EmployeeCalendarList employeeCalendarList = EmployeeCalendarList(calendarViewModel: _instance,);
   int _currentYear = DateTime.now().year;
   int _currentMonth = DateTime.now().month;
 

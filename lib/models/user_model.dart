@@ -17,8 +17,8 @@ class UserModel {
   int roleId;
   int? workDays;
   int? consumableHolidays;
-  List<RTTModel>? rtts;
-  List<HolidayModel>? holidays;
+  List<RTTModel> rtts;
+  List<HolidayModel> holidays;
   List<AttendanceModel> attendances;
   int isSilentOnPush;
 
@@ -75,8 +75,14 @@ class UserModel {
   static List<HolidayModel> holidayToList(List? data) {
     List<HolidayModel> _holidays = [];
     if (data != null) {
-      for (var holiday in data) {
-        _holidays.add(HolidayModel.fromJson(holiday));
+      print(data);
+      try{
+        for (var holiday in data) {
+          print(holiday);
+          _holidays.add(HolidayModel.fromJson(holiday));
+        }
+      }catch(e){
+        print("PARSING HOLidAY ERROR : $e");
       }
     }
     return _holidays;
@@ -85,8 +91,12 @@ class UserModel {
   static List<RTTModel> rttToList(List? data) {
     List<RTTModel> _rtts = [];
     if (data != null) {
-      for (var item in data) {
-        _rtts.add(RTTModel.fromJson(item));
+      try{
+        for (var item in data) {
+          _rtts.add(RTTModel.fromJson(item));
+        }
+      }catch(e){
+        print("PARSING ERROR : $e");
       }
     }
     return _rtts;

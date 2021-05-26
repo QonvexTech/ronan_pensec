@@ -1,4 +1,4 @@
-import 'package:supercharged/supercharged.dart';
+
 class HolidayModel{
   final int id;
   String? reason;
@@ -6,8 +6,11 @@ class HolidayModel{
   DateTime endDate;
   int status;
   int isHalfDay;
+  int isEndDateHalf;
+  String? adminComment;
   String? comment;
   int userId;
+  String? proof;
   HolidayModel({
     required this.id,
     this.reason,
@@ -16,17 +19,23 @@ class HolidayModel{
     required this.status,
     required this.isHalfDay,
     this.comment,
+    this.proof,
     required this.userId,
+    required this.adminComment,
+    required this.isEndDateHalf
   });
 
   factory HolidayModel.fromJson(parsedJson){
     return HolidayModel(
       id : parsedJson['id'],
+      proof: parsedJson['proof'],
+      adminComment: parsedJson['admin_comment'],
+      isEndDateHalf: parsedJson['endDate_isHalf_day'],
       reason : parsedJson['reason'],
       startDate : DateTime.tryParse(parsedJson['start_date'].toString())??DateTime.now(),
       endDate : DateTime.tryParse(parsedJson['end_date'].toString())??DateTime.now(),
       status : int.parse(parsedJson['status'].toString()),
-      isHalfDay : int.parse(parsedJson['isHalf_day'].toString()),
+      isHalfDay : int.parse(parsedJson['startDate_isHalf_day'].toString()),
       comment : parsedJson['comment'],
       userId : int.parse(parsedJson['user_id'].toString()),
     );
@@ -36,8 +45,10 @@ class HolidayModel{
     'start_date' : startDate,
     'end_date' : endDate,
     'status' : status,
-    'isHalf_day' : isHalfDay,
+    'startDate_isHalf_day' : isHalfDay,
     'user_id' : userId,
     'comment' : comment,
+    'admin_comment' : adminComment,
+    'endDate_isHalf_day' : isEndDateHalf
   };
 }

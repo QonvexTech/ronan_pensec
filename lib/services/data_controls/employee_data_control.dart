@@ -19,6 +19,10 @@ class EmployeeDataControl {
 
   bool hasFetched = false;
   void populateAll(List data) {
-    _list.add(data.map((e) => UserModel.fromJson(parsedJson: e)).toList());
+    if(data is List<UserModel>){
+      _list.add(data);
+    }else{
+      _list.add(data.map((e) => UserModel.fromJson(parsedJson: e)).toList());
+    }
   }
 }

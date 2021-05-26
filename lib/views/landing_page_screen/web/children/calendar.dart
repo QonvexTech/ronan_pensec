@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/global/palette.dart';
+import 'package:ronan_pensec/global/templates/general_template.dart';
 import 'package:ronan_pensec/routes/calendar_route.dart';
 import 'package:ronan_pensec/views/landing_page_screen/web/children/calendar_children/employee_holidays.dart';
 import 'package:ronan_pensec/views/landing_page_screen/web/children/calendar_children/employee_rtt.dart';
+import 'package:ronan_pensec/views/landing_page_screen/web/children/calendar_children/pending_holiday_requests.dart';
+import 'package:ronan_pensec/views/landing_page_screen/web/children/calendar_children/pending_rtt_requests.dart';
 
 class Calendar extends StatefulWidget {
   @override
@@ -10,8 +14,18 @@ class Calendar extends StatefulWidget {
 }
 
 class _CalendarState extends State<Calendar> with SingleTickerProviderStateMixin {
-  late final TabController _tabController = new TabController(length: 2, vsync: this);
+  static final Auth _auth = Auth.instance;
+  late final TabController _tabController = new TabController(length: _auth.loggedUser!.roleId == 1 ? 4 : 2, vsync: this);
   int _currentIndex = 0;
+
+  void initialize() async {
+
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     final Size _size = MediaQuery.of(context).size;
@@ -36,19 +50,37 @@ class _CalendarState extends State<Calendar> with SingleTickerProviderStateMixin
                   physics: NeverScrollableScrollPhysics(),
                   labelColor: Palette.gradientColor[0],
                   tabs: [
+                    if(_auth.loggedUser!.roleId == 1)...{
+                      Tab(
+                        // text: "Demandes de Congés",
+                        child: Text("Toutes les demandes de congés",style: TextStyle(
+                            color: _currentIndex == 0 ? Colors.grey.shade800 : Colors.grey,
+                            fontSize: Theme.of(context).textTheme.subtitle1!.fontSize! - 5,
+                            fontWeight: FontWeight.w700
+                        ),),
+                      ),
+                      Tab(
+                        // text: "Demandes de Congés",
+                        child: Text("Toutes les demandes RTT",style: TextStyle(
+                            color: _currentIndex == 1 ? Colors.grey.shade800 : Colors.grey,
+                            fontSize: Theme.of(context).textTheme.subtitle1!.fontSize! - 5,
+                            fontWeight: FontWeight.w700
+                        ),),
+                      ),
+                    },
                     Tab(
                       // text: "Demandes de Congés",
                       child: Text("Demandes de Congés",style: TextStyle(
-                        color: _currentIndex == 0 ? Colors.grey.shade800 : Colors.grey,
-                        fontSize: Theme.of(context).textTheme.headline6!.fontSize! - 5,
+                        color: (_auth.loggedUser!.roleId == 1 && _currentIndex == 3) || (_auth.loggedUser!.roleId != 1 && _currentIndex == 0) ? Colors.grey.shade800 : Colors.grey,
+                        fontSize: Theme.of(context).textTheme.subtitle1!.fontSize! - 5,
                         fontWeight: FontWeight.w700
                       ),),
                     ),
                     Tab(
                       // text: "Demandes de RTT",
                       child: Text("Demandes de RTT",style: TextStyle(
-                          color: _currentIndex == 1 ? Colors.grey.shade800 : Colors.grey,
-                          fontSize: Theme.of(context).textTheme.headline6!.fontSize! - 5,
+                          color: (_auth.loggedUser!.roleId == 1 && _currentIndex == 4) || (_auth.loggedUser!.roleId != 1 && _currentIndex == 1) ? Colors.grey.shade800 : Colors.grey,
+                          fontSize: Theme.of(context).textTheme.subtitle1!.fontSize! - 5,
                           fontWeight: FontWeight.w700
                       ),),
                     ),
@@ -61,11 +93,41 @@ class _CalendarState extends State<Calendar> with SingleTickerProviderStateMixin
                   height: 30,
                   child: MaterialButton(
                     onPressed: (){
-                      if(_currentIndex == 0){
-                        Navigator.push(context, CalendarRoute.addNewHoliday);
-                      }else{
-                        Navigator.push(context, CalendarRoute.addNewRTT);
-                      }
+                      GeneralTemplate.showDialog(context, child: Row(
+                        children: [
+                          Expanded(
+                            child: MaterialButton(
+                              onPressed: (){
+
+                              },
+                              color: Colors.grey.shade200,
+                              child: Center(
+                                child: Text("Congés".toUpperCase(),style: TextStyle(
+                                  letterSpacing: 1.5,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 17.5
+                                ),),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Expanded(
+                            child: MaterialButton(
+                              onPressed: (){},
+                              color: Colors.grey.shade200,
+                              child: Center(
+                                child: Text("RTT".toUpperCase(),style: TextStyle(
+                                    letterSpacing: 1.5,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 17.5
+                                )),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ), width: _size.width, height: 100, title: null);
                     },
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     color: Colors.grey.shade100,
@@ -92,6 +154,11 @@ class _CalendarState extends State<Calendar> with SingleTickerProviderStateMixin
           controller: _tabController,
           physics: NeverScrollableScrollPhysics(),
           children: [
+            if(_auth.loggedUser!.roleId == 1)...{
+              PendingHolidayRequests(),
+              PendingRTTRequests(),
+              //PendingRTTRequests()
+            },
             EmployeeHolidays(),
             EmployeeRTT()
           ],
