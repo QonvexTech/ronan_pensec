@@ -173,35 +173,51 @@ class _CenterViewState extends State<CenterView> {
                               ? _centerViewModel.centerTemplate
                                   .listView(context, centersList.data!, false,
                                       onEdit: (index) {
-                                  _helper.showEditDialog(context,
-                                      center: centersList.data![index],
-                                      width: _size.width * .8,
-                                      callback: (bool e) {});
+                                  if(_centerViewModel.auth.loggedUser!.roleId == 1){
+                                    _helper.showEditDialog(context,
+                                        center: centersList.data![index],
+                                        width: _size.width * .8,
+                                        callback: (bool e) {});
+                                  }else{
+                                    _centerViewModel.service.notifier.showContextedBottomToast(context, msg: "Vous n'êtes pas privilégié pour faire l'action");
+                                  }
                                 }, onDelete: (index) {
-                                  _helper.showDialog(context,
-                                      centerId: centersList.data![index].id,
-                                      centerName: centersList.data![index].name,
-                                      width: _size.width * .65,
-                                      isMobile: _size.width < 900,
-                                      callback: (bool call) =>
-                                          setState(() => _isLoading = call));
+                                  if(_centerViewModel.auth.loggedUser!.roleId == 1){
+                                    _helper.showDialog(context,
+                                        centerId: centersList.data![index].id,
+                                        centerName: centersList.data![index].name,
+                                        width: _size.width * .65,
+                                        isMobile: _size.width < 900,
+                                        callback: (bool call) =>
+                                            setState(() => _isLoading = call));
+                                  }else{
+                                    _centerViewModel.service.notifier.showContextedBottomToast(context, msg: "Vous n'êtes pas privilégié pour faire l'action");
+                                  }
                                 },
                                       controller:
                                           _centerViewModel.slidableController)
                               : _centerViewModel.centerTemplate.tableData(
                                   context, centersList.data!, onEdit: (index) {
-                                  _helper.showEditDialog(context,
-                                      center: centersList.data![index],
-                                      width: _size.width * .8,
-                                      callback: (bool e) {});
+                                  if(_centerViewModel.auth.loggedUser!.roleId == 1){
+                                    _helper.showEditDialog(context,
+                                        center: centersList.data![index],
+                                        width: _size.width * .8,
+                                        callback: (bool e) {});
+                                  }else{
+                                    _centerViewModel.service.notifier.showContextedBottomToast(context, msg: "Vous n'êtes pas privilégié pour faire l'action");
+                                  }
                                 }, onDelete: (index) {
-                                  _helper.showDialog(context,
-                                      centerId: centersList.data![index].id,
-                                      centerName: centersList.data![index].name,
-                                      width: _size.width * .65,
-                                      isMobile: _size.width < 900,
-                                      callback: (bool call) =>
-                                          setState(() => _isLoading = call));
+                                  if(_centerViewModel.auth.loggedUser!.roleId == 1){
+                                    _helper.showDialog(context,
+                                        centerId: centersList.data![index].id,
+                                        centerName: centersList.data![index].name,
+                                        width: _size.width * .65,
+                                        isMobile: _size.width < 900,
+                                        callback: (bool call) =>
+                                            setState(() => _isLoading = call));
+                                  }else{
+                                    _centerViewModel.service.notifier.showContextedBottomToast(context, msg: "Vous n'êtes pas privilégié pour faire l'action");
+                                  }
                                 }),
                         )
                       : Container(

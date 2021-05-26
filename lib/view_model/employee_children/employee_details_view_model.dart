@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/models/user_model.dart';
 import 'package:ronan_pensec/services/dashboard_services/employee_service.dart';
 import 'package:ronan_pensec/services/data_controls/employee_data_control.dart';
@@ -6,9 +7,12 @@ import 'package:ronan_pensec/services/data_controls/user_data_control.dart';
 
 class EmployeeDetailsViewModel {
   EmployeeDetailsViewModel._singleton();
+  static final Auth _auth = Auth.instance;
+  Auth get auth => _auth;
   static final EmployeeDetailsViewModel _instance = EmployeeDetailsViewModel._singleton();
   static final EmployeeDataControl _dataControl = EmployeeDataControl.instance;
   static EmployeeDetailsViewModel instance(UserModel user) {
+    _instance.setRole = user.roleId;
     _instance.appendToBody = {"zip_code" : user.zip_code};
     _instance.appendToBody = {"birth_date" : user.birthdate.toString()};
     _instance.appendToBody = {"city" : user.city};
@@ -55,6 +59,12 @@ class EmployeeDetailsViewModel {
   EmployeeService get service => _service;
   UserDataControl _userDataControl = UserDataControl.instance;
   UserDataControl get userDataControl => _userDataControl;
+  late int _roleId;
+  int get roleId => _roleId;
+  set setRole(int role) {
+    _instance._roleId = role;
+    _instance.appendToBody = {"role_id" : _instance._roleId.toString()};
+  }
   TextEditingController firstName = new TextEditingController();
   TextEditingController address = new TextEditingController();
   TextEditingController lastName = new TextEditingController();

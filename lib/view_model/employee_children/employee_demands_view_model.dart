@@ -1,4 +1,5 @@
 import 'package:ronan_pensec/models/calendar/attendance_model.dart';
+import 'package:ronan_pensec/models/calendar/holiday_demand_model.dart';
 import 'package:ronan_pensec/models/calendar/holiday_model.dart';
 import 'package:ronan_pensec/models/calendar/rtt_model.dart';
 import 'package:ronan_pensec/services/dashboard_services/employee_service.dart';
@@ -15,9 +16,9 @@ class EmployeeDemandsViewModel {
   }
 
   /// Instance of List of holidays
-  List<HolidayModel>? _holidays;
-  List<HolidayModel>? get holidays => _holidays;
-  set setHolidays(List<HolidayModel>? update) => _holidays = update;
+  List<HolidayDemandModel>? _holidays;
+  List<HolidayDemandModel>? get holidays => _holidays;
+  set setHolidays(List<HolidayDemandModel>? update) => _holidays = update;
 
   /// instance of List of RTT
   List<RTTModel>? _rtts;

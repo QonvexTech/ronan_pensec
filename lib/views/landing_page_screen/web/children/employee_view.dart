@@ -28,6 +28,10 @@ class _EmployeeViewState extends State<EmployeeView> {
   void initState() {
     if (!_viewModel.employeeDataControl.hasFetched) {
       this.fetcher(this.employeePagination.firstPageUrl);
+    }else{
+      setState(() {
+        employeePagination = _viewModel.paginationModel;
+      });
     }
     super.initState();
   }
@@ -39,22 +43,8 @@ class _EmployeeViewState extends State<EmployeeView> {
         setState(() {
           this.employeePagination = value!;
           _viewModel.employeeDataControl.populateAll(this.employeePagination.data!);
-          // _viewModel.employeeDataControl.hasFetched = value != null;
-          // this.employeePagination.lastPageUrl =
-          //     value['last_page_url'].toString().split('users/')[1];
-          // this.employeePagination.firstPageUrl =
-          //     value['first_page_url'].toString().split('users/')[1];
-          // this.employeePagination.nextPageUrl =
-          //     value['next_page_url'] == null
-          //         ? null
-          //         : value['next_page_url'].toString().split('users/')[1];
-          // this.employeePagination.prevPageUrl =
-          //     value['prev_page_url'] != null
-          //         ? value['prev_page_url'].toString().split('users/')[1]
-          //         : null;
-          // this.employeePagination.totalDataCount = value['total'];
-          // this.employeePagination.currentPage = value['current_page'];
-          // this.employeePagination.lastPage = value['last_page'];
+          _viewModel.employeeDataControl.hasFetched = true;
+          _viewModel.paginationModel = employeePagination;
         });
       }
     });

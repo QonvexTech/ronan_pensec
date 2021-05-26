@@ -3,10 +3,12 @@ import 'dart:io';
 import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/global/auth_endpoint.dart';
 import 'package:ronan_pensec/global/constants.dart';
+import 'package:ronan_pensec/global/holiday_demand_endpoint.dart';
 import 'package:ronan_pensec/global/holiday_endpoint.dart';
 import 'package:ronan_pensec/global/rtt_endpoint.dart';
 import 'package:ronan_pensec/global/templates/attendance_endpoint.dart';
 import 'package:ronan_pensec/global/user_endpoint.dart';
+import 'package:ronan_pensec/models/calendar/holiday_demand_model.dart';
 import 'package:ronan_pensec/models/pagination_model.dart';
 import 'package:ronan_pensec/services/data_controls/employee_data_control.dart';
 import 'package:ronan_pensec/services/toast_notifier.dart';
@@ -119,7 +121,25 @@ class EmployeeService {
       return null;
     }
   }
-
+  Future<List<HolidayDemandModel>> getHolidayDemands(context, {required int employeeId}) async {
+    try{
+      return await http.get(Uri.parse("${BaseEnpoint.URL}${HolidayDemandEndpoint.byUser(userId: employeeId)}"),headers: {
+        "Accept" : "application/json",
+        HttpHeaders.authorizationHeader : "Bearer ${_auth.token}"
+      }).then((response) {
+        List data = json.decode(response.body);
+        print("DATA $data");
+        if(response.statusCode == 200){
+          return data.map((e) => HolidayDemandModel.fromJson(e)).toList();
+        }
+        return [];
+      });
+    }catch(e){
+      print(e);
+      _notifier.showContextedBottomToast(context, msg: "Erreur : $e");
+      return [];
+    }
+  }
   Future<List<HolidayModel>> getEmployeeHolidays(context,
       {required int employeeId}) async {
     try {

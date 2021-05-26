@@ -208,6 +208,40 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                   ),
                                 ),
                                 Container(
+                                  width: double.infinity,
+                                  padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    border: Border.all(
+                                      color: Colors.grey.shade400
+                                    )
+                                  ),
+                                  child: DropdownButtonHideUnderline(
+                                    child: DropdownButton<String>(
+                                      items: <DropdownMenuItem<String>>[
+                                        DropdownMenuItem<String>(
+                                            child: Text("1 - Admin"),
+                                          value: "1 - Admin",
+                                        ),
+                                        DropdownMenuItem<String>(
+                                          child: Text("2 - Accountant"),
+                                          value: "2 - Accountant",
+                                        ),
+                                        DropdownMenuItem<String>(
+                                          child: Text("3 - Employee"),
+                                          value: "3 - Employee",
+                                        ),
+                                      ],
+                                      onChanged: (val){
+                                        setState(() {
+                                          _viewModel.setRole = int.parse(val.toString()[0]);
+                                        });
+                                      },
+                                      value: _viewModel.roleId == 1 ? "1 - Admin" : _viewModel.roleId == 2 ? "2 - Accountant" : "3 - Employee",
+                                    ),
+                                  ),
+                                ),
+                                Container(
                                     margin: const EdgeInsets.symmetric(
                                         horizontal: 0, vertical: 15),
                                     width: double.infinity,
@@ -227,6 +261,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                                   .then((value) {
                                                 if (value) {
                                                   setState(() {
+                                                    widget.employee.roleId = _viewModel.roleId;
                                                     widget.employee.first_name =
                                                         _viewModel
                                                             .firstName.text;
@@ -290,24 +325,26 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                       ],
                                     ))
                               } else ...{
-                                Container(
-                                  width: double.infinity,
-                                  height: 40,
-                                  child: MaterialButton(
-                                    color: Palette.gradientColor[0],
-                                    onPressed: () {
-                                      setState(() {
-                                        _viewModel.setIsEditing = true;
-                                      });
-                                    },
-                                    child: Center(
-                                      child: Text(
-                                        "Edit profile",
-                                        style: TextStyle(color: Colors.white),
+                                if(_viewModel.auth.loggedUser!.roleId == 1)...{
+                                  Container(
+                                    width: double.infinity,
+                                    height: 40,
+                                    child: MaterialButton(
+                                      color: Palette.gradientColor[0],
+                                      onPressed: () {
+                                        setState(() {
+                                          _viewModel.setIsEditing = true;
+                                        });
+                                      },
+                                      child: Center(
+                                        child: Text(
+                                          "Edit profile",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
+                                },
                                 Container(
                                   width: double.infinity,
                                   margin:
@@ -353,21 +390,23 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                   ),
                                 ),
                               },
-                              Container(
-                                margin:
-                                    const EdgeInsets.symmetric(vertical: 10),
-                                width: double.infinity,
-                                child: Text(
-                                  "Role :",
-                                  style: TextStyle(
-                                      fontSize: Theme.of(context)
-                                              .textTheme
-                                              .headline6!
-                                              .fontSize! -
-                                          2,
-                                      fontWeight: FontWeight.w700),
+                              if(!_viewModel.isEditing)...{
+                                Container(
+                                  margin:
+                                  const EdgeInsets.symmetric(vertical: 10),
+                                  width: double.infinity,
+                                  child: Text(
+                                    "Role :",
+                                    style: TextStyle(
+                                        fontSize: Theme.of(context)
+                                            .textTheme
+                                            .headline6!
+                                            .fontSize! -
+                                            2,
+                                        fontWeight: FontWeight.w700),
+                                  ),
                                 ),
-                              ),
+                              },
                               Align(
                                 alignment: AlignmentDirectional.centerStart,
                                 child: Tooltip(

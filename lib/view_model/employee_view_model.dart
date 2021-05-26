@@ -6,6 +6,7 @@ import 'package:ronan_pensec/services/data_controls/employee_data_control.dart';
 class EmployeeViewModel{
   EmployeeViewModel._privateConstructor();
   static final EmployeeViewModel _instance = EmployeeViewModel._privateConstructor();
+  late PaginationModel paginationModel;
   static EmployeeViewModel get instance{
     return _instance;
   }

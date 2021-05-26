@@ -113,14 +113,12 @@ class RegionDataControl {
     _list.add(this.current);
   }
 
-  appendRTT(RTTModel rtt, userId, centerId){
+  appendRTT(RTTModel rtt, userId){
     for(RegionModel region in this.current){
       for(CenterModel center in region.centers!){
-        if(center.id == centerId){
-          for(UserModel user in center.users){
-            if(user.id == userId){
-              user.rtts.add(rtt);
-            }
+        for(UserModel user in center.users){
+          if(user.id == userId){
+            user.rtts.add(rtt);
           }
         }
       }
@@ -128,14 +126,12 @@ class RegionDataControl {
     _list.add(this.current);
   }
 
-  appendHoliday(HolidayModel holiday, userId, centerId){
+  appendHoliday(HolidayModel holiday,int userId){
     for(RegionModel region in this.current){
       for(CenterModel center in region.centers!){
-        if(center.id == centerId){
-          for(UserModel user in center.users){
-            if(user.id == userId){
-              user.holidays.add(holiday);
-            }
+        for(UserModel user in center.users){
+          if(user.id == userId){
+            user.holidays.add(holiday);
           }
         }
       }

@@ -8,6 +8,8 @@ class RTTEndpoint {
   static String viewRttInfo({required rttId}) => "$_baseEndpoint/$rttId";
 
   static String approveRTT({required rttId}) => "$_baseEndpoint/$rttId";
-
+  static String decline = "$_baseEndpoint/decline_request";
   static String get base => _baseEndpoint;
+
+  static String pending = "$_baseEndpoint/all_pending";
 }

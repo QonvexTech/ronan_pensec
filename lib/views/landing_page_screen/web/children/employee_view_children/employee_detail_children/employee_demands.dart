@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/models/calendar/attendance_model.dart';
+import 'package:ronan_pensec/models/calendar/holiday_demand_model.dart';
 import 'package:ronan_pensec/models/calendar/holiday_model.dart';
 import 'package:ronan_pensec/models/calendar/rtt_model.dart';
 import 'package:ronan_pensec/services/data_controls/region_data_control.dart';
@@ -20,9 +21,9 @@ class EmployeeDemands extends StatefulWidget {
 class _EmployeeDemandsState extends State<EmployeeDemands> with SingleTickerProviderStateMixin {
   late final EmployeeDemandsViewModel _employeeDemandsViewModel = EmployeeDemandsViewModel.instance;
   late final TabController _tabController = new TabController(length: 3, vsync: this);
-  late final HolidayRequest _holidayRequest = new HolidayRequest(holidays: _employeeDemandsViewModel.holidays!,);
-  late final RTTRequest _rttRequest = new RTTRequest(rtts: _employeeDemandsViewModel.rtts!,);
-  late final EmployeeAttendance _attendance = new EmployeeAttendance(attendance: _employeeDemandsViewModel.attendance!,regionDataControl: widget.regionDataControl,userId: widget.userId,);
+  // late final HolidayRequest _holidayRequest = new HolidayRequest(demand: _employeeDemandsViewModel.holidays);
+  // late final RTTRequest _rttRequest = new RTTRequest(rtts: _employeeDemandsViewModel.rtts!,);
+  // late final EmployeeAttendance _attendance = new EmployeeAttendance(attendance: _employeeDemandsViewModel.attendance!,regionDataControl: widget.regionDataControl,userId: widget.userId,);
 
   int _currentIndex=0;
   @override
@@ -30,12 +31,17 @@ class _EmployeeDemandsState extends State<EmployeeDemands> with SingleTickerProv
     initialize();
     super.initState();
   }
-  Future<void> holidayGetter(context, employeeId) async {
-    List<HolidayModel> _holiday = await _employeeDemandsViewModel.service.getEmployeeHolidays(context, employeeId: employeeId);
+  Future<void> holidayDemandGetter(context, employeeId) async {
+    List<HolidayDemandModel> _demand = await _employeeDemandsViewModel.service.getHolidayDemands(context, employeeId: employeeId);
+    print(_demand);
     setState(() {
-    _employeeDemandsViewModel.setHolidays = _holiday;
+      _employeeDemandsViewModel.setHolidays = _demand;
     });
-
+    // List<HolidayModel> _holiday = await _employeeDemandsViewModel.service.getEmployeeHolidays(context, employeeId: employeeId);
+    // setState(() {
+    // _employeeDemandsViewModel.setHolidays = _holiday;
+    // });
+    //
 
   }
 
@@ -56,7 +62,7 @@ class _EmployeeDemandsState extends State<EmployeeDemands> with SingleTickerProv
   }
 
   void initialize() async {
-    await holidayGetter(context, widget.userId);
+    await holidayDemandGetter(context, widget.userId);
     await rttGetter(context, widget.userId);
     await attendanceGetter(context, widget.userId);
 
@@ -106,19 +112,19 @@ class _EmployeeDemandsState extends State<EmployeeDemands> with SingleTickerProv
             padding: const EdgeInsets.all(10),
             child: _employeeDemandsViewModel.holidays == null ? Center(
               child: CircularProgressIndicator(),
-            ) : _holidayRequest,
+            ) : HolidayRequest(demand: _employeeDemandsViewModel.holidays),
           ),
           Container(
             padding: const EdgeInsets.all(10),
             child: _employeeDemandsViewModel.rtts == null ? Center(
               child: CircularProgressIndicator(),
-            ) : _rttRequest,
+            ) : RTTRequest(rtts: _employeeDemandsViewModel.rtts!,),
           ),
           Container(
             padding: const EdgeInsets.all(10),
             child: _employeeDemandsViewModel.attendance == null ? Center(
               child: CircularProgressIndicator(),
-            ) : _attendance
+            ) : EmployeeAttendance(attendance: _employeeDemandsViewModel.attendance!,regionDataControl: widget.regionDataControl,userId: widget.userId,)
           )
         ],
       ),
