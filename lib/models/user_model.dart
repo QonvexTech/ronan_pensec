@@ -1,6 +1,6 @@
-import 'package:ronan_pensec/models/calendar/attendance_model.dart';
-import 'package:ronan_pensec/models/calendar/holiday_model.dart';
-import 'package:ronan_pensec/models/calendar/rtt_model.dart';
+import 'calendar/attendance_model.dart';
+import 'calendar/holiday_model.dart';
+import 'calendar/rtt_model.dart';
 
 class UserModel {
   final int id;
@@ -75,10 +75,8 @@ class UserModel {
   static List<HolidayModel> holidayToList(List? data) {
     List<HolidayModel> _holidays = [];
     if (data != null) {
-      print(data);
       try{
         for (var holiday in data) {
-          print(holiday);
           _holidays.add(HolidayModel.fromJson(holiday));
         }
       }catch(e){

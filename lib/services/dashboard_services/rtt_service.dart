@@ -1,15 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
-
-import 'package:ronan_pensec/global/PendingRTTRequestController.dart';
-import 'package:ronan_pensec/global/auth.dart';
-import 'package:ronan_pensec/global/auth_endpoint.dart';
-import 'package:ronan_pensec/global/rtt_endpoint.dart';
-import 'package:ronan_pensec/models/calendar/rtt_model.dart';
-import 'package:ronan_pensec/services/data_controls/calendar_data_control.dart';
-import 'package:ronan_pensec/services/data_controls/region_data_control.dart';
-import 'package:ronan_pensec/services/toast_notifier.dart';
 import 'package:http/http.dart' as http;
+import 'package:ronan_pensec_web/global/auth.dart';
+import 'package:ronan_pensec_web/global/constants.dart';
+import 'package:ronan_pensec_web/global/controllers/PendingRTTRequestController.dart';
+import 'package:ronan_pensec_web/global/endpoints/rtt_endpoint.dart';
+import 'package:ronan_pensec_web/models/calendar/rtt_model.dart';
+import 'package:ronan_pensec_web/services/data_controls/calendar_data_control.dart';
+import 'package:ronan_pensec_web/services/data_controls/region_data_control.dart';
+import 'package:ronan_pensec_web/services/toast_notifier.dart';
 
 class RTTService{
   RTTService._private();
@@ -82,7 +81,6 @@ class RTTService{
       }).then((response) {
 
         var data = json.decode(response.body);
-        print("RTTS $data");
         if(response.statusCode == 200){
           _controller.dataControl.populate(data);
           return true;

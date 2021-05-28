@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:ronan_pensec/routes/credential_route.dart';
-import 'package:ronan_pensec/services/login_service.dart';
+import 'package:ronan_pensec_web/route/credential_route.dart';
+import 'package:ronan_pensec_web/services/login_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CredentialsPreferences {

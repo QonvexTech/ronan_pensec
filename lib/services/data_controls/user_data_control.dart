@@ -1,6 +1,5 @@
-import 'package:flutter/cupertino.dart';
-import 'package:ronan_pensec/global/auth.dart';
-import 'package:ronan_pensec/global/auth_endpoint.dart';
+import 'package:flutter/material.dart';
+import 'package:ronan_pensec_web/global/auth.dart';
 
 class UserDataControl {
   UserDataControl._private();

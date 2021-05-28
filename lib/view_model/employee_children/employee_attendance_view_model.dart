@@ -1,6 +1,8 @@
-import 'package:ronan_pensec/global/auth.dart';
-import 'package:ronan_pensec/services/dashboard_services/employee_service.dart';
-import 'package:ronan_pensec/services/data_controls/employee_data_control.dart';
+
+
+import 'package:ronan_pensec_web/global/auth.dart';
+import 'package:ronan_pensec_web/services/dashboard_services/employee_service.dart';
+import 'package:ronan_pensec_web/services/data_controls/employee_data_control.dart';
 
 class EmployeeAttendanceViewModel {
   EmployeeAttendanceViewModel._singleton();

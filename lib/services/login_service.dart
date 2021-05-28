@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:page_transition/page_transition.dart';
-import 'package:ronan_pensec/global/auth.dart';
-import 'package:ronan_pensec/global/auth_endpoint.dart';
-import 'package:ronan_pensec/global/constants.dart';
-import 'package:ronan_pensec/models/user_model.dart';
-import 'package:ronan_pensec/routes/credential_route.dart';
-import 'package:ronan_pensec/services/credentials_preferences.dart';
-import 'package:ronan_pensec/services/toast_notifier.dart';
-import 'package:ronan_pensec/views/landing_page_screen/landing_page_screen.dart';
-import 'http_request.dart';
+import 'package:ronan_pensec_web/global/auth.dart';
+import 'package:ronan_pensec_web/global/constants.dart';
+import 'package:ronan_pensec_web/global/endpoints/auth_endpoint.dart';
+import 'package:ronan_pensec_web/models/user_model.dart';
+import 'package:ronan_pensec_web/route/credential_route.dart';
+import 'package:ronan_pensec_web/services/http_request.dart';
 import 'dart:convert';
+import 'package:ronan_pensec_web/services/toast_notifier.dart';
+import 'package:ronan_pensec_web/views/landing_page.dart';
+import 'credentials_preferences.dart';
 
 class LoginService {
   LoginService._singleton();
@@ -18,9 +18,9 @@ class LoginService {
 
   ToastNotifier? get notifier => _notifier;
   static final LoginService _instance = LoginService._singleton();
-  static final Auth _auth = Auth.instance;
-  static LoginService get instance =>_instance;
+  static LoginService get instance => _instance;
   final HttpRequest _rqst = HttpRequest.instance;
+  static final Auth _auth = Auth.instance;
   late final CredentialsPreferences _credentialsPreferences = CredentialsPreferences.instance;
 
   Future<bool> login(context,
@@ -29,13 +29,10 @@ class LoginService {
       required bool isRemembered,
       bool showNotif = true}) async {
     try {
-      print("$email");
-      print(password);
       return await http.post(Uri.parse("${BaseEnpoint.URL}${AuthEndpoint.login}"),
           headers: _rqst.defaultHeader,
           body: {"email": email, "password": password}).then((respo) async {
         var data = json.decode(respo.body);
-        print(data);
         if (respo.statusCode == 200 || respo.statusCode == 201) {
           if(showNotif){
             _notifier.showContextedBottomToast(context,msg: "Login Successful");

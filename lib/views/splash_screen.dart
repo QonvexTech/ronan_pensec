@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ronan_pensec/services/credentials_preferences.dart';
+import 'package:ronan_pensec_web/services/credentials_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
