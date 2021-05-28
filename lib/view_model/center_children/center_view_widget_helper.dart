@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:ronan_pensec/global/auth.dart';
-import 'package:ronan_pensec/global/palette.dart';
-import 'package:ronan_pensec/global/templates/general_template.dart';
-import 'package:ronan_pensec/models/center_model.dart';
-import 'package:ronan_pensec/models/pagination_model.dart';
-import 'package:ronan_pensec/models/user_model.dart';
-import 'package:ronan_pensec/services/dashboard_services/center_service.dart';
-import 'package:ronan_pensec/services/data_controls/center_data_control.dart';
-import 'package:ronan_pensec/services/data_controls/user_data_control.dart';
+import 'package:ronan_pensec_web/global/auth.dart';
+import 'package:ronan_pensec_web/global/palette.dart';
+import 'package:ronan_pensec_web/global/template/general_template.dart';
+import 'package:ronan_pensec_web/models/center_model.dart';
+import 'package:ronan_pensec_web/models/pagination_model.dart';
+import 'package:ronan_pensec_web/models/user_model.dart';
+import 'package:ronan_pensec_web/services/dashboard_services/center_service.dart';
+import 'package:ronan_pensec_web/services/data_controls/center_data_control.dart';
+import 'package:ronan_pensec_web/services/data_controls/user_data_control.dart';
 
 class CenterViewWidgetHelper {
   static final CenterDataControl _control = CenterDataControl.instance;
@@ -23,16 +23,51 @@ class CenterViewWidgetHelper {
   static final CenterViewWidgetHelper _instance =
       CenterViewWidgetHelper._singleton();
 
-  static CenterViewWidgetHelper get instance{
+  static CenterViewWidgetHelper get instance {
     return _instance;
   }
-  TextEditingController _name = new TextEditingController();
-  TextEditingController _address = new TextEditingController();
-  TextEditingController _number = new TextEditingController();
-  TextEditingController _email = new TextEditingController();
+  final TextEditingController _name = new TextEditingController();
+  final TextEditingController _address = new TextEditingController();
+  final TextEditingController _number = new TextEditingController();
+  final TextEditingController _email = new TextEditingController();
+  final TextEditingController _zipCode = new TextEditingController();
+  final TextEditingController _city = new TextEditingController();
+
+  TextEditingController get name => _name;
+  TextEditingController get address => _address;
+  TextEditingController get number => _number;
+  TextEditingController get email => _email;
+  TextEditingController get zipCode => _zipCode;
+  TextEditingController get city => _city;
   final Duration duration = new Duration(milliseconds: 700);
   static final Auth _auth = Auth.instance;
+  Auth get auth => _auth;
   final List<int> popupMenuPageItems = [10,20,30,40,50];
+
+  Widget templatize(
+      {required IconData icon,
+        required String text,
+        required String label}) =>
+      Tooltip(
+        message: label,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(
+                icon,
+                color: Palette.gradientColor[0],
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              Text("$text")
+            ],
+          ),
+        ),
+      );
+
   void showEditDialog(context,
       {required CenterModel center,
       required double width,
@@ -42,6 +77,7 @@ class CenterViewWidgetHelper {
     _name.text = center.name;
     _address.text = center.address;
     _number.text = center.mobile;
+    _zipCode.text = center.zipCode;
     GeneralTemplate.showDialog(context,
         child: Container(
           width: double.infinity,
@@ -300,308 +336,6 @@ class CenterViewWidgetHelper {
         ),
       );
 
-  List<Widget> children(context,
-      {UserModel? selectedUser,
-      bool isRow = true,
-      required Size size,
-      required List<UserModel> assignedUsers,
-        required PaginationModel pagination,
-      List<UserModel>? displayData,
-      required ValueChanged<int> assignUserCallback,
-      required ValueChanged<UserModel?> callback,
-      required int centerId,
-        required ValueChanged<int> onChangePageCount,
-        required ValueChanged<int> onChangePageNumber,
-        required Function onLastPage,
-        required Function onFirstPage,
-        required Function onNextPage,
-        required Function onPrevPage,
-        required ValueChanged<int> onPagePress,
-      required ValueChanged<List<UserModel>> removeAssignCallback,
-      required ValueChanged<int> toRemoveUserId}) {
-    return [
-      AnimatedContainer(
-        duration: duration - Duration(milliseconds: 400),
-        padding: const EdgeInsets.all(20),
-        width: isRow
-            ? selectedUser != null
-                ? 400
-                : 0
-            : size.width,
-        height: !isRow
-            ? selectedUser != null
-                ? 400
-                : 0
-            : size.height,
-        child: selectedUser == null
-            ? Container()
-            : Column(
-                children: [
-                  Container(
-                    width: size.width * .15,
-                    height: size.width * .15,
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: _userController.imageViewer(
-                                imageUrl: selectedUser.image))),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.symmetric(vertical: 10),
-                    child: Text(
-                      "${selectedUser.full_name}",
-                      style: TextStyle(
-                          color: Colors.black54,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 17),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  Container(
-                    child: Text(
-                      "${selectedUser.email}",
-                      style: TextStyle(
-                          color: Colors.black54,
-                          fontWeight: FontWeight.w400,
-                          fontStyle: FontStyle.italic,
-                          fontSize: 14),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  this.addressText(selectedUser.address),
-                  this.mobileText(selectedUser.mobile),
-                  Spacer(),
-                  MaterialButton(
-                    height: 50,
-                    onPressed: () {
-                      assignUserCallback(selectedUser.id);
-                    },
-                    color: Palette.gradientColor[0],
-                    child: Center(
-                      child: Text(
-                        "Assign".toUpperCase(),
-                        style: TextStyle(
-                            color: Colors.white,
-                            letterSpacing: 1,
-                            fontWeight: FontWeight.w600),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-      ),
-      Expanded(
-        child: Column(
-          children: [
-            Expanded(
-              child: Container(
-                margin:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                      BoxShadow(
-                          color: Colors.grey.shade200, offset: Offset(2, 2))
-                    ]),
-                child: Column(
-                  children: [
-                    this.viewHeaderDetail(top: true, isAll: false),
-                    Expanded(
-                      child: assignedUsers.length > 0
-                          ? ListView(
-                              children: List.generate(
-                                assignedUsers.length,
-                                (index) => this.viewBodyDetail(context,
-                                    assignedUsers[index], false, false,
-                                    source: assignedUsers, onRemoveCallback:
-                                        (List<UserModel> removed) {
-                                  removeAssignCallback(removed);
-                                }, centerId: centerId, onRemoveUser: (int userId){
-                                  toRemoveUserId(userId);
-                                    }),
-                              ),
-                            )
-                          : Center(
-                              child: Text("Aucun employé trouvé"),
-                            ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-            if (_auth.loggedUser!.roleId == 1) ...{
-              const SizedBox(
-                height: 10,
-              ),
-              Expanded(
-                flex: 2,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Column(
-                    children: [
-                      Container(
-                        width: double.infinity,
-                        height: 60,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 10),
-                        decoration: BoxDecoration(
-                            color: Palette.gradientColor[0],
-                            borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(10))),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              child: Text(
-                                "Liste de tous les employés",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    letterSpacing: 1,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                            ),
-                            AnimatedContainer(
-                              duration: duration,
-                              width:
-                                  selectedUser != null ? 50 : size.width * .33,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                  shape: selectedUser != null
-                                      ? BoxShape.circle
-                                      : BoxShape.rectangle,
-                                  color: Palette.gradientColor[1]),
-                              child: selectedUser != null
-                                  ? IconButton(
-                                      padding: const EdgeInsets.all(0),
-                                      icon: Icon(Icons.search),
-                                      onPressed: () {},
-                                      color: Colors.white,
-                                    )
-                                  : Theme(
-                                      data: ThemeData(
-                                          primaryColor: Colors.white,
-                                          accentColor:
-                                              Palette.gradientColor[3]),
-                                      child: TextField(
-                                        cursorColor: Colors.white,
-                                        style: TextStyle(color: Colors.white),
-                                        decoration: InputDecoration(
-                                            fillColor: Palette.gradientColor[2],
-                                            filled: true,
-                                            border: InputBorder.none,
-                                            prefixIcon: Icon(Icons.search),
-                                            hintText: "Rechercher",
-                                            hintStyle: TextStyle(
-                                                color: Colors.grey.shade100
-                                                    .withOpacity(0.5))),
-                                      ),
-                                    ),
-                            )
-                          ],
-                        ),
-                      ),
-                      this.viewHeaderDetail(bottom: true),
-                      Expanded(
-                        child: displayData == null
-                            ? Center(
-                                child: CircularProgressIndicator(
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                      Palette.gradientColor[0]),
-                                ),
-                              )
-                            : displayData.length == 0
-                                ? Center(
-                                    child: Text("AUCUNE DONNÉE DISPONIBLE"))
-                                : ListView(
-                                    children: List.generate(
-                                      displayData.length,
-                                      (index) => MaterialButton(
-                                        onPressed: service.userIsAssigned(
-                                                sauce: assignedUsers,
-                                                id: displayData[index].id)
-                                            ? null
-                                            : () {
-                                                callback(selectedUser?.id !=
-                                                        displayData[index].id
-                                                    ? displayData[index]
-                                                    : null);
-                                              },
-                                        child: this.viewBodyDetail(context,
-                                            displayData[index],
-                                            service.userIsAssigned(
-                                                sauce: assignedUsers,
-                                                id: displayData[index].id),
-                                            true,
-                                            onRemoveUser: (int userId){
-                                              toRemoveUserId(userId);
-                                            },
-                                            centerId: centerId,
-                                            source: assignedUsers,
-                                            onRemoveCallback:
-                                                (List<UserModel> removed) {
-                                          removeAssignCallback(removed);
-                                        }),
-                                      ),
-                                    ),
-                                  ),
-                      ),
-                      Container(
-                        width: double.infinity,
-                        height: 40,
-                        child: Row(
-                          children: [
-                            Text("Showing "),
-                            PopupMenuButton<int>(
-                              icon: Text("${pagination.dataToShow}"),
-                              padding: const EdgeInsets.all(0),
-                              onSelected: (int val){
-                                onChangePageCount(val);
-                              },
-                              itemBuilder: (_) => popupMenuPageItems.map((e) => PopupMenuItem<int>(
-                                value: e,
-                                  child: Text("$e")
-                              )).toList(),
-                            ),
-                            Text(" Out of  ${pagination.totalDataCount}"),
-                            Spacer(),
-
-                            IconButton(icon: Icon(Icons.first_page), onPressed: (){
-                              onFirstPage();
-                            }),
-                            IconButton(icon: Icon(Icons.chevron_left), onPressed: (){
-                              onPrevPage();
-                            }),
-                            if(pagination.lastPage != null)...{
-                              for(int x = 1; x<=pagination.lastPage!;x++)...{
-                                IconButton(
-                                    onPressed: (){
-                                      onPagePress(x);
-                                    },
-                                    icon: Text("$x",style: TextStyle(
-                                        color: pagination.currentPage == x ? Palette.gradientColor[0] : Colors.black
-                                    ),)
-                                )
-                              },
-                            },
-                            IconButton(icon: Icon(Icons.chevron_right), onPressed: (){
-                              onNextPage();
-                            }),
-                            IconButton(icon: Icon(Icons.last_page), onPressed: (){
-                              onLastPage();
-                            }),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              )
-            }
-          ],
-        ),
-      )
-    ];
-  }
-
   Widget viewBodyDetail(context,UserModel user, bool isAssigned, bool isAll,
           {required ValueChanged<List<UserModel>> onRemoveCallback,
           required List<UserModel> source,
@@ -637,6 +371,8 @@ class CenterViewWidgetHelper {
             Expanded(
               flex: 3,
               child: Text("${user.address}",
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                       color: isAssigned ? Colors.green : Colors.black54),
                   textAlign: TextAlign.center),

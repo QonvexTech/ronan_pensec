@@ -1,4 +1,7 @@
-import 'package:ronan_pensec/models/user_model.dart';
+
+
+import 'package:ronan_pensec_web/models/region_model.dart';
+import 'package:ronan_pensec_web/models/user_model.dart';
 
 class CenterModel{
   final int id;
@@ -10,7 +13,8 @@ class CenterModel{
   String email;
   int regionId;
   List<UserModel> users;
-
+  RegionModel? region;
+  UserModel? accountant;
   CenterModel({
     required this.id,
     required this.name,
@@ -20,7 +24,9 @@ class CenterModel{
     required this.mobile,
     required this.email,
     required this.regionId,
-    required this.users
+    required this.users,
+    this.region,
+    this.accountant
   });
 
 
@@ -35,6 +41,8 @@ class CenterModel{
       email : parsedJson['email'],
       regionId : int.parse(parsedJson['region_id'].toString()),
       users : dataToList(parsedJson['users']),
+      region: parsedJson['region'] != null ? RegionModel.fromJson(parsedJson['region']) : null,
+      accountant: parsedJson['manager'] != null ? UserModel.fromJson(parsedJson: parsedJson['manager']) : null
     );
   }
   static List<UserModel> dataToList(List data) {
@@ -49,7 +57,9 @@ class CenterModel{
     'mobile' : mobile,
     'email' : email,
     'region_id' : regionId,
-    'users' : users
+    'users' : users,
+    'manager' : accountant,
+    'region' : region
   };
 
 }

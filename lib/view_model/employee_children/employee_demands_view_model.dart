@@ -1,9 +1,9 @@
-import 'package:ronan_pensec/models/calendar/attendance_model.dart';
-import 'package:ronan_pensec/models/calendar/holiday_demand_model.dart';
-import 'package:ronan_pensec/models/calendar/holiday_model.dart';
-import 'package:ronan_pensec/models/calendar/rtt_model.dart';
-import 'package:ronan_pensec/services/dashboard_services/employee_service.dart';
-import 'package:ronan_pensec/services/data_controls/employee_data_control.dart';
+
+import 'package:ronan_pensec_web/models/calendar/attendance_model.dart';
+import 'package:ronan_pensec_web/models/calendar/holiday_demand_model.dart';
+import 'package:ronan_pensec_web/models/calendar/rtt_model.dart';
+import 'package:ronan_pensec_web/services/dashboard_services/employee_service.dart';
+import 'package:ronan_pensec_web/services/data_controls/employee_data_control.dart';
 
 class EmployeeDemandsViewModel {
   EmployeeDemandsViewModel._singleton();

@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
-import 'package:ronan_pensec/global/auth.dart';
-import 'package:ronan_pensec/models/user_model.dart';
-import 'package:ronan_pensec/services/dashboard_services/employee_service.dart';
-import 'package:ronan_pensec/services/data_controls/employee_data_control.dart';
-import 'package:ronan_pensec/services/data_controls/user_data_control.dart';
+import 'package:ronan_pensec_web/global/auth.dart';
+import 'package:ronan_pensec_web/models/user_model.dart';
+import 'package:ronan_pensec_web/services/dashboard_services/employee_service.dart';
+import 'package:ronan_pensec_web/services/data_controls/employee_data_control.dart';
+import 'package:ronan_pensec_web/services/data_controls/user_data_control.dart';
 
 class EmployeeDetailsViewModel {
   EmployeeDetailsViewModel._singleton();

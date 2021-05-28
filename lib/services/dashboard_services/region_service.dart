@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:ronan_pensec/global/auth.dart';
-import 'package:ronan_pensec/global/auth_endpoint.dart';
-import 'package:ronan_pensec/global/region_endpoint.dart';
-import 'package:ronan_pensec/services/data_controls/region_data_control.dart';
-import 'package:ronan_pensec/services/toast_notifier.dart';
 import 'package:http/http.dart' as http;
+import 'package:ronan_pensec_web/global/auth.dart';
+import 'package:ronan_pensec_web/global/constants.dart';
+import 'package:ronan_pensec_web/global/endpoints/region_endpoint.dart';
+import 'package:ronan_pensec_web/services/data_controls/region_data_control.dart';
+import 'package:ronan_pensec_web/services/toast_notifier.dart';
 
 class RegionService {
   late RegionDataControl _regionDataControl;

@@ -1,6 +1,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:ronan_pensec/global/auth.dart';
-import 'package:ronan_pensec/services/firebase_messaging_token_service.dart';
+import 'package:ronan_pensec_web/global/auth.dart';
+
+import 'firebase_messaging_token_service.dart';
 
 class FirebaseMessagingService {
   FirebaseMessagingService._privateConstructor();

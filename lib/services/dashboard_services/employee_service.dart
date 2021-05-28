@@ -1,22 +1,21 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:ronan_pensec/global/auth.dart';
-import 'package:ronan_pensec/global/auth_endpoint.dart';
-import 'package:ronan_pensec/global/constants.dart';
-import 'package:ronan_pensec/global/holiday_demand_endpoint.dart';
-import 'package:ronan_pensec/global/holiday_endpoint.dart';
-import 'package:ronan_pensec/global/rtt_endpoint.dart';
-import 'package:ronan_pensec/global/templates/attendance_endpoint.dart';
-import 'package:ronan_pensec/global/user_endpoint.dart';
-import 'package:ronan_pensec/models/calendar/holiday_demand_model.dart';
-import 'package:ronan_pensec/models/pagination_model.dart';
-import 'package:ronan_pensec/services/data_controls/employee_data_control.dart';
-import 'package:ronan_pensec/services/toast_notifier.dart';
-import 'package:ronan_pensec/models/user_model.dart';
-import "package:ronan_pensec/models/calendar/holiday_model.dart";
-import "package:ronan_pensec/models/calendar/rtt_model.dart";
-import "package:ronan_pensec/models/calendar/attendance_model.dart";
 import 'package:http/http.dart' as http;
+import 'package:ronan_pensec_web/global/auth.dart';
+import 'package:ronan_pensec_web/global/constants.dart';
+import 'package:ronan_pensec_web/global/endpoints/attendance_endpoint.dart';
+import 'package:ronan_pensec_web/global/endpoints/holiday_demand_endpoint.dart';
+import 'package:ronan_pensec_web/global/endpoints/holiday_endpoint.dart';
+import 'package:ronan_pensec_web/global/endpoints/rtt_endpoint.dart';
+import 'package:ronan_pensec_web/global/endpoints/user_endpoint.dart';
+import 'package:ronan_pensec_web/models/calendar/attendance_model.dart';
+import 'package:ronan_pensec_web/models/calendar/holiday_demand_model.dart';
+import 'package:ronan_pensec_web/models/calendar/holiday_model.dart';
+import 'package:ronan_pensec_web/models/calendar/rtt_model.dart';
+import 'package:ronan_pensec_web/models/pagination_model.dart';
+import 'package:ronan_pensec_web/models/user_model.dart';
+import 'package:ronan_pensec_web/services/data_controls/employee_data_control.dart';
+import 'package:ronan_pensec_web/services/toast_notifier.dart';
 
 class EmployeeService {
   late EmployeeDataControl _model;
@@ -34,14 +33,12 @@ class EmployeeService {
   }
   Future<bool> update(context, {required Map body, required int userId}) async {
     try{
-      print(body);
       return await http.put(Uri.parse("${BaseEnpoint.URL}${UserEndpoint.update(userId)}"),body: body,headers: {
         "Accept" : "application/json",
         HttpHeaders.authorizationHeader : "Bearer ${_auth.token}"
       }).then((value) {
         _notifier.showContextedBottomToast(context, msg: "${value.reasonPhrase}");
         var data = json.decode(value.body);
-        print("UPDATE DATA : $data");
         if(value.statusCode == 200){
           return true;
         }
@@ -60,7 +57,6 @@ class EmployeeService {
         HttpHeaders.authorizationHeader : "Bearer ${_auth.token}"
       }, body: body).then((response) {
         var data = json.decode(response.body);
-        print("CREATED USER: $data");
         if(response.statusCode == 200){
           _notifier.showContextedBottomToast(context, msg: "Créé avec succès");
           return UserModel.fromJson(parsedJson: data['user']);
@@ -76,7 +72,6 @@ class EmployeeService {
   }
   Future fetchAll(context, {required String subDomain}) async {
     try {
-      print("FETCHING $subDomain");
       return await http.get(
           Uri.parse("${BaseEnpoint.URL}${UserEndpoint.paginated(subDomain)}"),
           headers: {
@@ -106,7 +101,6 @@ class EmployeeService {
             HttpHeaders.authorizationHeader: "Bearer ${_auth.token}"
           }).then((response) {
         var data = json.decode(response.body);
-        print(data);
         // List<UserModel> _lst = [];
         // if (response.statusCode == 200 && data['data'] != null) {
         //   for (var item in data['data']) {
@@ -128,7 +122,6 @@ class EmployeeService {
         HttpHeaders.authorizationHeader : "Bearer ${_auth.token}"
       }).then((response) {
         List data = json.decode(response.body);
-        print("DATA $data");
         if(response.statusCode == 200){
           return data.map((e) => HolidayDemandModel.fromJson(e)).toList();
         }
@@ -153,7 +146,6 @@ class EmployeeService {
         var data = json.decode(response.body);
         if (response.statusCode == 200) {
           List holidays = data['holidays'];
-          print(holidays);
           return holidays.map((e) => HolidayModel.fromJson(e)).toList();
         }
         _notifier.showContextedBottomToast(context,
@@ -181,7 +173,6 @@ class EmployeeService {
         var data = json.decode(response.body);
         if (response.statusCode == 200) {
           List rtts = data['rtts'];
-          print(rtts);
           return rtts.map((e) => RTTModel.fromJson(e)).toList();
         }
         _notifier.showContextedBottomToast(context,
@@ -206,10 +197,8 @@ class EmployeeService {
             HttpHeaders.authorizationHeader: "Bearer ${_auth.token}"
           }).then((response) {
         var data = json.decode(response.body);
-        print("Attendance DATA : $data");
         if (response.statusCode == 200) {
           List attendace = data['attendances'];
-          print("Attendance Data : $attendace");
           return attendace.map((e) => AttendanceModel.fromJson(e)).toList();
         }
         _notifier.showContextedBottomToast(context,
@@ -233,7 +222,6 @@ class EmployeeService {
         HttpHeaders.authorizationHeader : "Bearer ${_auth.token}"
       }).then((response) {
         var data = json.decode(response.body);
-        print(data);
         if(response.statusCode == 200){
           _notifier.showContextedBottomToast(context, msg: "Créé avec succès");
           return AttendanceModel.fromJson(data['status']);

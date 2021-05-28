@@ -1,9 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:ronan_pensec/global/palette.dart';
-import 'package:ronan_pensec/global/templates/general_template.dart';
-import 'package:ronan_pensec/models/center_model.dart';
-import 'package:ronan_pensec/models/user_model.dart';
+import 'package:ronan_pensec_web/models/center_model.dart';
+import 'package:ronan_pensec_web/models/user_model.dart';
 import 'package:rxdart/rxdart.dart';
 
 class CenterDataControl {

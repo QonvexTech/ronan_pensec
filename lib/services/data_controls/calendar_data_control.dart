@@ -1,4 +1,4 @@
-import 'package:ronan_pensec/models/user_model.dart';
+import 'package:ronan_pensec_web/models/user_model.dart';
 import 'package:rxdart/rxdart.dart';
 
 class CalendarDataControl {
@@ -20,7 +20,6 @@ class CalendarDataControl {
     }else {
       _list.add(data.map((e) => UserModel.fromJson(parsedJson: e)).toList());
     }
-    print(data);
   }
 
   bool listValuesAreNull(List<int?> _list) {

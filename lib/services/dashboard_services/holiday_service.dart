@@ -1,15 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
-
-import 'package:ronan_pensec/global/PendingHolidayRequestController.dart';
-import 'package:ronan_pensec/global/auth.dart';
-import 'package:ronan_pensec/global/auth_endpoint.dart';
-import 'package:ronan_pensec/global/holiday_endpoint.dart';
-import 'package:ronan_pensec/models/calendar/holiday_model.dart';
-import 'package:ronan_pensec/services/data_controls/calendar_data_control.dart';
-import 'package:ronan_pensec/services/data_controls/region_data_control.dart';
-import 'package:ronan_pensec/services/toast_notifier.dart';
 import 'package:http/http.dart' as http;
+import 'package:ronan_pensec_web/global/auth.dart';
+import 'package:ronan_pensec_web/global/constants.dart';
+import 'package:ronan_pensec_web/global/controllers/PendingHolidayRequestController.dart';
+import 'package:ronan_pensec_web/global/endpoints/holiday_endpoint.dart';
+import 'package:ronan_pensec_web/models/calendar/holiday_model.dart';
+import 'package:ronan_pensec_web/services/data_controls/calendar_data_control.dart';
+import 'package:ronan_pensec_web/services/data_controls/region_data_control.dart';
+import 'package:ronan_pensec_web/services/toast_notifier.dart';
 
 class HolidayService {
   HolidayService._private();
@@ -34,7 +33,6 @@ class HolidayService {
           var data = json.decode(response.body);
           notifier.showWebContextedBottomToast(context, msg: "Demande approuvée!");
           HolidayModel newHoliday = HolidayModel.fromJson(data['data']);
-          print("UID : ${newHoliday.userId}");
           _regionDataControl.appendHoliday(newHoliday, newHoliday.userId);
           return true;
         }
@@ -76,7 +74,6 @@ class HolidayService {
         HttpHeaders.authorizationHeader : "Bearer ${auth.token}"
       }).then((response) {
         var data = json.decode(response.body);
-        print("PENDING : $data");
         if(response.statusCode == 200){
           _controller.dataControl.populateAll(data);
           return true;

@@ -1,6 +1,5 @@
 import 'dart:core';
-import 'package:ronan_pensec/models/user_model.dart';
-import 'package:ronan_pensec/services/dashboard_services/employee_service.dart';
+import 'package:ronan_pensec_web/models/user_model.dart';
 import 'package:rxdart/rxdart.dart';
 
 class EmployeeDataControl {

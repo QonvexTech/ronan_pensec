@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:ronan_pensec/global/auth.dart';
-import 'package:ronan_pensec/global/tabbar_item_class.dart';
-import 'package:ronan_pensec/services/data_controls/user_data_control.dart';
+import 'package:ronan_pensec_web/global/auth.dart';
+import 'package:ronan_pensec_web/global/tabbar_item_class.dart';
+import 'package:ronan_pensec_web/services/data_controls/user_data_control.dart';
 
 class LandingPageMainHelper {
   int currentTabIndex = 0;

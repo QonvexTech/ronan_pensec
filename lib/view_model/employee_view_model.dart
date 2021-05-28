@@ -1,7 +1,7 @@
-import 'package:ronan_pensec/global/templates/employee_template.dart';
-import 'package:ronan_pensec/models/pagination_model.dart';
-import 'package:ronan_pensec/services/dashboard_services/employee_service.dart';
-import 'package:ronan_pensec/services/data_controls/employee_data_control.dart';
+import 'package:ronan_pensec_web/global/template/employee_template.dart';
+import 'package:ronan_pensec_web/models/pagination_model.dart';
+import 'package:ronan_pensec_web/services/dashboard_services/employee_service.dart';
+import 'package:ronan_pensec_web/services/data_controls/employee_data_control.dart';
 
 class EmployeeViewModel{
   EmployeeViewModel._privateConstructor();

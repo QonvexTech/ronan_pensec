@@ -1,12 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:dio/dio.dart';
-import 'package:ronan_pensec/global/auth.dart';
-import 'package:ronan_pensec/global/center_endpoint.dart';
-import 'package:ronan_pensec/global/constants.dart';
-import "package:ronan_pensec/models/user_model.dart";
 import "package:http/http.dart" as http;
+import 'package:ronan_pensec_web/global/auth.dart';
+import 'package:ronan_pensec_web/global/constants.dart';
+import 'package:ronan_pensec_web/global/endpoints/center_endpoint.dart';
+import 'package:ronan_pensec_web/models/user_model.dart';
 
 class UserAssignCenter{
   UserAssignCenter._privateConstructor();
@@ -22,9 +21,7 @@ class UserAssignCenter{
       for(UserModel user in toAssign){
         userIds.add(user.id);
       }
-      print(_auth.token!.replaceAll("\n", ""));
       String users = userIds.toString().substring(1, userIds.toString().length - 1).replaceAll(" ", "");
-      print(users);
       Map body = {
         "center_id" : "$centerId",
         "users" : users
@@ -32,11 +29,9 @@ class UserAssignCenter{
       return await http.post(Uri.parse("${BaseEnpoint.URL}${CenterEndpoint.assignUsersToCenter}"),body: body,headers: {
         HttpHeaders.authorizationHeader : "Bearer ${_auth.token!.replaceAll("\n", "")}"
       }).then((response) {
-        print(response.statusCode);
         var data = json.decode(response.body);
         if(response.statusCode == 200){
           List user = data['centers'][0]['users'];
-          print(user);
           return user.map((e) => UserModel.fromJson(parsedJson: e)).toList();
         }
         return [];

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:ronan_pensec/routes/credential_route.dart';
-import 'package:ronan_pensec/routes/landing_page_route.dart';
-import 'package:ronan_pensec/services/credentials_preferences.dart';
-import 'package:ronan_pensec/services/firebase_messaging_service.dart';
+import 'package:ronan_pensec_web/route/credential_route.dart';
+import 'package:ronan_pensec_web/route/landing_page_route.dart';
+import 'package:ronan_pensec_web/services/credentials_preferences.dart';
+import 'package:ronan_pensec_web/services/firebase_messaging_service.dart';
 
 class LandingPageService {
   LandingPageService._privateConstructor();

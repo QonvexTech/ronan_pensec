@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:ronan_pensec/global/auth.dart';
-import 'package:ronan_pensec/services/firebase_messaging_service.dart';
+import 'package:ronan_pensec_web/global/auth.dart';
+import 'package:ronan_pensec_web/services/firebase_messaging_service.dart';
 
 class HttpRequest {
   /// initializing constructor
