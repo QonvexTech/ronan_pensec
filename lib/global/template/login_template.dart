@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ronan_pensec_web/global/palette.dart';
+import 'package:ronan_pensec/global/palette.dart';
 import 'general_template.dart';
 
 class LoginTemplate {

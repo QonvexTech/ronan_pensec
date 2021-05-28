@@ -1,7 +1,7 @@
 
 
-import 'package:ronan_pensec_web/models/region_model.dart';
-import 'package:ronan_pensec_web/models/user_model.dart';
+import 'package:ronan_pensec/models/region_model.dart';
+import 'package:ronan_pensec/models/user_model.dart';
 
 class CenterModel{
   final int id;

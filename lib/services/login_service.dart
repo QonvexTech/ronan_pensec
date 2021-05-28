@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:page_transition/page_transition.dart';
-import 'package:ronan_pensec_web/global/auth.dart';
-import 'package:ronan_pensec_web/global/constants.dart';
-import 'package:ronan_pensec_web/global/endpoints/auth_endpoint.dart';
-import 'package:ronan_pensec_web/models/user_model.dart';
-import 'package:ronan_pensec_web/route/credential_route.dart';
-import 'package:ronan_pensec_web/services/http_request.dart';
+import 'package:ronan_pensec/global/auth.dart';
+import 'package:ronan_pensec/global/constants.dart';
+import 'package:ronan_pensec/global/endpoints/auth_endpoint.dart';
+import 'package:ronan_pensec/models/user_model.dart';
+import 'package:ronan_pensec/route/credential_route.dart';
+import 'package:ronan_pensec/services/http_request.dart';
 import 'dart:convert';
-import 'package:ronan_pensec_web/services/toast_notifier.dart';
-import 'package:ronan_pensec_web/views/landing_page.dart';
+import 'package:ronan_pensec/services/toast_notifier.dart';
+import 'package:ronan_pensec/views/landing_page.dart';
 import 'credentials_preferences.dart';
 
 class LoginService {

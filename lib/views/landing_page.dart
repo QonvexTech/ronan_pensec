@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:ronan_pensec_web/services/firebase_messaging_service.dart';
-import 'package:ronan_pensec_web/views/landing_page_view.dart';
+import 'package:ronan_pensec/services/firebase_messaging_service.dart';
+import 'package:ronan_pensec/views/landing_page_view.dart';
 
 class LandingPageScreen extends StatefulWidget {
   static final LandingPageView _view = new LandingPageView();

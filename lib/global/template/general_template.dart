@@ -1,8 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:ronan_pensec_web/global/palette.dart';
-import 'package:ronan_pensec_web/services/color_decider.dart';
+import 'package:ronan_pensec/global/palette.dart';
+import 'package:ronan_pensec/services/color_decider.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 
 class GeneralTemplate {

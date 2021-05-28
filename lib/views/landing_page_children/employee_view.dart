@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:ronan_pensec_web/global/auth.dart';
-import 'package:ronan_pensec_web/global/palette.dart';
-import 'package:ronan_pensec_web/global/template/general_template.dart';
-import 'package:ronan_pensec_web/models/pagination_model.dart';
-import 'package:ronan_pensec_web/models/user_model.dart';
-import 'package:ronan_pensec_web/route/employee_route.dart';
-import 'package:ronan_pensec_web/services/data_controls/region_data_control.dart';
-import 'package:ronan_pensec_web/view_model/employee_view_model.dart';
+import 'package:ronan_pensec/global/auth.dart';
+import 'package:ronan_pensec/global/palette.dart';
+import 'package:ronan_pensec/global/template/general_template.dart';
+import 'package:ronan_pensec/models/pagination_model.dart';
+import 'package:ronan_pensec/models/user_model.dart';
+import 'package:ronan_pensec/route/employee_route.dart';
+import 'package:ronan_pensec/services/data_controls/region_data_control.dart';
+import 'package:ronan_pensec/view_model/employee_view_model.dart';
 
 class EmployeeView extends StatefulWidget {
   final RegionDataControl regionDataControl;

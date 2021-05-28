@@ -1,5 +1,5 @@
 import 'package:page_transition/page_transition.dart';
-import 'package:ronan_pensec_web/views/login_view.dart';
+import 'package:ronan_pensec/views/login_view.dart';
 
 class CredentialRoute {
   static PageTransition get login => PageTransition(

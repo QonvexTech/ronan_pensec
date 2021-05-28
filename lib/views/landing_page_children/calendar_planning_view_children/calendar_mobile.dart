@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:ronan_pensec_web/global/palette.dart';
-import 'package:ronan_pensec_web/models/calendar/attendance_model.dart';
-import 'package:ronan_pensec_web/models/calendar/holiday_model.dart';
-import 'package:ronan_pensec_web/models/calendar/rtt_model.dart';
-import 'package:ronan_pensec_web/models/user_model.dart';
-import 'package:ronan_pensec_web/view_model/calendar_half_day_clip.dart';
-import 'package:ronan_pensec_web/view_model/calendar_view_model.dart';
+import 'package:ronan_pensec/global/palette.dart';
+import 'package:ronan_pensec/models/calendar/attendance_model.dart';
+import 'package:ronan_pensec/models/calendar/holiday_model.dart';
+import 'package:ronan_pensec/models/calendar/rtt_model.dart';
+import 'package:ronan_pensec/models/user_model.dart';
+import 'package:ronan_pensec/view_model/calendar_half_day_clip.dart';
+import 'package:ronan_pensec/view_model/calendar_view_model.dart';
 
 class CalendarMobile extends StatefulWidget {
   final UserModel userData;

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ronan_pensec_web/models/calendar/rtt_model.dart';
+import 'package:ronan_pensec/models/calendar/rtt_model.dart';
 
 class RTTRequest extends StatefulWidget {
   final List<RTTModel> rtts;

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:ronan_pensec_web/global/palette.dart';
-import 'package:ronan_pensec_web/global/template/general_template.dart';
-import 'package:ronan_pensec_web/services/data_controls/user_data_control.dart';
-import 'package:ronan_pensec_web/view_model/profile_view_model.dart';
+import 'package:ronan_pensec/global/palette.dart';
+import 'package:ronan_pensec/global/template/general_template.dart';
+import 'package:ronan_pensec/services/data_controls/user_data_control.dart';
+import 'package:ronan_pensec/view_model/profile_view_model.dart';
 
 class ProfilePage extends StatefulWidget {
   @override

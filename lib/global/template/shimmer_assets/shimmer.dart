@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ronan_pensec_web/global/template/shimmer_assets/shimmer_animation.dart';
+import 'package:ronan_pensec/global/template/shimmer_assets/shimmer_animation.dart';
 
 class Shimmer extends StatefulWidget {
   static ShimmerState? of(BuildContext context) {

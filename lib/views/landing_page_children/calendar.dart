@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:ronan_pensec_web/global/auth.dart';
-import 'package:ronan_pensec_web/global/palette.dart';
-import 'package:ronan_pensec_web/global/template/general_template.dart';
+import 'package:ronan_pensec/global/auth.dart';
+import 'package:ronan_pensec/global/palette.dart';
+import 'package:ronan_pensec/global/template/general_template.dart';
 
 import 'calendar_children/employee_holidays.dart';
 import 'calendar_children/employee_rtt.dart';

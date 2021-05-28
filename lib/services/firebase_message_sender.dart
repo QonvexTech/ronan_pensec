@@ -1,5 +1,5 @@
 
-import 'package:ronan_pensec_web/services/http_request.dart';
+import 'package:ronan_pensec/services/http_request.dart';
 
 class FirebaseMessageSender {
   FirebaseMessageSender._privateConstructor();

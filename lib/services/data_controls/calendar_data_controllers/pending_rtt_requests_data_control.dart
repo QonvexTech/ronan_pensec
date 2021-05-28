@@ -1,4 +1,4 @@
-import 'package:ronan_pensec_web/models/calendar/rtt_model.dart';
+import 'package:ronan_pensec/models/calendar/rtt_model.dart';
 import 'package:rxdart/rxdart.dart';
 class PendingRTTRequestDataControl{
   PendingRTTRequestDataControl._private();

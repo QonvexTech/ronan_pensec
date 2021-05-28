@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:ronan_pensec_web/global/template/general_template.dart';
-import 'package:ronan_pensec_web/models/center_model.dart';
-import 'package:ronan_pensec_web/services/data_controls/region_data_control.dart';
-import 'package:ronan_pensec_web/view_model/center_children/center_view_widget_helper.dart';
-import 'package:ronan_pensec_web/view_model/center_view_model.dart';
+import 'package:ronan_pensec/global/template/general_template.dart';
+import 'package:ronan_pensec/models/center_model.dart';
+import 'package:ronan_pensec/services/data_controls/region_data_control.dart';
+import 'package:ronan_pensec/view_model/center_children/center_view_widget_helper.dart';
+import 'package:ronan_pensec/view_model/center_view_model.dart';
 
 class CenterView extends StatefulWidget {
   final ValueChanged<int> onBack;

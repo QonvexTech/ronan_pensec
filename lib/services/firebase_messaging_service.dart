@@ -1,5 +1,5 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:ronan_pensec_web/global/auth.dart';
+import 'package:ronan_pensec/global/auth.dart';
 
 import 'firebase_messaging_token_service.dart';
 

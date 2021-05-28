@@ -1,5 +1,5 @@
 import 'package:page_transition/page_transition.dart';
-import 'package:ronan_pensec_web/views/landing_page_children/profile_page.dart';
+import 'package:ronan_pensec/views/landing_page_children/profile_page.dart';
 
 class LandingPageRoute{
   LandingPageRoute._privateConstructor();

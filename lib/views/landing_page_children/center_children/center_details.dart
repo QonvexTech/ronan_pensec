@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:ronan_pensec_web/global/palette.dart';
-import 'package:ronan_pensec_web/global/template/general_template.dart';
-import 'package:ronan_pensec_web/models/center_model.dart';
-import 'package:ronan_pensec_web/models/pagination_model.dart';
-import 'package:ronan_pensec_web/models/region_model.dart';
-import 'package:ronan_pensec_web/models/user_model.dart';
-import 'package:ronan_pensec_web/services/dashboard_services/user_assign_center.dart';
-import 'package:ronan_pensec_web/services/data_controls/region_data_control.dart';
-import 'package:ronan_pensec_web/view_model/center_children/center_view_widget_helper.dart';
-import 'package:ronan_pensec_web/view_model/employee_view_model.dart';
+import 'package:ronan_pensec/global/palette.dart';
+import 'package:ronan_pensec/global/template/general_template.dart';
+import 'package:ronan_pensec/models/center_model.dart';
+import 'package:ronan_pensec/models/pagination_model.dart';
+import 'package:ronan_pensec/models/region_model.dart';
+import 'package:ronan_pensec/models/user_model.dart';
+import 'package:ronan_pensec/services/dashboard_services/user_assign_center.dart';
+import 'package:ronan_pensec/services/data_controls/region_data_control.dart';
+import 'package:ronan_pensec/view_model/center_children/center_view_widget_helper.dart';
+import 'package:ronan_pensec/view_model/employee_view_model.dart';
 
 class CenterDetails extends StatefulWidget {
   final CenterModel model;

@@ -1,7 +1,7 @@
 
-import 'package:ronan_pensec_web/services/dashboard_services/region_service.dart';
-import 'package:ronan_pensec_web/services/data_controls/calendar_data_control.dart';
-import 'package:ronan_pensec_web/services/data_controls/region_data_control.dart';
+import 'package:ronan_pensec/services/dashboard_services/region_service.dart';
+import 'package:ronan_pensec/services/data_controls/calendar_data_control.dart';
+import 'package:ronan_pensec/services/data_controls/region_data_control.dart';
 
 class PlanningViewModel {
   PlanningViewModel._internal();

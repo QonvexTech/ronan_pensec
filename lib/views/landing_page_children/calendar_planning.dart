@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ronan_pensec_web/view_model/calendar_view_model.dart';
+import 'package:ronan_pensec/view_model/calendar_view_model.dart';
 
 class CalendarPlanning extends StatefulWidget {
   @override

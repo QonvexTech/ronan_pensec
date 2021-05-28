@@ -2,10 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import "package:http/http.dart" as http;
-import 'package:ronan_pensec_web/global/auth.dart';
-import 'package:ronan_pensec_web/global/constants.dart';
-import 'package:ronan_pensec_web/global/endpoints/center_endpoint.dart';
-import 'package:ronan_pensec_web/models/user_model.dart';
+import 'package:ronan_pensec/global/auth.dart';
+import 'package:ronan_pensec/global/constants.dart';
+import 'package:ronan_pensec/global/endpoints/center_endpoint.dart';
+import 'package:ronan_pensec/models/user_model.dart';
 
 class UserAssignCenter{
   UserAssignCenter._privateConstructor();
