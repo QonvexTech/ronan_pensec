@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ronan_pensec_web/global/auth.dart';
+import 'package:ronan_pensec/global/auth.dart';
 
 class UserDataControl {
   UserDataControl._private();

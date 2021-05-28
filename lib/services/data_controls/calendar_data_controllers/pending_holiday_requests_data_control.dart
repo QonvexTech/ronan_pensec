@@ -1,4 +1,4 @@
-import 'package:ronan_pensec_web/models/calendar/holiday_model.dart';
+import 'package:ronan_pensec/models/calendar/holiday_model.dart';
 import 'package:rxdart/rxdart.dart';
 class PendingHolidayRequestsDataControl {
   PendingHolidayRequestsDataControl._private();

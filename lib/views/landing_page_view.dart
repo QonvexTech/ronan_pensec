@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:ronan_pensec_web/global/palette.dart';
-import 'package:ronan_pensec_web/global/tabbar_item_class.dart';
-import 'package:ronan_pensec_web/global/template/general_template.dart';
-import 'package:ronan_pensec_web/services/landing_page_service.dart';
-import 'package:ronan_pensec_web/view_model/landing_page_main.dart';
+import 'package:ronan_pensec/global/palette.dart';
+import 'package:ronan_pensec/global/tabbar_item_class.dart';
+import 'package:ronan_pensec/global/template/general_template.dart';
+import 'package:ronan_pensec/services/landing_page_service.dart';
+import 'package:ronan_pensec/view_model/landing_page_main.dart';
 
 import 'landing_page_children/calendar.dart';
 import 'landing_page_children/center_view.dart';

@@ -1,5 +1,5 @@
-import 'package:ronan_pensec_web/services/dashboard_services/holiday_service.dart';
-import 'package:ronan_pensec_web/services/data_controls/calendar_data_controllers/pending_holiday_requests_data_control.dart';
+import 'package:ronan_pensec/services/dashboard_services/holiday_service.dart';
+import 'package:ronan_pensec/services/data_controls/calendar_data_controllers/pending_holiday_requests_data_control.dart';
 
 class PendingHoldiayRequestController{
   PendingHoldiayRequestController._singleton();

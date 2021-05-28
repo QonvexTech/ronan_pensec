@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:ronan_pensec_web/global/auth.dart';
-import 'package:ronan_pensec_web/global/palette.dart';
-import 'package:ronan_pensec_web/global/template/general_template.dart';
-import 'package:ronan_pensec_web/models/center_model.dart';
-import 'package:ronan_pensec_web/models/pagination_model.dart';
-import 'package:ronan_pensec_web/models/user_model.dart';
-import 'package:ronan_pensec_web/services/dashboard_services/center_service.dart';
-import 'package:ronan_pensec_web/services/data_controls/center_data_control.dart';
-import 'package:ronan_pensec_web/services/data_controls/user_data_control.dart';
+import 'package:ronan_pensec/global/auth.dart';
+import 'package:ronan_pensec/global/palette.dart';
+import 'package:ronan_pensec/global/template/general_template.dart';
+import 'package:ronan_pensec/models/center_model.dart';
+import 'package:ronan_pensec/models/pagination_model.dart';
+import 'package:ronan_pensec/models/user_model.dart';
+import 'package:ronan_pensec/services/dashboard_services/center_service.dart';
+import 'package:ronan_pensec/services/data_controls/center_data_control.dart';
+import 'package:ronan_pensec/services/data_controls/user_data_control.dart';
 
 class CenterViewWidgetHelper {
   static final CenterDataControl _control = CenterDataControl.instance;

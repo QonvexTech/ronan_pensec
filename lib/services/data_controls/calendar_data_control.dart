@@ -1,4 +1,4 @@
-import 'package:ronan_pensec_web/models/user_model.dart';
+import 'package:ronan_pensec/models/user_model.dart';
 import 'package:rxdart/rxdart.dart';
 
 class CalendarDataControl {

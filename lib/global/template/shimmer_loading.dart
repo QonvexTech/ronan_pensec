@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ronan_pensec_web/global/template/shimmer_assets/shimmer.dart';
+import 'package:ronan_pensec/global/template/shimmer_assets/shimmer.dart';
 
 
 class ShimmerLoading extends StatefulWidget {

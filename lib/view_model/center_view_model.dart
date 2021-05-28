@@ -1,10 +1,10 @@
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:ronan_pensec_web/global/auth.dart';
-import 'package:ronan_pensec_web/global/template/center_template.dart';
-import 'package:ronan_pensec_web/models/center_model.dart';
-import 'package:ronan_pensec_web/services/dashboard_services/center_service.dart';
-import 'package:ronan_pensec_web/services/data_controls/center_data_control.dart';
-import 'package:ronan_pensec_web/services/data_controls/region_data_control.dart';
+import 'package:ronan_pensec/global/auth.dart';
+import 'package:ronan_pensec/global/template/center_template.dart';
+import 'package:ronan_pensec/models/center_model.dart';
+import 'package:ronan_pensec/services/dashboard_services/center_service.dart';
+import 'package:ronan_pensec/services/data_controls/center_data_control.dart';
+import 'package:ronan_pensec/services/data_controls/region_data_control.dart';
 
 class CenterViewModel {
   CenterViewModel._singleton();

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
-import 'package:ronan_pensec_web/global/controllers/PendingHolidayRequestController.dart';
-import 'package:ronan_pensec_web/global/palette.dart';
-import 'package:ronan_pensec_web/global/template/general_template.dart';
-import 'package:ronan_pensec_web/models/calendar/holiday_model.dart';
+import 'package:ronan_pensec/global/controllers/PendingHolidayRequestController.dart';
+import 'package:ronan_pensec/global/palette.dart';
+import 'package:ronan_pensec/global/template/general_template.dart';
+import 'package:ronan_pensec/models/calendar/holiday_model.dart';
 
 class PendingHolidayRequests extends StatelessWidget {
 

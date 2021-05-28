@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:ronan_pensec_web/global/template/employee_template.dart';
-import 'package:ronan_pensec_web/models/user_model.dart';
-import 'package:ronan_pensec_web/services/dashboard_services/employee_service.dart';
-import 'package:ronan_pensec_web/services/data_controls/employee_data_control.dart';
+import 'package:ronan_pensec/global/template/employee_template.dart';
+import 'package:ronan_pensec/models/user_model.dart';
+import 'package:ronan_pensec/services/dashboard_services/employee_service.dart';
+import 'package:ronan_pensec/services/data_controls/employee_data_control.dart';
 
 class EmployeeCreateViewModel{
   EmployeeCreateViewModel._singleton();

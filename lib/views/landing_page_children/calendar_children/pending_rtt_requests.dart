@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
-import 'package:ronan_pensec_web/global/controllers/PendingRTTRequestController.dart';
-import 'package:ronan_pensec_web/global/palette.dart';
-import 'package:ronan_pensec_web/global/template/general_template.dart';
-import 'package:ronan_pensec_web/models/calendar/rtt_model.dart';
+import 'package:ronan_pensec/global/controllers/PendingRTTRequestController.dart';
+import 'package:ronan_pensec/global/palette.dart';
+import 'package:ronan_pensec/global/template/general_template.dart';
+import 'package:ronan_pensec/models/calendar/rtt_model.dart';
 
 class PendingRTTRequests extends StatelessWidget {
   final SlidableController _slidableController = SlidableController();

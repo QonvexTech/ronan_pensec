@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:ronan_pensec_web/global/palette.dart';
-import 'package:ronan_pensec_web/global/template/general_template.dart';
-import 'package:ronan_pensec_web/view_model/employee_children/employee_create_view_model.dart';
+import 'package:ronan_pensec/global/palette.dart';
+import 'package:ronan_pensec/global/template/general_template.dart';
+import 'package:ronan_pensec/view_model/employee_children/employee_create_view_model.dart';
 class EmployeeCreate extends StatefulWidget {
   @override
   _EmployeeCreateState createState() => _EmployeeCreateState();

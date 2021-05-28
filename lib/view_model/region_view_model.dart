@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:ronan_pensec_web/global/auth.dart';
-import 'package:ronan_pensec_web/models/region_model.dart';
-import 'package:ronan_pensec_web/services/dashboard_services/region_service.dart';
-import 'package:ronan_pensec_web/services/data_controls/calendar_data_control.dart';
-import 'package:ronan_pensec_web/services/data_controls/region_data_control.dart';
+import 'package:ronan_pensec/global/auth.dart';
+import 'package:ronan_pensec/models/region_model.dart';
+import 'package:ronan_pensec/services/dashboard_services/region_service.dart';
+import 'package:ronan_pensec/services/data_controls/calendar_data_control.dart';
+import 'package:ronan_pensec/services/data_controls/region_data_control.dart';
 
 class RegionViewModel {
   RegionViewModel._privateConstructor();

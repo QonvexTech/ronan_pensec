@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:ronan_pensec_web/global/auth.dart';
-import 'package:ronan_pensec_web/global/palette.dart';
-import 'package:ronan_pensec_web/models/calendar/holiday_demand_model.dart';
-import 'package:ronan_pensec_web/services/dashboard_services/demand_service.dart';
+import 'package:ronan_pensec/global/auth.dart';
+import 'package:ronan_pensec/global/palette.dart';
+import 'package:ronan_pensec/models/calendar/holiday_demand_model.dart';
+import 'package:ronan_pensec/services/dashboard_services/demand_service.dart';
 
 class HolidayRequest extends StatefulWidget {
   final List<HolidayDemandModel>? demand;

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ronan_pensec_web/view_model/region_view_model.dart';
+import 'package:ronan_pensec/view_model/region_view_model.dart';
 
 import 'calendar_planning.dart';
 

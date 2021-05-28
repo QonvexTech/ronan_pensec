@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:ronan_pensec_web/global/palette.dart';
-import 'package:ronan_pensec_web/models/user_model.dart';
-import 'package:ronan_pensec_web/services/data_controls/user_data_control.dart';
-import 'package:ronan_pensec_web/view_model/calendar_view_model.dart';
-import 'package:ronan_pensec_web/views/landing_page_children/calendar_planning_view_children/calendar_mobile.dart';
+import 'package:ronan_pensec/global/palette.dart';
+import 'package:ronan_pensec/models/user_model.dart';
+import 'package:ronan_pensec/services/data_controls/user_data_control.dart';
+import 'package:ronan_pensec/view_model/calendar_view_model.dart';
+import 'package:ronan_pensec/views/landing_page_children/calendar_planning_view_children/calendar_mobile.dart';
 
 class EmployeeCalendarList extends StatefulWidget {
 

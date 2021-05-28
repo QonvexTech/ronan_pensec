@@ -1,14 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'package:ronan_pensec_web/global/auth.dart';
-import 'package:ronan_pensec_web/global/constants.dart';
-import 'package:ronan_pensec_web/global/controllers/PendingHolidayRequestController.dart';
-import 'package:ronan_pensec_web/global/endpoints/holiday_endpoint.dart';
-import 'package:ronan_pensec_web/models/calendar/holiday_model.dart';
-import 'package:ronan_pensec_web/services/data_controls/calendar_data_control.dart';
-import 'package:ronan_pensec_web/services/data_controls/region_data_control.dart';
-import 'package:ronan_pensec_web/services/toast_notifier.dart';
+import 'package:ronan_pensec/global/auth.dart';
+import 'package:ronan_pensec/global/constants.dart';
+import 'package:ronan_pensec/global/controllers/PendingHolidayRequestController.dart';
+import 'package:ronan_pensec/global/endpoints/holiday_endpoint.dart';
+import 'package:ronan_pensec/models/calendar/holiday_model.dart';
+import 'package:ronan_pensec/services/data_controls/calendar_data_control.dart';
+import 'package:ronan_pensec/services/data_controls/region_data_control.dart';
+import 'package:ronan_pensec/services/toast_notifier.dart';
 
 class HolidayService {
   HolidayService._private();

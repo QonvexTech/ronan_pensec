@@ -1,6 +1,5 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:ronan_pensec_web/views/login_view_web.dart';
+import 'package:ronan_pensec/views/login_view_web.dart';
 
 class LoginView extends StatefulWidget {
   @override

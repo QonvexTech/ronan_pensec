@@ -1,9 +1,9 @@
-import 'package:ronan_pensec_web/models/calendar/attendance_model.dart';
-import 'package:ronan_pensec_web/models/calendar/holiday_model.dart';
-import 'package:ronan_pensec_web/models/calendar/rtt_model.dart';
-import 'package:ronan_pensec_web/models/center_model.dart';
-import 'package:ronan_pensec_web/models/region_model.dart';
-import 'package:ronan_pensec_web/models/user_model.dart';
+import 'package:ronan_pensec/models/calendar/attendance_model.dart';
+import 'package:ronan_pensec/models/calendar/holiday_model.dart';
+import 'package:ronan_pensec/models/calendar/rtt_model.dart';
+import 'package:ronan_pensec/models/center_model.dart';
+import 'package:ronan_pensec/models/region_model.dart';
+import 'package:ronan_pensec/models/user_model.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'calendar_data_control.dart';

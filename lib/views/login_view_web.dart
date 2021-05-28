@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:ronan_pensec_web/global/palette.dart';
-import 'package:ronan_pensec_web/global/template/animated_widget.dart';
-import 'package:ronan_pensec_web/global/template/general_template.dart';
-import 'package:ronan_pensec_web/global/template/login_template.dart';
-import 'package:ronan_pensec_web/services/login_service.dart';
+import 'package:ronan_pensec/global/palette.dart';
+import 'package:ronan_pensec/global/template/animated_widget.dart';
+import 'package:ronan_pensec/global/template/general_template.dart';
+import 'package:ronan_pensec/global/template/login_template.dart';
+import 'package:ronan_pensec/services/login_service.dart';
 
 class LoginViewWeb extends StatefulWidget {
   final TextEditingController email;

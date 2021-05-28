@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:ronan_pensec_web/global/auth.dart';
-import 'package:ronan_pensec_web/services/dashboard_services/calendar_service.dart';
-import 'package:ronan_pensec_web/services/data_controls/calendar_data_control.dart';
-import 'package:ronan_pensec_web/views/landing_page_children/calendar_planning_view_children/calendar_full.dart';
-import 'package:ronan_pensec_web/views/landing_page_children/calendar_planning_view_children/employee_calendar_list.dart';
+import 'package:ronan_pensec/global/auth.dart';
+import 'package:ronan_pensec/services/dashboard_services/calendar_service.dart';
+import 'package:ronan_pensec/services/data_controls/calendar_data_control.dart';
+import 'package:ronan_pensec/views/landing_page_children/calendar_planning_view_children/calendar_full.dart';
+import 'package:ronan_pensec/views/landing_page_children/calendar_planning_view_children/employee_calendar_list.dart';
 
 class CalendarViewModel {
   CalendarViewModel._singleton();

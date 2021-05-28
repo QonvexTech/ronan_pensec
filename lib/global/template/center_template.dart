@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:ronan_pensec_web/global/palette.dart';
-import 'package:ronan_pensec_web/models/center_model.dart';
-import 'package:ronan_pensec_web/route/center_route.dart';
-import 'package:ronan_pensec_web/services/data_controls/region_data_control.dart';
+import 'package:ronan_pensec/global/palette.dart';
+import 'package:ronan_pensec/models/center_model.dart';
+import 'package:ronan_pensec/route/center_route.dart';
+import 'package:ronan_pensec/services/data_controls/region_data_control.dart';
 
 class CenterTemplate {
   CenterTemplate._privateConstructor();
