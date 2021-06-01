@@ -67,6 +67,7 @@ class CalendarService {
                 address: center.address,
                 mobile: center.mobile,
                 email: center.email,
+                image: center.image,
                 regionId: center.regionId,
                 users: []);
 

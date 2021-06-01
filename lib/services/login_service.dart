@@ -6,6 +6,7 @@ import 'package:ronan_pensec/global/constants.dart';
 import 'package:ronan_pensec/global/endpoints/auth_endpoint.dart';
 import 'package:ronan_pensec/models/user_model.dart';
 import 'package:ronan_pensec/route/credential_route.dart';
+import 'package:ronan_pensec/services/dashboard_services/region_service.dart';
 import 'package:ronan_pensec/services/http_request.dart';
 import 'dart:convert';
 import 'package:ronan_pensec/services/toast_notifier.dart';
@@ -22,7 +23,6 @@ class LoginService {
   final HttpRequest _rqst = HttpRequest.instance;
   static final Auth _auth = Auth.instance;
   late final CredentialsPreferences _credentialsPreferences = CredentialsPreferences.instance;
-
   Future<bool> login(context,
       {required String email,
       required String password,
@@ -37,6 +37,7 @@ class LoginService {
           if(showNotif){
             _notifier.showContextedBottomToast(context,msg: "Login Successful");
           }
+
           _auth.setToken = data['access_token'];
           // _auth.setToken = data['access_token'].toString().replaceAll("\n", ""); /// LIVE
           _auth.setUser = UserModel.fromJson(parsedJson: data['user']);
@@ -44,6 +45,7 @@ class LoginService {
             _credentialsPreferences.saveCredentials(
                 email: email, password: password);
           }
+
           Navigator.pushReplacement(
               context,
               PageTransition(

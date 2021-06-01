@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/global/constants.dart';
 import 'package:ronan_pensec/global/endpoints/center_endpoint.dart';
+import 'package:ronan_pensec/models/center_model.dart';
 import 'package:ronan_pensec/models/user_model.dart';
 import 'package:ronan_pensec/services/data_controls/center_data_control.dart';
 import 'package:ronan_pensec/services/toast_notifier.dart';
@@ -21,7 +22,6 @@ class CenterService {
     _instance._centerDataControl = control;
     return _instance;
   }
-
   bool userIsAssigned({required List<UserModel> sauce,required int id}) {
     for(UserModel user in sauce) {
       if(user.id == id){
@@ -29,6 +29,25 @@ class CenterService {
       }
     }
     return false;
+  }
+
+  Future<bool> update(context,{required Map body, required int centerId}) async {
+    try{
+      return await http.put(Uri.parse("${BaseEnpoint.URL}${CenterEndpoint.update(centerId: centerId)}"),body: body,headers: {
+        "Accept": "application/json",
+        HttpHeaders.authorizationHeader: "Bearer ${_auth.token}"
+      }).then((respo) {
+        if(respo.statusCode == 200 || respo.statusCode == 201 ){
+          _notifier.showContextedBottomToast(context, msg: "Mise à jour réussie");
+          return true;
+        }
+        _notifier.showContextedBottomToast(context, msg: "Une erreur s'est produite (${respo.statusCode}), veuillez réessayer plus tard ou contacter l'administrateur");
+        return false;
+      });
+    }catch(e){
+      _notifier.showContextedBottomToast(context, msg: "Erreur $e");
+      return false;
+    }
   }
   Future<bool> fetch(context) async {
     try {
@@ -38,7 +57,11 @@ class CenterService {
       }).then((response) {
         var data = json.decode(response.body);
         if (response.statusCode == 200) {
-          _centerDataControl.populateAll(data);
+          if(data is List){
+            _centerDataControl.populateAll(data);
+          }else{
+            _centerDataControl.populateAll([data]);
+          }
           return true;
         } else {
           _notifier.showContextedBottomToast(context,
@@ -95,6 +118,50 @@ class CenterService {
         }
       });
     }catch(e){
+      return false;
+    }
+  }
+
+  Future<bool> assignManager(context, {required int centerId, required int userId}) async {
+    try{
+      return await http.post(Uri.parse("${BaseEnpoint.URL}${CenterEndpoint.assignManager}"),headers: {
+        "Accept" : "application/json",
+        HttpHeaders.authorizationHeader : "Bearer ${_auth.token}"
+      },body: {
+        "center_ids" : centerId.toString(),
+        "user_id" : userId.toString()
+      }).then((response) {
+        if(response.statusCode == 200 || response.statusCode == 201){
+          _notifier.showContextedBottomToast(context, msg: "Un nouveau manager a été affecté");
+          return true;
+        }
+        _notifier.showContextedBottomToast(context, msg: "Une erreur s'est produite (${response.statusCode}), veuillez réessayer plus tard");
+        return false;
+      });
+    }catch(e){
+      print("$e");
+      _notifier.showContextedBottomToast(context, msg: "Erreur $e");
+      return false;
+    }
+  }
+  Future<bool> updateRegion(context, {required regionId, required centerId}) async {
+    try{
+      return await http.post(Uri.parse("${BaseEnpoint.URL}${CenterEndpoint.updateRegion(centerId: centerId)}"),headers: {
+        "Accept" : "application/json",
+        HttpHeaders.authorizationHeader : "Bearer ${_auth.token}"
+      },body: {
+        "region_id" : regionId.toString(),
+      }).then((respo) {
+        if(respo.statusCode == 200 || respo.statusCode == 201){
+          _notifier.showContextedBottomToast(context, msg: "Mise à jour réussie");
+          return true;
+        }
+        _notifier.showContextedBottomToast(context, msg: "Une erreur s'est produite (${respo.statusCode}), veuillez réessayer plus tard");
+        return false;
+      });
+    }catch(e){
+      print("$e");
+      _notifier.showContextedBottomToast(context, msg: "Erreur $e");
       return false;
     }
   }

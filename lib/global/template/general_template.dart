@@ -48,7 +48,7 @@ class GeneralTemplate {
           height: 40,
           decoration: BoxDecoration(
               shape: BoxShape.circle,
-              image: DecorationImage(image: imageProvider)),
+              image: DecorationImage(image: imageProvider, fit: BoxFit.cover)),
         ),
         itemBuilder: (_) => <PopupMenuItem<int>>[
           PopupMenuItem(

@@ -122,9 +122,11 @@ class _HolidayRequestState extends State<HolidayRequest> {
                                                    if(value != null){
                                                      setState(() {
                                                        demand.demands = value.demands;
-                                                       demand.daysRemaining = value.daysRemaining;
-                                                       demand.daysPosed = value.daysPosed;
-                                                       demand.currentBalance = value.currentBalance;
+                                                       for(HolidayDemandModel hol in widget.demand!){
+                                                         hol.daysRemaining = value.daysRemaining;
+                                                         hol.daysPosed = value.daysPosed;
+                                                         hol.currentBalance = value.currentBalance;
+                                                       }
                                                      });
                                                    }
                                                  });

@@ -15,7 +15,7 @@ class LandingPageMainHelper {
         key: new GlobalKey()),
     TabbarItem(
         label: "Centres",
-        icon: Icons.location_city_rounded,
+        icon: Icons.roofing,
         key: new GlobalKey()),
     if (_auth.loggedUser!.roleId < 3) ...{
       TabbarItem(
@@ -24,10 +24,6 @@ class LandingPageMainHelper {
         key: new GlobalKey(),
       ),
     },
-    TabbarItem(
-        label: "Calendrier",
-        icon: Icons.calendar_today_rounded,
-        key: new GlobalKey())
   ];
 
   final List<PopupMenuItem<int>> menuItems = <PopupMenuItem<int>>[

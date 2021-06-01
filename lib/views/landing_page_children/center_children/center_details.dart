@@ -1,4 +1,9 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:ronan_pensec/global/controllers/raw_region_controller.dart';
 import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/global/template/general_template.dart';
 import 'package:ronan_pensec/models/center_model.dart';
@@ -31,13 +36,61 @@ class _CenterDetailsState extends State<CenterDetails> {
   PaginationModel employeePagination = new PaginationModel();
   bool _isLoading = false;
   bool _editRegion = false;
+  bool _isForManager = false;
+  UserModel? _selectedNewManager;
+  final RawRegionController _rawRegionController = RawRegionController.instance;
+  // late String _dropdwnVal = widget.model.region?.name ?? "Secteur Nord";
+  String? _base64Image;
+
+  Widget get image => Container(
+        width: double.infinity,
+        height: 250,
+        decoration: BoxDecoration(
+          color: Colors.grey.shade100,
+          image: _base64Image != null
+              ? DecorationImage(
+                  fit: BoxFit.cover,
+                  image: MemoryImage(base64.decode(_base64Image!)),
+                )
+              : widget.model.image != null
+                  ? DecorationImage(
+                      fit: BoxFit.cover,
+                      image: NetworkImage("${widget.model.image}"),
+                    )
+                  : DecorationImage(
+                      fit: BoxFit.cover,
+                      image: AssetImage("assets/images/default_center.jpeg"),
+                    ),
+        ),
+        child: MaterialButton(
+          onPressed: _helper.auth.loggedUser!.roleId == 1 ||
+                  (_helper.auth.loggedUser!.roleId == 2 &&
+                      widget.model.accountant!.id ==
+                          _helper.auth.loggedUser!.id)
+              ? () {
+                  ImagePicker()
+                      .getImage(source: ImageSource.gallery)
+                      .then((PickedFile? pickedFile) async {
+                    if (pickedFile != null) {
+                      Uint8List _bytes = await pickedFile.readAsBytes();
+                      setState(() {
+                        _base64Image = base64.encode(_bytes);
+                      });
+                    }
+                  });
+                }
+              : null,
+        ),
+      );
 
   @override
   void initState() {
     this.fetcher(this.employeePagination.firstPageUrl);
     super.initState();
   }
+
   List<UserModel>? _displayData;
+
   @override
   void dispose() {
     _displayData = null;
@@ -57,8 +110,6 @@ class _CenterDetailsState extends State<CenterDetails> {
       }
     });
   }
-
-
 
   void onFirstPage() {
     setState(() {
@@ -114,15 +165,12 @@ class _CenterDetailsState extends State<CenterDetails> {
     this.fetcher(this.employeePagination.currentPageUrl);
   }
 
-
   @override
   Widget build(BuildContext context) {
-    final List<DropdownMenuItem<RegionModel>> _dropDownchoices = [
-      DropdownMenuItem(child: Text("Secteur Nord"), value: RegionModel(id: 1, name: "Secteur Nord"),),
-      DropdownMenuItem(child: Text("Secteur Sud"), value: RegionModel(id: 2, name: "Secteur Sud"),),
-      DropdownMenuItem(child: Text("Autonome"), value: RegionModel(id: 3, name: "Autonome"),),
-      DropdownMenuItem(child: Text("Normandie"), value: RegionModel(id: 4, name: "Normandie"),),
-    ];
+    final List<DropdownMenuItem<RegionModel>> _dropDownchoices = List.generate(_rawRegionController.regionData.regions.length, (index) => DropdownMenuItem(
+      child: Text("${_rawRegionController.regionData.regions[index].name}"),
+      value: _rawRegionController.regionData.regions[index],
+    ),);
     final Size size = MediaQuery.of(context).size;
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
@@ -144,14 +192,55 @@ class _CenterDetailsState extends State<CenterDetails> {
                         Container(
                           width: double.infinity,
                           height: 250,
-                          decoration: BoxDecoration(
-                              color: Colors.grey.shade100,
-                              image: DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: AssetImage(
-                                      "assets/images/default_center.jpeg"))),
                           child: Stack(
                             children: [
+                              this.image,
+                              if (_base64Image != null) ...{
+                                Align(
+                                  alignment: AlignmentDirectional.bottomCenter,
+                                  child: Container(
+                                    margin: const EdgeInsets.only(bottom: 10),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.all(5),
+                                          decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: Colors.green),
+                                          child: IconButton(
+                                              tooltip: "Sauvegarder",
+                                              icon: Icon(
+                                                Icons.save,
+                                                color: Colors.white,
+                                              ),
+                                              color: Colors.green,
+                                              onPressed: () {}),
+                                        ),
+                                        Container(
+                                          padding: const EdgeInsets.all(5),
+                                          decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: Colors.red),
+                                          child: IconButton(
+                                              tooltip: "Annuler",
+                                              icon: Icon(
+                                                Icons.close,
+                                                color: Colors.white,
+                                              ),
+                                              color: Colors.red,
+                                              onPressed: () {
+                                                setState(() {
+                                                  _base64Image = null;
+                                                });
+                                              }),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              },
                               Align(
                                 alignment: AlignmentDirectional.topStart,
                                 child: Container(
@@ -192,6 +281,146 @@ class _CenterDetailsState extends State<CenterDetails> {
                             ],
                           ),
                         ),
+                        if (_helper.auth.loggedUser!.roleId < 3) ...{
+                          Container(
+                              width: double.infinity,
+                              margin: const EdgeInsets.only(top: 20, left: 15),
+                              alignment: AlignmentDirectional.centerStart,
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 110,
+                                    child: MaterialButton(
+                                      color: Colors.white38,
+                                      padding: const EdgeInsets.all(0),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(50),
+                                      ),
+                                      onPressed: () {
+                                        _helper.showEditDialog(context,
+                                            center: widget.model,
+                                            width: size.width * .8,
+                                            isLoading: (bool l) {
+                                          setState(() {
+                                            _isLoading = l;
+                                          });
+                                        }, callback: (bool e) {
+                                          if (e) {
+                                            setState(() {
+                                              widget.model.email =
+                                                  _helper.email.text;
+                                              widget.model.mobile =
+                                                  _helper.number.text;
+                                              widget.model.address =
+                                                  _helper.address.text;
+                                              widget.model.city =
+                                                  _helper.city.text;
+                                              widget.model.zipCode =
+                                                  _helper.zipCode.text;
+                                              widget.model.name =
+                                                  _helper.name.text;
+                                            });
+                                          }
+                                        });
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(50),
+                                          border: Border.all(
+                                              color: Colors.grey.shade200),
+                                        ),
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 10, horizontal: 15),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Icons.edit,
+                                              color: Colors.grey,
+                                              size: 18,
+                                            ),
+                                            const SizedBox(
+                                              width: 10,
+                                            ),
+                                            Text(
+                                              "Editer",
+                                              style: TextStyle(
+                                                  color: Colors.grey,
+                                                  letterSpacing: 1.5,
+                                                  fontWeight: FontWeight.w400,
+                                                  fontSize: 12.5),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 20,
+                                  ),
+                                  if (_helper.auth.loggedUser!.roleId == 1) ...{
+                                    Container(
+                                      width: 140,
+                                      child: MaterialButton(
+                                        color: Colors.red,
+                                        padding: const EdgeInsets.all(0),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(50),
+                                        ),
+                                        onPressed: () {
+                                          _helper.showDialog(context,
+                                              centerId: widget.model.id,
+                                              centerName: widget.model.name,
+                                              width: size.width * .65,
+                                              isMobile: size.width < 900,
+                                              callback: (bool call) async {
+                                            setState(() => _isLoading = call);
+                                            if (!_isLoading) {
+                                              await Future.delayed(
+                                                  Duration(milliseconds: 600));
+                                              Navigator.of(context).pop(null);
+                                            }
+                                          });
+                                        },
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(50),
+                                          ),
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 10, horizontal: 15),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                Icons.delete,
+                                                color: Colors.white,
+                                                size: 18,
+                                              ),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              Text(
+                                                "Supprimer",
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    letterSpacing: 1.5,
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 12.5),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  }
+                                ],
+                              )),
+                        },
                         Padding(
                             padding: const EdgeInsets.symmetric(vertical: 20),
                             child: ListTile(
@@ -203,7 +432,7 @@ class _CenterDetailsState extends State<CenterDetails> {
                                         .headline5!
                                         .fontSize),
                               ),
-                              subtitle: Text("${widget.model.email}",
+                              subtitle: Text("${widget.model.email?? "NON DÉFINI"}",
                                   style: TextStyle(
                                       fontSize: Theme.of(context)
                                               .textTheme
@@ -213,7 +442,11 @@ class _CenterDetailsState extends State<CenterDetails> {
                                       fontStyle: FontStyle.italic,
                                       color: Colors.black54)),
                             )),
-                        _helper.templatize(icon: Icons.phone_outlined, text: "${widget.model.mobile}", label: "Numéro de téléphone",),
+                        _helper.templatize(
+                          icon: Icons.phone_outlined,
+                          text: "${widget.model.mobile??"NON DÉFINI"}",
+                          label: "Numéro de téléphone",
+                        ),
                         Divider(
                           thickness: 0.5,
                           color: Colors.black54,
@@ -223,63 +456,75 @@ class _CenterDetailsState extends State<CenterDetails> {
                           child: _helper.templatize(
                               label: "Addressé",
                               icon: Icons.location_on_outlined,
-                              text: widget.model.address),
+                              text: widget.model.address??"NON DÉFINI"),
                         ),
                         Container(
                           margin: const EdgeInsets.symmetric(vertical: 10),
                           child: _helper.templatize(
                               label: "Ville",
                               icon: Icons.location_city_outlined,
-                              text: widget.model.city),
+                              text: widget.model.city??"NON DÉFINI"),
                         ),
                         Container(
                           margin: const EdgeInsets.symmetric(vertical: 10),
                           child: _helper.templatize(
                               label: "Code de postal",
                               icon: Icons.local_post_office_sharp,
-                              text: widget.model.zipCode),
+                              text: widget.model.zipCode??"NON DÉFINI"),
                         ),
                         Divider(
                           thickness: 0.5,
                           color: Colors.black54,
                         ),
-                        if(widget.model.region != null && !_editRegion)...{
+                        if (widget.model.region != null && !_editRegion) ...{
                           ListTile(
-                            leading: Icon(Icons.local_activity_outlined, color: Palette.gradientColor[0],),
+                            leading: Icon(
+                              Icons.local_activity_outlined,
+                              color: Palette.gradientColor[0],
+                            ),
                             title: Text(widget.model.region!.name),
-                            subtitle: Text("(assigned region)",style: TextStyle(
-                              letterSpacing: 1,
-                              fontStyle: FontStyle.italic,
-                              fontSize: 13.5,
-                              color: Colors.grey.shade600
-                            ),),
+                            subtitle: Text(
+                              "(Région attribuée)",
+                              style: TextStyle(
+                                  letterSpacing: 1,
+                                  fontStyle: FontStyle.italic,
+                                  fontSize: 13.5,
+                                  color: Colors.grey.shade600),
+                            ),
                             trailing: IconButton(
-                              icon: Icon(Icons.edit, color: Colors.blue,),
-                              onPressed: () => setState(() => _editRegion = true),
+                              icon: Icon(
+                                Icons.edit,
+                                color: Colors.blue,
+                              ),
+                              onPressed: () =>
+                                  setState(() => _editRegion = true),
                             ),
                           )
                         },
-                        if(_editRegion)...{
+                        if (_editRegion) ...{
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 10),
                             child: DropdownButtonHideUnderline(
                               child: DropdownButton<RegionModel>(
                                 isExpanded: true,
-                                onChanged: (RegionModel? region){
+                                onChanged: (RegionModel? region) async {
                                   print("CHOSEN ${region!.name}");
-                                  setState(() {
-                                    widget.model.region = region;
-                                    _editRegion = false;
+                                  await _helper.service.updateRegion(context, regionId: region.id, centerId: widget.model.id).then((value) {
+                                    if(value) {
+                                      setState(() {
+                                        widget.model.region = region;
+                                        _editRegion = false;
+                                      });
+                                    }
                                   });
+
                                   // print(_chosenDropdown);
                                 },
                                 value: null,
                                 items: _dropDownchoices,
                                 hint: Text(
                                   "Choose region for this center",
-                                  style: TextStyle(
-                                      color: Colors.grey.shade700
-                                  ),
+                                  style: TextStyle(color: Colors.grey.shade700),
                                 ),
                               ),
                             ),
@@ -290,14 +535,64 @@ class _CenterDetailsState extends State<CenterDetails> {
                           color: Colors.black54,
                         ),
                         ListTile(
-                          leading: widget.model.accountant != null ? CircleAvatar(
-                            backgroundColor: Colors.transparent,
-                            backgroundImage: NetworkImage("${widget.model.accountant!.image}"),
-                          ) : null,
-                          title: Text("${widget.model.accountant?.full_name ?? "NON"}"),
-                          subtitle: Text("${widget.model.accountant == null ? "No assigned Manager" : "Manager"}",style: TextStyle(
-                            fontStyle: FontStyle.italic
-                          ),),
+                          leading: widget.model.accountant != null
+                              ? CircleAvatar(
+                                  backgroundColor: Colors.transparent,
+                                  backgroundImage: NetworkImage(
+                                      "${widget.model.accountant!.image}"),
+                                )
+                              : null,
+                          title: Text(
+                              "${widget.model.accountant?.full_name ?? "NON"}"),
+                          subtitle: Text(
+                            "${widget.model.accountant == null ? "No assigned Manager" : "Manager"}",
+                            style: TextStyle(fontStyle: FontStyle.italic),
+                          ),
+                          trailing: _helper.auth.loggedUser!.roleId == 1
+                              ? IconButton(
+                                  icon: Icon(
+                                    _selectedNewManager != null
+                                        ? Icons.save
+                                        : _isForManager
+                                            ? Icons.close
+                                            : Icons.edit,
+                                    color: _selectedNewManager != null
+                                        ? Colors.green
+                                        : _isForManager
+                                            ? Colors.red
+                                            : Colors.blue,
+                                  ),
+                                  onPressed: () async {
+                                    if (_selectedNewManager == null) {
+                                      setState(() {
+                                        _isForManager = !_isForManager;
+                                      });
+                                    } else {
+                                      await _helper.service
+                                          .assignManager(context,
+                                              centerId: widget.model.id,
+                                              userId: _selectedNewManager!.id)
+                                          .then((value) {
+                                        if (value) {
+                                          setState(() {
+                                            widget.model.accountant =
+                                                _selectedNewManager;
+                                          });
+                                        }
+                                      }).whenComplete(() => setState(() {
+                                                _selectedNewManager = null;
+                                                _isForManager = false;
+                                              }));
+                                      // setState(() {
+                                      //   widget.model.accountant =
+                                      //       _selectedNewManager!;
+                                      //   _isForManager = false;
+                                      //   _selectedNewManager = null;
+                                      // });
+                                    }
+                                  },
+                                )
+                              : null,
                         )
                       ],
                     ),
@@ -313,6 +608,37 @@ class _CenterDetailsState extends State<CenterDetails> {
                         child: ListView(
                           physics: ClampingScrollPhysics(),
                           children: [
+                            AnimatedContainer(
+                                duration: Duration(milliseconds: 600),
+                                width: double.infinity,
+                                height: _isForManager ? 40 : 0,
+                                decoration: BoxDecoration(
+                                    color: Colors.green,
+                                    borderRadius: BorderRadius.circular(5)),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 20),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        "Choisir un poste de direction. ${_selectedNewManager?.full_name ?? ""}",
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ),
+                                    if (_selectedNewManager != null) ...{
+                                      IconButton(
+                                          icon: Icon(
+                                            Icons.cancel,
+                                            color: Colors.red,
+                                          ),
+                                          onPressed: () {
+                                            setState(() {
+                                              _selectedNewManager = null;
+                                            });
+                                          })
+                                    }
+                                  ],
+                                )),
                             AnimatedContainer(
                                 margin: _pendingUsers.length == 0
                                     ? EdgeInsets.all(0)
@@ -539,7 +865,10 @@ class _CenterDetailsState extends State<CenterDetails> {
                                 ),
                               )
                             },
-                            if (_helper.auth.loggedUser!.roleId == 1) ...{
+                            if (_helper.auth.loggedUser!.roleId == 1 ||
+                                (_helper.auth.loggedUser!.roleId == 2 &&
+                                    widget.model.accountant!.id ==
+                                        _helper.auth.loggedUser!.id)) ...{
                               // this.children(size).map((e) => e),
                               // this.children(size).map((e) => e)
                               if (_displayData != null) ...{
@@ -562,16 +891,15 @@ class _CenterDetailsState extends State<CenterDetails> {
                                 for (UserModel user in _displayData!) ...{
                                   MaterialButton(
                                     onPressed:
-                                        _helper.service.userIsAssigned(
-                                                sauce: widget.model.users,
-                                                id: user.id)
+                                        user.id ==
+                                                    widget
+                                                        .model.accountant?.id ||
+                                                _helper.service.userIsAssigned(
+                                                    sauce: widget.model.users,
+                                                    id: user.id)
                                             ? null
                                             : () {
-                                                if (_selectedUser?.id !=
-                                                    user.id) {
-                                                  setState(() {
-                                                    _selectedUser = user;
-                                                  });
+                                                if (_isForManager) {
                                                   GeneralTemplate
                                                       .showDialog(context,
                                                           child: Column(
@@ -594,7 +922,7 @@ class _CenterDetailsState extends State<CenterDetails> {
                                                                     Expanded(
                                                                       child:
                                                                           Text(
-                                                                        "Êtes-vous sûr de vouloir attribuer ${user.full_name} à ce centre?",
+                                                                        "Voulez-vous vraiment désigner ${user.full_name} comme nouveau gestionnaire de ${widget.model.name} ?",
                                                                         style:
                                                                             TextStyle(
                                                                           fontSize:
@@ -658,16 +986,8 @@ class _CenterDetailsState extends State<CenterDetails> {
                                                                               .pop(null);
                                                                           setState(
                                                                               () {
-                                                                            if (!_pendingUsers.contains(_selectedUser!) &&
-                                                                                !_helper.service.userIsAssigned(sauce: widget.model.users, id: _selectedUser!.id)) {
-                                                                              _pendingUsers.add(_selectedUser!);
-                                                                            } else {
-                                                                              _helper.service.notifier.showContextedBottomToast(context, msg: "Cet utilisateur est déjà affecté à ce centre");
-                                                                            }
-                                                                            widget.regionDataControl.appendUserToCenter(_selectedUser!,
-                                                                                widget.model.id);
-                                                                            _selectedUser =
-                                                                                null;
+                                                                            _selectedNewManager =
+                                                                                user;
                                                                           });
                                                                         },
                                                                         child:
@@ -711,9 +1031,149 @@ class _CenterDetailsState extends State<CenterDetails> {
                                                     });
                                                   });
                                                 } else {
-                                                  setState(() {
-                                                    _selectedUser = null;
-                                                  });
+                                                  if (_selectedUser?.id !=
+                                                      user.id) {
+                                                    setState(() {
+                                                      _selectedUser = user;
+                                                    });
+                                                    GeneralTemplate
+                                                        .showDialog(context,
+                                                            child: Column(
+                                                              children: [
+                                                                Container(
+                                                                  width: double
+                                                                      .infinity,
+                                                                  child: Row(
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .start,
+                                                                    children: [
+                                                                      Image
+                                                                          .asset(
+                                                                        "assets/images/info.png",
+                                                                        width:
+                                                                            30,
+                                                                      ),
+                                                                      const SizedBox(
+                                                                        width:
+                                                                            10,
+                                                                      ),
+                                                                      Expanded(
+                                                                        child:
+                                                                            Text(
+                                                                          "Êtes-vous sûr de vouloir attribuer ${user.full_name} à ce centre?",
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                15.5,
+                                                                            fontWeight:
+                                                                                FontWeight.w400,
+                                                                            fontStyle:
+                                                                                FontStyle.italic,
+                                                                          ),
+                                                                        ),
+                                                                      )
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                                const SizedBox(
+                                                                  height: 10,
+                                                                ),
+                                                                Container(
+                                                                  width: double
+                                                                      .infinity,
+                                                                  height: 50,
+                                                                  child: Row(
+                                                                    children: [
+                                                                      Expanded(
+                                                                          child:
+                                                                              MaterialButton(
+                                                                        height:
+                                                                            50,
+                                                                        color: Colors
+                                                                            .grey
+                                                                            .shade200,
+                                                                        onPressed:
+                                                                            () {
+                                                                          Navigator.of(context)
+                                                                              .pop(null);
+                                                                        },
+                                                                        child:
+                                                                            Center(
+                                                                          child:
+                                                                              Text(
+                                                                            "ANNULER",
+                                                                            style:
+                                                                                TextStyle(letterSpacing: 1.5, fontWeight: FontWeight.w600),
+                                                                          ),
+                                                                        ),
+                                                                      )),
+                                                                      const SizedBox(
+                                                                        width:
+                                                                            10,
+                                                                      ),
+                                                                      Expanded(
+                                                                        child:
+                                                                            MaterialButton(
+                                                                          height:
+                                                                              50,
+                                                                          color:
+                                                                              Palette.gradientColor[0],
+                                                                          onPressed:
+                                                                              () async {
+                                                                            Navigator.of(context).pop(null);
+                                                                            setState(() {
+                                                                              if (!_pendingUsers.contains(_selectedUser!) && !_helper.service.userIsAssigned(sauce: widget.model.users, id: _selectedUser!.id)) {
+                                                                                _pendingUsers.add(_selectedUser!);
+                                                                              } else {
+                                                                                _helper.service.notifier.showContextedBottomToast(context, msg: "Cet utilisateur est déjà affecté à ce centre");
+                                                                              }
+                                                                              widget.regionDataControl.appendUserToCenter(_selectedUser!, widget.model.id);
+                                                                              _selectedUser = null;
+                                                                            });
+                                                                          },
+                                                                          child:
+                                                                              Center(
+                                                                            child:
+                                                                                Text(
+                                                                              "OUI",
+                                                                              style: TextStyle(color: Colors.white, letterSpacing: 1.5, fontWeight: FontWeight.w600),
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                )
+                                                              ],
+                                                            ),
+                                                            title: ListTile(
+                                                              leading:
+                                                                  CircleAvatar(
+                                                                backgroundColor:
+                                                                    Colors
+                                                                        .transparent,
+                                                                backgroundImage:
+                                                                    NetworkImage(
+                                                                        "${user.image}"),
+                                                              ),
+                                                              title: Text(
+                                                                  "${user.full_name}"),
+                                                              subtitle: Text(
+                                                                  "${user.email}"),
+                                                            ),
+                                                            width: size.width,
+                                                            height: 110,
+                                                            onDismissed: () {
+                                                      setState(() {
+                                                        _selectedUser = null;
+                                                      });
+                                                    });
+                                                  } else {
+                                                    setState(() {
+                                                      _selectedUser = null;
+                                                    });
+                                                  }
                                                 }
                                                 // callback(selectedUser?.id !=
                                                 //     displayData[index].id
@@ -723,6 +1183,7 @@ class _CenterDetailsState extends State<CenterDetails> {
                                     child: _helper.viewBodyDetail(
                                         context,
                                         user,
+                                        user.id == widget.model.accountant?.id,
                                         _helper.service.userIsAssigned(
                                             sauce: widget.model.users,
                                             id: user.id),
@@ -744,33 +1205,43 @@ class _CenterDetailsState extends State<CenterDetails> {
                                   child: Wrap(
                                     children: [
                                       Container(
-                                        width: size.width > 900 ? (size.width - 400) * .475 : double.infinity,
-                                        child: Row(
-                                          mainAxisAlignment: size.width > 900 ? MainAxisAlignment.start : MainAxisAlignment.center,
-                                          children: [
-                                            Text("Showing "),
-                                            PopupMenuButton<int>(
-                                              icon: Text(
-                                                  "${employeePagination.dataToShow}"),
-                                              padding: const EdgeInsets.all(0),
-                                              onSelected: (int val) {
-                                                onChangePageCount(val);
-                                              },
-                                              itemBuilder: (_) => _helper
-                                                  .popupMenuPageItems
-                                                  .map((e) => PopupMenuItem<int>(
-                                                  value: e, child: Text("$e")))
-                                                  .toList(),
-                                            ),
-                                            Text(
-                                                " Out of  ${employeePagination.totalDataCount}"),
-                                          ],
-                                        )
-                                      ),
+                                          width: size.width > 900
+                                              ? (size.width - 400) * .475
+                                              : double.infinity,
+                                          child: Row(
+                                            mainAxisAlignment: size.width > 900
+                                                ? MainAxisAlignment.start
+                                                : MainAxisAlignment.center,
+                                            children: [
+                                              Text("Showing "),
+                                              PopupMenuButton<int>(
+                                                icon: Text(
+                                                    "${employeePagination.dataToShow}"),
+                                                padding:
+                                                    const EdgeInsets.all(0),
+                                                onSelected: (int val) {
+                                                  onChangePageCount(val);
+                                                },
+                                                itemBuilder: (_) => _helper
+                                                    .popupMenuPageItems
+                                                    .map((e) =>
+                                                        PopupMenuItem<int>(
+                                                            value: e,
+                                                            child: Text("$e")))
+                                                    .toList(),
+                                              ),
+                                              Text(
+                                                  " Out of  ${employeePagination.totalDataCount}"),
+                                            ],
+                                          )),
                                       Container(
-                                        width: size.width > 900 ? (size.width - 400) * .475 : double.infinity,
+                                        width: size.width > 900
+                                            ? (size.width - 400) * .475
+                                            : double.infinity,
                                         child: Row(
-                                          mainAxisAlignment: size.width > 900 ? MainAxisAlignment.end : MainAxisAlignment.center,
+                                          mainAxisAlignment: size.width > 900
+                                              ? MainAxisAlignment.end
+                                              : MainAxisAlignment.center,
                                           children: [
                                             IconButton(
                                                 icon: Icon(Icons.first_page),
@@ -785,8 +1256,10 @@ class _CenterDetailsState extends State<CenterDetails> {
                                             if (employeePagination.lastPage !=
                                                 null) ...{
                                               for (int x = 1;
-                                              x <= employeePagination.lastPage!;
-                                              x++) ...{
+                                                  x <=
+                                                      employeePagination
+                                                          .lastPage!;
+                                                  x++) ...{
                                                 IconButton(
                                                     onPressed: () {
                                                       onPagePress(x);
@@ -795,10 +1268,10 @@ class _CenterDetailsState extends State<CenterDetails> {
                                                       "$x",
                                                       style: TextStyle(
                                                           color: employeePagination
-                                                              .currentPage ==
-                                                              x
+                                                                      .currentPage ==
+                                                                  x
                                                               ? Palette
-                                                              .gradientColor[0]
+                                                                  .gradientColor[0]
                                                               : Colors.black),
                                                     ))
                                               },

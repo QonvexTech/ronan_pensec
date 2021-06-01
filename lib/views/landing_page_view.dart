@@ -46,7 +46,6 @@ class _LandingPageScreenWebState extends State<LandingPageView>
         regionDataControl: _webPlanning.regionViewModel.control,
       )
     },
-    Calendar(),
   ];
 
   late final TabController _tabController =
@@ -202,17 +201,6 @@ class _LandingPageScreenWebState extends State<LandingPageView>
                             color: tabItems.indexOf(item) == currentTabIndex
                                 ? Palette.textFieldColor
                                 : Colors.grey.shade400,
-                          ),
-                          child: FittedBox(
-                            child: Text(
-                              "${item.label}",
-                              style: TextStyle(
-                                  letterSpacing: 1.5,
-                                  color:
-                                  tabItems.indexOf(item) == currentTabIndex
-                                      ? Palette.textFieldColor
-                                      : Colors.grey.shade400),
-                            ),
                           ),
                         )
                       }
