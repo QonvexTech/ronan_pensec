@@ -1,4 +1,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:ronan_pensec/global/auth.dart';
+
+import 'firebase_messaging_token_service.dart';
 
 class FirebaseMessagingService {
   FirebaseMessagingService._privateConstructor();
@@ -6,6 +9,10 @@ class FirebaseMessagingService {
   /// initializing constructor
   static final FirebaseMessagingService _instance =
       FirebaseMessagingService._privateConstructor();
+
+  static final Auth _auth = Auth.instance;
+  ///saved Token
+  String? _fcmToken;
 
   /// creating private instance
   static FirebaseMessagingService get instance => _instance;
@@ -22,6 +29,9 @@ class FirebaseMessagingService {
   Future<String?> get fcmToken async => await _firebaseMessaging.getToken();
 
   /// get firebase token
+
+  final FirebaseMessagingTokenService _tokenService =
+      FirebaseMessagingTokenService.instance;
 
   /// This will initialize firebase features including listening
   Future<void> initialize() async {
@@ -44,7 +54,6 @@ class FirebaseMessagingService {
 
       return;
     });
-
     // on open
     FirebaseMessaging.onMessageOpenedApp.listen((event) {
       print("MESSAGE OPENED :${event.notification!.title}");
@@ -54,6 +63,30 @@ class FirebaseMessagingService {
     FirebaseMessaging.onBackgroundMessage((RemoteMessage message) async {
       print('Handling a background message ${message.messageId}');
     });
+    if (_auth.loggedUser!.isSilentOnPush == 0) {
+      await _firebaseMessaging
+          .getToken(
+              vapidKey:
+                  "BC8n_Avs4PVWb4j2OCitENQpl_lz4fmkxzvILfCu8qQAfZdWCKZAU30uBC62V2axUbRU3WNi2UuKCL6Vd7lM9fI")
+          .then((token) async {
+        if (token != null) {
+          this._fcmToken = token;
+          await _tokenService.add(token);
+        }
+      });
+    }
+  }
+
+  Future<void> get removeToken async {
+    try {
+      await _tokenService.remove(this._fcmToken!).whenComplete(() => this.deleteToken);
+    } catch (e) {
+      print("Remove Error : $e");
+    }
+  }
+
+  Future<void> get deleteToken async {
+    await _firebaseMessaging.deleteToken(senderId: "371760182349");
   }
 }
 

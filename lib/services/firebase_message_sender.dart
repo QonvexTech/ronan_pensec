@@ -1,3 +1,4 @@
+
 import 'package:ronan_pensec/services/http_request.dart';
 
 class FirebaseMessageSender {
@@ -33,7 +34,6 @@ class FirebaseMessageSender {
             'to':
                 "cL7CgtJJlkJKiplMh7RsnR:APA91bEQfwrg1UfCK6e_lssIH6p9kHBVKA5u2vySj3rFv5kNquZhMnJNvDZgKxl419eJLbP1ncRE5LkFO2GMRXk6eU_JtcDJlEDjmd0omXIXTaYdvL5wBZySulZlJMrmB_9DrYAk9nX2",
           }).then((response) {
-        print(response.data);
       });
     } catch (e) {
       print("ERROR $e");

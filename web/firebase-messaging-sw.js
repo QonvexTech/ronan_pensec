@@ -13,4 +13,5 @@ firebase.initializeApp({
 });
 if (firebase.messaging.isSupported()){
 	const messaging = firebase.messaging();
+	messaging.usePublicVapidKey("BC8n_Avs4PVWb4j2OCitENQpl_lz4fmkxzvILfCu8qQAfZdWCKZAU30uBC62V2axUbRU3WNi2UuKCL6Vd7lM9fI");
 }

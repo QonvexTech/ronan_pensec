@@ -7,12 +7,12 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  final CredentialsPreferences _preferences = CredentialsPreferences.instance;
+  late final CredentialsPreferences _preferences = CredentialsPreferences.instance;
   void initialize() async {
     try{
       _preferences.getCredentials(context);
     }catch(e){
-      print("ERROR");
+      print("ERROR $e");
     }
   }
   @override

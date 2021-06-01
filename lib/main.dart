@@ -3,7 +3,7 @@ import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:ronan_pensec/views/login_view/login_view.dart';
+import 'package:ronan_pensec/global/palette.dart';
 import 'views/splash_screen.dart';
 
 void main() async {
@@ -25,9 +25,10 @@ class MyApp extends StatelessWidget {
         const Locale('fr')
       ],
       debugShowCheckedModeBanner: false,
-      title: 'Ronan-Pensec',
+      title: 'Ronan Pensec',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+          fontFamily: "Noto_Sans",
+          primaryColor: Palette.textFieldColor
       ),
       home: SplashScreen(),
     );
