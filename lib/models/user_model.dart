@@ -16,8 +16,8 @@ class UserModel {
   String? image;
   int roleId;
   int? workDays;
-  int? consumableHolidays;
-  int? rttRemainingBalance;
+  double? consumableHolidays;
+  double? rttRemainingBalance;
   List<RTTModel> rtts;
   List<HolidayModel> holidays;
   List<AttendanceModel> attendances;
