@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/global/constants.dart';
+import 'package:ronan_pensec/global/controllers/raw_region_controller.dart';
 import 'package:ronan_pensec/global/endpoints/region_endpoint.dart';
 import 'package:ronan_pensec/services/data_controls/region_data_control.dart';
 import 'package:ronan_pensec/services/toast_notifier.dart';
@@ -13,13 +14,34 @@ class RegionService {
   static final Auth _auth = Auth.instance;
 
   static final RegionService _instance = RegionService._internal();
-
+  static final RawRegionController _regionController = RawRegionController.instance;
+  RawRegionController get rawRegionController => _regionController;
   static RegionService instance(RegionDataControl control) {
     _instance._regionDataControl = control;
     return _instance;
   }
   late final ToastNotifier _notifier= ToastNotifier.instance;
 
+  Future<void> get fetchRaw async {
+    try{
+      await http.get(Uri.parse("${BaseEnpoint.URL}${RegionEndpoint.base}/raw"),headers: {
+        "Accept": "application/json",
+        HttpHeaders.authorizationHeader: "Bearer ${_auth.token}"
+      }).then((response) {
+        var data = json.decode(response.body);
+        if(response.statusCode == 200){
+          print(data);
+          rawRegionController.regionData.populateRegions = data;
+          return ;
+        }
+        print("ERROR ${response.statusCode}");
+        return ;
+      });
+    }catch(e){
+      print(e);
+      return ;
+    }
+  }
   Future<bool> fetch(context) async {
     try {
       String url = "${BaseEnpoint.URL}${RegionEndpoint.base}";
@@ -29,7 +51,11 @@ class RegionService {
       }).then((response) {
         var data = json.decode(response.body);
         if (response.statusCode == 200) {
-          _regionDataControl.populateAll(data);
+          if(data is List){
+            _regionDataControl.populateAll(data);
+          }else{
+            _regionDataControl.populateAll(data['']);
+          }
           return true;
         }else {
           _notifier.showContextedBottomToast(context,

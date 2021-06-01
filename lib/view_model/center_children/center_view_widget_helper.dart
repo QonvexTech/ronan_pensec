@@ -26,6 +26,7 @@ class CenterViewWidgetHelper {
   static CenterViewWidgetHelper get instance {
     return _instance;
   }
+
   final TextEditingController _name = new TextEditingController();
   final TextEditingController _address = new TextEditingController();
   final TextEditingController _number = new TextEditingController();
@@ -34,20 +35,26 @@ class CenterViewWidgetHelper {
   final TextEditingController _city = new TextEditingController();
 
   TextEditingController get name => _name;
+
   TextEditingController get address => _address;
+
   TextEditingController get number => _number;
+
   TextEditingController get email => _email;
+
   TextEditingController get zipCode => _zipCode;
+
   TextEditingController get city => _city;
   final Duration duration = new Duration(milliseconds: 700);
   static final Auth _auth = Auth.instance;
+
   Auth get auth => _auth;
-  final List<int> popupMenuPageItems = [10,20,30,40,50];
+  final List<int> popupMenuPageItems = [10, 20, 30, 40, 50];
 
   Widget templatize(
-      {required IconData icon,
-        required String text,
-        required String label}) =>
+          {required IconData icon,
+          required String text,
+          required String label}) =>
       Tooltip(
         message: label,
         child: Padding(
@@ -72,12 +79,14 @@ class CenterViewWidgetHelper {
       {required CenterModel center,
       required double width,
       bool isMobile = false,
+      required ValueChanged<bool> isLoading,
       required ValueChanged<bool> callback}) {
-    _email.text = center.email;
+    _email.text = center.email??"";
     _name.text = center.name;
-    _address.text = center.address;
-    _number.text = center.mobile;
-    _zipCode.text = center.zipCode;
+    _address.text = center.address??"";
+    _number.text = center.mobile??"";
+    _city.text = center.city??"";
+    _zipCode.text = center.zipCode??"";
     GeneralTemplate.showDialog(context,
         child: Container(
           width: double.infinity,
@@ -125,6 +134,24 @@ class CenterViewWidgetHelper {
                       margin: EdgeInsets.symmetric(
                           vertical: 10, horizontal: isMobile ? 10 : 20),
                       child: TextField(
+                        controller: _number,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5)),
+                            hintText: "Entrez nouveau numéro",
+                            prefixIcon: Icon(Icons.phone),
+                            suffixIcon: IconButton(
+                              icon: Icon(Icons.close),
+                              onPressed: () => _number.clear(),
+                            )),
+                      ),
+                    ),
+                    Container(
+                      width: double.infinity,
+                      margin: EdgeInsets.symmetric(
+                          vertical: 10, horizontal: isMobile ? 10 : 20),
+                      child: TextField(
                         controller: _address,
                         maxLines: 2,
                         keyboardType: TextInputType.multiline,
@@ -133,9 +160,39 @@ class CenterViewWidgetHelper {
                                 borderRadius: BorderRadius.circular(5)),
                             hintText: "Entrez nouveau addressé",
                             alignLabelWithHint: true,
-                            prefixIcon: Icon(Icons.location_city_outlined)),
+                            prefixIcon: Icon(Icons.location_on_outlined)),
                       ),
-                    )
+                    ),
+                    Container(
+                      width: double.infinity,
+                      margin: EdgeInsets.symmetric(
+                          vertical: 10, horizontal: isMobile ? 10 : 20),
+                      child: TextField(
+                        controller: _city,
+                        keyboardType: TextInputType.text,
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5)),
+                            hintText: "Entrez nouveau ville",
+                            alignLabelWithHint: true,
+                            prefixIcon: Icon(Icons.location_city_sharp)),
+                      ),
+                    ),
+                    Container(
+                      width: double.infinity,
+                      margin: EdgeInsets.symmetric(
+                          vertical: 10, horizontal: isMobile ? 10 : 20),
+                      child: TextField(
+                        controller: _zipCode,
+                        keyboardType: TextInputType.text,
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5)),
+                            hintText: "Entrez nouveau code de postal",
+                            alignLabelWithHint: true,
+                            prefixIcon: Icon(Icons.mail)),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -170,8 +227,27 @@ class CenterViewWidgetHelper {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(2),
                       ),
-                      onPressed: () {
+                      onPressed: () async {
+                        isLoading(true);
                         Navigator.of(context).pop(null);
+                        await _service.update(context,centerId: center.id, body: {
+                          "zip_code": _zipCode.text.isNotEmpty
+                              ? _zipCode.text
+                              : center.zipCode,
+                          "name":
+                              _name.text.isNotEmpty ? _name.text : center.name,
+                          "address": _address.text.isNotEmpty
+                              ? _address.text
+                              : center.address,
+                          "city":
+                              _city.text.isNotEmpty ? _city.text : center.city,
+                          "mobile": _number.text.isNotEmpty
+                              ? _number.text
+                              : center.mobile,
+                          "email": _email.text.isNotEmpty
+                              ? _email.text
+                              : center.email
+                        }).then((value) => callback(value)).whenComplete(() => isLoading(false));
                         // callback(true);
                         // _service.delete(context, centerId: centerId).whenComplete(() => callback(false));
                       },
@@ -336,10 +412,12 @@ class CenterViewWidgetHelper {
         ),
       );
 
-  Widget viewBodyDetail(context,UserModel user, bool isAssigned, bool isAll,
+  Widget viewBodyDetail(
+          context, UserModel user, bool isManager, bool isAssigned, bool isAll,
           {required ValueChanged<List<UserModel>> onRemoveCallback,
           required List<UserModel> source,
-          required int centerId,required ValueChanged<int> onRemoveUser}) =>
+          required int centerId,
+          required ValueChanged<int> onRemoveUser}) =>
       Container(
         width: double.infinity,
         height: 50,
@@ -350,7 +428,11 @@ class CenterViewWidgetHelper {
               child: Text(
                 "${user.id}",
                 style: TextStyle(
-                    color: isAssigned ? Colors.green : Colors.black54),
+                    color: isManager
+                        ? Colors.red
+                        : isAssigned
+                            ? Colors.green
+                            : Colors.black54),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -358,14 +440,22 @@ class CenterViewWidgetHelper {
               flex: 2,
               child: Text("${user.first_name}",
                   style: TextStyle(
-                      color: isAssigned ? Colors.green : Colors.black54),
+                      color: isManager
+                          ? Colors.red
+                          : isAssigned
+                              ? Colors.green
+                              : Colors.black54),
                   textAlign: TextAlign.center),
             ),
             Expanded(
               flex: 2,
               child: Text("${user.last_name}",
                   style: TextStyle(
-                      color: isAssigned ? Colors.green : Colors.black54),
+                      color: isManager
+                          ? Colors.red
+                          : isAssigned
+                              ? Colors.green
+                              : Colors.black54),
                   textAlign: TextAlign.center),
             ),
             Expanded(
@@ -374,14 +464,22 @@ class CenterViewWidgetHelper {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                      color: isAssigned ? Colors.green : Colors.black54),
+                      color: isManager
+                          ? Colors.red
+                          : isAssigned
+                              ? Colors.green
+                              : Colors.black54),
                   textAlign: TextAlign.center),
             ),
             Expanded(
               flex: 2,
               child: Text("${user.mobile}",
                   style: TextStyle(
-                      color: isAssigned ? Colors.green : Colors.black54),
+                      color: isManager
+                          ? Colors.red
+                          : isAssigned
+                              ? Colors.green
+                              : Colors.black54),
                   textAlign: TextAlign.center),
             ),
             if (!isAll && _auth.loggedUser!.roleId == 1) ...{
@@ -390,7 +488,8 @@ class CenterViewWidgetHelper {
                 child: IconButton(
                   onPressed: () async {
                     await service
-                        .removeAssignment(context,userId: user.id, centerId: centerId)
+                        .removeAssignment(context,
+                            userId: user.id, centerId: centerId)
                         .then((value) {
                       if (value) {
                         onRemoveUser(user.id);
@@ -398,7 +497,6 @@ class CenterViewWidgetHelper {
                       } else {
                         onRemoveCallback(source);
                       }
-
                     });
                   },
                   icon: Icon(

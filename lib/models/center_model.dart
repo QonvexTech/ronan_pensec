@@ -6,13 +6,14 @@ import 'package:ronan_pensec/models/user_model.dart';
 class CenterModel{
   final int id;
   String name;
-  String city;
-  String zipCode;
-  String address;
-  String mobile;
-  String email;
+  String? city;
+  String? zipCode;
+  String? address;
+  String? mobile;
+  String? email;
   int regionId;
   List<UserModel> users;
+  String? image;
   RegionModel? region;
   UserModel? accountant;
   CenterModel({
@@ -26,6 +27,7 @@ class CenterModel{
     required this.regionId,
     required this.users,
     this.region,
+    this.image,
     this.accountant
   });
 
@@ -38,6 +40,7 @@ class CenterModel{
       zipCode : parsedJson['zip_code'],
       address : parsedJson['address'],
       mobile : parsedJson['mobile'],
+      image: parsedJson['image'],
       email : parsedJson['email'],
       regionId : int.parse(parsedJson['region_id'].toString()),
       users : dataToList(parsedJson['users']),
@@ -59,7 +62,8 @@ class CenterModel{
     'region_id' : regionId,
     'users' : users,
     'manager' : accountant,
-    'region' : region
+    'region' : region,
+    'image' : image
   };
 
 }

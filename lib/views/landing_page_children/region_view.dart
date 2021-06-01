@@ -321,7 +321,6 @@ class _RegionViewState extends State<RegionView> {
             widget.onFilterCallback(value);
           },
           menuItems: List<PopupMenuItem<int>>.from(widget.menuItems),
-          centers: _regionViewModel.selectedRegion!.centers,
         ),
       );
     }

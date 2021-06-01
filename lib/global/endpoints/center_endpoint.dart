@@ -4,6 +4,8 @@ class CenterEndpoint {
   /// Method : GET
   static final String viewAll = "$_baseEndpoint";
 
+  static String get base => _baseEndpoint;
+
   /// Method : GET
   static String showCenterInfo({required int centerId}) =>
       "$_baseEndpoint/$centerId";
@@ -20,4 +22,9 @@ class CenterEndpoint {
 
   /// Method : PUT
   static String update({required int centerId}) => "$_baseEndpoint/$centerId";
+
+  ///Method: POST
+  static final String assignManager = "$_baseEndpoint/assign_manager";
+
+  static String updateRegion({required int centerId}) => "$_baseEndpoint/update_region/$centerId";
 }

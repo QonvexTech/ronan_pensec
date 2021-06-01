@@ -119,14 +119,16 @@ class _EmployeeViewState extends State<EmployeeView> {
                   ? _viewModel.isTable
                       ? Container(
                           width: double.infinity,
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: ListView(
                             physics: ClampingScrollPhysics(),
                             children: [
                               DataTable(
+                                showBottomBorder: true,
                                 columns: _viewModel.template.kDataColumn,
                                 headingRowColor:
                                     MaterialStateProperty.resolveWith(
-                                        (states) => Palette.textFieldColor),
+                                        (states) => Palette.gradientColor[0]),
                                 showCheckboxColumn: false,
                                 rows: List.generate(
                                     userList.data!.length,

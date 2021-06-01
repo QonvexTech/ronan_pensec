@@ -6,7 +6,8 @@ class RTTModel{
   String? comment;
   int status;
   String? proof;
-
+  String startTime;
+  String endTime;
 
   RTTModel({
     required this.id,
@@ -16,6 +17,8 @@ class RTTModel{
     this.comment,
     required this.status,
     this.proof,
+    required this.endTime,
+    required this.startTime
   });
 
 
@@ -27,7 +30,9 @@ class RTTModel{
       no_of_hrs : parsedJson['no_of_hrs'],
       comment : parsedJson['comment'],
       status: parsedJson['status']??0,
-      proof: parsedJson['proof']
+      proof: parsedJson['proof'],
+      startTime: parsedJson['start_time'],
+      endTime: parsedJson['end_time']
     );
   }
 
@@ -38,6 +43,8 @@ class RTTModel{
     'no_of_hrs' : no_of_hrs,
     'comment' : comment,
     'status' : status,
-    'proof' : proof
+    'proof' : proof,
+    'end_time' : endTime,
+    "start_time" : startTime
   };
 }

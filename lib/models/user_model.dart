@@ -17,6 +17,7 @@ class UserModel {
   int roleId;
   int? workDays;
   int? consumableHolidays;
+  int? rttRemainingBalance;
   List<RTTModel> rtts;
   List<HolidayModel> holidays;
   List<AttendanceModel> attendances;
@@ -38,6 +39,7 @@ class UserModel {
       required this.workDays,
       required this.consumableHolidays,
       required this.holidays,
+        required this.rttRemainingBalance,
       required this.rtts,
         required this.attendances,
       required this.isSilentOnPush});
@@ -55,8 +57,9 @@ class UserModel {
       mobile: parsedJson['mobile'],
       image: parsedJson['image'],
       roleId: parsedJson['role_id'],
-      workDays: parsedJson['workDays'],
+      workDays: parsedJson['work_days'],
       consumableHolidays: parsedJson['consumableHolidays'],
+      rttRemainingBalance: parsedJson['rtt_remaining_balance'],
       rtts: rttToList(parsedJson['rtts']),
       holidays: holidayToList(parsedJson['holidays']),
       full_name: parsedJson['full_name'],
@@ -122,6 +125,7 @@ class UserModel {
         'rtts': rtts,
         'holidays': holidays,
         'full_name': full_name,
-    'isSilent_onPush' : isSilentOnPush
+    'isSilent_onPush' : isSilentOnPush,
+    'rtt_remaining_balance' : rttRemainingBalance
       };
 }
