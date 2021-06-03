@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:page_transition/page_transition.dart';
@@ -36,8 +38,9 @@ class LoginService {
           if(showNotif){
             _notifier.showContextedBottomToast(context,msg: "Login Successful");
           }
-          _auth.setToken = data['access_token'].toString().replaceAll("\n", ""); /// LIVE
+          _auth.setToken = data['access_token'];/// LIVE
           _auth.setUser = UserModel.fromJson(parsedJson: data['user']);
+          log(_auth.token??"ERRR");
           // print(_auth.loggedUser!.assignedCenters?[0].name??"ERRR");
           if (isRemembered) {
             _credentialsPreferences.saveCredentials(
