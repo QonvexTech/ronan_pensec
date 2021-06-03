@@ -92,4 +92,21 @@ class RTTService{
       return false;
     }
   }
+
+  Future<List?> get myRequests async {
+    try{
+      return await http.get(Uri.parse("${BaseEnpoint.URL}${RTTEndpoint.base}/logged"),headers: {
+        "Accept" : "application/json",
+        HttpHeaders.authorizationHeader : "Bearer ${auth.token}"
+      }).then((response) {
+        var data = json.decode(response.body);
+        if(response.statusCode == 200){
+          return data;
+        }
+        return null;
+      });
+    }catch(e){
+      return null;
+    }
+  }
 }

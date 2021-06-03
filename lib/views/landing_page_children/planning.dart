@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:ronan_pensec/global/palette.dart';
+import 'package:ronan_pensec/global/template/expandable_fab_assets/action_button.dart';
+import 'package:ronan_pensec/global/template/expandable_fab_widget.dart';
+import 'package:ronan_pensec/global/template/general_template.dart';
+import 'package:ronan_pensec/route/planning_route.dart';
+import 'package:ronan_pensec/view_model/calendar_view_models/add_holiday_view_model.dart';
+import 'package:ronan_pensec/view_model/calendar_view_models/add_rtt_view_model.dart';
 import 'package:ronan_pensec/view_model/region_view_model.dart';
 
 import 'calendar_planning.dart';
@@ -17,6 +23,9 @@ class WebPlanning extends StatefulWidget {
 class _WebDashboardState extends State<WebPlanning> {
   late final RegionViewModel _regionViewModel = widget.regionViewModel;
   final CalendarPlanning _calendarPlanning = CalendarPlanning();
+  final AddHolidayViewModel _holidayViewModel = AddHolidayViewModel.instance;
+  final AddRTTViewModel _rttViewModel = AddRTTViewModel.instance;
+  bool _isLoading = false;
   @override
   void initState() {
     if(!_regionViewModel.control.hasFetched){
@@ -31,86 +40,53 @@ class _WebDashboardState extends State<WebPlanning> {
   Widget build(BuildContext context) {
     final Size _size = MediaQuery.of(context).size;
     // _isMobile = _size.width < 900;
-    return Column(
+    return Stack(
       children: [
-        Container(
-          width: _size.width,
-          child: Wrap(
-            alignment: _size.width > 900 ? WrapAlignment.start : WrapAlignment.center,
+        Scaffold(
+          floatingActionButton: ExpandableFab(
+            activeIcon: Icons.menu,
+            color: Palette.gradientColor[0],
+            distance: 112,
             children: [
-              if(_regionViewModel.auth.loggedUser!.roleId == 1)...{
-                Container(
-                  width: 220,
-                  margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                  child: MaterialButton(
-                    color: Palette.gradientColor[0],
-                    onPressed: (){},
-                    height: 40,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.receipt_long,color: Colors.white,size: 15,),
-                        const SizedBox(width: 10,),
-                        Text("Toutes les demandes".toUpperCase(),style: TextStyle(
-                            color: Colors.white,
-                            letterSpacing: 1.5,
-                            fontSize: 12.5
-                        ),)
-                      ],
-                    ),
-                  ),
+              if(_regionViewModel.auth.loggedUser!.roleId < 3)...{
+                ActionButton(
+                  message: "Voir Toutes les demandes en attente",
+                  onPressed: () => Navigator.push(context, PlanningRoute.allRequests),
+                  icon: const Icon(Icons.request_page_outlined),
                 ),
               },
-              Container(
-                width: 220,
-                margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                child: MaterialButton(
-                  color: Palette.gradientColor[0],
-                  onPressed: (){},
-                  height: 40,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.receipt_sharp,color: Colors.white,size: 15,),
-                      const SizedBox(width: 10,),
-                      Text("Mes demandes".toUpperCase(),style: TextStyle(
-                          color: Colors.white,
-                          letterSpacing: 1.5,
-                          fontSize: 12.5
-                      ),)
-                    ],
-                  ),
-                ),
+              ActionButton(
+                message: "Voir mes demandes",
+                onPressed: () => Navigator.push(context, PlanningRoute.myRequests),
+                icon: const Icon(Icons.article_outlined),
               ),
-              Container(
-                width: 220,
-                margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                child: MaterialButton(
-                  color: Palette.gradientColor[0],
-                  onPressed: (){},
-                  height: 40,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.add,color: Colors.white,size: 15,),
-                      const SizedBox(width: 10,),
-                      Text("Ajouter une demande".toUpperCase(),style: TextStyle(
-                          color: Colors.white,
-                          letterSpacing: 1.5,
-                          fontSize: 12.5
-                      ),)
-                    ],
-                  ),
-                ),
+              ActionButton(
+                message: "Ajouter de nouvelles congés",
+                onPressed: () => _holidayViewModel.showAddHoliday(context, size: _size, loadingCallback: (bool b){
+                  setState(() {
+                    _isLoading = b;
+                  });
+                }),
+                icon: const Icon(Icons.beach_access_outlined),
+              ),
+              ActionButton(
+                message: "Ajouter de nouvelles RTT",
+                onPressed: () => _rttViewModel.showAddRtt(context, size: _size, loadingCallback: (bool b){
+                  setState(() {
+                    _isLoading = b;
+                  });
+                }),
+                icon: const Icon(Icons.hourglass_bottom_outlined),
               ),
             ],
           ),
+          body: Container(
+            width: double.infinity,
+            height: _size.height,
+            child: _calendarPlanning,
+          )
         ),
-        Expanded(child: Container(
-          width: double.infinity,
-          height: _size.height,
-          child: _calendarPlanning,
-        ))
+        _isLoading ? GeneralTemplate.loader(_size) : Container()
       ],
     );
   }
