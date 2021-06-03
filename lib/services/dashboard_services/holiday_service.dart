@@ -67,6 +67,23 @@ class HolidayService {
       return false;
     }
   }
+  Future<List?> get myRequests async {
+    try{
+      return await http.get(Uri.parse("${BaseEnpoint.URL}${HolidayEndpoint.getMy}"),headers: {
+        "Accept" : "application/json",
+        HttpHeaders.authorizationHeader : "Bearer ${auth.token}"
+      }).then((respo) {
+        var data = json.decode(respo.body);
+        print(data);
+        if(respo.statusCode == 200){
+          return data;
+        }
+        return null;
+      });
+    }catch(e){
+      return null;
+    }
+  }
   Future<bool> get pending async {
     try{
       return await http.get(Uri.parse("${BaseEnpoint.URL}${HolidayEndpoint.pendingHolidays}"),headers: {

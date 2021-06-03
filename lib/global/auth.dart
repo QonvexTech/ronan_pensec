@@ -8,7 +8,7 @@ class Auth {
   UserModel? _loggedUser;
 
   String? get token => _token;
-  set setToken(String __token) => _token = __token;
+  set setToken(String? __token) => _token = __token;
 
   UserModel? get loggedUser => _loggedUser;
   set setUser(UserModel user) => _loggedUser = user;

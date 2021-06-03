@@ -8,6 +8,8 @@ import 'views/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  DefaultMaterialLocalizations().timeOfDayFormat(alwaysUse24HourFormat: true);
+
   await Firebase.initializeApp();
   runApp(MyApp());
 }
@@ -19,11 +21,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorObservers: <NavigatorObserver>[observer],
+
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
       supportedLocales: [
         const Locale('en'),
         const Locale('fr')
       ],
+
       debugShowCheckedModeBanner: false,
       title: 'Ronan Pensec',
       theme: ThemeData(

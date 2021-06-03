@@ -7,4 +7,5 @@ class HolidayEndpoint {
   static String getEmployeeHoliday({required int employeeId}) => "$_baseEndpoint/user_requests/$employeeId";
   static final String pendingHolidays = "$_baseEndpoint/all_pending";
   static final String declineRequest = "$_baseEndpoint/decline_request";
+  static final String getMy = "$_baseEndpoint/logged";
 }

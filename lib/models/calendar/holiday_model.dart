@@ -11,6 +11,7 @@ class HolidayModel{
   String? comment;
   int userId;
   String? proof;
+  String? requestName;
   HolidayModel({
     required this.id,
     this.reason,
@@ -22,7 +23,8 @@ class HolidayModel{
     this.proof,
     required this.userId,
     required this.adminComment,
-    required this.isEndDateHalf
+    required this.isEndDateHalf,
+    required this.requestName,
   });
 
   factory HolidayModel.fromJson(parsedJson){
@@ -38,6 +40,7 @@ class HolidayModel{
       isHalfDay : int.parse(parsedJson['startDate_isHalf_day'].toString()),
       comment : parsedJson['comment'],
       userId : int.parse(parsedJson['user_id'].toString()),
+      requestName: parsedJson['request_name']
     );
   }
   Map<String,dynamic> toJson()=>{
@@ -49,6 +52,7 @@ class HolidayModel{
     'user_id' : userId,
     'comment' : comment,
     'admin_comment' : adminComment,
-    'endDate_isHalf_day' : isEndDateHalf
+    'endDate_isHalf_day' : isEndDateHalf,
+    "request_name" : requestName
   };
 }
