@@ -1,3 +1,5 @@
+import 'package:ronan_pensec/models/center_model.dart';
+
 import 'calendar/attendance_model.dart';
 import 'calendar/holiday_model.dart';
 import 'calendar/rtt_model.dart';
@@ -21,6 +23,7 @@ class UserModel {
   List<RTTModel> rtts;
   List<HolidayModel> holidays;
   List<AttendanceModel> attendances;
+  List<CenterModel>? assignedCenters;
   int isSilentOnPush;
 
   UserModel(
@@ -42,6 +45,7 @@ class UserModel {
         required this.rttRemainingBalance,
       required this.rtts,
         required this.attendances,
+        required this.assignedCenters,
       required this.isSilentOnPush});
 
   factory UserModel.fromJson({required Map<String, dynamic> parsedJson}) {
@@ -65,6 +69,7 @@ class UserModel {
       full_name: parsedJson['full_name'],
       attendances: attendanceToList(parsedJson['attendances']),
       isSilentOnPush: int.parse(parsedJson['isSilent_onPush'].toString()),
+      assignedCenters: centerToList(parsedJson['centers'])
     );
   }
 
@@ -75,7 +80,21 @@ class UserModel {
     }
     return _attendance;
   }
+  static List<CenterModel> centerToList(List? data){
+    List<CenterModel> _centers = [];
+    if(data != null){
+      try{
+        for (var center in data) {
+          _centers.add(CenterModel.fromJson(center));
+        }
+      }catch(e){
+        print("PARSING CENTER ERROR : $e");
+      }
+    }
+    return _centers;
+  }
   static List<HolidayModel> holidayToList(List? data) {
+
     List<HolidayModel> _holidays = [];
     if (data != null) {
       try{

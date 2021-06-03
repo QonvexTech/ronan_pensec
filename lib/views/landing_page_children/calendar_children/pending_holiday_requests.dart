@@ -126,7 +126,7 @@ class PendingHolidayRequests extends StatelessWidget {
                   actionPane: SlidableDrawerActionPane(),
                   controller: _slidableController,
                   child: ListTile(
-                    tileColor: Colors.grey.shade200,
+                    tileColor: Colors.grey.shade100,
                     leading: CircleAvatar(
                       backgroundColor: Colors.grey.shade200,
                       child: Center(

@@ -29,18 +29,22 @@ class LoginService {
       required bool isRemembered,
       bool showNotif = true}) async {
     try {
+      print("EMAIL :$email");
+      print("PASSWORD :$password");
       return await http.post(Uri.parse("${BaseEnpoint.URL}${AuthEndpoint.login}"),
           headers: _rqst.defaultHeader,
           body: {"email": email, "password": password}).then((respo) async {
         var data = json.decode(respo.body);
+        print("USER DATA : $data");
         if (respo.statusCode == 200 || respo.statusCode == 201) {
           if(showNotif){
             _notifier.showContextedBottomToast(context,msg: "Login Successful");
           }
 
           _auth.setToken = data['access_token'];
-          // _auth.setToken = data['access_token'].toString().replaceAll("\n", ""); /// LIVE
+          _auth.setToken = data['access_token'].toString().replaceAll("\n", ""); /// LIVE
           _auth.setUser = UserModel.fromJson(parsedJson: data['user']);
+          // print(_auth.loggedUser!.assignedCenters?[0].name??"ERRR");
           if (isRemembered) {
             _credentialsPreferences.saveCredentials(
                 email: email, password: password);
@@ -67,19 +71,22 @@ class LoginService {
           }
           _notifier.showContextedBottomToast(context,
               msg: "Error ${respo.statusCode}, ${respo.reasonPhrase}");
+
         }else{
           Navigator.pushReplacement(context, CredentialRoute.login);
           _credentialsPreferences.removeCredentials;
+          _auth.setToken = null;
         }
         return false;
       });
     } catch (e) {
       _notifier.showContextedBottomToast(context,
-          msg: "An error has occurred, please contact the administrator.");
+          msg: "An error has occurred, please contact the administrator. $e");
       if(!showNotif){
         Navigator.pushReplacement(context, CredentialRoute.login);
         _credentialsPreferences.removeCredentials;
       }
+      _auth.setToken = null;
       return false;
     }
   }
