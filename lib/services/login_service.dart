@@ -6,7 +6,6 @@ import 'package:ronan_pensec/global/constants.dart';
 import 'package:ronan_pensec/global/endpoints/auth_endpoint.dart';
 import 'package:ronan_pensec/models/user_model.dart';
 import 'package:ronan_pensec/route/credential_route.dart';
-import 'package:ronan_pensec/services/dashboard_services/region_service.dart';
 import 'package:ronan_pensec/services/http_request.dart';
 import 'dart:convert';
 import 'package:ronan_pensec/services/toast_notifier.dart';
@@ -29,19 +28,14 @@ class LoginService {
       required bool isRemembered,
       bool showNotif = true}) async {
     try {
-      print("EMAIL :$email");
-      print("PASSWORD :$password");
       return await http.post(Uri.parse("${BaseEnpoint.URL}${AuthEndpoint.login}"),
           headers: _rqst.defaultHeader,
           body: {"email": email, "password": password}).then((respo) async {
         var data = json.decode(respo.body);
-        print("USER DATA : $data");
         if (respo.statusCode == 200 || respo.statusCode == 201) {
           if(showNotif){
             _notifier.showContextedBottomToast(context,msg: "Login Successful");
           }
-
-          _auth.setToken = data['access_token'];
           _auth.setToken = data['access_token'].toString().replaceAll("\n", ""); /// LIVE
           _auth.setUser = UserModel.fromJson(parsedJson: data['user']);
           // print(_auth.loggedUser!.assignedCenters?[0].name??"ERRR");
