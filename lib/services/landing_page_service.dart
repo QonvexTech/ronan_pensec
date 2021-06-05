@@ -23,7 +23,7 @@ class LandingPageService {
     if(value == 0){
       Navigator.push(context, landingPageRoute.profilePage);
     }else if(value == 1){
-      print("GO TO SETTINGS");
+      Navigator.push(context, landingPageRoute.settingsPage);
     }else{
       Navigator.pushReplacement(context, CredentialRoute.login);
       await _credentialsPreferences!.removeCredentials;

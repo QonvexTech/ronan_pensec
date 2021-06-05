@@ -5,6 +5,8 @@ import 'package:ronan_pensec/models/calendar/holiday_model.dart';
 import 'package:ronan_pensec/services/data_controls/calendar_data_controllers/logged_user_holiday_requests.dart';
 
 class EmployeeHolidays extends StatefulWidget {
+  final bool disableScroll;
+  EmployeeHolidays({this.disableScroll = false});
   @override
   _EmployeeHolidaysState createState() => _EmployeeHolidaysState();
 }
@@ -89,6 +91,7 @@ class _EmployeeHolidaysState extends State<EmployeeHolidays> {
           if (snapshot.data!.length > 0) {
             return Scrollbar(
               child: CustomScrollView(
+                physics: widget.disableScroll ? NeverScrollableScrollPhysics() : ClampingScrollPhysics(),
                 slivers: [
                   SliverAppBar(
                     floating: true,

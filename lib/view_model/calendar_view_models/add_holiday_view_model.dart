@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/services/dashboard_services/calendar_service.dart';
+import 'package:ronan_pensec/services/dashboard_services/holiday_service.dart';
 
 
 class AddHolidayViewModel {
@@ -12,16 +13,28 @@ class AddHolidayViewModel {
   static final AddHolidayViewModel _instance = AddHolidayViewModel._singleton();
   static final CalendarService _dateChecker = CalendarService.lone_instance;
   static final Auth _auth = Auth.instance;
+  static final HolidayService _service = HolidayService.instance;
+  HolidayService get service => _service;
   Auth get auth => _auth;
+
+  bool showMessage = false;
   static AddHolidayViewModel get instance {
     _instance.appendBody = {"user_id" : _instance.auth.loggedUser!.id.toString()};
     _instance._reason.addListener(() {
-      _instance.appendBody = {"reason": _instance._reason.text};
+      if(_instance.reason.text.isNotEmpty){
+        _instance.appendBody = {"reason": _instance._reason.text};
+      }else{
+        _instance.body.remove("reason");
+      }
     });
     _instance._requestName.addListener(() {
-      _instance.appendBody = {"request_name": _instance._requestName.text};
+      if(_instance.requestName.text.isNotEmpty){
+        _instance.appendBody = {"request_name": _instance._requestName.text};
+      }else{
+        _instance.body.remove("request_name");
+      }
     });
-    _instance.appendBody = {"startDate_isHalf_day": 0};
+    _instance.appendBody = {"startDate_isHalf_day": 0.toString(), "endDate_isHalf_day" : "0"};
     return _instance;
   }
 
@@ -63,7 +76,7 @@ class AddHolidayViewModel {
   int get isHalf => _isHalf;
 
   set setIsHalf(int h) {
-    _instance.appendBody = {"startDate_isHalf_day": h};
+    _instance.appendBody = {"startDate_isHalf_day": h.toString()};
     _isHalf = h;
   }
 
@@ -346,6 +359,23 @@ class AddHolidayViewModel {
                                     ),
                                   ),
                                 ),
+                                if(_instance.showMessage)...{
+                                  Container(
+                                    width: double.infinity,
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.error,color: Colors.red,),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        Expanded(child: Text("Please dont leave empty fields.",style: TextStyle(
+                                            color: Colors.red,
+                                            letterSpacing: 1
+                                        ),))
+                                      ],
+                                    ),
+                                  ),
+                                },
                                 const SizedBox(
                                   height: 10,
                                 ),
@@ -376,8 +406,16 @@ class AddHolidayViewModel {
                                       Expanded(
                                         child: MaterialButton(
                                           height: 50,
-                                          onPressed: () {
-                                            Navigator.of(context).pop(null);
+                                          onPressed: () async {
+                                            if(body.length == 7){
+                                              Navigator.of(context).pop(null);
+                                              loadingCallback(true);
+                                              await _instance.service.request(context, body: _instance.body).whenComplete(() => loadingCallback(false));
+                                            }else{
+                                              setState((){
+                                                _instance.showMessage = true;
+                                              });
+                                            }
                                           },
                                           color: Palette.gradientColor[0],
                                           child: Center(
@@ -412,7 +450,8 @@ class AddHolidayViewModel {
           _instance.setDate = null;
           _instance.setEndDate = null;
           _instance.setIsHalf = 0;
-          _instance.setAllBody = {};
+          _instance.showMessage = false;
+          _instance.setAllBody = {"user_id" : auth.loggedUser!.id.toString(), "startDate_isHalf_day" : "0", "endDate_isHalf_day" : "0"};
     });
   }
 }

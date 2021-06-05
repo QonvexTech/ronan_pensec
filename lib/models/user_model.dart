@@ -18,6 +18,7 @@ class UserModel {
   String? image;
   int roleId;
   int? workDays;
+  bool isSenior;
   double? consumableHolidays;
   double? rttRemainingBalance;
   List<RTTModel> rtts;
@@ -44,6 +45,7 @@ class UserModel {
       required this.holidays,
         required this.rttRemainingBalance,
       required this.rtts,
+        required this.isSenior,
         required this.attendances,
         required this.assignedCenters,
       required this.isSilentOnPush});
@@ -62,6 +64,7 @@ class UserModel {
       image: parsedJson['image'],
       roleId: parsedJson['role_id'],
       workDays: parsedJson['work_days'],
+      isSenior: parsedJson['is_senior'] != null ? int.parse(parsedJson['is_senior'].toString()) == 1 : false,
       consumableHolidays: parsedJson['consumableHolidays'],
       rttRemainingBalance: parsedJson['rtt_remaining_balance'],
       rtts: rttToList(parsedJson['rtts']),
@@ -84,9 +87,10 @@ class UserModel {
     List<CenterModel> _centers = [];
     if(data != null){
       try{
-        for (var center in data) {
-          _centers.add(CenterModel.fromJson(center));
-        }
+        return data.map((e) => CenterModel.fromJson(e)).toList();
+        // for (var center in data) {
+        //   _centers.add(CenterModel.fromJson(center));
+        // }
       }catch(e){
         print("PARSING CENTER ERROR : $e");
       }
@@ -145,6 +149,7 @@ class UserModel {
         'holidays': holidays,
         'full_name': full_name,
     'isSilent_onPush' : isSilentOnPush,
-    'rtt_remaining_balance' : rttRemainingBalance
+    'rtt_remaining_balance' : rttRemainingBalance,
+    'is_senior' : isSenior ? 1 : 0,
       };
 }

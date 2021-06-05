@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -37,6 +38,7 @@ class _CenterDetailsState extends State<CenterDetails> {
   bool _isLoading = false;
   bool _editRegion = false;
   bool _isForManager = false;
+  bool _imageLoading = false;
   UserModel? _selectedNewManager;
   final RawRegionController _rawRegionController = RawRegionController.instance;
   // late String _dropdwnVal = widget.model.region?.name ?? "Secteur Nord";
@@ -82,7 +84,43 @@ class _CenterDetailsState extends State<CenterDetails> {
               : null,
         ),
       );
-
+  Widget get returnButton => Align(
+    alignment: AlignmentDirectional.topStart,
+    child: Container(
+      margin: const EdgeInsets.all(20),
+      width: 400 * .35,
+      child: MaterialButton(
+        onPressed: () {
+          Navigator.of(context).pop(null);
+        },
+        padding: const EdgeInsets.symmetric(
+            horizontal: 20, vertical: 15),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(50),
+        ),
+        color: Colors.white38,
+        child: Row(
+          children: [
+            Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+            ),
+            const SizedBox(
+              width: 10,
+            ),
+            Text(
+              "RETOUR",
+              style: TextStyle(
+                  color: Colors.white,
+                  letterSpacing: 1.5,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 15.5),
+            )
+          ],
+        ),
+      ),
+    ),
+  );
   @override
   void initState() {
     this.fetcher(this.employeePagination.firstPageUrl);
@@ -110,6 +148,81 @@ class _CenterDetailsState extends State<CenterDetails> {
       }
     });
   }
+
+  Stack get imageConbo => Stack(
+    children: [
+      this.image,
+      if (_base64Image != null) ...{
+        Align(
+          alignment: AlignmentDirectional.bottomCenter,
+          child: Container(
+            margin: const EdgeInsets.only(bottom: 10),
+            child: Row(
+              mainAxisAlignment:
+              MainAxisAlignment.spaceAround,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.green),
+                  child: IconButton(
+                      tooltip: "Sauvegarder",
+                      icon: Icon(
+                        Icons.save,
+                        color: Colors.white,
+                      ),
+                      color: Colors.green,
+                      onPressed: () async {
+                        setState(() {
+                          _imageLoading = true;
+                        });
+                        await _helper.service.updateImage(context, centerId: widget.model.id, base64Image: _base64Image!).whenComplete(() => setState(() => _imageLoading = false)).then((value) {
+                          if(value != null){
+                            setState(() {
+                              widget.model.image = value;
+                              _base64Image = null;
+                            });
+                          }
+                        });
+                      }),
+                ),
+                Container(
+                  padding: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.red),
+                  child: IconButton(
+                      tooltip: "Annuler",
+                      icon: Icon(
+                        Icons.close,
+                        color: Colors.white,
+                      ),
+                      color: Colors.red,
+                      onPressed: () {
+                        setState(() {
+                          _base64Image = null;
+                        });
+                      }),
+                )
+              ],
+            ),
+          ),
+        ),
+      },
+      this.returnButton,
+      _imageLoading ? BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 4,sigmaY: 4),
+        child: Container(
+          width: double.infinity,
+          color: Colors.black54,
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
+        ),
+      ) : Container()
+    ],
+  );
 
   void onFirstPage() {
     setState(() {
@@ -164,7 +277,144 @@ class _CenterDetailsState extends State<CenterDetails> {
     });
     this.fetcher(this.employeePagination.currentPageUrl);
   }
-
+  Widget manageButtons(Size size) => Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(top: 20, left: 15),
+      alignment: AlignmentDirectional.centerStart,
+      child: Row(
+        children: [
+          Container(
+            width: 110,
+            child: MaterialButton(
+              color: Colors.white38,
+              padding: const EdgeInsets.all(0),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(50),
+              ),
+              onPressed: () {
+                _helper.showEditDialog(context,
+                    center: widget.model,
+                    width: size.width * .8,
+                    isLoading: (bool l) {
+                      setState(() {
+                        _isLoading = l;
+                      });
+                    }, callback: (bool e) {
+                      if (e) {
+                        setState(() {
+                          widget.model.email =
+                              _helper.email.text;
+                          widget.model.mobile =
+                              _helper.number.text;
+                          widget.model.address =
+                              _helper.address.text;
+                          widget.model.city =
+                              _helper.city.text;
+                          widget.model.zipCode =
+                              _helper.zipCode.text;
+                          widget.model.name =
+                              _helper.name.text;
+                        });
+                      }
+                    });
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius:
+                  BorderRadius.circular(50),
+                  border: Border.all(
+                      color: Colors.grey.shade200),
+                ),
+                padding: const EdgeInsets.symmetric(
+                    vertical: 10, horizontal: 15),
+                child: Row(
+                  mainAxisAlignment:
+                  MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.edit,
+                      color: Colors.grey,
+                      size: 18,
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      "Editer",
+                      style: TextStyle(
+                          color: Colors.grey,
+                          letterSpacing: 1.5,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 12.5),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(
+            width: 20,
+          ),
+          if (_helper.auth.loggedUser!.roleId == 1) ...{
+            Container(
+              width: 140,
+              child: MaterialButton(
+                color: Colors.red,
+                padding: const EdgeInsets.all(0),
+                shape: RoundedRectangleBorder(
+                  borderRadius:
+                  BorderRadius.circular(50),
+                ),
+                onPressed: () {
+                  _helper.showDialog(context,
+                      centerId: widget.model.id,
+                      centerName: widget.model.name,
+                      width: size.width * .65,
+                      isMobile: size.width < 900,
+                      callback: (bool call) async {
+                        setState(() => _isLoading = call);
+                        if (!_isLoading) {
+                          await Future.delayed(
+                              Duration(milliseconds: 600));
+                          Navigator.of(context).pop(null);
+                        }
+                      });
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius:
+                    BorderRadius.circular(50),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 10, horizontal: 15),
+                  child: Row(
+                    mainAxisAlignment:
+                    MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.delete,
+                        color: Colors.white,
+                        size: 18,
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        "Supprimer",
+                        style: TextStyle(
+                            color: Colors.white,
+                            letterSpacing: 1.5,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 12.5),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          }
+        ],
+      ));
   @override
   Widget build(BuildContext context) {
     final List<DropdownMenuItem<RegionModel>> _dropDownchoices = List.generate(_rawRegionController.regionData.regions.length, (index) => DropdownMenuItem(
@@ -192,234 +442,10 @@ class _CenterDetailsState extends State<CenterDetails> {
                         Container(
                           width: double.infinity,
                           height: 250,
-                          child: Stack(
-                            children: [
-                              this.image,
-                              if (_base64Image != null) ...{
-                                Align(
-                                  alignment: AlignmentDirectional.bottomCenter,
-                                  child: Container(
-                                    margin: const EdgeInsets.only(bottom: 10),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        Container(
-                                          padding: const EdgeInsets.all(5),
-                                          decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: Colors.green),
-                                          child: IconButton(
-                                              tooltip: "Sauvegarder",
-                                              icon: Icon(
-                                                Icons.save,
-                                                color: Colors.white,
-                                              ),
-                                              color: Colors.green,
-                                              onPressed: () {}),
-                                        ),
-                                        Container(
-                                          padding: const EdgeInsets.all(5),
-                                          decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: Colors.red),
-                                          child: IconButton(
-                                              tooltip: "Annuler",
-                                              icon: Icon(
-                                                Icons.close,
-                                                color: Colors.white,
-                                              ),
-                                              color: Colors.red,
-                                              onPressed: () {
-                                                setState(() {
-                                                  _base64Image = null;
-                                                });
-                                              }),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              },
-                              Align(
-                                alignment: AlignmentDirectional.topStart,
-                                child: Container(
-                                  margin: const EdgeInsets.all(20),
-                                  width: 400 * .35,
-                                  child: MaterialButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop(null);
-                                    },
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 20, vertical: 15),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(50),
-                                    ),
-                                    color: Colors.white38,
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.arrow_back,
-                                          color: Colors.white,
-                                        ),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        Text(
-                                          "RETOUR",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              letterSpacing: 1.5,
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 15.5),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
+                          child: imageConbo,
                         ),
                         if (_helper.auth.loggedUser!.roleId < 3) ...{
-                          Container(
-                              width: double.infinity,
-                              margin: const EdgeInsets.only(top: 20, left: 15),
-                              alignment: AlignmentDirectional.centerStart,
-                              child: Row(
-                                children: [
-                                  Container(
-                                    width: 110,
-                                    child: MaterialButton(
-                                      color: Colors.white38,
-                                      padding: const EdgeInsets.all(0),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(50),
-                                      ),
-                                      onPressed: () {
-                                        _helper.showEditDialog(context,
-                                            center: widget.model,
-                                            width: size.width * .8,
-                                            isLoading: (bool l) {
-                                          setState(() {
-                                            _isLoading = l;
-                                          });
-                                        }, callback: (bool e) {
-                                          if (e) {
-                                            setState(() {
-                                              widget.model.email =
-                                                  _helper.email.text;
-                                              widget.model.mobile =
-                                                  _helper.number.text;
-                                              widget.model.address =
-                                                  _helper.address.text;
-                                              widget.model.city =
-                                                  _helper.city.text;
-                                              widget.model.zipCode =
-                                                  _helper.zipCode.text;
-                                              widget.model.name =
-                                                  _helper.name.text;
-                                            });
-                                          }
-                                        });
-                                      },
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(50),
-                                          border: Border.all(
-                                              color: Colors.grey.shade200),
-                                        ),
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 10, horizontal: 15),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Icon(
-                                              Icons.edit,
-                                              color: Colors.grey,
-                                              size: 18,
-                                            ),
-                                            const SizedBox(
-                                              width: 10,
-                                            ),
-                                            Text(
-                                              "Editer",
-                                              style: TextStyle(
-                                                  color: Colors.grey,
-                                                  letterSpacing: 1.5,
-                                                  fontWeight: FontWeight.w400,
-                                                  fontSize: 12.5),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 20,
-                                  ),
-                                  if (_helper.auth.loggedUser!.roleId == 1) ...{
-                                    Container(
-                                      width: 140,
-                                      child: MaterialButton(
-                                        color: Colors.red,
-                                        padding: const EdgeInsets.all(0),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(50),
-                                        ),
-                                        onPressed: () {
-                                          _helper.showDialog(context,
-                                              centerId: widget.model.id,
-                                              centerName: widget.model.name,
-                                              width: size.width * .65,
-                                              isMobile: size.width < 900,
-                                              callback: (bool call) async {
-                                            setState(() => _isLoading = call);
-                                            if (!_isLoading) {
-                                              await Future.delayed(
-                                                  Duration(milliseconds: 600));
-                                              Navigator.of(context).pop(null);
-                                            }
-                                          });
-                                        },
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(50),
-                                          ),
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 15),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Icon(
-                                                Icons.delete,
-                                                color: Colors.white,
-                                                size: 18,
-                                              ),
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
-                                              Text(
-                                                "Supprimer",
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    letterSpacing: 1.5,
-                                                    fontWeight: FontWeight.w400,
-                                                    fontSize: 12.5),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  }
-                                ],
-                              )),
+                          this.manageButtons(size)
                         },
                         Padding(
                             padding: const EdgeInsets.symmetric(vertical: 20),
@@ -508,17 +534,16 @@ class _CenterDetailsState extends State<CenterDetails> {
                               child: DropdownButton<RegionModel>(
                                 isExpanded: true,
                                 onChanged: (RegionModel? region) async {
-                                  print("CHOSEN ${region!.name}");
-                                  await _helper.service.updateRegion(context, regionId: region.id, centerId: widget.model.id).then((value) {
-                                    if(value) {
-                                      setState(() {
-                                        widget.model.region = region;
-                                        _editRegion = false;
-                                      });
-                                    }
-                                  });
-
-                                  // print(_chosenDropdown);
+                                  if(region != null){
+                                    await _helper.service.updateRegion(context, regionId: region.id, centerId: widget.model.id).then((value) {
+                                      if(value) {
+                                        setState(() {
+                                          widget.model.region = region;
+                                          _editRegion = false;
+                                        });
+                                      }
+                                    });
+                                  }
                                 },
                                 value: null,
                                 items: _dropDownchoices,
@@ -608,6 +633,31 @@ class _CenterDetailsState extends State<CenterDetails> {
                         child: ListView(
                           physics: ClampingScrollPhysics(),
                           children: [
+                            if(size.width <=900)...{
+                              Container(
+                                width: double.infinity,
+                                height: 250,
+                                child: imageConbo,
+                              ),
+                              Container(
+                                width: double.infinity,
+                                child: ListTile(
+                                  title: Text("${widget.model.name}"),
+                                  subtitle: Row(
+                                    children: [
+                                      Icon(Icons.email_outlined,color: Palette.gradientColor[0],),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      Expanded(
+                                        child: Text("${widget.model.email??"NON DÉFINI"}"),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              this.manageButtons(size),
+                            },
                             AnimatedContainer(
                                 duration: Duration(milliseconds: 600),
                                 width: double.infinity,

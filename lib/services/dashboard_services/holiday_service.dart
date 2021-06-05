@@ -7,6 +7,7 @@ import 'package:ronan_pensec/global/controllers/PendingHolidayRequestController.
 import 'package:ronan_pensec/global/endpoints/holiday_endpoint.dart';
 import 'package:ronan_pensec/models/calendar/holiday_model.dart';
 import 'package:ronan_pensec/services/data_controls/calendar_data_control.dart';
+import 'package:ronan_pensec/services/data_controls/calendar_data_controllers/logged_user_holiday_requests.dart';
 import 'package:ronan_pensec/services/data_controls/region_data_control.dart';
 import 'package:ronan_pensec/services/toast_notifier.dart';
 
@@ -21,8 +22,29 @@ class HolidayService {
   static final PendingHoldiayRequestController _controller = PendingHoldiayRequestController.instance;
   static final CalendarDataControl _calendarDataControl = CalendarDataControl.instance;
   static final RegionDataControl _regionDataControl = RegionDataControl.instance(_calendarDataControl);
+  static final LoggedUserHolidayRequests _loggedUserHolidayRequests = LoggedUserHolidayRequests.instance;
 
-
+  Future<void> request(context, {required Map body}) async {
+    try{
+      await http.post(Uri.parse("${BaseEnpoint.URL}${HolidayEndpoint.base}"),headers: {
+        "Accept" : "application/json",
+        HttpHeaders.authorizationHeader : "Bearer ${auth.token}"
+      },body: body).then((response) {
+        var data = json.decode(response.body);
+        if(response.statusCode == 200){
+          // notifier.showContextedBottomToast(context, msg: "Demande approuvée!");
+          if(_loggedUserHolidayRequests.hasFetched){
+            _loggedUserHolidayRequests.append(data['data']);
+          }
+          return ;
+        }
+        return ;
+      });
+    }catch(e){
+      print(e);
+      return ;
+    }
+  }
   Future<bool> approve(context, {required int holidayId}) async {
     try{
       return await http.get(Uri.parse("${BaseEnpoint.URL}${HolidayEndpoint.approveRequest(holidayId: holidayId)}"),headers: {
@@ -74,7 +96,6 @@ class HolidayService {
         HttpHeaders.authorizationHeader : "Bearer ${auth.token}"
       }).then((respo) {
         var data = json.decode(respo.body);
-        print(data);
         if(respo.statusCode == 200){
           return data;
         }

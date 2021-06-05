@@ -15,6 +15,48 @@ class PendingRTTRequests extends StatelessWidget {
       requestController.service.pending.then((value) => requestController.setFetch = value);
     }
   }
+  Text header(context,String text) => Text(text.toUpperCase(),style: TextStyle(
+    letterSpacing: 1,
+    fontWeight: FontWeight.w600,
+    fontSize: Theme.of(context).textTheme.subtitle2!.fontSize! - 3,
+    color: Palette.gradientColor[0]
+  ),);
+
+  Text body(context,String text) => Text(text, style: TextStyle(
+      fontWeight: FontWeight.w400,
+      fontSize: Theme.of(context).textTheme.subtitle2!.fontSize!,
+      color: Colors.grey.shade800
+  ),);
+  Widget dialogDetailFormat({required IconData icon, required Widget title, required Widget subTitle}) => Container(
+    width: double.infinity,
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icon,color: Palette.gradientColor[0],size: 17.5,),
+        const SizedBox(
+          width: 10,
+        ),
+        Expanded(
+          child: Column(
+            children: [
+              Container(
+                width: double.infinity,
+                child: title,
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              Container(
+                width: double.infinity,
+                child: subTitle,
+              )
+            ],
+          ),
+        )
+      ],
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
     final Size _size = MediaQuery.of(context).size;
@@ -123,30 +165,134 @@ class PendingRTTRequests extends StatelessWidget {
                   )
                 ],
                 actionPane: SlidableDrawerActionPane(),
-                child: ListTile(
-                  tileColor: Colors.grey.shade100,
-                  leading: CircleAvatar(
-                    backgroundColor: Colors.grey.shade200,
-                    child: Center(
-                      child: Text("${rtt.id}",style: TextStyle(
-                        color: Palette.gradientColor[0],
-                        fontSize: 16,
-                      ),),
-                    ),
-                  ),
-                  title: Text("${DateFormat.yMMMMd('fr_FR').format(rtt.date)}"),
-                  subtitle: Text("${rtt.no_of_hrs} Heures"),
-                  trailing: Tooltip(
-                    message: rtt.proof == null ? "Aucune preuve" : "Avec preuve",
-                    child: Container(
-                      width: 10,
-                      height: 10,
-                      decoration: BoxDecoration(
+                child: MaterialButton(
+                  color: Colors.grey.shade100,
+                  onPressed: (){
+                    GeneralTemplate.showDialog(context, child: Column(
+                      children: [
+                        Expanded(
+                            child: ListView(
+                              children: [
+                                dialogDetailFormat(icon: Icons.calendar_today_outlined, title: header(context,"Date"), subTitle: body(context, "${DateFormat.yMMMMd('fr_FR').format(rtt.date)}")),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                dialogDetailFormat(icon: Icons.watch_later_outlined, title: header(context,"nombre d'heures"), subTitle: body(context, "${rtt.no_of_hrs} Heures")),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                dialogDetailFormat(icon: Icons.comment_rounded, title: header(context,"raison"), subTitle: body(context, "${rtt.comment}")),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                              ],
+                            ),
+                        ),
+                        Container(
+                          width: double.infinity,
+                          height: 50,
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: MaterialButton(
+                                  height: 50,
+                                  color: Colors.red,
+                                  onPressed: () async {
+                                    Navigator.of(context).pop(null);
+                                    await requestController.service.reject(context, rttId: rtt.id,reason: _reason.text).then((value) {
+                                      if(value){
+                                        requestController.dataControl.remove(rtt.id);
+                                      }
+                                    });
+                                  },
+                                  child: Center(
+                                    child: Text("Rejeter".toUpperCase(),style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                      letterSpacing: 1.5,
+                                    ),),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Expanded(
+                                child: MaterialButton(
+                                  height: 50,
+                                  color: Colors.green,
+                                  onPressed: () async {
+                                    Navigator.of(context).pop(null);
+                                    await requestController.service.approve(context, rttId: rtt.id).then((value) {
+                                      if(value){
+                                        requestController.dataControl.remove(rtt.id);
+                                      }
+                                    });
+                                  },
+                                  child: Center(
+                                    child: Text("J'accepte".toUpperCase(),style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600,
+                                        letterSpacing: 1.5
+                                    ),),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ), width: _size.width, height: 300,title: ListTile(
+                      leading: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: rtt.proof == null ? Colors.red : Colors.green
+                          image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image: NetworkImage("${rtt.user!.image}")
+                          )
+                        ),
+                      ),
+                      title: Text("${rtt.user!.full_name} Demande des RTT".toUpperCase(),style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 1.5
+                      ),),
+                      subtitle: Text("RTT REQUEST DETAILS"),
+                      trailing: IconButton(
+                        icon: Icon(Icons.close),
+                        onPressed: () => Navigator.of(context).pop(null),
+                      ),
+                    ));
+                  },
+                  padding: const EdgeInsets.all(0),
+                  child: ListTile(
+                    leading: Tooltip(
+                      message: "${rtt.user!.full_name}",
+                      child: CircleAvatar(
+                        backgroundColor: Colors.grey.shade200,
+                        backgroundImage: NetworkImage("${rtt.user!.image}"),
                       ),
                     ),
-                  )
+                    title: Text("${rtt.user!.full_name}"),
+                    // title: Text("${DateFormat.yMMMMd('fr_FR').format(rtt.date)}"),
+                    subtitle: RichText(
+                      text: TextSpan(
+                        style: TextStyle(
+                          color: Colors.grey.shade900
+                        ),
+                        text: "${DateFormat.yMMMMd('fr_FR').format(rtt.date)}",
+                        children: <TextSpan>[
+                          TextSpan(
+                            style: TextStyle(
+                              fontStyle: FontStyle.italic
+                            ),
+                            text: " ( ${rtt.no_of_hrs} Heures )"
+                          )
+                        ]
+                      ),
+                    )
+                  ),
                 ),
               )
             }

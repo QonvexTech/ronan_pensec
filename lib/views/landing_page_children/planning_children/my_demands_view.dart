@@ -3,7 +3,6 @@ import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/global/template/expandable_fab_assets/action_button.dart';
 import 'package:ronan_pensec/global/template/expandable_fab_widget.dart';
 import 'package:ronan_pensec/global/template/general_template.dart';
-import 'package:ronan_pensec/route/planning_route.dart';
 import 'package:ronan_pensec/view_model/calendar_view_models/add_holiday_view_model.dart';
 import 'package:ronan_pensec/view_model/calendar_view_models/add_rtt_view_model.dart';
 import 'package:ronan_pensec/views/landing_page_children/calendar_children/employee_holidays.dart';
@@ -22,6 +21,7 @@ class _MyDemandsViewState extends State<MyDemandsView>
   final EmployeeRTT _rtt = EmployeeRTT();
   final AddHolidayViewModel _holidayViewModel = AddHolidayViewModel.instance;
   final AddRTTViewModel _rttViewModel = AddRTTViewModel.instance;
+  GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   bool _isLoading = false;
   @override
   Widget build(BuildContext context) {
@@ -29,6 +29,7 @@ class _MyDemandsViewState extends State<MyDemandsView>
     return Stack(
       children: [
         Scaffold(
+          key: _scaffoldKey,
           floatingActionButton: ExpandableFab(
             distance: 60,
             activeIcon: Icons.add,
@@ -40,7 +41,7 @@ class _MyDemandsViewState extends State<MyDemandsView>
                   Icons.beach_access_outlined,
                   color: Colors.white,
                 ),
-                onPressed: () => _holidayViewModel.showAddHoliday(context, size: size, loadingCallback: (bool b){
+                onPressed: () => _holidayViewModel.showAddHoliday(_scaffoldKey.currentContext!, size: size, loadingCallback: (bool b){
                   setState(() {
                     _isLoading = b;
                   });
@@ -52,7 +53,7 @@ class _MyDemandsViewState extends State<MyDemandsView>
                   Icons.hourglass_bottom_outlined,
                   color: Colors.white,
                 ),
-                onPressed: () => _rttViewModel.showAddRtt(context, size: size, loadingCallback: (bool b){
+                onPressed: () => _rttViewModel.showAddRtt(_scaffoldKey.currentContext!, size: size, loadingCallback: (bool b){
                   setState(() {
                     _isLoading = b;
                   });

@@ -1,14 +1,15 @@
+import 'package:ronan_pensec/models/user_model.dart';
+
 class RTTModel{
   final int id;
   int user_id;
   DateTime date;
-  int no_of_hrs;
+  double no_of_hrs;
   String? comment;
   int status;
-  String? proof;
   String startTime;
   String endTime;
-
+  UserModel? user;
   RTTModel({
     required this.id,
     required this.user_id,
@@ -16,23 +17,23 @@ class RTTModel{
     required this.no_of_hrs,
     this.comment,
     required this.status,
-    this.proof,
     required this.endTime,
-    required this.startTime
+    required this.startTime,
+    required this.user
   });
 
 
   factory RTTModel.fromJson(Map parsedJson){
     return RTTModel(
       id : int.parse(parsedJson['id'].toString()),
-      user_id : parsedJson['user_id'],
+      user_id : int.parse(parsedJson['user_id'].toString()),
       date : DateTime.tryParse(parsedJson['date'].toString())??DateTime.now(),
-      no_of_hrs : parsedJson['no_of_hrs'],
+      no_of_hrs : double.parse(parsedJson['no_of_hrs'].toString()),
       comment : parsedJson['comment'],
       status: parsedJson['status']??0,
-      proof: parsedJson['proof'],
       startTime: parsedJson['start_time'],
-      endTime: parsedJson['end_time']
+      endTime: parsedJson['end_time'],
+      user: parsedJson['user'] == null ? null : UserModel.fromJson(parsedJson: parsedJson['user'])
     );
   }
 
@@ -43,8 +44,8 @@ class RTTModel{
     'no_of_hrs' : no_of_hrs,
     'comment' : comment,
     'status' : status,
-    'proof' : proof,
     'end_time' : endTime,
-    "start_time" : startTime
+    "start_time" : startTime,
+    'user': user
   };
 }

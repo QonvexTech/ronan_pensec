@@ -48,8 +48,11 @@ class CenterModel{
       accountant: parsedJson['manager'] != null ? UserModel.fromJson(parsedJson: parsedJson['manager']) : null
     );
   }
-  static List<UserModel> dataToList(List data) {
-    return data.map((e) => UserModel.fromJson(parsedJson: e)).toList();
+  static List<UserModel> dataToList(List? data) {
+    if(data != null){
+      return data.map((e) => UserModel.fromJson(parsedJson: e)).toList();
+    }
+    return [];
   }
   Map<String,dynamic> toJson()=>{
     'id' : id,

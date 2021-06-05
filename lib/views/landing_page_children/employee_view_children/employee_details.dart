@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ronan_pensec/global/palette.dart';
+import 'package:ronan_pensec/models/center_model.dart';
 import 'package:ronan_pensec/models/user_model.dart';
 import 'package:ronan_pensec/services/data_controls/region_data_control.dart';
 import 'package:ronan_pensec/view_model/employee_children/employee_details_view_model.dart';
@@ -40,7 +41,10 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
     populate();
     super.initState();
   }
-
+  @override
+  void dispose() {
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -223,16 +227,16 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                         child: DropdownButton<String>(
                                           items: <DropdownMenuItem<String>>[
                                             DropdownMenuItem<String>(
-                                              child: Text("1 - Admin"),
-                                              value: "1 - Admin",
+                                              child: Text("1 - Administrateur"),
+                                              value: "1 - Administrateur",
                                             ),
                                             DropdownMenuItem<String>(
-                                              child: Text("2 - Accountant"),
-                                              value: "2 - Accountant",
+                                              child: Text("2 - Superviseur"),
+                                              value: "2 - Superviseur",
                                             ),
                                             DropdownMenuItem<String>(
-                                              child: Text("3 - Employee"),
-                                              value: "3 - Employee",
+                                              child: Text("3 - Employé"),
+                                              value: "3 - Employé",
                                             ),
                                           ],
                                           onChanged: (val) {
@@ -242,10 +246,10 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                             });
                                           },
                                           value: _viewModel.roleId == 1
-                                              ? "1 - Admin"
+                                              ? "1 - Administrateur"
                                               : _viewModel.roleId == 2
-                                                  ? "2 - Accountant"
-                                                  : "3 - Employee",
+                                                  ? "2 - Superviseur"
+                                                  : "3 - Employé",
                                         ),
                                       ),
                                     ),
@@ -523,49 +527,159 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                       margin: const EdgeInsets.symmetric(
                                           vertical: 10),
                                       width: double.infinity,
-                                      child: Text(
-                                        "Role :",
-                                        style: TextStyle(
-                                            fontSize: Theme.of(context)
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            "Rôle :",
+                                            style: TextStyle(
+                                                fontSize: Theme.of(context)
                                                     .textTheme
                                                     .headline6!
                                                     .fontSize! -
-                                                2,
-                                            fontWeight: FontWeight.w700),
+                                                    4,
+                                                fontWeight: FontWeight.w700),
+                                          ),
+                                          Expanded(
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.end,
+                                              children: [
+                                                Container(
+                                                  width: 25,
+                                                  height: 25,
+                                                  child: Image.asset(
+                                                      "assets/images/role/${widget.employee.roleId}.png"),
+                                                ),
+                                                const SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Text("${widget.employee.roleId == 1
+                                                    ? "Administrateur"
+                                                    : widget.employee.roleId == 2
+                                                    ? "Superviseur"
+                                                    : "Employé"}",style: TextStyle(
+                                                    fontSize: Theme.of(context)
+                                                        .textTheme
+                                                        .headline6!
+                                                        .fontSize! -
+                                                        4,
+                                                    letterSpacing: 1,
+                                                    fontWeight: FontWeight.w400
+                                                ),)
+                                              ],
+                                            ),
+                                          ),
+                                        ],
                                       ),
+                                      // child: Text(
+                                      //   "Rôle :",
+                                      //   style: TextStyle(
+                                      //       fontSize: Theme.of(context)
+                                      //           .textTheme
+                                      //           .headline6!
+                                      //           .fontSize! -
+                                      //           4,
+                                      //       fontWeight: FontWeight.w700),
+                                      // ),
                                     ),
                                   },
-                                  Align(
-                                    alignment: AlignmentDirectional.centerStart,
-                                    child: Tooltip(
-                                      message: widget.employee.roleId == 1
-                                          ? "Admin"
-                                          : widget.employee.roleId == 2
-                                              ? "Accountant"
-                                              : "Employee",
-                                      child: Container(
-                                        height: 60,
-                                        width: 60,
-                                        child: Image.asset(
-                                            "assets/images/role/${widget.employee.roleId}.png"),
+                                  if(widget.employee.assignedCenters!.length > 0)...{
+                                    Container(
+                                      padding: const EdgeInsets.all(10),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: Colors.grey.shade100,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey.shade200,
+                                            offset: Offset(2,2),
+                                            blurRadius: 2
+                                          )
+                                        ],
+
                                       ),
-                                    ),
-                                  ),
-                                  Container(
-                                    width: double.infinity,
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 10),
-                                    child: Text(
-                                      "Center assigned",
-                                      style: TextStyle(
-                                          fontSize: Theme.of(context)
-                                                  .textTheme
-                                                  .headline6!
-                                                  .fontSize! -
-                                              2,
-                                          fontWeight: FontWeight.w700),
-                                    ),
-                                  ),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          Container(
+                                            width: double.infinity,
+                                            margin: const EdgeInsets.only(bottom: 10),
+                                            child: Text("Centre assigné :",style: TextStyle(
+                                                fontSize: Theme.of(context)
+                                                    .textTheme
+                                                    .headline6!
+                                                    .fontSize! -
+                                                    4,
+                                                fontWeight: FontWeight.w700)),
+                                          ),
+                                          for(CenterModel center in widget.employee.assignedCenters!)...{
+                                            Container(
+                                              width: double.infinity,
+                                              height: 300,
+                                              decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(10),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                        color: Colors.white54,
+                                                        blurRadius: 2,
+                                                        offset: Offset(2,2)
+                                                    )
+                                                  ],
+                                                  image: DecorationImage(
+                                                      fit: BoxFit.cover,
+                                                      image: NetworkImage("${center.image}")
+                                                  )
+                                              ),
+                                              alignment: AlignmentDirectional.bottomCenter,
+                                              child: Container(
+                                                width: double.infinity,
+                                                padding: const EdgeInsets.all(10),
+                                                decoration: BoxDecoration(
+                                                  gradient: LinearGradient(
+                                                    begin: AlignmentDirectional.bottomCenter,
+                                                    end: AlignmentDirectional.topCenter,
+                                                    colors: [
+                                                      Colors.black45,
+                                                      Colors.transparent
+                                                    ]
+                                                  )
+                                                ),
+                                                child: ListTile(
+                                                  title: Text("${center.name}",style: TextStyle(
+                                                    fontSize: Theme.of(context).textTheme.headline6!.fontSize! - 4,
+                                                    letterSpacing: 1.5,
+                                                    color: Colors.white
+                                                  ),maxLines: 2,overflow: TextOverflow.ellipsis,),
+                                                  subtitle: Container(
+                                                    width: double.infinity,
+                                                    child: Row(
+                                                      children: [
+                                                        Icon(Icons.phone_outlined,color: Colors.white54,),
+                                                        const SizedBox(
+                                                          width: 10,
+                                                        ),
+                                                        Expanded(
+                                                          child: Text("${center.mobile}",style: TextStyle(
+                                                              color: Colors.white54
+                                                          ),),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  )
+                                                ),
+                                              ),
+                                            ),
+                                            Container(
+                                              margin: const EdgeInsets.symmetric(vertical: 10),
+                                              child: ListTile(
+                                                title: Text("Superviseur : "),
+                                                subtitle: Text("${center.accountant?.full_name?? "NON DEFINI"}"),
+                                              ),
+                                            )
+                                          }
+                                        ],
+                                      ),
+                                    )
+                                  }
                                 ],
                               ),
                             )
