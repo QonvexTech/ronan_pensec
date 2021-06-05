@@ -143,7 +143,7 @@ class _LandingPageScreenWebState extends State<LandingPageView>
                     width: 10,
                   ),
 
-                  Expanded(child: Container()),
+                  Spacer(),
 
                   if (auth.loggedUser!.roleId < 3) ...{
                     GeneralTemplate.badgedIcon(
@@ -157,23 +157,14 @@ class _LandingPageScreenWebState extends State<LandingPageView>
                   const SizedBox(
                     width: 10,
                   ),
-                  if (auth.loggedUser!.roleId == 3) ...{
-                    GeneralTemplate.badgedIcon(
-                      isEnabled: true,
-                      tooltip: "Messages",
-                      onPress: () {},
-                      icon: Icons.message,
-                      backgroundColor: Colors.grey.shade200,
+                  Hero(
+                    tag: "my-profile",
+                    child: GeneralTemplate.profileIcon(
+                      callback: (value) async {
+                        await _service.profileIconOnChoose(context, value);
+                      },
+                      imageProvider: userDataControl.imageProvider,
                     ),
-                  },
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  GeneralTemplate.profileIcon(
-                    callback: (value) async {
-                      await _service.profileIconOnChoose(context, value);
-                    },
-                    imageProvider: userDataControl.imageProvider,
                   )
                 ],
               ),

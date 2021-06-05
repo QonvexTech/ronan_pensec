@@ -30,20 +30,28 @@ class CenterTemplate {
           //   _currentPage = 1;
           // });
         },
-        child: Row(
-          children: [
-            CircleAvatar(
-              backgroundColor: Colors.grey.shade200,
-              child: Text("${_list[index].id}"),
+        child: ListTile(
+          leading: Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black54,
+                  offset: Offset(2,2),
+                  blurRadius: 2
+                )
+              ],
+              image: DecorationImage(
+                fit: BoxFit.cover,
+                image: NetworkImage("${_list[index].image}")
+              )
             ),
-            Expanded(
-              child: ListTile(
-                title: Text("${_list[index].name}"),
-                subtitle: Text("${_list[index].address ?? "NON DÉFINI"}"),
-                trailing: Icon(Icons.chevron_right),
-              ),
-            )
-          ],
+          ),
+          title: Text("${_list[index].name}"),
+          subtitle: Text("${_list[index].address ?? "NON DÉFINI"}"),
+          trailing: Icon(Icons.chevron_right),
         ),
       ));
 

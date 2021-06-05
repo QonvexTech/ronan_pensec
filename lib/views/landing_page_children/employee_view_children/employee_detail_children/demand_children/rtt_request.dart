@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/models/calendar/rtt_model.dart';
-import 'package:intl/date_symbol_data_local.dart';
 
 class RTTRequest extends StatefulWidget {
   final List<RTTModel>? rtts;
@@ -105,30 +104,43 @@ class _RTTRequestState extends State<RTTRequest> {
                                     "${DateFormat.yMMMMd("fr_FR").format(widget.rtts![index].date)}"
                                         .toUpperCase()),
                                 f3: bodyText(DateFormat("Hm").format(DateTime.parse(
-                                    "${widget.rtts![index].date} ${widget.rtts![index].startTime}"))),
+                                    "${widget.rtts![index].date.toString().split(' ')[0]} ${widget.rtts![index].startTime}"))),
                                 f4: bodyText(DateFormat("Hm").format(DateTime.parse(
-                                    "${widget.rtts![index].date} ${widget.rtts![index].endTime}"))),
+                                    "${widget.rtts![index].date.toString().split(' ')[0]} ${widget.rtts![index].endTime}"))),
                                 f5: bodyText(
                                     "${widget.rtts![index].no_of_hrs}"),
                                 f6: Container(
                                   width: double.infinity,
-                                  child: Center(
-                                    child: Container(
-                                      width: 15,
-                                      height: 15,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: widget.rtts![index].status == 0 ? Colors.grey : widget.rtts![index].status == 1 ? Colors.green : Colors.red,
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.black54,
-                                            offset: Offset(2,2),
-                                            blurRadius: 2
-                                          )
-                                        ]
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        width: 15,
+                                        height: 15,
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: widget.rtts![index].status == 0 ? Colors.grey : widget.rtts![index].status == 1 ? Colors.green : Colors.red,
+                                            boxShadow: [
+                                              BoxShadow(
+                                                  color: Colors.black54,
+                                                  offset: Offset(2,2),
+                                                  blurRadius: 2
+                                              )
+                                            ]
+                                        ),
                                       ),
-                                    ),
-                                  ),
+                                      if(size.width > 900)...{
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        Expanded(
+                                          child: Text("( ${widget.rtts![index].status == 0 ? "En Attente" : widget.rtts![index].status == 1 ? "Approuvé" : "Rejeté"} )",style: TextStyle(
+                                              color: Colors.grey.shade800,
+                                              fontStyle: FontStyle.italic
+                                          ),),
+                                        )
+                                      }
+                                    ],
+                                  )
                                 ),
                               ),
                             ),

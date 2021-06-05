@@ -24,7 +24,9 @@ class LoggedUserHolidayRequests{
     }
   }
   append(Map data){
+    print("APPEND $data");
     this.current.add(HolidayModel.fromJson(data));
+
     _list.add(this.current);
   }
   remove(int id){

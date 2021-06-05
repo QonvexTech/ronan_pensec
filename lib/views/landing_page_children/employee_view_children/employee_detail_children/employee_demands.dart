@@ -21,9 +21,6 @@ class EmployeeDemands extends StatefulWidget {
 class _EmployeeDemandsState extends State<EmployeeDemands> with SingleTickerProviderStateMixin {
   late final EmployeeDemandsViewModel _employeeDemandsViewModel = EmployeeDemandsViewModel.instance;
   late final TabController _tabController = new TabController(length: 3, vsync: this);
-  // late final HolidayRequest _holidayRequest = new HolidayRequest(demand: _employeeDemandsViewModel.holidays);
-  // late final RTTRequest _rttRequest = new RTTRequest(rtts: _employeeDemandsViewModel.rtts!,);
-  // late final EmployeeAttendance _attendance = new EmployeeAttendance(attendance: _employeeDemandsViewModel.attendance!,regionDataControl: widget.regionDataControl,userId: widget.userId,);
 
   int _currentIndex=0;
   @override
@@ -36,11 +33,6 @@ class _EmployeeDemandsState extends State<EmployeeDemands> with SingleTickerProv
     setState(() {
       _employeeDemandsViewModel.setHolidays = _demand;
     });
-    // List<HolidayModel> _holiday = await _employeeDemandsViewModel.service.getEmployeeHolidays(context, employeeId: employeeId);
-    // setState(() {
-    // _employeeDemandsViewModel.setHolidays = _holiday;
-    // });
-    //
 
   }
 
@@ -65,6 +57,14 @@ class _EmployeeDemandsState extends State<EmployeeDemands> with SingleTickerProv
     await rttGetter(context, widget.userId);
     await attendanceGetter(context, widget.userId);
 
+  }
+
+  @override
+  void dispose(){
+    _employeeDemandsViewModel.setAttendance = null;
+    _employeeDemandsViewModel.setHolidays = null;
+    _employeeDemandsViewModel.setRtts = null;
+    super.dispose();
   }
 
   @override

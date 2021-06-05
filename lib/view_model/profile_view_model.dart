@@ -86,4 +86,55 @@ class ProfileViewModel {
   Future<bool> update(context) async {
     return await _instance.service.update(context, body: _instance.body, userId: _instance.auth.loggedUser!.id);
   }
+  late final List extras = [
+    {
+      "name": "Jours de travail",
+      "value": "${_instance.auth.loggedUser!.workDays ?? 0}"
+    },
+    {
+      "name": "Consumable congés",
+      "value": "${_instance.auth.loggedUser!.consumableHolidays ?? 0}"
+    },
+    {
+      "name": "Solde RTT",
+      "value": "${_instance.auth.loggedUser!.rttRemainingBalance ?? 0}"
+    },
+  ];
+  late final List userDetails = [
+    {
+      "label" : "Nom et prénom",
+      "value" : "${_instance.auth.loggedUser!.full_name}",
+      "icon" : Icons.person
+    },
+    {
+      "label" : "Prénom",
+      "value" : "${_instance.auth.loggedUser!.first_name}",
+      "icon" : Icons.drive_file_rename_outline
+    },
+    {
+      "label" : "Nom de famille",
+      "value" : "${_instance.auth.loggedUser!.last_name}",
+      "icon" : Icons.drive_file_rename_outline
+    },
+    {
+      "label" : "Addressé",
+      "value" : "${_instance.auth.loggedUser!.address}",
+      "icon" : Icons.location_on_outlined
+    },
+    {
+      "label" : "Villé",
+      "value" : "${_instance.auth.loggedUser!.city}",
+      "icon" : Icons.location_city_outlined
+    },
+    {
+      "label" : "Code de postal",
+      "value" : "${_instance.auth.loggedUser!.zip_code}",
+      "icon" : Icons.local_post_office_outlined
+    },
+    {
+      "label" : "Numéro de portable",
+      "value" : "${_instance.auth.loggedUser!.mobile}",
+      "icon" : Icons.phone_outlined
+    },
+  ];
 }

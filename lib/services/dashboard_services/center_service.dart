@@ -49,6 +49,26 @@ class CenterService {
       return false;
     }
   }
+  Future<String?> updateImage(context, {required int centerId, required String base64Image}) async {
+    try{
+      return await http.post(Uri.parse("${BaseEnpoint.URL}${CenterEndpoint.base}/update_center_photo/$centerId"),headers: {
+        "Accept": "application/json",
+        HttpHeaders.authorizationHeader: "Bearer ${_auth.token}"
+      },body: {
+        "image" : "data:image/jpg;base64,$base64Image"
+      }).then((response) {
+        var data = json.decode(response.body);
+        if(response.statusCode == 200){
+          return data['data'];
+        }
+        _notifier.showContextedBottomToast(context, msg: "Une erreur s'est produite (${response.statusCode}), veuillez réessayer plus tard ou contacter l'administrateur");
+        return null;
+      });
+    }catch(e){
+      _notifier.showContextedBottomToast(context, msg: "Erreur $e");
+      return null;
+    }
+  }
   Future<bool> fetch(context) async {
     try {
       return await http.get(Uri.parse("${BaseEnpoint.URL}${CenterEndpoint.viewAll}"), headers: {

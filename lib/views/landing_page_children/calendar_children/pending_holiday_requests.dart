@@ -125,33 +125,36 @@ class PendingHolidayRequests extends StatelessWidget {
                   ],
                   actionPane: SlidableDrawerActionPane(),
                   controller: _slidableController,
-                  child: ListTile(
-                    tileColor: Colors.grey.shade100,
-                    leading: CircleAvatar(
-                      backgroundColor: Colors.grey.shade200,
-                      child: Center(
-                        child: Text("${holiday.id}",style: TextStyle(
-                          color: Palette.gradientColor[0],
-                          fontSize: 16,
-                        ),),
+                  child: MaterialButton(
+                    onPressed: (){},
+                    color: Colors.grey.shade100,
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor: Colors.grey.shade200,
+                        child: Center(
+                          child: Text("${holiday.id}",style: TextStyle(
+                            color: Palette.gradientColor[0],
+                            fontSize: 16,
+                          ),),
+                        ),
+                      ),
+                      title: Text("${holiday.reason}"),
+                      subtitle: Row(
+                        children: [
+                          Expanded(child: Text("De : ${DateFormat.yMMMMd('fr_FR').format(holiday.startDate)}",textAlign: TextAlign.left,)),
+                          Expanded(child: Text("Au : ${DateFormat.yMMMMd('fr_FR').format(holiday.endDate)}",textAlign: TextAlign.right,))
+                        ],
+                      ),
+                      trailing: Container(
+                        width: 10,
+                        height: 10,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.grey
+                        ),
                       ),
                     ),
-                    title: Text("${holiday.reason}"),
-                    subtitle: Row(
-                      children: [
-                        Expanded(child: Text("De : ${DateFormat.yMMMMd('fr_FR').format(holiday.startDate)}",textAlign: TextAlign.left,)),
-                        Expanded(child: Text("Au : ${DateFormat.yMMMMd('fr_FR').format(holiday.endDate)}",textAlign: TextAlign.right,))
-                      ],
-                    ),
-                    trailing: Container(
-                      width: 10,
-                      height: 10,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.grey
-                      ),
-                    ),
-                  ),
+                  )
                 )
               }
             ],

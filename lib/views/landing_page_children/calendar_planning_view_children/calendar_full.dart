@@ -19,6 +19,9 @@ class CalendarFull extends StatefulWidget {
 class _CalendarFullState extends State<CalendarFull> {
   final CalendarViewModel _calendarViewModel = CalendarViewModel.instance;
   final PlanningViewModel _planningViewModel = PlanningViewModel.instance;
+
+  bool _showRegionText = true;
+  bool _showCenterText= true;
   /// 0 = Region
   /// 1 = Center
   /// 2 = Employees
@@ -380,197 +383,212 @@ class _CalendarFullState extends State<CalendarFull> {
                                             decoration: BoxDecoration(
                                               color: Colors.transparent,
                                             ),
-                                            child: Column(
+                                            child: _displayData == null ? Center(
+                                              child: CircularProgressIndicator(),
+                                            ) : _displayData!.length == 0 ? Center(
+                                              child: Text("Pas de donnes"),
+                                            ) : Column(
                                               children: [
                                                 ///Regions
+                                                AnimatedContainer(
+                                                  width: double.infinity,
+                                                  padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 5),
+                                                  height: _calendarViewModel.type == 0 ? 40 : 0,
+                                                  onEnd: (){
+                                                    setState(() {
+                                                      _showRegionText = !(_calendarViewModel.type > 0);
+                                                    });
+                                                  },
+                                                  duration:
+                                                  Duration(milliseconds: 600),
+                                                  alignment: AlignmentDirectional.centerStart,
+                                                  child: _showRegionText ? Text(
+                                                    "${_displayData![regionIndex].name}",
+                                                    textAlign: TextAlign.left,
+                                                    style: TextStyle(
+                                                        fontSize:
+                                                        Theme.of(context)
+                                                            .textTheme
+                                                            .subtitle1!
+                                                            .fontSize! -
+                                                            1,
+                                                        color: Palette
+                                                            .gradientColor[0],
+                                                        fontWeight:
+                                                        FontWeight.w600,
+                                                        letterSpacing: 0.5),
+                                                  ) : Container(),
+                                                ),
+                                                ///Center
+                                                for (CenterModel center
+                                                in _displayData![regionIndex]
+                                                    .centers!) ...{
                                                   AnimatedContainer(
                                                     width: double.infinity,
-                                                    padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 5),
-                                                    height: _calendarViewModel.type == 0 ? 40 : 0,
-                                                    duration:
-                                                    Duration(milliseconds: 600),
-                                                    alignment: AlignmentDirectional.centerStart,
-                                                    child: Text(
-                                                      "${_displayData![regionIndex].name}",
-                                                      textAlign: TextAlign.left,
-                                                      style: TextStyle(
-                                                          fontSize:
-                                                          Theme.of(context)
-                                                              .textTheme
-                                                              .subtitle1!
-                                                              .fontSize! -
-                                                              1,
-                                                          color: Palette
-                                                              .gradientColor[0],
-                                                          fontWeight:
-                                                          FontWeight.w600,
-                                                          letterSpacing: 0.5),
-                                                    ),
+                                                    onEnd: (){
+                                                      setState(() {
+                                                        _showCenterText = !(_calendarViewModel.type > 1);
+                                                      });
+                                                    },
+                                                    duration: Duration(
+                                                        milliseconds: 600),
+                                                    height: _calendarViewModel.type <= 1 ? 40 : 0,
+                                                    child: _showCenterText ?  Container(
+                                                      width: double.infinity,
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                          horizontal: 10),
+                                                      alignment: AlignmentDirectional.centerStart,
+                                                      child: Text(
+                                                        "${center.name}",
+                                                        style: TextStyle(
+                                                            color: Colors.red,
+                                                            fontStyle:
+                                                            FontStyle.italic),
+                                                      ),
+                                                    ) : Container(),
                                                   ),
-                                                  ///Center
-                                                  for (CenterModel center
-                                                  in _displayData![regionIndex]
-                                                      .centers!) ...{
+
+                                                  ///Users
+                                                  for (UserModel user
+                                                  in center.users) ...{
                                                     AnimatedContainer(
                                                       width: double.infinity,
+                                                      height:_calendarViewModel.type <= 2 ? 50 : 0,
                                                       duration: Duration(
                                                           milliseconds: 600),
-                                                      height: _calendarViewModel.type <= 1 ? 40 : 0,
-                                                      child: Container(
-                                                        width: double.infinity,
-                                                        padding: const EdgeInsets
-                                                            .symmetric(
-                                                            horizontal: 10),
-                                                        alignment: AlignmentDirectional.centerStart,
-                                                        child: Text(
-                                                          "${center.name}",
-                                                          style: TextStyle(
-                                                              color: Colors.red,
-                                                              fontStyle:
-                                                              FontStyle.italic),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    ///Users
-                                                      for (UserModel user
-                                                      in center.users) ...{
-                                                        AnimatedContainer(
-                                                          width: double.infinity,
-                                                          height:_calendarViewModel.type <= 2 ? 50 : 0,
-                                                          duration: Duration(
-                                                              milliseconds: 600),
-                                                          decoration: BoxDecoration(
-                                                            color: Colors.transparent,
-                                                              border: center.users.indexOf(user) == 0 ? Border.symmetric(horizontal: BorderSide(color: Colors.grey.shade300)) : Border(bottom: BorderSide(color: Colors.grey.shade300))
-                                                              // border: Border(bottom: BorderSide(color: Colors.black54,width: 0.5), top: BorderSide(color: type <=1 ? Colors.black54 : Colors.transparent,width: 0.5))
+                                                      // decoration: BoxDecoration(
+                                                      //     color: Colors.transparent,
+                                                      //     border: center.users.indexOf(user) == 0 ? Border.symmetric(horizontal: BorderSide(color: Colors.grey.shade300)) : Border(bottom: BorderSide(color: Colors.grey.shade300))
+                                                      //   // border: Border(bottom: BorderSide(color: Colors.black54,width: 0.5), top: BorderSide(color: type <=1 ? Colors.black54 : Colors.transparent,width: 0.5))
+                                                      // ),
+                                                      child: Row(
+                                                        children: [
+                                                          Container(
+                                                            width: 150,
+                                                            padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                horizontal:
+                                                                20),
+                                                            child: Text(
+                                                              "${user.full_name}",
+                                                              textAlign: TextAlign
+                                                                  .center,
+                                                            ),
                                                           ),
-                                                          child: Row(
-                                                            children: [
-                                                              Container(
-                                                                width: 150,
-                                                                padding:
-                                                                const EdgeInsets
-                                                                    .symmetric(
-                                                                    horizontal:
-                                                                    20),
-                                                                child: Text(
-                                                                  "${user.full_name}",
-                                                                  textAlign: TextAlign
-                                                                      .center,
-                                                                ),
-                                                              ),
 
-                                                              /// DATE DATA
-                                                              Expanded(
-                                                                  child: ListView(
-                                                                    physics: NeverScrollableScrollPhysics(),
-                                                                    scrollDirection: Axis.horizontal,
-                                                                    children: List.generate(_calendarViewModel.numOfDays, (daysIndex) => Container(
-                                                                        decoration: BoxDecoration(
-                                                                            border: daysIndex == 0 ? Border.symmetric(vertical: BorderSide(color: Colors.grey.shade200)) : Border(right: BorderSide(color: Colors.grey.shade200))
-                                                                        ),
-                                                                        width: ((constraint.maxWidth - 150) /
-                                                                            _calendarViewModel.numOfDays) <
-                                                                            40
-                                                                            ? 40
-                                                                            : (constraint.maxWidth - 150) / _calendarViewModel.numOfDays,
-                                                                        child: Stack(
-                                                                          children: [
-                                                                            ///Holiday
-                                                                            if(user.holidays.length > 0)...{
-                                                                              for(HolidayModel holiday in user.holidays)...{
-                                                                                if(!_calendarViewModel.service.isSunday(DateTime(_calendarViewModel.currentYear, _calendarViewModel.currentMonth, daysIndex + 1)) &&
-                                                                                    _calendarViewModel.service.isInRange(
-                                                                                        holiday.startDate,
-                                                                                        holiday.endDate,
-                                                                                        DateTime(_calendarViewModel.currentYear, _calendarViewModel.currentMonth, daysIndex + 1)) && holiday.status == 1)...{
-                                                                                  Tooltip(
-                                                                                    message: "${holiday.reason}",
-                                                                                    child: holiday.isHalfDay == 1 ? ClipPath(
-                                                                                      clipper: CalendarHalfdayClip(),
-                                                                                      child: Container(
-                                                                                        width: ((constraint.maxWidth - 150) /
-                                                                                            _calendarViewModel.numOfDays) <
-                                                                                            40
-                                                                                            ? 40
-                                                                                            : (constraint.maxWidth - 150) / _calendarViewModel.numOfDays,
-                                                                                        color: Colors.blue,
-                                                                                      ),
-                                                                                    ) : Container(
-                                                                                      width: ((constraint.maxWidth - 150) /
-                                                                                          _calendarViewModel.numOfDays) <
-                                                                                          40
-                                                                                          ? 40
-                                                                                          : (constraint.maxWidth - 150) / _calendarViewModel.numOfDays,
-                                                                                      color: Colors.blue,
-                                                                                    ),
-                                                                                  )
-                                                                                }
-                                                                              }
-                                                                            },
-                                                                            ///RTT
-                                                                            if(user.rtts.length > 0)...{
-                                                                              for(RTTModel rtt in user.rtts)...{
-                                                                                if(rtt.status == 1 && !_calendarViewModel.service.isSunday(DateTime(_calendarViewModel.currentYear, _calendarViewModel.currentMonth, daysIndex + 1)) && _calendarViewModel.service.isSameDay(DateTime(_calendarViewModel.currentYear, _calendarViewModel.currentMonth, daysIndex + 1), rtt.date))...{
-                                                                                  Tooltip(
-                                                                                    message: "${rtt.no_of_hrs} hrs.",
+                                                          /// DATE DATA
+                                                          Expanded(
+                                                              child: ListView(
+                                                                physics: NeverScrollableScrollPhysics(),
+                                                                scrollDirection: Axis.horizontal,
+                                                                children: List.generate(_calendarViewModel.numOfDays, (daysIndex) => Container(
+                                                                    decoration: BoxDecoration(
+                                                                        border: daysIndex == 0 ? Border.symmetric(vertical: BorderSide(color: Colors.grey.shade200)) : Border(right: BorderSide(color: Colors.grey.shade200))
+                                                                    ),
+                                                                    width: ((constraint.maxWidth - 150) /
+                                                                        _calendarViewModel.numOfDays) <
+                                                                        40
+                                                                        ? 40
+                                                                        : (constraint.maxWidth - 150) / _calendarViewModel.numOfDays,
+                                                                    child: Stack(
+                                                                      children: [
+                                                                        ///Holiday
+                                                                        if(user.holidays.length > 0)...{
+                                                                          for(HolidayModel holiday in user.holidays)...{
+                                                                            if(!_calendarViewModel.service.isSunday(DateTime(_calendarViewModel.currentYear, _calendarViewModel.currentMonth, daysIndex + 1)) &&
+                                                                                _calendarViewModel.service.isInRange(
+                                                                                    holiday.startDate,
+                                                                                    holiday.endDate,
+                                                                                    DateTime(_calendarViewModel.currentYear, _calendarViewModel.currentMonth, daysIndex + 1)) && holiday.status == 1)...{
+                                                                              Tooltip(
+                                                                                message: "${holiday.reason}",
+                                                                                child: holiday.isHalfDay == 1 ? ClipPath(
+                                                                                  clipper: CalendarHalfdayClip(),
+                                                                                  child: Container(
+                                                                                    width: ((constraint.maxWidth - 150) /
+                                                                                        _calendarViewModel.numOfDays) <
+                                                                                        40
+                                                                                        ? 40
+                                                                                        : (constraint.maxWidth - 150) / _calendarViewModel.numOfDays,
+                                                                                    color: Colors.blue,
+                                                                                  ),
+                                                                                ) : Container(
+                                                                                  width: ((constraint.maxWidth - 150) /
+                                                                                      _calendarViewModel.numOfDays) <
+                                                                                      40
+                                                                                      ? 40
+                                                                                      : (constraint.maxWidth - 150) / _calendarViewModel.numOfDays,
+                                                                                  color: Colors.blue,
+                                                                                ),
+                                                                              )
+                                                                            }
+                                                                          }
+                                                                        },
+                                                                        ///RTT
+                                                                        if(user.rtts.length > 0)...{
+                                                                          for(RTTModel rtt in user.rtts)...{
+                                                                            if(rtt.status == 1 && !_calendarViewModel.service.isSunday(DateTime(_calendarViewModel.currentYear, _calendarViewModel.currentMonth, daysIndex + 1)) && _calendarViewModel.service.isSameDay(DateTime(_calendarViewModel.currentYear, _calendarViewModel.currentMonth, daysIndex + 1), rtt.date))...{
+                                                                              Tooltip(
+                                                                                message: "${rtt.no_of_hrs} hrs.",
+                                                                                child: Container(
+                                                                                  width: ((constraint.maxWidth - 150) /
+                                                                                      _calendarViewModel.numOfDays) <
+                                                                                      40
+                                                                                      ? 40
+                                                                                      : (constraint.maxWidth - 150) / _calendarViewModel.numOfDays,
+                                                                                  color: Colors.green,
+                                                                                ),
+                                                                              )
+                                                                            }
+                                                                          }
+                                                                        },
+                                                                        /// Absences & Late
+                                                                        if(user.attendances.length > 0)...{
+                                                                          for(AttendanceModel attendance in user.attendances)...{
+                                                                            if(_calendarViewModel.service.isSameDay(DateTime(_calendarViewModel.currentYear, _calendarViewModel.currentMonth, daysIndex + 1), attendance.date))...{
+                                                                              Tooltip(
+                                                                                  message: attendance.status == 1 ? "En retard" : "Absent",
+                                                                                  child: attendance.status == 1 ? ClipPath(
+                                                                                    clipper: CalendarHalfdayClip(),
                                                                                     child: Container(
                                                                                       width: ((constraint.maxWidth - 150) /
                                                                                           _calendarViewModel.numOfDays) <
                                                                                           40
                                                                                           ? 40
                                                                                           : (constraint.maxWidth - 150) / _calendarViewModel.numOfDays,
-                                                                                      color: Colors.green,
+                                                                                      color: Colors.grey.shade800,
                                                                                     ),
+                                                                                  ) : Container(
+                                                                                    width: ((constraint.maxWidth - 150) /
+                                                                                        _calendarViewModel.numOfDays) <
+                                                                                        40
+                                                                                        ? 40
+                                                                                        : (constraint.maxWidth - 150) / _calendarViewModel.numOfDays,
+                                                                                    color: Colors.red,
                                                                                   )
-                                                                                }
-                                                                              }
-                                                                            },
-                                                                            /// Absences & Late
-                                                                            if(user.attendances.length > 0)...{
-                                                                              for(AttendanceModel attendance in user.attendances)...{
-                                                                                if(_calendarViewModel.service.isSameDay(DateTime(_calendarViewModel.currentYear, _calendarViewModel.currentMonth, daysIndex + 1), attendance.date))...{
-                                                                                  Tooltip(
-                                                                                    message: attendance.status == 1 ? "En retard" : "Absent",
-                                                                                    child: attendance.status == 1 ? ClipPath(
-                                                                                      clipper: CalendarHalfdayClip(),
-                                                                                      child: Container(
-                                                                                        width: ((constraint.maxWidth - 150) /
-                                                                                            _calendarViewModel.numOfDays) <
-                                                                                            40
-                                                                                            ? 40
-                                                                                            : (constraint.maxWidth - 150) / _calendarViewModel.numOfDays,
-                                                                                        color: Colors.grey.shade800,
-                                                                                      ),
-                                                                                    ) : Container(
-                                                                                      width: ((constraint.maxWidth - 150) /
-                                                                                          _calendarViewModel.numOfDays) <
-                                                                                          40
-                                                                                          ? 40
-                                                                                          : (constraint.maxWidth - 150) / _calendarViewModel.numOfDays,
-                                                                                      color: Colors.red,
-                                                                                    )
-                                                                                  )
-                                                                                }
-                                                                              }
-                                                                            },
-                                                                            if(_calendarViewModel.service.isSunday(DateTime(_calendarViewModel.currentYear, _calendarViewModel.currentMonth, daysIndex+1)))...{
-                                                                              Container(
-                                                                                  color: Colors.grey.shade300
                                                                               )
                                                                             }
-                                                                          ],
-                                                                        )
-                                                                    )),
-                                                                  )
+                                                                          }
+                                                                        },
+                                                                        if(_calendarViewModel.service.isSunday(DateTime(_calendarViewModel.currentYear, _calendarViewModel.currentMonth, daysIndex+1)))...{
+                                                                          Container(
+                                                                              color: Colors.grey.shade300
+                                                                          )
+                                                                        }
+                                                                      ],
+                                                                    )
+                                                                )),
                                                               )
-                                                            ],
-                                                          ),
-                                                        )
-                                                      }
-                                                  },
+                                                          )
+                                                        ],
+                                                      ),
+                                                    )
+                                                  }
+                                                },
                                               ],
                                             )),
                                       )),

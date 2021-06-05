@@ -50,7 +50,7 @@ class FirebaseMessagingService {
       sound: true,
     );
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      print(message.notification!.title);
+      print("NOTIFICATION MESSAGE : $message");
 
       return;
     });

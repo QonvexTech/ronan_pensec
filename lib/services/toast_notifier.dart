@@ -14,10 +14,11 @@ class ToastNotifier {
     Fluttertoast.showToast(
       msg: msg,
       gravity: ToastGravity.BOTTOM,
-      timeInSecForIosWeb: 1,
+      timeInSecForIosWeb: 3,
       backgroundColor: Colors.grey.shade900,
       textColor: Colors.white,
       fontSize: 15.5,
+      webBgColor: "linear-gradient(to right, #161414, #161414)",
       toastLength: Toast.LENGTH_LONG,
     );
   }

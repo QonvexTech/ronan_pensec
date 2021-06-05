@@ -30,7 +30,6 @@ class RegionService {
       }).then((response) {
         var data = json.decode(response.body);
         if(response.statusCode == 200){
-          print(data);
           rawRegionController.regionData.populateRegions = data;
           return ;
         }
