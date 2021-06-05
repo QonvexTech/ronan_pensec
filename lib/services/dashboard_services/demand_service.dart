@@ -34,7 +34,6 @@ class DemandService{
         return null;
       });
     }catch(e){
-      print("ERROR DEMAND UPDATE $e");
       notifier.showWebContextedBottomToast(context, msg: "Erreur : $e");
       return null;
     }

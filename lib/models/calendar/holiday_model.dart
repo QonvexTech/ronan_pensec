@@ -10,7 +10,6 @@ class HolidayModel{
   String? adminComment;
   String? comment;
   int userId;
-  String? proof;
   String? requestName;
   HolidayModel({
     required this.id,
@@ -20,7 +19,6 @@ class HolidayModel{
     required this.status,
     required this.isHalfDay,
     this.comment,
-    this.proof,
     required this.userId,
     required this.adminComment,
     required this.isEndDateHalf,
@@ -30,7 +28,6 @@ class HolidayModel{
   factory HolidayModel.fromJson(parsedJson){
     return HolidayModel(
       id : parsedJson['id'],
-      proof: parsedJson['proof'],
       adminComment: parsedJson['admin_comment'],
       isEndDateHalf: parsedJson['endDate_isHalf_day'],
       reason : parsedJson['reason'],

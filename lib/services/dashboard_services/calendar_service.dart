@@ -54,32 +54,36 @@ class CalendarService {
         return _data;
         // return _dataSource.map((region) => region.centers! = region.centers!.where((element) => false)).toList();
       } else {
-        for (RegionModel region in _dataSource) {
-          /// Create new instance of region model with always empty centers
-          RegionModel _toAdd =
-          new RegionModel(id: region.id, name: region.name, centers: []);
-          for (CenterModel center in region.centers!) {
-            /// Create new instance of center model with always empty users
-            CenterModel _centerToAdd = new CenterModel(
-                id: center.id,
-                name: center.name,
-                city: center.city,
-                zipCode: center.zipCode,
-                address: center.address,
-                mobile: center.mobile,
-                email: center.email,
-                image: center.image,
-                regionId: center.regionId,
-                users: []);
+        if(text.isEmpty){
+          _data = _dataSource;
+        }else{
+          for (RegionModel region in _dataSource) {
+            /// Create new instance of region model with always empty centers
+            RegionModel _toAdd =
+            new RegionModel(id: region.id, name: region.name, centers: []);
+            for (CenterModel center in region.centers!) {
+              /// Create new instance of center model with always empty users
+              CenterModel _centerToAdd = new CenterModel(
+                  id: center.id,
+                  name: center.name,
+                  city: center.city,
+                  zipCode: center.zipCode,
+                  address: center.address,
+                  mobile: center.mobile,
+                  email: center.email,
+                  image: center.image,
+                  regionId: center.regionId,
+                  users: []);
 
-            for(UserModel user in center.users){
-              if(user.full_name.toLowerCase().contains(text.toLowerCase())){
-                _centerToAdd.users.add(user);
+              for(UserModel user in center.users){
+                if(user.full_name.toLowerCase().contains(text.toLowerCase())){
+                  _centerToAdd.users.add(user);
+                }
               }
+              _toAdd.centers!.add(_centerToAdd);
             }
-            _toAdd.centers!.add(_centerToAdd);
+            _data.add(_toAdd);
           }
-          _data.add(_toAdd);
         }
         return _data;
       }

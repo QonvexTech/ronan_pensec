@@ -7,6 +7,7 @@ import 'package:ronan_pensec/global/controllers/PendingRTTRequestController.dart
 import 'package:ronan_pensec/global/endpoints/rtt_endpoint.dart';
 import 'package:ronan_pensec/models/calendar/rtt_model.dart';
 import 'package:ronan_pensec/services/data_controls/calendar_data_control.dart';
+import 'package:ronan_pensec/services/data_controls/calendar_data_controllers/logged_user_rtt_requests.dart';
 import 'package:ronan_pensec/services/data_controls/region_data_control.dart';
 import 'package:ronan_pensec/services/toast_notifier.dart';
 
@@ -21,7 +22,31 @@ class RTTService{
   static final PendingRTTRequestController _controller = PendingRTTRequestController.instance;
   static final CalendarDataControl _calendarDataControl = CalendarDataControl.instance;
   static final RegionDataControl _regionDataControl = RegionDataControl.instance(_calendarDataControl);
+  static final LoggedUserRttRequests _loggedUserRttRequests = LoggedUserRttRequests.instance;
 
+  ///Add new Request
+  Future<void> request({required body}) async {
+    try{
+      await http.post(Uri.parse("${BaseEnpoint.URL}${RTTEndpoint.base}"),headers: {
+        "Accept" : "application/json",
+        HttpHeaders.authorizationHeader : "Bearer ${auth.token}"
+      },body: body).then((response) {
+        var data = json.decode(response.body);
+        if(response.statusCode == 200){
+          _loggedUserRttRequests.append(data['data']);
+          _notifier.showUnContextedBottomToast(msg: "Demande envoyee");
+          return ;
+        }
+        _notifier.showUnContextedBottomToast(msg: "${data['message']}");
+        // _notifier.showUnContextedBottomToast(msg: "Une erreur s'est produite (${response.statusCode}), veuillez réessayer plus tard");
+        return ;
+      });
+    }catch(e){
+      print(e);
+      _notifier.showUnContextedBottomToast(msg: "Erreur : $e");
+      return ;
+    }
+  }
   ///Approve
   ///
   Future<bool> approve(context,{required int rttId}) async {
@@ -33,7 +58,6 @@ class RTTService{
         if(response.statusCode == 200){
           var data = json.decode(response.body);
           notifier.showWebContextedBottomToast(context, msg: "Demande approuvée!");
-          print("RTT DATA : $data");
           RTTModel newRTT = RTTModel.fromJson(data);
           _regionDataControl.appendRTT(newRTT, newRTT.user_id,);
           return true;

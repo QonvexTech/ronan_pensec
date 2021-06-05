@@ -36,6 +36,7 @@ class _WebDashboardState extends State<WebPlanning> {
     }
     super.initState();
   }
+  GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     final Size _size = MediaQuery.of(context).size;
@@ -43,6 +44,7 @@ class _WebDashboardState extends State<WebPlanning> {
     return Stack(
       children: [
         Scaffold(
+          key: _scaffoldKey,
           floatingActionButton: ExpandableFab(
             activeIcon: Icons.menu,
             color: Palette.gradientColor[0],
@@ -62,7 +64,7 @@ class _WebDashboardState extends State<WebPlanning> {
               ),
               ActionButton(
                 message: "Ajouter de nouvelles congés",
-                onPressed: () => _holidayViewModel.showAddHoliday(context, size: _size, loadingCallback: (bool b){
+                onPressed: () => _holidayViewModel.showAddHoliday(_scaffoldKey.currentContext!, size: _size, loadingCallback: (bool b){
                   setState(() {
                     _isLoading = b;
                   });
@@ -71,7 +73,7 @@ class _WebDashboardState extends State<WebPlanning> {
               ),
               ActionButton(
                 message: "Ajouter de nouvelles RTT",
-                onPressed: () => _rttViewModel.showAddRtt(context, size: _size, loadingCallback: (bool b){
+                onPressed: () => _rttViewModel.showAddRtt(_scaffoldKey.currentContext!, size: _size, loadingCallback: (bool b){
                   setState(() {
                     _isLoading = b;
                   });

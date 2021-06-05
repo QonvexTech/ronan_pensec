@@ -5,12 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/global/palette.dart';
+import 'package:ronan_pensec/services/dashboard_services/rtt_service.dart';
 
 class AddRTTViewModel {
   AddRTTViewModel._singleton();
 
   static final AddRTTViewModel _instance = AddRTTViewModel._singleton();
   static final Auth _auth = Auth.instance;
+  static final RTTService _service = RTTService.instance;
+  RTTService get service => _service;
   Auth get auth => _auth;
   static AddRTTViewModel get instance {
     _instance.appendToBody = {"user_id": _instance.auth.loggedUser!.id.toString()};
@@ -36,22 +39,22 @@ class AddRTTViewModel {
 
   TextEditingController get reason => _reason;
 
-  TimeOfDay? _startTime;
-  TimeOfDay? get startTime => _startTime;
-  set setStartTime(TimeOfDay? time) {
+  String? _startTime;
+  String? get startTime => _startTime;
+  set setStartTime(String? time) {
     if(time != null){
-      _instance.appendToBody = {"start_time" : timeToString(time)};
+      _instance.appendToBody = {"start_time" : time};
     }else{
       _instance.body.remove("start_time");
     }
     _startTime = time;
   }
 
-  TimeOfDay? _endTime;
-  TimeOfDay? get endTime => _endTime;
-  set setEndTime(TimeOfDay? time) {
+  String? _endTime;
+  String? get endTime => _endTime;
+  set setEndTime(String? time) {
     if(time != null){
-      _instance.appendToBody = {"end_time" : timeToString(time)};
+      _instance.appendToBody = {"end_time" : time};
     }else{
       _instance.body.remove("end_time");
     }
@@ -74,31 +77,34 @@ class AddRTTViewModel {
       return "Choisissez la date";
     }
   }
-  String timeToString(TimeOfDay? timeOfDay){
-    try{
-      return "${((timeOfDay!.period == DayPeriod.am ? 0 : 12) + timeOfDay.hourOfPeriod).toString().padLeft(2,'0')}:${(timeOfDay.minute).toString().padLeft(2,'0')}:00";
-    }catch(e){
-      return "Choisissez l'heure de début";
-    }
+  String timeToString(String? string, [bool isStart = false]){
+    return string??"Choisissez l'heure de ${isStart ? "début" : "fin"}";
   }
-  String get startTimeToString {
-    try{
-      if(startTime?.period == DayPeriod.am){
-        return "${startTime?.hourOfPeriod.toString().padLeft(2,'0')}:${startTime?.minute.toString().padLeft(2,'0')}";
-      }else{
-        return "${(startTime!.hourOfPeriod + 12).toString().padLeft(2,'0')}:${(startTime?.minute).toString().padLeft(2,'0')}";
-      }
-    }catch(e){
-      return "Choisissez l'heure de début";
-    }
-  }
-  String get endTimeToString {
-    try{
-        return "${((endTime!.period == DayPeriod.am ? 0 : 12) + endTime!.hourOfPeriod).toString().padLeft(2,'0')}:${(endTime!.minute).toString().padLeft(2,'0')}";
-    }catch(e){
-      return "Choisissez l'heure de fin";
-    }
-  }
+  // String timeToString(TimeOfDay? timeOfDay){
+  //   try{
+  //     return "${((timeOfDay!.period == DayPeriod.am ? 0 : 12) + timeOfDay.hourOfPeriod).toString().padLeft(2,'0')}:${(timeOfDay.minute).toString().padLeft(2,'0')}:00";
+  //   }catch(e){
+  //     return "Choisissez l'heure de début";
+  //   }
+  // }
+  // String get startTimeToString {
+  //   try{
+  //     if(startTime?.period == DayPeriod.am){
+  //       return "${startTime?.hourOfPeriod.toString().padLeft(2,'0')}:${startTime?.minute.toString().padLeft(2,'0')}";
+  //     }else{
+  //       return "${(startTime!.hourOfPeriod + 12).toString().padLeft(2,'0')}:${(startTime?.minute).toString().padLeft(2,'0')}";
+  //     }
+  //   }catch(e){
+  //     return "Choisissez l'heure de début";
+  //   }
+  // }
+  // String get endTimeToString {
+  //   try{
+  //       return "${((endTime!.period == DayPeriod.am ? 0 : 12) + endTime!.hourOfPeriod).toString().padLeft(2,'0')}:${(endTime!.minute).toString().padLeft(2,'0')}";
+  //   }catch(e){
+  //     return "Choisissez l'heure de fin";
+  //   }
+  // }
 
   Future<DateTime?> selectDate(context) async {
     return await showDatePicker(
@@ -110,14 +116,20 @@ class AddRTTViewModel {
     ).then((DateTime? date) => date);
   }
 
-  Future<TimeOfDay?> selectTime(context) async {
+  Future<String?> selectTime(context) async {
     return await showTimePicker(
         context: context,
         cancelText: "ANNULER",
         confirmText: "OUI",
       builder: (context, child) => MediaQuery(data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true), child: child!),
         initialTime: TimeOfDay.now(),
-    ).then((value) => value?.replacing(hour: value.hourOfPeriod + 12));
+    ).then((value) {
+      if(value != null){
+        return "${value.hour.toString().padLeft(2, '0')}:${value.minute.toString().padLeft(2,'0')}:00";
+      }else{
+        return null;
+      }
+    });
   }
   Theme themedTextField(
       {required TextEditingController controller,
@@ -241,9 +253,9 @@ class AddRTTViewModel {
                                             height: 60,
                                             color: Colors.white54,
                                             onPressed: () async {
-                                              TimeOfDay? _selected = await this.selectTime(context);
+                                              String? _selected = await this.selectTime(context);
                                               setState(() {
-                                                setStartTime = _selected;
+                                                _instance.setStartTime = _selected;
                                               });
                                               print(startTime);
                                             },
@@ -259,7 +271,7 @@ class AddRTTViewModel {
                                                 ),
                                                 Expanded(
                                                     child:
-                                                    Text("$startTimeToString"))
+                                                    Text("${_instance.timeToString(_instance.startTime, true)}"))
                                               ],
                                             ),
                                           ),
@@ -270,9 +282,9 @@ class AddRTTViewModel {
                                             height: 60,
                                             color: Colors.white54,
                                             onPressed: () async {
-                                              TimeOfDay? _selected = await this.selectTime(context);
+                                              String? _selected = await this.selectTime(context);
                                               setState(() {
-                                                setEndTime = _selected;
+                                                _instance.setEndTime = _selected;
                                               });
                                             },
                                             child: Row(
@@ -287,7 +299,7 @@ class AddRTTViewModel {
                                                 ),
                                                 Expanded(
                                                     child:
-                                                    Text("$endTimeToString"))
+                                                    Text("${_instance.timeToString(_instance.endTime)}"))
                                               ],
                                             ),
                                           ),
@@ -346,10 +358,12 @@ class AddRTTViewModel {
                                       Expanded(
                                         child: MaterialButton(
                                           height: 50,
-                                          onPressed: () {
+                                          onPressed: () async {
                                             print(body);
                                             if(body.length == 5){
                                               Navigator.of(context).pop(null);
+                                              loadingCallback(true);
+                                              await _instance.service.request(body: _instance.body).whenComplete(() => loadingCallback(false));
                                             }else{
                                               setState((){
                                                 _instance.showMessage = true;
@@ -384,7 +398,7 @@ class AddRTTViewModel {
         barrierLabel: '',
         context: context,
         pageBuilder: (context, animation1, animation2) => Container()).then((value) {
-          _instance.bodyAll = {};
+          _instance.bodyAll = {"user_id" : auth.loggedUser!.id.toString()};
           _instance.reason.clear();
           _instance.setEndTime = null;
           _instance.setStartTime = null;

@@ -5,6 +5,8 @@ import 'package:ronan_pensec/models/calendar/rtt_model.dart';
 import 'package:ronan_pensec/services/data_controls/calendar_data_controllers/logged_user_rtt_requests.dart';
 
 class EmployeeRTT extends StatefulWidget {
+  final bool disableScroll;
+  EmployeeRTT({this.disableScroll = false});
   @override
   _EmployeeRTTState createState() => _EmployeeRTTState();
 }
@@ -88,6 +90,7 @@ class _EmployeeRTTState extends State<EmployeeRTT> {
           if (snapshot.data!.length > 0) {
             return Scrollbar(
               child: CustomScrollView(
+                physics: widget.disableScroll ? NeverScrollableScrollPhysics() : ClampingScrollPhysics(),
                 slivers: [
                   SliverAppBar(
                     floating: true,

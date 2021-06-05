@@ -45,7 +45,6 @@ class EmployeeService {
         return false;
       });
     }catch(e){
-      print("UPDATE Erreur : $e");
       _notifier.showContextedBottomToast(context, msg: "UPDATE Erreur : $e");
       return false;
     }
@@ -153,7 +152,6 @@ class EmployeeService {
         return [];
       });
     } catch (e) {
-      print("ERREUR HOLDIAY $e");
       _notifier.showContextedBottomToast(context, msg: "Erreur : $e");
       return [];
     }
@@ -180,7 +178,6 @@ class EmployeeService {
         return [];
       });
     } catch (e) {
-      print("ERREUR RTT : $e");
       _notifier.showContextedBottomToast(context, msg: "Erreur : $e");
       return [];
     }
@@ -206,7 +203,6 @@ class EmployeeService {
         return [];
       });
     } catch (e) {
-      print("ERREUR ATTENDANCE : $e ");
       _notifier.showContextedBottomToast(context, msg: "Erreur : $e");
       return [];
     }
