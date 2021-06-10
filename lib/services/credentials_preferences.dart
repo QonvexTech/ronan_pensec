@@ -43,4 +43,21 @@ class CredentialsPreferences {
       return null;
     }
   }
+  int get getPasswordLength {
+    return _preferences.getString('password')?.length??0;
+  }
+  String get password {
+    return _preferences.getString("password")!;
+  }
+  String get email {
+    return _preferences.getString('email')!;
+  }
+  void updateEmail(String newEmail){
+    _preferences.remove("email");
+    _preferences.setString('email', newEmail);
+  }
+  void updatePassword(String newPassword) {
+    _preferences.remove('password');
+    _preferences.setString('password', newPassword);
+  }
 }

@@ -31,21 +31,82 @@ class EmployeeService {
     _instance._model = model;
     return _instance;
   }
+
+  Future<String?> updateProfilePicture({required String base64}) async {
+    try{
+      return await http.put(Uri.parse("${BaseEnpoint.URL}${UserEndpoint.base}/update_user_photo"),headers: {
+        "Accept" : "application/json",
+        HttpHeaders.authorizationHeader : "Bearer ${_auth.token}"
+      },body: {
+        'image' : "data:image/jpg;base64,$base64"
+      }).then((res) {
+        var data = json.decode(res.body);
+        if(res.statusCode == 200){
+          _notifier.showUnContextedBottomToast(msg: "Mise a jour reussie");
+          return data['data'];
+        }
+        _notifier.showUnContextedBottomToast(msg: "Erreur ${res.statusCode}, ${res.reasonPhrase}");
+        return null;
+      });
+    }catch(e){
+      _notifier.showUnContextedBottomToast(msg: "Erreur $e");
+      return null;
+    }
+  }
+  Future<int?> get updatePushService async {
+    try{
+      return await http.put(Uri.parse("${BaseEnpoint.URL}${UserEndpoint.updatePushNotification}"),headers: {
+        "Accept" : "application/json",
+        HttpHeaders.authorizationHeader : "Bearer ${_auth.token}"
+      }).then((res) {
+        var data = json.decode(res.body);
+        _notifier.showUnContextedBottomToast(msg: "${data['message']}");
+        if(res.statusCode == 200){
+          return int.parse(data['status'].toString());
+        }
+        return null;
+      });
+    }catch(e){
+      return null;
+    }
+  }
   Future<bool> update(context, {required Map body, required int userId}) async {
     try{
       return await http.put(Uri.parse("${BaseEnpoint.URL}${UserEndpoint.update(userId)}"),body: body,headers: {
         "Accept" : "application/json",
         HttpHeaders.authorizationHeader : "Bearer ${_auth.token}"
       }).then((value) {
-        _notifier.showContextedBottomToast(context, msg: "${value.reasonPhrase}");
+
         var data = json.decode(value.body);
+        print(data);
         if(value.statusCode == 200){
+          _notifier.showContextedBottomToast(context, msg: "Mise à jour réussie");
           return true;
         }
+        _notifier.showContextedBottomToast(context, msg: "Erreur ${value.statusCode}, ${value.reasonPhrase}");
         return false;
       });
     }catch(e){
       _notifier.showContextedBottomToast(context, msg: "UPDATE Erreur : $e");
+      return false;
+    }
+  }
+  Future<bool> delete(context, {required int userId}) async {
+    try{
+      return await http.delete(Uri.parse("${BaseEnpoint.URL}${UserEndpoint.deleteUser(userId: userId)}"),headers: {
+        "Accept" : "application/json",
+        HttpHeaders.authorizationHeader : "Bearer ${_auth.token}"
+      }).then((response) {
+        if(response.statusCode == 200){
+          _model.remove(id: userId);
+          _notifier.showContextedBottomToast(context, msg: "Suppression réussie");
+          return true;
+        }
+        _notifier.showContextedBottomToast(context, msg: "Erreur ${response.statusCode}, ${response.reasonPhrase}");
+        return false;
+      });
+    }catch(e){
+      _notifier.showContextedBottomToast(context, msg: "Erreur : $e");
       return false;
     }
   }
@@ -127,7 +188,7 @@ class EmployeeService {
         return [];
       });
     }catch(e){
-      print(e);
+      print("HOLIDAY FETCH ERROR $e");
       _notifier.showContextedBottomToast(context, msg: "Erreur : $e");
       return [];
     }
@@ -178,6 +239,7 @@ class EmployeeService {
         return [];
       });
     } catch (e) {
+
       _notifier.showContextedBottomToast(context, msg: "Erreur : $e");
       return [];
     }

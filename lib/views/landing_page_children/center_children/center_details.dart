@@ -771,10 +771,10 @@ class _CenterDetailsState extends State<CenterDetails> {
                                                           centerId:
                                                               widget.model.id)
                                                       .then((value) {
-                                                    if (value.isNotEmpty) {
+                                                    if (value) {
                                                       setState(() {
-                                                        widget.model.users =
-                                                            value;
+
+                                                        widget.model.users += _pendingUsers;
                                                         _pendingUsers.clear();
                                                       });
                                                     }
