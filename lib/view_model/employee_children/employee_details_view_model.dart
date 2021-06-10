@@ -17,6 +17,8 @@ class EmployeeDetailsViewModel {
     _instance.appendToBody = {"birth_date" : user.birthdate.toString()};
     _instance.appendToBody = {"city" : user.city};
     _instance.appendToBody = {"email" : user.email};
+    _instance.appendToBody = {'is_senior' : user.isSenior ? "1" : "0"};
+    _instance.setSeniority = user.isSenior ? 1 : 0;
 
     /// Text controller auto listeners
     _instance.firstName.addListener(() {
@@ -51,6 +53,11 @@ class EmployeeDetailsViewModel {
   }
   static final EmployeeService _service = EmployeeService.instance(_dataControl);
 
+  @override
+  void dispose(){
+    _isEditing = false;
+
+  }
   Map _body = {};
   set appendToBody(Map toAppend) => _body.addAll(toAppend);
   Map get body => _body;
@@ -69,11 +76,21 @@ class EmployeeDetailsViewModel {
   TextEditingController address = new TextEditingController();
   TextEditingController lastName = new TextEditingController();
   TextEditingController mobile = new TextEditingController();
+
   bool _isEditing = false;
   bool get isEditing => _isEditing;
   set setIsEditing(bool e) => _isEditing = e;
 
+  late int _isSenior;
+  int get isSenior => _isSenior;
+  set setSeniority(int i) {
+    _instance.appendToBody = {"is_senior" : "$i"};
+    _isSenior = i;
+  }
+
+
   Future<bool> userUpdate(context, userId) async {
+    print(body);
     return await _instance.service.update(context, body: body, userId: userId);
   }
 }
