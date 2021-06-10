@@ -18,4 +18,5 @@ class UserEndpoint {
 
   /// Method : DELETE
   static String deleteUser({required int userId}) => "$_baseSubDomain/$userId";
+  static final String updatePushNotification = "$_baseSubDomain/update_isSilent_on_push";
 }

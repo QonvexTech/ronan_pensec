@@ -24,4 +24,13 @@ class EmployeeDataControl {
       _list.add(data.map((e) => UserModel.fromJson(parsedJson: e)).toList());
     }
   }
+  void append(Map<String, dynamic> data) {
+    this.current.add(UserModel.fromJson(parsedJson: data));
+    _list.add(this.current);
+  }
+
+  void remove({required int id}){
+    this.current.removeWhere((element) => element.id == id);
+    _list.add(this.current);
+  }
 }

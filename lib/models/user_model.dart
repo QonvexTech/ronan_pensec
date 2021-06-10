@@ -152,4 +152,15 @@ class UserModel {
     'rtt_remaining_balance' : rttRemainingBalance,
     'is_senior' : isSenior ? 1 : 0,
       };
+  Map<String, dynamic> updateToJson() => {
+    'first_name': first_name,
+    'last_name': last_name,
+    'email': email,
+    'address': address,
+    'birthdate': birthdate,
+    'city': city,
+    'zip_code': zip_code,
+    'mobile': mobile,
+    'image' : image,
+  };
 }

@@ -1,10 +1,10 @@
 class HolidayDemandModel{
   final int id;
   String requestName;
-  int currentBalance;
+  double currentBalance;
   int demands;
-  int daysPosed;
-  int daysRemaining;
+  double daysPosed;
+  double daysRemaining;
   final int holidayId;
 
   HolidayDemandModel({

@@ -21,7 +21,9 @@ class ProfileViewModel {
     _instance.zipCode.text = _instance.auth.loggedUser!.zip_code;
     _instance.city.text = _instance.auth.loggedUser!.city;
     _instance.mobile.text = _instance.auth.loggedUser!.mobile;
-
+    _instance.street.text = _instance.auth.loggedUser!.address.split(',')[0];
+    _instance.appendToBody = {"role_id" : _instance.auth.loggedUser!.roleId.toString()};
+    _instance.appendToBody = {"birth_date" : _instance.auth.loggedUser!.birthdate.toString()};
     _instance.firstName.addListener(() {
       if(_instance.firstName.text.isNotEmpty){
         _instance.appendToBody = {"first_name" : _instance.firstName.text};
@@ -77,12 +79,30 @@ class ProfileViewModel {
   final TextEditingController mobile = new TextEditingController();
   final TextEditingController zipCode = new TextEditingController();
   final TextEditingController city = new TextEditingController();
+  final TextEditingController street = new TextEditingController();
 
+  late DateTime _birthDate;
+  DateTime get birthDate => _birthDate;
+  set setBirthday(DateTime dateTime) {
+    _birthDate = dateTime;
+    _instance.appendToBody = {'birth_date' : _birthDate.toString()};
+  }
   Map _body = {};
   Map get body => _body;
   set appendToBody(Map toAppend) => _body.addAll(toAppend);
   set fullChangeBody(Map map) => _body = map;
 
+  void reset(){
+    _instance.fullChangeBody = {
+      "first_name" : _instance.auth.loggedUser!.first_name,
+      "last_name" : _instance.auth.loggedUser!.last_name,
+      "address" : _instance.auth.loggedUser!.address,
+      "zip_code" : _instance.auth.loggedUser!.zip_code,
+      "city" : _instance.auth.loggedUser!.city,
+      "mobile" : _instance.auth.loggedUser!.mobile,
+      'birth_date' : _instance.auth.loggedUser!.birthdate.toString(),
+    };
+  }
   Future<bool> update(context) async {
     return await _instance.service.update(context, body: _instance.body, userId: _instance.auth.loggedUser!.id);
   }
