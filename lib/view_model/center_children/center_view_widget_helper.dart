@@ -69,7 +69,9 @@ class CenterViewWidgetHelper {
               const SizedBox(
                 width: 10,
               ),
-              Text("$text")
+              Expanded(
+                child: Text("$text"),
+              )
             ],
           ),
         ),
@@ -81,12 +83,12 @@ class CenterViewWidgetHelper {
       bool isMobile = false,
       required ValueChanged<bool> isLoading,
       required ValueChanged<bool> callback}) {
-    _email.text = center.email??"";
+    _email.text = center.email ?? "";
     _name.text = center.name;
-    _address.text = center.address??"";
-    _number.text = center.mobile??"";
-    _city.text = center.city??"";
-    _zipCode.text = center.zipCode??"";
+    _address.text = center.address ?? "";
+    _number.text = center.mobile ?? "";
+    _city.text = center.city ?? "";
+    _zipCode.text = center.zipCode ?? "";
     GeneralTemplate.showDialog(context,
         child: Container(
           width: double.infinity,
@@ -230,24 +232,29 @@ class CenterViewWidgetHelper {
                       onPressed: () async {
                         isLoading(true);
                         Navigator.of(context).pop(null);
-                        await _service.update(context,centerId: center.id, body: {
-                          "zip_code": _zipCode.text.isNotEmpty
-                              ? _zipCode.text
-                              : center.zipCode,
-                          "name":
-                              _name.text.isNotEmpty ? _name.text : center.name,
-                          "address": _address.text.isNotEmpty
-                              ? _address.text
-                              : center.address,
-                          "city":
-                              _city.text.isNotEmpty ? _city.text : center.city,
-                          "mobile": _number.text.isNotEmpty
-                              ? _number.text
-                              : center.mobile,
-                          "email": _email.text.isNotEmpty
-                              ? _email.text
-                              : center.email
-                        }).then((value) => callback(value)).whenComplete(() => isLoading(false));
+                        await _service
+                            .update(context, centerId: center.id, body: {
+                              "zip_code": _zipCode.text.isNotEmpty
+                                  ? _zipCode.text
+                                  : center.zipCode,
+                              "name": _name.text.isNotEmpty
+                                  ? _name.text
+                                  : center.name,
+                              "address": _address.text.isNotEmpty
+                                  ? _address.text
+                                  : center.address,
+                              "city": _city.text.isNotEmpty
+                                  ? _city.text
+                                  : center.city,
+                              "mobile": _number.text.isNotEmpty
+                                  ? _number.text
+                                  : center.mobile,
+                              "email": _email.text.isNotEmpty
+                                  ? _email.text
+                                  : center.email
+                            })
+                            .then((value) => callback(value))
+                            .whenComplete(() => isLoading(false));
                         // callback(true);
                         // _service.delete(context, centerId: centerId).whenComplete(() => callback(false));
                       },

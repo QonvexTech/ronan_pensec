@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ronan_pensec/global/template/general_template.dart';
 import 'package:ronan_pensec/models/center_model.dart';
 import 'package:ronan_pensec/services/data_controls/region_data_control.dart';
+import 'package:ronan_pensec/view_model/center_children/center_create_widget.dart';
 import 'package:ronan_pensec/view_model/center_children/center_view_widget_helper.dart';
 import 'package:ronan_pensec/view_model/center_view_model.dart';
 
@@ -24,6 +25,7 @@ class CenterView extends StatefulWidget {
 
 class _CenterViewState extends State<CenterView> {
   late final CenterViewModel _centerViewModel = CenterViewModel.instance(widget.control);
+  final CenterCreateWidget _centerCreateWidget = CenterCreateWidget.instance;
   final CenterViewWidgetHelper _helper = CenterViewWidgetHelper.instance;
   bool _isLoading = false;
 
@@ -98,12 +100,17 @@ class _CenterViewState extends State<CenterView> {
                               });
                             }),
                       },
-                      if (_centerViewModel.auth.loggedUser!.roleId == 1 &&
-                          widget.regionId != null) ...{
+                      if (_centerViewModel.auth.loggedUser!.roleId == 1) ...{
                         IconButton(
                           tooltip: "Creer Centrés",
                           icon: Icon(Icons.add),
-                          onPressed: () {},
+                          onPressed: () {
+                            _centerCreateWidget.create(context, size: _size, loadingCallback: (bool b){
+                              setState(() {
+                                _isLoading = b;
+                              });
+                            });
+                          },
                         ),
                       }
                     ],
