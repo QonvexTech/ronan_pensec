@@ -3,6 +3,7 @@ import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/models/radio_item.dart';
 import 'package:ronan_pensec/models/reset_dropdown_menu_item.dart';
+import 'package:ronan_pensec/services/admin_key_auth.dart';
 import 'package:ronan_pensec/services/increase_consumables.dart';
 
 class ManageEmployeesViewModel {
@@ -15,6 +16,8 @@ class ManageEmployeesViewModel {
   static final Auth _auth = Auth.instance;
   static final IncreaseConsumables _consumables = IncreaseConsumables.instance;
   IncreaseConsumables get consumablService => _consumables;
+  static final AdminKeyAuth _keyAuth = AdminKeyAuth.instance;
+  AdminKeyAuth get keyAuth => _keyAuth;
   Auth get auth => _auth;
   static final List<ResetDropdownMenuItem> _items = [
     ResetDropdownMenuItem(id: 1, name: "Tout"),

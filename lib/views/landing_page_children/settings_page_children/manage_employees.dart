@@ -19,21 +19,25 @@ class _ManageEmployeesState extends State<ManageEmployees> {
 
   // final RegExp _numberRegExp = new RegExp(r'/^\d*(\.\d+)?$/');
   final double _controlNumber = 0.5;
-  final TextEditingController _specific = new TextEditingController()..text = "2.08";
+  final TextEditingController _specific = new TextEditingController()
+    ..text = "2.08";
   final _validateKey = new GlobalKey<FormState>();
   late Map body = {
     "type": chosenRadioItem.id.toString(),
     "to_add": 2.08.toString()
   };
-  MaterialButton submitButton({required VoidCallback onPressed}) => MaterialButton(
-      onPressed: onPressed,
-    color: Palette.gradientColor[0],
-    child: Text("Soumettre",style: TextStyle(
-      color: Colors.white,
-      fontSize: 15,
-      fontWeight: FontWeight.w600
-    ),),
-  );
+
+  MaterialButton submitButton({required VoidCallback onPressed}) =>
+      MaterialButton(
+        onPressed: onPressed,
+        color: Palette.gradientColor[0],
+        child: Text(
+          "Valider",
+          style: TextStyle(
+              color: Colors.white, fontSize: 15, fontWeight: FontWeight.w600),
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -240,29 +244,168 @@ class _ManageEmployeesState extends State<ManageEmployees> {
                             ),
                           },
                           Container(
-                            width: double.infinity,
-                            margin: EdgeInsets.only(left: size.width > 900 ? 20 : 0, top: 15),
-                            alignment: AlignmentDirectional.centerEnd,
-                            child: Container(
-                              width: size.width > 900 ? 120 : double.infinity,
-                              height: 50,
-                              child: submitButton(onPressed: () async {
-                                if(chosenRadioItem.id == 3){
-                                  if(_validateKey.currentState!.validate()){
-                                    setState(() {
-                                      _isLoading = true;
-                                    });
-                                    await _viewModel.consumablService.all(body: body).whenComplete(() => setState(() => _isLoading = false));
-                                  }
-                                }else{
-                                  setState(() {
-                                    _isLoading = true;
-                                  });
-                                  await _viewModel.consumablService.all(body: body).whenComplete(() => setState(() => _isLoading = false));
+                              width: double.infinity,
+                              margin: EdgeInsets.only(
+                                  left: size.width > 900 ? 20 : 0, top: 15),
+                              alignment: AlignmentDirectional.centerEnd,
+                              child: Container(
+                                width: size.width > 900 ? 120 : double.infinity,
+                                height: 50,
+                                child: submitButton(onPressed: () {
+                                  TextEditingController _keyControl = new TextEditingController();
+                                  GeneralTemplate.showDialog(
+                                    context,
+                                    child: Column(
+                                      children: [
+                                        Expanded(
+                                          child: Theme(
+                                            data: ThemeData(
+                                              primaryColor: Palette.gradientColor[0]
+                                            ),
+                                            child: TextField(
+                                              controller: _keyControl,
+                                              cursorColor: Palette.gradientColor[0],
+                                              decoration: InputDecoration(
+                                                labelText: "Clé",
+                                                hintText: "Clé",
+                                                prefixIcon: Icon(Icons.vpn_key_outlined),
+                                                border: OutlineInputBorder(
+                                                  borderRadius: BorderRadius.circular(5)
+                                                )
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 20,
+                                        ),
+                                        Container(
+                                          width: double.infinity,
+                                          height: 50,
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                child: MaterialButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop(null);
+                                                    _keyControl.clear();
+                                                  },
+                                                  color: Colors.grey.shade100,
+                                                  child: Center(
+                                                    child: Text(
+                                                      "ANNULER",
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        letterSpacing: 1.5,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                width: 20,
+                                              ),
+                                              Expanded(
+                                                child: MaterialButton(
+                                                  onPressed: () async {
+
+                                                    await _viewModel.keyAuth.check(key: _keyControl.text).then((value) async {
+                                                      if(value){
+                                                        Navigator.of(context).pop(null);
+                                                        if (chosenRadioItem.id == 3) {
+                                                          setState(() {
+                                                            _isLoading = true;
+                                                          });
+                                                          if (_validateKey.currentState!
+                                                              .validate()) {
+                                                            await _viewModel.consumablService
+                                                                .all(body: body)
+                                                                .whenComplete(() => setState(
+                                                                    () => _isLoading = false));
+                                                          }
+                                                        } else {
+                                                          setState(() {
+                                                            _isLoading = true;
+                                                          });
+                                                          await _viewModel.consumablService
+                                                              .all(body: body)
+                                                              .whenComplete(() => setState(
+                                                                  () => _isLoading = false));
+                                                        }
+                                                      }else{
+                                                        setState(() {
+                                                          _isLoading = false;
+                                                        });
+                                                      }
+                                                    });
+                                                  },
+                                                  color:
+                                                      Palette.gradientColor[0],
+                                                  child: Center(
+                                                    child: Text(
+                                                      "SOUMETTRE",
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        letterSpacing: 1.5,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                    width: size.width,
+                                    height: 170,
+                                    title: Row(
+                                      children: [
+                                        Container(
+                                          width: 100,
+                                          height: 100,
+                                          child: Image.asset(
+                                              "assets/images/CYBER-SECURITY.png"),
+                                        ),
+                                        Expanded(
+                                          child: ListTile(
+                                            title: Text(
+                                                "Vérification de l'administrateur"),
+                                            subtitle: Text(
+                                                "Pour authentifier votre identité, veuillez saisir la clé administrateur."),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  );
                                 }
-                              }),
-                            )
-                          )
+                                    // onPressed: () async {
+                                    //   if (chosenRadioItem.id == 3) {
+                                    //     if (_validateKey.currentState!
+                                    //         .validate()) {
+                                    //       setState(() {
+                                    //         _isLoading = true;
+                                    //       });
+                                    //       await _viewModel.consumablService
+                                    //           .all(body: body)
+                                    //           .whenComplete(() => setState(
+                                    //               () => _isLoading = false));
+                                    //     }
+                                    //   } else {
+                                    //     setState(() {
+                                    //       _isLoading = true;
+                                    //     });
+                                    //     await _viewModel.consumablService
+                                    //         .all(body: body)
+                                    //         .whenComplete(() => setState(
+                                    //             () => _isLoading = false));
+                                    //   }
+                                    // },
+                                    ),
+                              ))
                         ],
                       ),
                     )
