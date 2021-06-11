@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/global/template/general_template.dart';
+import 'package:ronan_pensec/services/admin_key_auth.dart';
 import 'package:ronan_pensec/services/change_email_service.dart';
 import 'package:ronan_pensec/services/change_password_service.dart';
 import 'package:ronan_pensec/view_model/security_and_login_view_model.dart';
@@ -20,6 +21,7 @@ class _SecurityAndLoginState extends State<SecurityAndLogin> {
   static final SecurityAndLoginViewModel _securityAndLoginViewModel = SecurityAndLoginViewModel.instance;
   static final ChangePasswordService _changePasswordService = ChangePasswordService.instance;
   static final ChangeEmailService _changeEmailService = ChangeEmailService.instance;
+  static final AdminKeyAuth _adminKeyAuth = AdminKeyAuth.instance;
   final _emailFormKey = GlobalKey<FormState>();
   final _passwordFormKey = GlobalKey<FormState>();
   final _confirmationKey = GlobalKey<FormState>();
@@ -220,14 +222,14 @@ class _SecurityAndLoginState extends State<SecurityAndLogin> {
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 300),
                   width: double.infinity,
-                  height: _editAdminValidation ? 1000/sqrt( size.width * (size.width < 700 ? size.width * 0.0000165 : size.width > 900 ? 0.0125 : 0.0265)) : 60,
+                  height: _editAdminValidation ? 1000/sqrt( size.width * (size.width < 700 ? size.width * 0.0000155 : size.width > 900 ? 0.008 : 0.022)) : 60,
                   child: _securityAndLoginViewModel.animatedChild(label: "Clé de validation administrateur", initChild: Container(
                     height: 60,
                     width: double.infinity,
                     child: ListTile(
                       leading: Icon(Icons.security, color: Colors.green,),
-                      title: Text("Clé administrateur"),
-                      subtitle: Text("Attention : Cette clé permet de réinitialiser manuellement les congés de l'utilisateur"),
+                      title: Text("Clé administrateur",maxLines: size.width < 600 ? 1 : null, overflow: TextOverflow.ellipsis,),
+                      subtitle: Text("Attention : Cette clé permet de réinitialiser manuellement les congés de l'utilisateur",maxLines: size.width < 600 ? 1 : null, overflow: TextOverflow.ellipsis,),
                     ),
                   ), triggeredChild: ListView(
                     children: [
@@ -236,6 +238,10 @@ class _SecurityAndLoginState extends State<SecurityAndLogin> {
                         title: Text("Clé administrateur"),
                         subtitle: Text("Attention : Cette clé permet de réinitialiser manuellement les congés de l'utilisateur"),
                       ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      _securityAndLoginViewModel.oldAdminKey(size),
                       const SizedBox(
                         height: 10,
                       ),
@@ -253,14 +259,23 @@ class _SecurityAndLoginState extends State<SecurityAndLogin> {
                           setState(() {
                             _isLoading = true;
                           });
-                          await _changePasswordService.superAdmin(newPassword: _securityAndLoginViewModel.adminKeyField.text).then((value) {
+                          await _adminKeyAuth.check(key: _securityAndLoginViewModel.oldAdminKeyController.text).then((value) async {
                             if(value){
+                              await _changePasswordService.superAdmin(newPassword: _securityAndLoginViewModel.adminKeyField.text).then((value) {
+                                if(value){
+                                  setState(() {
+                                    _editAdminValidation = false;
+                                    _securityAndLoginViewModel.adminKeyField.clear();
+                                  });
+                                }
+                              }).whenComplete(() => setState(() => _isLoading = false));
+                            }else{
                               setState(() {
-                                _editAdminValidation = false;
-                                _securityAndLoginViewModel.adminKeyField.clear();
+                                _isLoading = false;
                               });
                             }
-                          }).whenComplete(() => setState(() => _isLoading = false));
+                          });
+
                         }
                       })
                     ],
