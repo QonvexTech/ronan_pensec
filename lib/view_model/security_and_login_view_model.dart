@@ -25,7 +25,8 @@ class SecurityAndLoginViewModel {
   TextEditingController get newEmailField => _newEmailField;
   final TextEditingController _confirmationCodeField = new TextEditingController();
   TextEditingController get confirmationCodeFieldText => _confirmationCodeField;
-
+  final TextEditingController _oldAdminKeyFieldController = new TextEditingController();
+  TextEditingController get oldAdminKeyController => _oldAdminKeyFieldController;
 
   final TextEditingController _adminKeyField = new TextEditingController();
   TextEditingController get adminKeyField => _adminKeyField;
@@ -85,10 +86,11 @@ class SecurityAndLoginViewModel {
               borderRadius: BorderRadius.circular(2))),
     ),
   );
-  
+
+  Widget oldAdminKey(Size size) => this.field(size, label: "Ancienne clé d'administrateur", controller: _oldAdminKeyFieldController);
  Widget newAdminKey(Size size, GlobalKey<FormState> key) => Form(
    key: key,
-   child: this.field(size, label: "Nouvelle clé administrateur", controller: _adminKeyField, isEmail: true),
+   child: this.field(size, label: "Nouvelle clé administrateur", controller: _adminKeyField),
  );
   Widget confirmationCodeField(Size size, GlobalKey<FormState> key) => Form(
     key: key,
