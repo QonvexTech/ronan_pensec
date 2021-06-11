@@ -16,6 +16,7 @@ class RegionService {
   static final RegionService _instance = RegionService._internal();
   static final RawRegionController _regionController = RawRegionController.instance;
   RawRegionController get rawRegionController => _regionController;
+  // ignore: non_constant_identifier_names
   static RegionService instance(RegionDataControl control) {
     _instance._regionDataControl = control;
     return _instance;
