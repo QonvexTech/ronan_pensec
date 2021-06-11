@@ -11,6 +11,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initialize() async {
     try{
       _preferences.getCredentials(context);
+
     }catch(e){
       print("ERROR $e");
     }
