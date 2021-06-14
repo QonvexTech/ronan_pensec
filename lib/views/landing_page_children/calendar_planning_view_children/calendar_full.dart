@@ -274,7 +274,7 @@ class _CalendarFullState extends State<CalendarFull> {
                           width: 150,
                           height: 60,
                           decoration: BoxDecoration(
-                            color: Palette.gradientColor[0]
+                            color: Colors.grey.shade300
                           ),
                         ),
                         Expanded(
