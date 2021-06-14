@@ -1,11 +1,19 @@
+import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:ronan_pensec/global/auth.dart';
+import 'package:ronan_pensec/services/data_controls/calendar_data_controllers/pending_holiday_requests_data_control.dart';
+import 'package:ronan_pensec/services/data_controls/calendar_data_controllers/pending_rtt_requests_data_control.dart';
+import 'package:ronan_pensec/services/data_controls/notification_active_badge_control.dart';
+import 'package:ronan_pensec/services/notification_service.dart';
 
 import 'firebase_messaging_token_service.dart';
 
 class FirebaseMessagingService {
   FirebaseMessagingService._privateConstructor();
-
+  PendingRTTRequestDataControl _pendingRTTRequestDataControl = PendingRTTRequestDataControl.instance;
+  PendingHolidayRequestsDataControl _pendingHolidayRequestsDataControl = PendingHolidayRequestsDataControl.instance;
+  static final NotificationService _notificationService = NotificationService.instance;
+  static final NotificationActiveBadgeControl _activeBadgeControl = NotificationActiveBadgeControl.instance;
   /// initializing constructor
   static final FirebaseMessagingService _instance =
       FirebaseMessagingService._privateConstructor();
@@ -50,13 +58,57 @@ class FirebaseMessagingService {
       sound: true,
     );
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      print("NOTIFICATION MESSAGE : $message");
-
+      if(message.data['notificaton_data'] != null){
+        try{
+          _activeBadgeControl.update(true);
+          _notificationService.all;
+        }catch(e){
+          print("ERROR NOTIFICATION APPEND : $e");
+        }
+      }
+      if(message.data['type'] != null){
+        if(message.data['type'] == "rtt_request"){
+          try{
+            _pendingRTTRequestDataControl.append(json.decode(message.data['secondary_data']));
+          }catch(e){
+            print("ERROR PENDING APPEND : $e");
+          }
+        }else{
+          try{
+            _pendingHolidayRequestsDataControl.append(json.decode(message.data['secondary_data']));
+          }catch(e){
+            print("ERROR PENDING HOLIDAY APPPEND : $e");
+          }
+        }
+      }
       return;
     });
     // on open
-    FirebaseMessaging.onMessageOpenedApp.listen((event) {
-      print("MESSAGE OPENED :${event.notification!.title}");
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      if(message.data['notificaton_data'] != null){
+        try{
+          Map<String, dynamic> data = json.decode(message.data['notificaton_data']);
+          _notificationService.all;
+        }catch(e){
+          print("ERROR NOTIFICATION APPEND : $e");
+        }
+      }
+      if(message.data['type'] != null){
+        if(message.data['type'] == "rtt_request"){
+          try{
+            _pendingRTTRequestDataControl.append(json.decode(message.data['secondary_data']));
+          }catch(e){
+            print("ERROR PENDING APPEND : $e");
+          }
+        }else{
+          try{
+            _pendingHolidayRequestsDataControl.append(json.decode(message.data['secondary_data']));
+          }catch(e){
+            print("ERROR PENDING HOLIDAY APPPEND : $e");
+          }
+        }
+      }
+      return;
     });
 
     //background
