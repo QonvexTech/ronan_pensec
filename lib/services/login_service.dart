@@ -9,6 +9,7 @@ import 'package:ronan_pensec/global/endpoints/auth_endpoint.dart';
 import 'package:ronan_pensec/models/user_model.dart';
 import 'package:ronan_pensec/route/credential_route.dart';
 import 'package:ronan_pensec/services/http_request.dart';
+import 'package:ronan_pensec/services/notification_service.dart';
 import 'dart:convert';
 import 'package:ronan_pensec/services/toast_notifier.dart';
 import 'package:ronan_pensec/views/landing_page.dart';
@@ -23,6 +24,7 @@ class LoginService {
   static LoginService get instance => _instance;
   final HttpRequest _rqst = HttpRequest.instance;
   static final Auth _auth = Auth.instance;
+  static final NotificationService _notificationService = NotificationService.instance;
   late final CredentialsPreferences _credentialsPreferences = CredentialsPreferences.instance;
   Future<bool> login(context,
       {required String email,
@@ -46,7 +48,7 @@ class LoginService {
             _credentialsPreferences.saveCredentials(
                 email: email, password: password);
           }
-
+          _notificationService.all;
           Navigator.pushReplacement(
               context,
               PageTransition(

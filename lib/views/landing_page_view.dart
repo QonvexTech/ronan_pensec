@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/global/tabbar_item_class.dart';
 import 'package:ronan_pensec/global/template/general_template.dart';
+import 'package:ronan_pensec/services/data_controls/notification_active_badge_control.dart';
 import 'package:ronan_pensec/services/landing_page_service.dart';
 import 'package:ronan_pensec/view_model/landing_page_main.dart';
+import 'package:ronan_pensec/views/landing_page_children/notifications_view.dart';
 
 import 'landing_page_children/calendar.dart';
 import 'landing_page_children/center_view.dart';
@@ -18,6 +20,8 @@ class LandingPageView extends StatefulWidget {
 class _LandingPageScreenWebState extends State<LandingPageView>
     with SingleTickerProviderStateMixin, LandingPageMainHelper {
   late final LandingPageService _service = LandingPageService.instance(context);
+  final NotificationActiveBadgeControl _activeBadgeControl = NotificationActiveBadgeControl.instance;
+  GlobalKey _notificationIconKey = new GlobalKey();
   late final WebPlanning _webPlanning = WebPlanning(
     menuItems: menuItems,
     onFilterCallback: (val) {
@@ -50,162 +54,197 @@ class _LandingPageScreenWebState extends State<LandingPageView>
 
   late final TabController _tabController =
   TabController(length: _contents.length, vsync: this);
-
+  Offset? notificationViewerOffset;
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     final bool _isMobile = size.width < 900;
-
+    if(notificationViewerOffset != null){
+      notificationViewerOffset = Offset(size.width - 60, notificationViewerOffset!.dy);
+    }
     // xPos= box.localToGlobal(Offset.zero).dx;
-    return Scaffold(
-      body: Container(
-        child: Column(
-          children: [
-            ///Header
-            Container(
-              width: double.infinity,
-              height: 60,
-              // decoration: BoxDecoration(
-              //   gradient: LinearGradient(
-              //       colors: Palette.gradientColor,
-              //       begin: Alignment.topCenter,
-              //       end: Alignment.bottomCenter),
-              // ),
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
+    return GestureDetector(
+      onTap: () => setState(() => notificationViewerOffset = null),
+      child: Stack(
+        children: [
+          Scaffold(
+            body: Container(
+              child: Column(
                 children: [
-                  ///Logo
+                  ///Header
                   Container(
-                    width: 60,
-                    height: double.infinity,
-                    padding: const EdgeInsets.all(5),
-                    child: Center(
-                      child: Hero(
-                        tag: "logo",
-                        child: Image.asset("assets/images/logo.png"),
-                      ),
+                    width: double.infinity,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          colors: Palette.gradientColor,
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        ///Logo
+                        Container(
+                          width: 60,
+                          height: double.infinity,
+                          padding: const EdgeInsets.all(5),
+                          child: Center(
+                            child: Hero(
+                              tag: "logo",
+                              child: Image.asset("assets/images/logo.png"),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        if (!_isMobile) ...{
+                          Container(
+                              width: size.width * .45,
+                              alignment: AlignmentDirectional.bottomCenter,
+                              child: TabBar(
+                                onTap: (index) {
+                                  setState(() {
+                                    currentTabIndex = index;
+                                  });
+                                },
+                                indicatorColor: Colors.white,
+                                controller: _tabController,
+                                labelColor: Colors.white,
+                                unselectedLabelColor: Colors.grey,
+                                physics: NeverScrollableScrollPhysics(),
+                                tabs: [
+                                  for (TabbarItem item in tabItems) ...{
+                                    Tab(
+                                      child: Column(
+                                        children: [
+                                          const SizedBox(
+                                            height: 7,
+                                          ),
+                                          Container(
+                                            width: double.infinity,
+                                            height: 20,
+                                            child: FittedBox(
+                                              child: Text("${item.label}",
+                                                  style:
+                                                  TextStyle(letterSpacing: 1.5)),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  }
+                                ],
+                              ))
+                        } else ...{
+                          Text(
+                            "Ronan Pensec",
+                            style: TextStyle(
+                                letterSpacing: 2,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700,
+                                fontSize:
+                                Theme.of(context).textTheme.headline6!.fontSize),
+                          )
+                        },
+                        const SizedBox(
+                          width: 10,
+                        ),
+
+                        Spacer(),
+
+                        if (auth.loggedUser!.roleId < 3) ...{
+                          StreamBuilder<bool>(
+                            stream: _activeBadgeControl.stream$,
+                            builder: (_, snapshot) => GeneralTemplate.badgedIcon(
+                              key: _notificationIconKey,
+                              isEnabled: snapshot.hasData && snapshot.data!,
+                              tooltip: "Notifications",
+                              onPress: () {
+                                setState(() {
+                                  if(notificationViewerOffset == null){
+                                    final RenderBox _renderBox = _notificationIconKey.currentContext!.findRenderObject()! as RenderBox;
+                                    final offset = _renderBox.localToGlobal(Offset.zero);
+                                    notificationViewerOffset = offset;
+                                  }else{
+                                    notificationViewerOffset = null;
+                                  }
+                                });
+                              },
+                              icon: Icons.notifications_rounded,
+                              backgroundColor: Colors.grey.shade200,
+                            ),
+                          ),
+                        },
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Hero(
+                          tag: "my-profile",
+                          child: GeneralTemplate.profileIcon(
+                            callback: (value) async {
+                              await _service.profileIconOnChoose(context, value);
+                            },
+                            imageProvider: userDataControl.imageProvider,
+                          ),
+                        )
+                      ],
                     ),
                   ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  if (!_isMobile) ...{
+                  if (_isMobile) ...{
                     Container(
-                        width: size.width * .45,
-                        alignment: AlignmentDirectional.bottomCenter,
+                        height: 70,
+                        alignment: Alignment.bottomCenter,
+                        width: double.infinity,
                         child: TabBar(
                           onTap: (index) {
                             setState(() {
                               currentTabIndex = index;
                             });
                           },
-                          indicatorColor: Palette.gradientColor[0],
+                          indicatorColor: Palette.textFieldColor,
                           controller: _tabController,
-                          labelColor: Palette.gradientColor[0],
-                          unselectedLabelColor: Colors.grey.shade700,
+                          unselectedLabelColor: Colors.grey.shade400,
                           physics: NeverScrollableScrollPhysics(),
                           tabs: [
                             for (TabbarItem item in tabItems) ...{
                               Tab(
-                                child: Column(
-                                  children: [
-                                    const SizedBox(
-                                      height: 7,
-                                    ),
-                                    Container(
-                                      width: double.infinity,
-                                      height: 20,
-                                      child: FittedBox(
-                                        child: Text("${item.label}",
-                                            style:
-                                            TextStyle(letterSpacing: 1.5)),
-                                      ),
-                                    ),
-                                  ],
+                                icon: Icon(
+                                  item.icon,
+                                  color: tabItems.indexOf(item) == currentTabIndex
+                                      ? Palette.textFieldColor
+                                      : Colors.grey.shade400,
                                 ),
                               )
                             }
                           ],
                         ))
-                  } else ...{
-                    Text(
-                      "Ronan Pensec",
-                      style: TextStyle(
-                          letterSpacing: 2,
-                          color: Palette.gradientColor[0],
-                          fontWeight: FontWeight.w700,
-                          fontSize:
-                          Theme.of(context).textTheme.headline6!.fontSize),
-                    )
                   },
-                  const SizedBox(
-                    width: 10,
-                  ),
-
-                  Spacer(),
-
-                  if (auth.loggedUser!.roleId < 3) ...{
-                    GeneralTemplate.badgedIcon(
-                      isEnabled: true,
-                      tooltip: "Notifications",
-                      onPress: () {},
-                      icon: Icons.notifications_rounded,
-                      backgroundColor: Colors.grey.shade200,
-                    ),
-                  },
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Hero(
-                    tag: "my-profile",
-                    child: GeneralTemplate.profileIcon(
-                      callback: (value) async {
-                        await _service.profileIconOnChoose(context, value);
-                      },
-                      imageProvider: userDataControl.imageProvider,
-                    ),
-                  )
+                  Expanded(
+                      child: TabBarView(
+                        controller: _tabController,
+                        physics: NeverScrollableScrollPhysics(),
+                        children: _contents,
+                      ))
                 ],
               ),
             ),
-            if (_isMobile) ...{
-              Container(
-                  height: 70,
-                  alignment: Alignment.bottomCenter,
-                  width: double.infinity,
-                  child: TabBar(
-                    onTap: (index) {
-                      setState(() {
-                        currentTabIndex = index;
-                      });
-                    },
-                    indicatorColor: Palette.textFieldColor,
-                    controller: _tabController,
-                    unselectedLabelColor: Colors.grey.shade400,
-                    physics: NeverScrollableScrollPhysics(),
-                    tabs: [
-                      for (TabbarItem item in tabItems) ...{
-                        Tab(
-                          icon: Icon(
-                            item.icon,
-                            color: tabItems.indexOf(item) == currentTabIndex
-                                ? Palette.textFieldColor
-                                : Colors.grey.shade400,
-                          ),
-                        )
-                      }
-                    ],
-                  ))
-            },
-            Expanded(
-                child: TabBarView(
-                  controller: _tabController,
-                  physics: NeverScrollableScrollPhysics(),
-                  children: _contents,
-                ))
-          ],
-        ),
+          ),
+          if(notificationViewerOffset != null)...{
+            Positioned(
+              top: notificationViewerOffset!.dy + 45,
+              left: notificationViewerOffset!.dx - 360,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 150),
+                width: 360,
+                height: notificationViewerOffset == null ? 0 : size.height * .85,
+                child: NotificationsView(),
+              ),
+            )
+          }
+        ],
       ),
     );
   }
