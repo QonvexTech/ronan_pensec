@@ -27,9 +27,9 @@ class HolidayModel{
 
   factory HolidayModel.fromJson(parsedJson){
     return HolidayModel(
-      id : parsedJson['id'],
+      id : int.parse(parsedJson['id'].toString()),
       adminComment: parsedJson['admin_comment'],
-      isEndDateHalf: parsedJson['endDate_isHalf_day'],
+      isEndDateHalf: int.parse(parsedJson['endDate_isHalf_day'].toString()),
       reason : parsedJson['reason'],
       startDate : DateTime.tryParse(parsedJson['start_date'].toString())??DateTime.now(),
       endDate : DateTime.tryParse(parsedJson['end_date'].toString())??DateTime.now(),

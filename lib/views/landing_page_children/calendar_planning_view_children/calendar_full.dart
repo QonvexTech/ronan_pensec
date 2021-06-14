@@ -273,6 +273,9 @@ class _CalendarFullState extends State<CalendarFull> {
                         Container(
                           width: 150,
                           height: 60,
+                          decoration: BoxDecoration(
+                            color: Palette.gradientColor[0]
+                          ),
                         ),
                         Expanded(
                           child: ListView(

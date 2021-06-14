@@ -99,6 +99,7 @@ class GeneralTemplate {
   static Widget badgedIcon(
       {Color backgroundColor = Colors.grey,
       String? tooltip,
+        Key? key,
       required bool isEnabled,
       required IconData icon,
       required Function onPress}) {
@@ -109,6 +110,7 @@ class GeneralTemplate {
       child: Tooltip(
         message: "$tooltip",
         child: MaterialButton(
+          key: key,
           color: backgroundColor,
           onPressed: () {
             onPress();
