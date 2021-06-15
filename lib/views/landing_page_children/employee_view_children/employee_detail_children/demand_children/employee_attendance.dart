@@ -10,12 +10,12 @@ class EmployeeAttendance extends StatefulWidget {
   final List<AttendanceModel>? attendance;
   final RegionDataControl regionDataControl;
   final int userId;
-
+  final List<int> managerIds;
   EmployeeAttendance(
       {Key? key,
       this.attendance,
       required this.regionDataControl,
-      required this.userId})
+      required this.userId,required this.managerIds})
       : super(key: key);
 
   @override
@@ -55,13 +55,16 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> with SingleTick
   Widget build(BuildContext context) {
     final Size _size = MediaQuery.of(context).size;
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton:_employeeAttendanceViewModel.auth.loggedUser!.roleId == 1 || (_employeeAttendanceViewModel.auth.loggedUser!.roleId == 2 && widget.managerIds.contains(_employeeAttendanceViewModel.auth.loggedUser!.id)) ? FloatingActionButton(
         backgroundColor: Palette.gradientColor[0],
         onPressed: () => _handleActionPress(),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10000)
         ),
-        child: _employeeAttendanceViewModel.auth.loggedUser!.roleId == 1 ? AnimateIcons(
+        // child: AnimatedSwitcher(
+        //   child: ,
+        // ),
+        child:  AnimateIcons(
           startIcon: Icons.add,
           endIcon: Icons.close,
           endIconColor: Colors.white,
@@ -71,8 +74,8 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> with SingleTick
           size: 20.0,
           onEndIconPress: () => _handleActionPress(),
           onStartIconPress: () => _handleActionPress(),
-        ) : null
-      ),
+        )
+      ) : null,
       body: Container(
           child: Column(
         children: [
@@ -100,7 +103,7 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> with SingleTick
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(5.0),
                               color: Colors.grey.shade200),
-                          padding: const EdgeInsets.only(left: 10),
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
                           duration: Duration(milliseconds: 600),
                           child: Row(
                             children: [
@@ -142,36 +145,36 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> with SingleTick
                                   ),
                                 ),
                               ),
-                              Container(
-                                width: _size.width * .15,
-                                child: DropdownButtonHideUnderline(
-                                  child: DropdownButton<String>(
-                                    value:
-                                        _employeeAttendanceViewModel.dropDownData[
-                                            _employeeAttendanceViewModel.type],
-                                    isExpanded: true,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        _employeeAttendanceViewModel.type =
-                                            _employeeAttendanceViewModel
-                                                .dropDownData
-                                                .indexOf(value.toString());
-                                      });
-                                    },
-                                    items: _employeeAttendanceViewModel
-                                        .dropDownData
-                                        .map<DropdownMenuItem<String>>(
-                                            (e) => DropdownMenuItem<String>(
-                                                  value: e,
-                                                  child: Text(e),
-                                                ))
-                                        .toList(),
-                                  ),
-                                ),
-                                constraints: BoxConstraints(
-                                  minWidth: 150,
-                                ),
-                              ),
+                              // Container(
+                              //   width: _size.width * .15,
+                              //   child: DropdownButtonHideUnderline(
+                              //     child: DropdownButton<String>(
+                              //       value:
+                              //           _employeeAttendanceViewModel.dropDownData[
+                              //               _employeeAttendanceViewModel.type],
+                              //       isExpanded: true,
+                              //       onChanged: (value) {
+                              //         setState(() {
+                              //           _employeeAttendanceViewModel.type =
+                              //               _employeeAttendanceViewModel
+                              //                   .dropDownData
+                              //                   .indexOf(value.toString());
+                              //         });
+                              //       },
+                              //       items: _employeeAttendanceViewModel
+                              //           .dropDownData
+                              //           .map<DropdownMenuItem<String>>(
+                              //               (e) => DropdownMenuItem<String>(
+                              //                     value: e,
+                              //                     child: Text(e),
+                              //                   ))
+                              //           .toList(),
+                              //     ),
+                              //   ),
+                              //   constraints: BoxConstraints(
+                              //     minWidth: 150,
+                              //   ),
+                              // ),
                               const SizedBox(
                                 width: 10,
                               ),

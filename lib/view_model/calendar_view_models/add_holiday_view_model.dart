@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/global/palette.dart';
+import 'package:ronan_pensec/global/user_raw_data.dart';
+import 'package:ronan_pensec/models/raw_user_model.dart';
 import 'package:ronan_pensec/services/dashboard_services/calendar_service.dart';
 import 'package:ronan_pensec/services/dashboard_services/holiday_service.dart';
 
@@ -16,6 +18,10 @@ class AddHolidayViewModel {
   static final HolidayService _service = HolidayService.instance;
   HolidayService get service => _service;
   Auth get auth => _auth;
+  static final UserRawData _userRawData = UserRawData.instance;
+
+  late RawUserModel initDrpValue = _userRawData.rawUserList[0];
+  bool isForOthers = false;
 
   bool showMessage = false;
   static AddHolidayViewModel get instance {
@@ -121,6 +127,16 @@ class AddHolidayViewModel {
     }
   }
 
+  RawUserModel? _chosenUser;
+  RawUserModel? get chosenUser => _chosenUser;
+  set setUser(RawUserModel? user) {
+    _chosenUser = user;
+    if(user != null){
+      _instance.appendBody = {"user_id" : user.id};
+    }else{
+      _instance.body.remove('user_id');
+    }
+  }
   Future<DateTime?> selectDate(context) async {
     return await showDatePicker(
       context: context,
@@ -351,6 +367,56 @@ class AddHolidayViewModel {
                                               ),
                                             },
                                           },
+                                          if (auth.loggedUser!.roleId == 2) ...{
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            Container(
+                                              width: double.infinity,
+                                              child: Row(
+                                                children: [
+                                                  Checkbox(
+                                                    onChanged: (bool? value) {
+                                                      setState(() {
+                                                        isForOthers = value!;
+                                                        if(value){
+                                                          _instance.appendBody = {"user_id" : initDrpValue.id.toString()};
+                                                        }else{
+                                                          _instance.appendBody = {"user_id" : _instance.auth.loggedUser!.id.toString()};
+                                                        }
+                                                      });
+                                                      print(body);
+                                                    },
+                                                    activeColor: Palette.gradientColor[0],
+                                                    value: isForOthers,
+                                                  ),
+                                                  Expanded(child: Text("La demande est pour quelqu'un d'autre.",style: TextStyle(
+                                                      color: Palette.gradientColor[0]
+                                                  ),))
+                                                ],
+                                              ),
+                                            )
+                                          },
+                                          if (auth.loggedUser!.roleId == 1 ||
+                                              (auth.loggedUser!.roleId == 2 &&
+                                                  isForOthers)) ...{
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            Container(
+                                              width: double.infinity,
+                                              child: _userRawData.showDropdown(
+                                                  onChooseCallback:
+                                                      (RawUserModel chosen) {
+                                                    setState(() {
+                                                      initDrpValue = chosen;
+                                                      _instance.appendBody = {"user_id" : chosen.id.toString()};
+                                                    });
+                                                    print(body);
+                                                  },
+                                                  value: initDrpValue),
+                                            ),
+                                          },
                                           const SizedBox(
                                             height: 20,
                                           ),
@@ -410,7 +476,7 @@ class AddHolidayViewModel {
                                             if(body.length == 7){
                                               Navigator.of(context).pop(null);
                                               loadingCallback(true);
-                                              await _instance.service.request(context, body: _instance.body).whenComplete(() => loadingCallback(false));
+                                              await _instance.service.request(body: _instance.body, isMe: !isForOthers).whenComplete(() => loadingCallback(false));
                                             }else{
                                               setState((){
                                                 _instance.showMessage = true;

@@ -258,27 +258,27 @@ class _CalendarMobileState extends State<CalendarMobile>
                         ],
                       ),
                     ),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    Container(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: 10,
-                            height: 10,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(3),
-                                color: Colors.grey.shade900),
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Text("En retard")
-                        ],
-                      ),
-                    )
+                    // const SizedBox(
+                    //   width: 20,
+                    // ),
+                    // Container(
+                    //   child: Row(
+                    //     crossAxisAlignment: CrossAxisAlignment.center,
+                    //     children: [
+                    //       Container(
+                    //         width: 10,
+                    //         height: 10,
+                    //         decoration: BoxDecoration(
+                    //             borderRadius: BorderRadius.circular(3),
+                    //             color: Colors.grey.shade900),
+                    //       ),
+                    //       const SizedBox(
+                    //         width: 10,
+                    //       ),
+                    //       Text("En retard")
+                    //     ],
+                    //   ),
+                    // )
                   ],
                 ),
               ),
@@ -457,54 +457,75 @@ class _CalendarMobileState extends State<CalendarMobile>
                                           attendance.date)) ...{
                                     Tooltip(
                                       message:
-                                          "${attendance.status == 0 ? "Absent" : "En retard"}",
-                                      child: attendance.status == 0
-                                          ? Container(
-                                              width: size.width / 7,
-                                              color: !_calendarViewModel.service
-                                                      .isSunday(DateTime(
-                                                          _calendarViewModel
-                                                              .currentYear,
-                                                          _calendarViewModel
-                                                              .currentMonth,
-                                                          d ?? 0))
-                                                  ? _calendarViewModel.service.isSameDay(
-                                                          DateTime(
-                                                              _calendarViewModel
-                                                                  .currentYear,
-                                                              _calendarViewModel
-                                                                  .currentMonth,
-                                                              d ?? 0),
-                                                          attendance.date)
-                                                      ? Colors.red
-                                                      : Colors.transparent
-                                                  : Colors.grey.shade400,
-                                            )
-                                          : ClipPath(
-                                              clipper: CalendarHalfdayClip(),
-                                              child: Container(
-                                                width: size.width / 7,
-                                                color: !_calendarViewModel
-                                                        .service
-                                                        .isSunday(DateTime(
-                                                            _calendarViewModel
-                                                                .currentYear,
-                                                            _calendarViewModel
-                                                                .currentMonth,
-                                                            d ?? 0))
-                                                    ? _calendarViewModel.service.isSameDay(
-                                                            DateTime(
-                                                                _calendarViewModel
-                                                                    .currentYear,
-                                                                _calendarViewModel
-                                                                    .currentMonth,
-                                                                d ?? 0),
-                                                            attendance.date)
-                                                        ? Colors.grey.shade900
-                                                        : Colors.transparent
-                                                    : Colors.grey.shade400,
-                                              ),
-                                            ),
+                                          "Absent",
+                                      child: Container(
+                                        width: size.width / 7,
+                                        color: !_calendarViewModel.service
+                                            .isSunday(DateTime(
+                                            _calendarViewModel
+                                                .currentYear,
+                                            _calendarViewModel
+                                                .currentMonth,
+                                            d ?? 0))
+                                            ? _calendarViewModel.service.isSameDay(
+                                            DateTime(
+                                                _calendarViewModel
+                                                    .currentYear,
+                                                _calendarViewModel
+                                                    .currentMonth,
+                                                d ?? 0),
+                                            attendance.date)
+                                            ? Colors.red
+                                            : Colors.transparent
+                                            : Colors.grey.shade400,
+                                      ),
+                                      // child: attendance.status == 0
+                                      //     ? Container(
+                                      //         width: size.width / 7,
+                                      //         color: !_calendarViewModel.service
+                                      //                 .isSunday(DateTime(
+                                      //                     _calendarViewModel
+                                      //                         .currentYear,
+                                      //                     _calendarViewModel
+                                      //                         .currentMonth,
+                                      //                     d ?? 0))
+                                      //             ? _calendarViewModel.service.isSameDay(
+                                      //                     DateTime(
+                                      //                         _calendarViewModel
+                                      //                             .currentYear,
+                                      //                         _calendarViewModel
+                                      //                             .currentMonth,
+                                      //                         d ?? 0),
+                                      //                     attendance.date)
+                                      //                 ? Colors.red
+                                      //                 : Colors.transparent
+                                      //             : Colors.grey.shade400,
+                                      //       )
+                                      //     : ClipPath(
+                                      //         clipper: CalendarHalfdayClip(),
+                                      //         child: Container(
+                                      //           width: size.width / 7,
+                                      //           color: !_calendarViewModel
+                                      //                   .service
+                                      //                   .isSunday(DateTime(
+                                      //                       _calendarViewModel
+                                      //                           .currentYear,
+                                      //                       _calendarViewModel
+                                      //                           .currentMonth,
+                                      //                       d ?? 0))
+                                      //               ? _calendarViewModel.service.isSameDay(
+                                      //                       DateTime(
+                                      //                           _calendarViewModel
+                                      //                               .currentYear,
+                                      //                           _calendarViewModel
+                                      //                               .currentMonth,
+                                      //                           d ?? 0),
+                                      //                       attendance.date)
+                                      //                   ? Colors.grey.shade900
+                                      //                   : Colors.transparent
+                                      //               : Colors.grey.shade400,
+                                      //         ),
+                                      //       ),
                                     )
                                   },
                                 },

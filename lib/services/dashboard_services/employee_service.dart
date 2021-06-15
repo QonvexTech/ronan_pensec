@@ -27,6 +27,7 @@ class EmployeeService {
   final ToastNotifier _notifier = ToastNotifier.instance;
   static final Auth _auth = Auth.instance;
 
+  static EmployeeService get rawInstance => _instance;
   static EmployeeService instance(EmployeeDataControl model) {
     _instance._model = model;
     return _instance;
@@ -309,6 +310,24 @@ class EmployeeService {
     }catch(e){
       _notifier.showContextedBottomToast(context, msg: "Erreur : $e");
       return false;
+    }
+  }
+
+  Future<List?> get fetchRawUsers async {
+    try{
+      return await http.get(Uri.parse("${BaseEnpoint.URL}api/raw_users"),headers: {
+        "Accept" : "application/json",
+        HttpHeaders.authorizationHeader : "Bearer ${_auth.token}"
+      }).then((res) {
+        var data = json.decode(res.body);
+        if(res.statusCode == 200){
+          return data['data'];
+        }
+        return null;
+      });
+    }catch(e){
+      print("ERROR FETCHING RAW USERS : $e");
+      return null;
     }
   }
 }

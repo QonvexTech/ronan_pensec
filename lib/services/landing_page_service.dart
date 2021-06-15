@@ -1,14 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:ronan_pensec/global/auth.dart';
+import 'package:ronan_pensec/global/region_raw_data.dart';
 import 'package:ronan_pensec/route/credential_route.dart';
 import 'package:ronan_pensec/route/landing_page_route.dart';
 import 'package:ronan_pensec/services/credentials_preferences.dart';
+import 'package:ronan_pensec/services/data_controls/calendar_data_controllers/pending_holiday_requests_data_control.dart';
+import 'package:ronan_pensec/services/data_controls/calendar_data_controllers/pending_rtt_requests_data_control.dart';
+import 'package:ronan_pensec/services/data_controls/center_data_control.dart';
+import 'package:ronan_pensec/services/data_controls/employee_data_control.dart';
+import 'package:ronan_pensec/services/data_controls/notification_data_control.dart';
+import 'package:ronan_pensec/services/data_controls/region_data_control.dart';
 import 'package:ronan_pensec/services/firebase_messaging_service.dart';
 
 class LandingPageService {
   LandingPageService._privateConstructor();
   static final LandingPageService _instance = LandingPageService._privateConstructor();
   static final Auth _auth = Auth.instance;
+  RegionDataControl regionDataControl = RegionDataControl.rawInstance;
+  CenterDataControl centerDataControl = CenterDataControl.instance;
+  EmployeeDataControl employeeDataControl = EmployeeDataControl.instance;
+  NotificationDataControl notificationDataControl = NotificationDataControl.instance;
+  PendingHolidayRequestsDataControl _pendingHolidayRequestsDataControl = PendingHolidayRequestsDataControl.instance;
+  PendingRTTRequestDataControl _pendingRTTRequestDataControl = PendingRTTRequestDataControl.instance;
+
   Auth get auth => _auth;
   static LandingPageService instance(BuildContext context) {
     if(_instance._credentialsPreferences == null ){
@@ -28,6 +42,13 @@ class LandingPageService {
       Navigator.pushReplacement(context, CredentialRoute.login);
       await _credentialsPreferences!.removeCredentials;
       _instance.auth.setToken = null;
+      regionDataControl.populateAll([]);
+      centerDataControl.populateAll([]);
+      employeeDataControl.populateAll([]);
+      notificationDataControl.populateAll([]);
+      _pendingRTTRequestDataControl.populate([]);
+      _pendingHolidayRequestsDataControl.populateAll([]);
+      _auth.setUser = null;
       await firebaseMessagingService.removeToken;
     }
   }

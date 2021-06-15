@@ -57,11 +57,13 @@ class _WebDashboardState extends State<WebPlanning> {
                   icon: const Icon(Icons.request_page_outlined),
                 ),
               },
-              ActionButton(
-                message: "Voir mes demandes",
-                onPressed: () => Navigator.push(context, PlanningRoute.myRequests),
-                icon: const Icon(Icons.article_outlined),
-              ),
+              if(_regionViewModel.auth.loggedUser!.roleId != 1)...{
+                ActionButton(
+                  message: "Voir mes demandes",
+                  onPressed: () => Navigator.push(context, PlanningRoute.myRequests),
+                  icon: const Icon(Icons.article_outlined),
+                ),
+              },
               ActionButton(
                 message: "Ajouter de nouvelles congés",
                 onPressed: () => _holidayViewModel.showAddHoliday(_scaffoldKey.currentContext!, size: _size, loadingCallback: (bool b){
