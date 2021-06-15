@@ -166,7 +166,9 @@ class PendingRTTRequests extends StatelessWidget {
                                     decoration: InputDecoration(
                                         border: OutlineInputBorder(
                                             borderRadius: BorderRadius.circular(5)
-                                        )
+                                        ),
+                                      hintText: "Raison",
+                                      labelText: "Raison"
                                     ),
                                   ),
                                 ),),

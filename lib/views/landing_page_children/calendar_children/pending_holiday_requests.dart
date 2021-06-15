@@ -146,6 +146,9 @@ class PendingHolidayRequests extends StatelessWidget {
                             closeOnTap: true,
                             onTap: () async {
                               GeneralTemplate.showDialog(context,
+                                  onDismissed: (){
+                                    _reason.clear();
+                                  },
                                   child: Column(
                                     children: [
                                       Text(
@@ -162,7 +165,10 @@ class PendingHolidayRequests extends StatelessWidget {
                                                 border: OutlineInputBorder(
                                                     borderRadius:
                                                         BorderRadius.circular(
-                                                            5))),
+                                                            5),),
+                                              hintText: "Raison",
+                                              labelText: "Raison"
+                                            ),
                                           ),
                                         ),
                                       ),
