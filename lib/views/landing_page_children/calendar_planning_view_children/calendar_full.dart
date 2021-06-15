@@ -481,11 +481,6 @@ class _CalendarFullState extends State<CalendarFull> {
                                                                         if(user.holidays.length > 0)...{
                                                                           for(HolidayModel holiday in user.holidays)...{
                                                                             if(!_calendarViewModel.service.isSunday(DateTime(_calendarViewModel.currentYear, _calendarViewModel.currentMonth, daysIndex + 1)))...{
-                                                // &&
-                                                // _calendarViewModel.service.isInRange(
-                                                // holiday.startDate,
-                                                // holiday.endDate,
-                                                // DateTime(_calendarViewModel.currentYear, _calendarViewModel.currentMonth, daysIndex + 1)) && holiday.status == 1
                                                                               if(_calendarViewModel.service.isInRange(
                                                                                   holiday.startDate,
                                                                                   holiday.endDate,
@@ -510,27 +505,6 @@ class _CalendarFullState extends State<CalendarFull> {
                                                                                   ),
                                                                                 )
                                                                               }
-                                                                              // Tooltip(
-                                                                              //   message: "${holiday.reason}",
-                                                                              //   child: holiday.isHalfDay == 1 ? ClipPath(
-                                                                              //     clipper: CalendarHalfDayMorningClip(),
-                                                                              //     child: Container(
-                                                                              //       width: ((constraint.maxWidth - 150) /
-                                                                              //           _calendarViewModel.numOfDays) <
-                                                                              //           40
-                                                                              //           ? 40
-                                                                              //           : (constraint.maxWidth - 150) / _calendarViewModel.numOfDays,
-                                                                              //       color: Colors.blue,
-                                                                              //     ),
-                                                                              //   ) : Container(
-                                                                              //     width: ((constraint.maxWidth - 150) /
-                                                                              //         _calendarViewModel.numOfDays) <
-                                                                              //         40
-                                                                              //         ? 40
-                                                                              //         : (constraint.maxWidth - 150) / _calendarViewModel.numOfDays,
-                                                                              //     color: Colors.blue,
-                                                                              //   ),
-                                                                              // )
                                                                             }
                                                                           }
                                                                         },
