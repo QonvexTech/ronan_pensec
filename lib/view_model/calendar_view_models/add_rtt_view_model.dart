@@ -5,7 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/global/palette.dart';
+import 'package:ronan_pensec/global/user_raw_data.dart';
+import 'package:ronan_pensec/models/raw_user_model.dart';
 import 'package:ronan_pensec/services/dashboard_services/rtt_service.dart';
+import 'package:ronan_pensec/services/toast_notifier.dart';
 
 class AddRTTViewModel {
   AddRTTViewModel._singleton();
@@ -13,19 +16,30 @@ class AddRTTViewModel {
   static final AddRTTViewModel _instance = AddRTTViewModel._singleton();
   static final Auth _auth = Auth.instance;
   static final RTTService _service = RTTService.instance;
+
   RTTService get service => _service;
+  static final UserRawData _userRawData = UserRawData.instance;
+
+  late RawUserModel initDrpValue = _userRawData.rawUserList[0];
+  late bool isForOthers = _instance.auth.loggedUser!.roleId == 1;
+
   Auth get auth => _auth;
+
   static AddRTTViewModel get instance {
-    _instance.appendToBody = {"user_id": _instance.auth.loggedUser!.id.toString()};
+    // _instance.initDrpValue =
+    _instance.appendToBody = {
+      "user_id": _instance.auth.loggedUser!.id.toString()
+    };
     _instance.reason.addListener(() {
-      if(_instance.reason.text.isNotEmpty){
+      if (_instance.reason.text.isNotEmpty) {
         _instance.appendToBody = {"comment": _instance.reason.text};
-      }else{
+      } else {
         _instance.body.remove("comment");
       }
     });
     return _instance;
   }
+
   bool showMessage = false;
   Map _body = {};
 
@@ -40,71 +54,55 @@ class AddRTTViewModel {
   TextEditingController get reason => _reason;
 
   String? _startTime;
+
   String? get startTime => _startTime;
+
   set setStartTime(String? time) {
-    if(time != null){
-      _instance.appendToBody = {"start_time" : time};
-    }else{
+    if (time != null) {
+      _instance.appendToBody = {"start_time": time};
+    } else {
       _instance.body.remove("start_time");
     }
     _startTime = time;
   }
 
   String? _endTime;
+
   String? get endTime => _endTime;
+
   set setEndTime(String? time) {
-    if(time != null){
-      _instance.appendToBody = {"end_time" : time};
-    }else{
+    if (time != null) {
+      _instance.appendToBody = {"end_time": time};
+    } else {
       _instance.body.remove("end_time");
     }
     _endTime = time;
   }
 
   DateTime? _selectedDate;
+
   DateTime? get selectedDate => _selectedDate;
+
   set setDate(DateTime? date) {
-    if(date != null){
-      _instance.appendToBody = {"date" : date.toString().toString().split(' ')[0]};
+    if (date != null) {
+      _instance.appendToBody = {
+        "date": date.toString().toString().split(' ')[0]
+      };
     }
     _selectedDate = date;
   }
 
   String dateToString() {
-    try{
+    try {
       return DateFormat.yMMMMd("fr_FR").format(_instance.selectedDate!);
-    }catch(e){
+    } catch (e) {
       return "Choisissez la date";
     }
   }
-  String timeToString(String? string, [bool isStart = false]){
-    return string??"Choisissez l'heure de ${isStart ? "début" : "fin"}";
+
+  String timeToString(String? string, [bool isStart = false]) {
+    return string ?? "Choisissez l'heure de ${isStart ? "début" : "fin"}";
   }
-  // String timeToString(TimeOfDay? timeOfDay){
-  //   try{
-  //     return "${((timeOfDay!.period == DayPeriod.am ? 0 : 12) + timeOfDay.hourOfPeriod).toString().padLeft(2,'0')}:${(timeOfDay.minute).toString().padLeft(2,'0')}:00";
-  //   }catch(e){
-  //     return "Choisissez l'heure de début";
-  //   }
-  // }
-  // String get startTimeToString {
-  //   try{
-  //     if(startTime?.period == DayPeriod.am){
-  //       return "${startTime?.hourOfPeriod.toString().padLeft(2,'0')}:${startTime?.minute.toString().padLeft(2,'0')}";
-  //     }else{
-  //       return "${(startTime!.hourOfPeriod + 12).toString().padLeft(2,'0')}:${(startTime?.minute).toString().padLeft(2,'0')}";
-  //     }
-  //   }catch(e){
-  //     return "Choisissez l'heure de début";
-  //   }
-  // }
-  // String get endTimeToString {
-  //   try{
-  //       return "${((endTime!.period == DayPeriod.am ? 0 : 12) + endTime!.hourOfPeriod).toString().padLeft(2,'0')}:${(endTime!.minute).toString().padLeft(2,'0')}";
-  //   }catch(e){
-  //     return "Choisissez l'heure de fin";
-  //   }
-  // }
 
   Future<DateTime?> selectDate(context) async {
     return await showDatePicker(
@@ -118,26 +116,29 @@ class AddRTTViewModel {
 
   Future<String?> selectTime(context) async {
     return await showTimePicker(
-        context: context,
-        cancelText: "ANNULER",
-        confirmText: "OUI",
-      builder: (context, child) => MediaQuery(data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true), child: child!),
-        initialTime: TimeOfDay.now(),
+      context: context,
+      cancelText: "ANNULER",
+      confirmText: "OUI",
+      builder: (context, child) => MediaQuery(
+          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+          child: child!),
+      initialTime: TimeOfDay.now(),
     ).then((value) {
-      if(value != null){
-        return "${value.hour.toString().padLeft(2, '0')}:${value.minute.toString().padLeft(2,'0')}:00";
-      }else{
+      if (value != null) {
+        return "${value.hour.toString().padLeft(2, '0')}:${value.minute.toString().padLeft(2, '0')}:00";
+      } else {
         return null;
       }
     });
   }
+
   Theme themedTextField(
-      {required TextEditingController controller,
-        required IconData icon,
-        TextInputType keyboardType = TextInputType.text,
-        int minLine = 1,
-        int maxLine = 1,
-        required String label}) =>
+          {required TextEditingController controller,
+          required IconData icon,
+          TextInputType keyboardType = TextInputType.text,
+          int minLine = 1,
+          int maxLine = 1,
+          required String label}) =>
       Theme(
           data: ThemeData(primaryColor: Palette.gradientColor[0]),
           child: TextField(
@@ -154,7 +155,9 @@ class AddRTTViewModel {
                 labelText: label,
                 hintText: label),
           ));
-  Future showAddRtt(context,{required Size size, required ValueChanged<bool> loadingCallback}) async {
+
+  Future showAddRtt(context,
+      {required Size size, required ValueChanged<bool> loadingCallback}) async {
     return await showGeneralDialog(
         barrierColor: Colors.black.withOpacity(0.5),
         transitionBuilder: (context, a1, a2, widget) {
@@ -177,7 +180,7 @@ class AddRTTViewModel {
                                 image: DecorationImage(
                                     fit: BoxFit.cover,
                                     image:
-                                    AssetImage("assets/images/info.png"))),
+                                        AssetImage("assets/images/info.png"))),
                           ),
                           title: Text(
                             "Nouvelle demande de RTT".toUpperCase(),
@@ -206,15 +209,14 @@ class AddRTTViewModel {
                                       child: ListView(
                                         physics: ClampingScrollPhysics(),
                                         children: [
-
                                           themedTextField(
                                             controller: _instance.reason,
                                             icon:
-                                            Icons.drive_file_rename_outline,
+                                                Icons.drive_file_rename_outline,
                                             minLine: 3,
                                             maxLine: 6,
                                             keyboardType:
-                                            TextInputType.multiline,
+                                                TextInputType.multiline,
                                             label: "Raison",
                                           ),
                                           const SizedBox(
@@ -235,14 +237,14 @@ class AddRTTViewModel {
                                                 Icon(
                                                   Icons.calendar_today_outlined,
                                                   color:
-                                                  Palette.gradientColor[0],
+                                                      Palette.gradientColor[0],
                                                 ),
                                                 const SizedBox(
                                                   width: 10,
                                                 ),
                                                 Expanded(
-                                                    child:
-                                                    Text("${this.dateToString()}"))
+                                                    child: Text(
+                                                        "${this.dateToString()}"))
                                               ],
                                             ),
                                           ),
@@ -253,9 +255,11 @@ class AddRTTViewModel {
                                             height: 60,
                                             color: Colors.white54,
                                             onPressed: () async {
-                                              String? _selected = await this.selectTime(context);
+                                              String? _selected = await this
+                                                  .selectTime(context);
                                               setState(() {
-                                                _instance.setStartTime = _selected;
+                                                _instance.setStartTime =
+                                                    _selected;
                                               });
                                               print(startTime);
                                             },
@@ -264,14 +268,14 @@ class AddRTTViewModel {
                                                 Icon(
                                                   Icons.calendar_today_outlined,
                                                   color:
-                                                  Palette.gradientColor[0],
+                                                      Palette.gradientColor[0],
                                                 ),
                                                 const SizedBox(
                                                   width: 10,
                                                 ),
                                                 Expanded(
-                                                    child:
-                                                    Text("${_instance.timeToString(_instance.startTime, true)}"))
+                                                    child: Text(
+                                                        "${_instance.timeToString(_instance.startTime, true)}"))
                                               ],
                                             ),
                                           ),
@@ -282,9 +286,11 @@ class AddRTTViewModel {
                                             height: 60,
                                             color: Colors.white54,
                                             onPressed: () async {
-                                              String? _selected = await this.selectTime(context);
+                                              String? _selected = await this
+                                                  .selectTime(context);
                                               setState(() {
-                                                _instance.setEndTime = _selected;
+                                                _instance.setEndTime =
+                                                    _selected;
                                               });
                                             },
                                             child: Row(
@@ -292,17 +298,67 @@ class AddRTTViewModel {
                                                 Icon(
                                                   Icons.calendar_today_outlined,
                                                   color:
-                                                  Palette.gradientColor[0],
+                                                      Palette.gradientColor[0],
                                                 ),
                                                 const SizedBox(
                                                   width: 10,
                                                 ),
                                                 Expanded(
-                                                    child:
-                                                    Text("${_instance.timeToString(_instance.endTime)}"))
+                                                    child: Text(
+                                                        "${_instance.timeToString(_instance.endTime)}"))
                                               ],
                                             ),
                                           ),
+                                          if (auth.loggedUser!.roleId == 2) ...{
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            Container(
+                                              width: double.infinity,
+                                              child: Row(
+                                                children: [
+                                                  Checkbox(
+                                                    onChanged: (bool? value) {
+                                                      setState(() {
+                                                        isForOthers = value!;
+                                                        if(value){
+                                                          _instance.appendToBody = {"user_id" : initDrpValue.id.toString()};
+                                                        }else{
+                                                          _instance.appendToBody = {"user_id" : _instance.auth.loggedUser!.id.toString()};
+                                                        }
+                                                      });
+                                                      print(body);
+                                                    },
+                                                    activeColor: Palette.gradientColor[0],
+                                                    value: isForOthers,
+                                                  ),
+                                                  Expanded(child: Text("La demande est pour quelqu'un d'autre.",style: TextStyle(
+                                                    color: Palette.gradientColor[0]
+                                                  ),))
+                                                ],
+                                              ),
+                                            )
+                                          },
+                                          if (auth.loggedUser!.roleId == 1 ||
+                                              (auth.loggedUser!.roleId == 2 &&
+                                                  isForOthers)) ...{
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            Container(
+                                              width: double.infinity,
+                                              child: _userRawData.showDropdown(
+                                                  onChooseCallback:
+                                                      (RawUserModel chosen) {
+                                                    setState(() {
+                                                      initDrpValue = chosen;
+                                                      _instance.appendToBody = {"user_id" : chosen.id.toString()};
+                                                    });
+                                                    print(body);
+                                                  },
+                                                  value: initDrpValue),
+                                            ),
+                                          },
                                           const SizedBox(
                                             height: 20,
                                           ),
@@ -311,19 +367,25 @@ class AddRTTViewModel {
                                     ),
                                   ),
                                 ),
-                                if(_instance.showMessage)...{
+                                if (_instance.showMessage) ...{
                                   Container(
                                     width: double.infinity,
                                     child: Row(
                                       children: [
-                                        Icon(Icons.error,color: Colors.red,),
+                                        Icon(
+                                          Icons.error,
+                                          color: Colors.red,
+                                        ),
                                         const SizedBox(
                                           width: 10,
                                         ),
-                                        Expanded(child: Text("Please dont leave empty fields.",style: TextStyle(
-                                            color: Colors.red,
-                                            letterSpacing: 1
-                                        ),))
+                                        Expanded(
+                                            child: Text(
+                                          "Please dont leave empty fields.",
+                                          style: TextStyle(
+                                              color: Colors.red,
+                                              letterSpacing: 1),
+                                        ))
                                       ],
                                     ),
                                   ),
@@ -359,16 +421,30 @@ class AddRTTViewModel {
                                         child: MaterialButton(
                                           height: 50,
                                           onPressed: () async {
-                                            print(body);
-                                            if(body.length == 5){
+                                            if(_instance.auth.loggedUser!.roleId == 1){
+                                              print("ADMIN");
+                                              if(_instance.initDrpValue.id == _instance.auth.loggedUser!.id ){
+                                                print("ADMIN DROP ${_instance.initDrpValue.id}");
+                                                Navigator.of(context).pop(null);
+                                                ToastNotifier.instance.showUnContextedBottomToast(msg: "Vous ne pouvez pas créer de demande pour vous-même");
+                                                return ;
+                                              }else{
+                                                _instance.appendToBody = {'user_id' : initDrpValue.id.toString()};
+                                              }
+                                            }
+                                            if (body.length == 5) {
                                               Navigator.of(context).pop(null);
                                               loadingCallback(true);
-                                              await _instance.service.request(body: _instance.body).whenComplete(() => loadingCallback(false));
-                                            }else{
-                                              setState((){
+                                              await _instance.service
+                                                  .request(body: _instance.body, isMe: !isForOthers)
+                                                  .whenComplete(() =>
+                                                  loadingCallback(false));
+                                            } else {
+                                              setState(() {
                                                 _instance.showMessage = true;
                                               });
                                             }
+
                                           },
                                           color: Palette.gradientColor[0],
                                           child: Center(
@@ -389,7 +465,7 @@ class AddRTTViewModel {
                             )),
                       );
                     },
-                  )),
+                  ),),
             ),
           );
         },
@@ -397,13 +473,16 @@ class AddRTTViewModel {
         barrierDismissible: true,
         barrierLabel: '',
         context: context,
-        pageBuilder: (context, animation1, animation2) => Container()).then((value) {
-          _instance.bodyAll = {"user_id" : auth.loggedUser!.id.toString()};
-          _instance.reason.clear();
-          _instance.setEndTime = null;
-          _instance.setStartTime = null;
-          _instance.setDate = null;
-          _instance.showMessage = false;
+        pageBuilder: (context, animation1, animation2) =>
+            Container()).then((value) {
+      _instance.bodyAll = {"user_id": auth.loggedUser!.id.toString()};
+      _instance.reason.clear();
+      _instance.setEndTime = null;
+      _instance.setStartTime = null;
+      _instance.setDate = null;
+      _instance.showMessage = false;
+    }).then((value) {
+      initDrpValue = _userRawData.rawUserList[0];
     });
   }
 }

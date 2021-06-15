@@ -11,5 +11,5 @@ class Auth {
   set setToken(String? __token) => _token = __token;
 
   UserModel? get loggedUser => _loggedUser;
-  set setUser(UserModel user) => _loggedUser = user;
+  set setUser(UserModel? user) => _loggedUser = user;
 }

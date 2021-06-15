@@ -24,6 +24,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
   late final EmployeeDetailsViewModel _viewModel =
       EmployeeDetailsViewModel.instance(widget.employee);
   late final EmployeeDemands _employeeDemands = EmployeeDemands(
+    managerId: managerIds,
     userId: widget.employee.id,
     regionDataControl: widget.regionDataControl,
   );
@@ -37,7 +38,14 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
       _viewModel.mobile.text = widget.employee.mobile;
     });
   }
-
+  List<int> get managerIds {
+    List<int> managerIds = [];
+    for(CenterModel assignedCenter in widget.employee.assignedCenters!){
+      managerIds.add(assignedCenter.accountant?.id??0);
+    }
+    managerIds.removeWhere((element) => element == 0);
+    return managerIds;
+  }
   @override
   void initState() {
     populate();

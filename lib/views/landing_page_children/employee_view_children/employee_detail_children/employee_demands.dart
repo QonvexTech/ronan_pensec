@@ -13,7 +13,8 @@ import 'demand_children/rtt_request.dart';
 class EmployeeDemands extends StatefulWidget {
   final int userId;
   final RegionDataControl regionDataControl;
-  EmployeeDemands({Key? key, required this.userId, required this.regionDataControl}) : super(key:  key);
+  final List<int> managerId;
+  EmployeeDemands({Key? key, required this.userId, required this.regionDataControl, required this.managerId}) : super(key:  key);
   @override
   _EmployeeDemandsState createState() => _EmployeeDemandsState();
 }
@@ -123,7 +124,7 @@ class _EmployeeDemandsState extends State<EmployeeDemands> with SingleTickerProv
             padding: const EdgeInsets.all(10),
             child: _employeeDemandsViewModel.attendance == null ? Center(
               child: CircularProgressIndicator(),
-            ) : EmployeeAttendance(attendance: _employeeDemandsViewModel.attendance!,regionDataControl: widget.regionDataControl,userId: widget.userId,)
+            ) : EmployeeAttendance(attendance: _employeeDemandsViewModel.attendance!,regionDataControl: widget.regionDataControl,userId: widget.userId,managerIds: widget.managerId,)
           )
         ],
       ),

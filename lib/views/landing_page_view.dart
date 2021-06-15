@@ -174,7 +174,7 @@ class _LandingPageScreenWebState extends State<LandingPageView>
                                 });
                               },
                               icon: Icons.notifications_rounded,
-                              backgroundColor: Colors.grey.shade200,
+                              backgroundColor: Palette.gradientColor[3],
                             ),
                           ),
                         },

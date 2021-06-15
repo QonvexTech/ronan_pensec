@@ -19,6 +19,7 @@ class RegionDataControl {
     _instance._calendarDataControl = control;
     return _instance;
   }
+  static RegionDataControl get rawInstance => _instance;
   BehaviorSubject<List<RegionModel>> _list = BehaviorSubject();
   bool hasFetched = false;
   Stream<List<RegionModel>> get stream$ => _list.stream;
