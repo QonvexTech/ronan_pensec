@@ -2,7 +2,7 @@ class HolidayDemandModel{
   final int id;
   String requestName;
   double currentBalance;
-  int demands;
+  double demands;
   double daysPosed;
   double daysRemaining;
   final int holidayId;
@@ -21,7 +21,7 @@ class HolidayDemandModel{
       id : parsedJson['id'],
       requestName : parsedJson['request_name'],
       currentBalance : parsedJson['current_balance'],
-      demands : parsedJson['demands'],
+      demands : double.parse(parsedJson['demands'].toString()),
       daysPosed : parsedJson['days_posed'],
       daysRemaining : parsedJson['days_remaining'],
       holidayId : parsedJson['holiday_id'],

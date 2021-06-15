@@ -108,8 +108,8 @@ class AddRTTViewModel {
     return await showDatePicker(
       context: context,
       locale: Locale("fr"),
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
+      initialDate: DateTime.now().add(const Duration(days: 1)),
+      firstDate: DateTime.now().add(const Duration(days: 1)),
       lastDate: DateTime.now().add(Duration(days: 365)),
     ).then((DateTime? date) => date);
   }
