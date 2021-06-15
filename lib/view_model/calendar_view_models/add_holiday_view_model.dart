@@ -40,7 +40,7 @@ class AddHolidayViewModel {
         _instance.body.remove("request_name");
       }
     });
-    _instance.appendBody = {"startDate_isHalf_day": 0.toString(), "endDate_isHalf_day" : "0"};
+    _instance.appendBody = {"startDate_isHalf_day": "0", "endDate_isHalf_day" : "0"};
     return _instance;
   }
 
@@ -48,16 +48,44 @@ class AddHolidayViewModel {
 
   String get chosenHalfDayAnswer => _chosenHalfDayAnswer;
 
-  set setChoice(String choice) {
-    _chosenHalfDayAnswer = choice;
-    if (choice == "Oui") {
-      _instance.setIsHalf = 1;
-    } else {
-      _instance.setIsHalf = 0;
-    }
-  }
+  // set setChoice(String choice) {
+  //   _chosenHalfDayAnswer = choice;
+  //   if (choice == "Oui") {
+  //     _instance.setIsHalf = 1;
+  //   } else {
+  //     _instance.setIsHalf = 0;
+  //   }
+  // }
 
   List isHalfDay = ["Oui", "Non"];
+  List _dayDropDownVal = [
+    {
+      "value" : 0,
+      "name" : "Toute la journée"
+    },
+    {
+      "value" : 1,
+      "name" : "Demi-journée - Matin"
+    },
+    {
+      "value" : 2,
+      "name" : "Demi-journée - Après-midi"
+    }
+  ];
+  late Map _chosenDayValue = _dayDropDownVal[0];
+  late Map _chosenEndDayValue = _dayDropDownVal[0];
+
+
+  DropdownButton  dayDropdown({required ValueChanged<Map> callback, required Map value})  => DropdownButton(
+    isExpanded: true,
+      value: value,
+      onChanged: (value){
+        if(value != null){
+          callback(value);
+        }
+      },
+      items: _dayDropDownVal.map((e) => DropdownMenuItem(child: Text("${e['name']}",maxLines: 1,overflow: TextOverflow.ellipsis,),value: e,)).toList()
+  );
   final TextEditingController _reason = new TextEditingController();
   final TextEditingController _requestName = new TextEditingController();
 
@@ -77,14 +105,14 @@ class AddHolidayViewModel {
     _startDate = date;
   }
 
-  int _isHalf = 0;
-
-  int get isHalf => _isHalf;
-
-  set setIsHalf(int h) {
-    _instance.appendBody = {"startDate_isHalf_day": h.toString()};
-    _isHalf = h;
-  }
+  // int _isHalf = 0;
+  //
+  // int get isHalf => _isHalf;
+  //
+  // set setIsHalf(int h) {
+  //   _instance.appendBody = {"startDate_isHalf_day": h.toString()};
+  //   _isHalf = h;
+  // }
 
   String? _endDate;
 
@@ -248,125 +276,167 @@ class AddHolidayViewModel {
                                           const SizedBox(
                                             height: 10,
                                           ),
-                                          MaterialButton(
-                                            height: 60,
-                                            color: Colors.white54,
-                                            onPressed: () async {
-                                              DateTime? _selected = await this
-                                                  .selectDate(context);
-                                              setState(() {
-                                                setDate = _selected
-                                                    .toString();
-                                              });
-                                              print(this._startDate);
-                                            },
+                                          Container(
+                                            width: double.infinity,
                                             child: Row(
                                               children: [
-                                                Icon(
-                                                  Icons.calendar_today_outlined,
-                                                  color:
-                                                      Palette.gradientColor[0],
+                                                Expanded(
+                                                  flex: 2,
+                                                  child: MaterialButton(
+                                                    height: 60,
+                                                    color: Colors.white54,
+                                                    onPressed: () async {
+                                                      DateTime? _selected = await this
+                                                          .selectDate(context);
+                                                      setState(() {
+                                                        setDate = _selected
+                                                            .toString();
+                                                      });
+                                                      print(this._startDate);
+                                                    },
+                                                    child: Row(
+                                                      children: [
+                                                        Icon(
+                                                          Icons.calendar_today_outlined,
+                                                          color:
+                                                          Palette.gradientColor[0],
+                                                        ),
+                                                        const SizedBox(
+                                                          width: 10,
+                                                        ),
+                                                        Expanded(
+                                                            child:
+                                                            Text(startDateToText))
+                                                      ],
+                                                    ),
+                                                  ),
                                                 ),
                                                 const SizedBox(
                                                   width: 10,
                                                 ),
                                                 Expanded(
-                                                    child:
-                                                        Text(startDateToText))
+                                                  child: dayDropdown(callback: (Map data){
+                                                    setState(() {
+                                                      _chosenDayValue = data;
+                                                      _instance.appendBody = {"startDate_isHalf_day" : data['value'].toString()};
+                                                    });
+                                                  }, value: _chosenDayValue)
+                                                )
                                               ],
                                             ),
                                           ),
                                           const SizedBox(
                                             height: 10,
                                           ),
-                                          MaterialButton(
-                                            height: 60,
-                                            color: Colors.white54,
-                                            onPressed: () async {
-                                              DateTime? _selected = await this
-                                                  .selectDate(context);
-                                              print(_selected);
-                                              setState(() {
-                                                setEndDate = _selected
-                                                    .toString();
-                                              });
-                                            },
+                                          Container(
+                                            width: double.infinity,
                                             child: Row(
                                               children: [
-                                                Icon(
-                                                  Icons.calendar_today_outlined,
-                                                  color:
-                                                      Palette.gradientColor[0],
+                                                Expanded(
+                                                  flex: 2,
+                                                  child: MaterialButton(
+                                                    height: 60,
+                                                    color: Colors.white54,
+                                                    onPressed: () async {
+                                                      DateTime? _selected = await this
+                                                          .selectDate(context);
+                                                      print(_selected);
+                                                      setState(() {
+                                                        setEndDate = _selected
+                                                            .toString();
+                                                      });
+                                                    },
+                                                    child: Row(
+                                                      children: [
+                                                        Icon(
+                                                          Icons.calendar_today_outlined,
+                                                          color:
+                                                          Palette.gradientColor[0],
+                                                        ),
+                                                        const SizedBox(
+                                                          width: 10,
+                                                        ),
+                                                        Expanded(
+                                                          child: Text(endDateToText),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
                                                 ),
                                                 const SizedBox(
                                                   width: 10,
                                                 ),
                                                 Expanded(
-                                                  child: Text(endDateToText),
+                                                    child: dayDropdown(callback: (Map data){
+                                                      setState(() {
+                                                        _chosenEndDayValue = data;
+                                                        _instance.appendBody = {"endDate_isHalf_day" : data['value'].toString()};
+                                                      });
+                                                    }, value: _chosenEndDayValue)
                                                 )
                                               ],
                                             ),
                                           ),
-                                          if (this.endDate != null &&
-                                              this.startDate != null) ...{
-                                            if (_dateChecker.isSameDay(
-                                                DateTime.parse(
-                                                    "${this.startDate}"),
-                                                DateTime.parse(
-                                                    "${this.endDate}"))) ...{
-                                              const SizedBox(
-                                                height: 10,
-                                              ),
-                                              Container(
-                                                width: double.infinity,
-                                                child: Text(
-                                                  "Demi-journée?",
-                                                  style: TextStyle(
-                                                      fontSize: 16.5,
-                                                      letterSpacing: 1.5,
-                                                      fontWeight:
-                                                          FontWeight.w600),
-                                                ),
-                                                color: Colors.white,
-                                                padding:
-                                                    const EdgeInsets.all(10),
-                                              ),
-                                              Container(
-                                                width: double.infinity,
-                                                height: 60,
-                                                color: Colors.white,
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 10),
-                                                child:
-                                                    DropdownButtonHideUnderline(
-                                                  child: DropdownButton<String>(
-                                                    isExpanded: true,
-                                                    onChanged: (value) {
-                                                      setState(() {
-                                                        this.setChoice = value!;
-                                                      });
-                                                    },
-                                                    value: this
-                                                        .chosenHalfDayAnswer,
-                                                    items: this
-                                                        .isHalfDay
-                                                        .map<
-                                                            DropdownMenuItem<
-                                                                String>>(
-                                                          (e) =>
-                                                              DropdownMenuItem<
-                                                                  String>(
-                                                            child: Text("$e"),
-                                                            value: e,
-                                                          ),
-                                                        )
-                                                        .toList(),
-                                                  ),
-                                                ),
-                                              ),
-                                            },
-                                          },
+                                          // if (this.endDate != null &&
+                                          //     this.startDate != null) ...{
+                                          //   if (_dateChecker.isSameDay(
+                                          //       DateTime.parse(
+                                          //           "${this.startDate}"),
+                                          //       DateTime.parse(
+                                          //           "${this.endDate}"))) ...{
+                                          //     const SizedBox(
+                                          //       height: 10,
+                                          //     ),
+                                          //     Container(
+                                          //       width: double.infinity,
+                                          //       child: Text(
+                                          //         "Demi-journée?",
+                                          //         style: TextStyle(
+                                          //             fontSize: 16.5,
+                                          //             letterSpacing: 1.5,
+                                          //             fontWeight:
+                                          //                 FontWeight.w600),
+                                          //       ),
+                                          //       color: Colors.white,
+                                          //       padding:
+                                          //           const EdgeInsets.all(10),
+                                          //     ),
+                                          //     Container(
+                                          //       width: double.infinity,
+                                          //       height: 60,
+                                          //       color: Colors.white,
+                                          //       padding:
+                                          //           const EdgeInsets.symmetric(
+                                          //               horizontal: 10),
+                                          //       child:
+                                          //           DropdownButtonHideUnderline(
+                                          //         child: DropdownButton<String>(
+                                          //           isExpanded: true,
+                                          //           onChanged: (value) {
+                                          //             setState(() {
+                                          //               this.setChoice = value!;
+                                          //             });
+                                          //           },
+                                          //           value: this
+                                          //               .chosenHalfDayAnswer,
+                                          //           items: this
+                                          //               .isHalfDay
+                                          //               .map<
+                                          //                   DropdownMenuItem<
+                                          //                       String>>(
+                                          //                 (e) =>
+                                          //                     DropdownMenuItem<
+                                          //                         String>(
+                                          //                   child: Text("$e"),
+                                          //                   value: e,
+                                          //                 ),
+                                          //               )
+                                          //               .toList(),
+                                          //         ),
+                                          //       ),
+                                          //     ),
+                                          //   },
+                                          // },
                                           if (auth.loggedUser!.roleId == 2) ...{
                                             const SizedBox(
                                               height: 10,
@@ -473,6 +543,7 @@ class AddHolidayViewModel {
                                         child: MaterialButton(
                                           height: 50,
                                           onPressed: () async {
+                                            print(body);
                                             if(body.length == 7){
                                               Navigator.of(context).pop(null);
                                               loadingCallback(true);
@@ -515,8 +586,9 @@ class AddHolidayViewModel {
           _instance._requestName.clear();
           _instance.setDate = null;
           _instance.setEndDate = null;
-          _instance.setIsHalf = 0;
           _instance.showMessage = false;
+          _instance._chosenDayValue = _dayDropDownVal[0];
+          _instance._chosenEndDayValue = _dayDropDownVal[0];
           _instance.setAllBody = {"user_id" : auth.loggedUser!.id.toString(), "startDate_isHalf_day" : "0", "endDate_isHalf_day" : "0"};
     });
   }
