@@ -1,4 +1,6 @@
 
+import 'package:ronan_pensec/models/raw_user_model.dart';
+
 class HolidayModel{
   final int id;
   String? reason;
@@ -11,6 +13,7 @@ class HolidayModel{
   String? comment;
   int userId;
   String? requestName;
+  RawUserModel? user;
   HolidayModel({
     required this.id,
     this.reason,
@@ -23,6 +26,7 @@ class HolidayModel{
     required this.adminComment,
     required this.isEndDateHalf,
     required this.requestName,
+    required this.user
   });
 
   factory HolidayModel.fromJson(parsedJson){
@@ -37,7 +41,8 @@ class HolidayModel{
       isHalfDay : int.parse(parsedJson['startDate_isHalf_day'].toString()),
       comment : parsedJson['comment'],
       userId : int.parse(parsedJson['user_id'].toString()),
-      requestName: parsedJson['request_name']
+      requestName: parsedJson['request_name'],
+      user: parsedJson['user'] != null ? RawUserModel.fromJson(parsedJson['user']) : null
     );
   }
   Map<String,dynamic> toJson()=>{

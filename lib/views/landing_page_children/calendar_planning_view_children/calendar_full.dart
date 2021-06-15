@@ -238,28 +238,6 @@ class _CalendarFullState extends State<CalendarFull> {
                         const SizedBox(
                           width: 20,
                         ),
-                        Container(
-                          margin: const EdgeInsets.only(left: 10),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                width: 10,
-                                height: 10,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(3),
-                                    color: Colors.grey.shade800),
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Text("En retard")
-                            ],
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 20,
-                        ),
                       ],
                     ),
                   ),
@@ -554,25 +532,33 @@ class _CalendarFullState extends State<CalendarFull> {
                                                                           for(AttendanceModel attendance in user.attendances)...{
                                                                             if(_calendarViewModel.service.isSameDay(DateTime(_calendarViewModel.currentYear, _calendarViewModel.currentMonth, daysIndex + 1), attendance.date))...{
                                                                               Tooltip(
-                                                                                  message: attendance.status == 1 ? "En retard" : "Absent",
-                                                                                  child: attendance.status == 1 ? ClipPath(
-                                                                                    clipper: CalendarHalfdayClip(),
-                                                                                    child: Container(
-                                                                                      width: ((constraint.maxWidth - 150) /
-                                                                                          _calendarViewModel.numOfDays) <
-                                                                                          40
-                                                                                          ? 40
-                                                                                          : (constraint.maxWidth - 150) / _calendarViewModel.numOfDays,
-                                                                                      color: Colors.grey.shade800,
-                                                                                    ),
-                                                                                  ) : Container(
+                                                                                  message:  "Absent",
+                                                                                  child: Container(
                                                                                     width: ((constraint.maxWidth - 150) /
                                                                                         _calendarViewModel.numOfDays) <
                                                                                         40
                                                                                         ? 40
                                                                                         : (constraint.maxWidth - 150) / _calendarViewModel.numOfDays,
                                                                                     color: Colors.red,
-                                                                                  )
+                                                                                  ),
+                                                                                  // child: attendance.status == 1 ? ClipPath(
+                                                                                  //   clipper: CalendarHalfdayClip(),
+                                                                                  //   child: Container(
+                                                                                  //     width: ((constraint.maxWidth - 150) /
+                                                                                  //         _calendarViewModel.numOfDays) <
+                                                                                  //         40
+                                                                                  //         ? 40
+                                                                                  //         : (constraint.maxWidth - 150) / _calendarViewModel.numOfDays,
+                                                                                  //     color: Colors.grey.shade800,
+                                                                                  //   ),
+                                                                                  // ) : Container(
+                                                                                  //   width: ((constraint.maxWidth - 150) /
+                                                                                  //       _calendarViewModel.numOfDays) <
+                                                                                  //       40
+                                                                                  //       ? 40
+                                                                                  //       : (constraint.maxWidth - 150) / _calendarViewModel.numOfDays,
+                                                                                  //   color: Colors.red,
+                                                                                  // )
                                                                               )
                                                                             }
                                                                           }

@@ -24,7 +24,7 @@ class HolidayService {
   static final RegionDataControl _regionDataControl = RegionDataControl.instance(_calendarDataControl);
   static final LoggedUserHolidayRequests _loggedUserHolidayRequests = LoggedUserHolidayRequests.instance;
 
-  Future<void> request(context, {required Map body}) async {
+  Future<void> request({required Map body, required bool isMe}) async {
     try{
       await http.post(Uri.parse("${BaseEnpoint.URL}${HolidayEndpoint.base}"),headers: {
         "Accept" : "application/json",
@@ -32,16 +32,19 @@ class HolidayService {
       },body: body).then((response) {
         var data = json.decode(response.body);
         if(response.statusCode == 200){
+          _notifier.showUnContextedBottomToast(msg: "Demande approuvée!");
           // notifier.showContextedBottomToast(context, msg: "Demande approuvée!");
-          if(_loggedUserHolidayRequests.hasFetched){
+          if(_loggedUserHolidayRequests.hasFetched && isMe){
             _loggedUserHolidayRequests.append(data['data']);
           }
           return ;
         }
+        _notifier.showUnContextedBottomToast(msg: "Erreur ${response.statusCode}, ${response.reasonPhrase}, Veuillez réessayer");
         return ;
       });
     }catch(e){
       print(e);
+      _notifier.showUnContextedBottomToast(msg: "Erreur $e, veuillez contacter l'administrateur.");
       return ;
     }
   }

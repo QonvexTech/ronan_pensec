@@ -29,9 +29,9 @@ class EmployeeAttendanceViewModel {
 
   int type = 0;
 
-  List<String> dropDownData = [
-    "Absent", // 0
-    "En retard" // 1
-  ];
+  // List<String> dropDownData = [
+  //   "Absent", // 0
+  //   "En retard" // 1
+  // ];
 
 }

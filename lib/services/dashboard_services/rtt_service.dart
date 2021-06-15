@@ -25,7 +25,7 @@ class RTTService{
   static final LoggedUserRttRequests _loggedUserRttRequests = LoggedUserRttRequests.instance;
 
   ///Add new Request
-  Future<void> request({required body}) async {
+  Future<void> request({required body, required bool isMe}) async {
     try{
       await http.post(Uri.parse("${BaseEnpoint.URL}${RTTEndpoint.base}"),headers: {
         "Accept" : "application/json",
@@ -33,7 +33,9 @@ class RTTService{
       },body: body).then((response) {
         var data = json.decode(response.body);
         if(response.statusCode == 200){
-          _loggedUserRttRequests.append(data['data']);
+          if(isMe){
+            _loggedUserRttRequests.append(data['data']);
+          }
           _notifier.showUnContextedBottomToast(msg: "Demande envoyee");
           return ;
         }

@@ -18,7 +18,7 @@ class PendingRTTRequests extends StatelessWidget {
   Text header(context,String text) => Text(text.toUpperCase(),style: TextStyle(
     letterSpacing: 1,
     fontWeight: FontWeight.w600,
-    fontSize: Theme.of(context).textTheme.subtitle2!.fontSize! - 3,
+    fontSize: Theme.of(context).textTheme.subtitle1!.fontSize,
     color: Palette.gradientColor[0]
   ),);
 
@@ -32,7 +32,7 @@ class PendingRTTRequests extends StatelessWidget {
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon,color: Palette.gradientColor[0],size: 17.5,),
+        Icon(icon,color: Palette.gradientColor[0],size: 23,),
         const SizedBox(
           width: 10,
         ),
@@ -242,7 +242,7 @@ class PendingRTTRequests extends StatelessWidget {
                           ),
                         )
                       ],
-                    ), width: _size.width, height: 300,title: ListTile(
+                    ), width: _size.width, height: 230,title: ListTile(
                       leading: Container(
                         width: 40,
                         height: 40,
@@ -258,7 +258,7 @@ class PendingRTTRequests extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                         letterSpacing: 1.5
                       ),),
-                      subtitle: Text("RTT REQUEST DETAILS"),
+                      subtitle: Text("DÉTAILS DE LA DEMANDE RTT"),
                       trailing: IconButton(
                         icon: Icon(Icons.close),
                         onPressed: () => Navigator.of(context).pop(null),

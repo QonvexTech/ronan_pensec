@@ -6,8 +6,10 @@ import 'package:page_transition/page_transition.dart';
 import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/global/constants.dart';
 import 'package:ronan_pensec/global/endpoints/auth_endpoint.dart';
+import 'package:ronan_pensec/global/user_raw_data.dart';
 import 'package:ronan_pensec/models/user_model.dart';
 import 'package:ronan_pensec/route/credential_route.dart';
+import 'package:ronan_pensec/services/dashboard_services/employee_service.dart';
 import 'package:ronan_pensec/services/http_request.dart';
 import 'package:ronan_pensec/services/notification_service.dart';
 import 'dart:convert';
@@ -26,6 +28,8 @@ class LoginService {
   static final Auth _auth = Auth.instance;
   static final NotificationService _notificationService = NotificationService.instance;
   late final CredentialsPreferences _credentialsPreferences = CredentialsPreferences.instance;
+  static final UserRawData _userRawData = UserRawData.instance;
+  static final EmployeeService _employeeService = EmployeeService.rawInstance;
   Future<bool> login(context,
       {required String email,
       required String password,
@@ -48,7 +52,14 @@ class LoginService {
             _credentialsPreferences.saveCredentials(
                 email: email, password: password);
           }
-          _notificationService.all;
+          if(_auth.loggedUser!.roleId <= 2){
+            _notificationService.all;
+            _employeeService.fetchRawUsers.then((value) {
+              if(value != null){
+                _userRawData.setUsers = value;
+              }
+            });
+          }
           Navigator.pushReplacement(
               context,
               PageTransition(
