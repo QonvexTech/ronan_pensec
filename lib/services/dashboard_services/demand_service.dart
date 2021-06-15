@@ -15,7 +15,7 @@ class DemandService{
   static final Auth _auth = Auth.instance;
   Auth get auth => _auth;
 
-  Future<HolidayDemandModel?> updateDemand(context,{required int demandId, required int holidayId, required int extension}) async {
+  Future<HolidayDemandModel?> updateDemand(context,{required int demandId, required int holidayId, required double extension}) async {
     try{
       return await http.post(Uri.parse("${BaseEnpoint.URL}api/holidays/update_demands"),body: {
         "days_extended" : extension.toString(),
