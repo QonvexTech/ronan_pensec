@@ -16,10 +16,13 @@ class CenterDataControl {
   List<CenterModel> get current => _list.value!;
   bool hasFetched = false;
 
+
   void populateAll(List data) {
     _list.add(data.map((e) => CenterModel.fromJson(e)).toList());
   }
-
+  void clear(){
+    _list = BehaviorSubject();
+  }
   void append(Map<String, dynamic> data) {
     this.current.add(CenterModel.fromJson(data));
     _list.add(this.current);

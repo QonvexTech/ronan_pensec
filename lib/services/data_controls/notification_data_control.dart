@@ -13,6 +13,12 @@ class NotificationDataControl {
 
   static final NotificationActiveBadgeControl _activeBadgeControl = NotificationActiveBadgeControl.instance;
 
+
+
+  NotificationModel getNotification(int id) {
+    print("NOTIFICATION ID : $id");
+    return this.current!.where((element) => element.id == id).first;
+  }
   updateBadge(){
     print('updating badge');
     if(this.current!.where((element) => element.isRead == 0).toList().length > 0){
@@ -22,24 +28,19 @@ class NotificationDataControl {
     }
   }
   forceBadge(bool val){}
+
+  clear(){
+    _notifications.add(null);
+  }
   populateAll(List data){
     _notifications.add(data.map((e) => NotificationModel.fromJson(e)).toList());
     updateBadge();
   }
   append(Map<String,dynamic> data){
     try{
-      if(this.current != null){
-        print("UP");
-        List<NotificationModel> hasAdded = this.current!;
-        print("UP 1");
-        NotificationModel model = new NotificationModel.fromJson(data);
-        print("UP 2");
-        print(model.title);
-        hasAdded.add(model);
-        _instance._notifications.add(hasAdded);
-      }else{
-        print("NULL NOTIFICATION");
-      }
+      print("DATA : $data");
+      this.current!.add(NotificationModel.fromJson(data));
+      _notifications.add(this.current!);
     }catch(e){
       print("ERROR APPENDING NOTIF : $e");
     }

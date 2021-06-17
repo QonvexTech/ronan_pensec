@@ -4,12 +4,14 @@ import 'package:ronan_pensec/views/landing_page_children/calendar_children/pendi
 import 'package:ronan_pensec/views/landing_page_children/calendar_children/pending_rtt_requests.dart';
 
 class AllDemandsView extends StatefulWidget {
+  final int type;
+  AllDemandsView({Key? key, this.type = 0}) : super(key: key);
   @override
   _AllDemandsViewState createState() => _AllDemandsViewState();
 }
 
 class _AllDemandsViewState extends State<AllDemandsView> with SingleTickerProviderStateMixin {
-  late final TabController _tabController = new TabController(length: 2, vsync: this);
+  late final TabController _tabController = new TabController(length: 2, vsync: this, initialIndex: widget.type);
   final PendingHolidayRequests _holidayRequests = PendingHolidayRequests();
   final PendingRTTRequests _pendingRTTRequests = PendingRTTRequests();
 

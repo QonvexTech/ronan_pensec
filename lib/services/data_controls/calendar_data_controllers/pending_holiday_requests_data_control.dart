@@ -9,12 +9,19 @@ class PendingHolidayRequestsDataControl {
   Stream<List<HolidayModel>> get stream$ => _list.stream;
   List<HolidayModel> get current => _list.value!;
 
+  clear(){
+    _list = BehaviorSubject();
+  }
   populateAll(List data){
     _list.add(data.map((e) => HolidayModel.fromJson(e)).toList());
   }
   append(Map data){
-    this.current.add(HolidayModel.fromJson(data));
-    _list.add(this.current);
+    try{
+      this.current.add(HolidayModel.fromJson(data));
+      _list.add(this.current);
+    }catch(e){
+      print("ERROR PENDING HOLIDAY APPEND : $e");
+    }
   }
 
   remove(int id){

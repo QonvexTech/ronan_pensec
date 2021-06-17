@@ -25,7 +25,7 @@ class RawUserModel {
   });
   factory RawUserModel.fromJson(Map<String,dynamic> parsedJson){
     return RawUserModel(
-      id : parsedJson['id'],
+      id : int.parse(parsedJson['id'].toString()),
       image : parsedJson['image'],
       address : parsedJson['address'],
       city : parsedJson['city'],

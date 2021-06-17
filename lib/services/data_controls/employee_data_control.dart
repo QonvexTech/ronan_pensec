@@ -17,6 +17,10 @@ class EmployeeDataControl {
   List<UserModel> get current => _list.value!;
 
   bool hasFetched = false;
+
+  void clear(){
+    _list = BehaviorSubject();
+  }
   void populateAll(List data) {
     if(data is List<UserModel>){
       _list.add(data);
