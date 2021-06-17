@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:ronan_pensec/global/palette.dart';
+import 'package:ronan_pensec/global/template/general_template.dart';
 import 'package:ronan_pensec/models/notification_model.dart';
 import 'package:ronan_pensec/route/planning_route.dart';
 import 'package:ronan_pensec/services/data_controls/notification_data_control.dart';
 import 'package:ronan_pensec/services/notification_service.dart';
+import 'package:ronan_pensec/view_model/announcement_view_model.dart';
 
 class NotificationsView extends StatefulWidget {
   @override
@@ -13,6 +15,7 @@ class NotificationsView extends StatefulWidget {
 class _NotificationsViewState extends State<NotificationsView> {
   final NotificationDataControl _dataControl = NotificationDataControl.instance;
   final NotificationService _service = NotificationService.instance;
+  final AnnouncementViewModel _announcementViewModel = AnnouncementViewModel.instance;
 
   invalidContent({required Widget image, required String subtext}) => Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -50,6 +53,7 @@ class _NotificationsViewState extends State<NotificationsView> {
 
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
     return Material(
       child: Container(
         decoration: BoxDecoration(
@@ -145,35 +149,81 @@ class _NotificationsViewState extends State<NotificationsView> {
                                 for (NotificationModel notification
                                     in snapshot.data!) ...{
                                   MaterialButton(
-                                    onPressed: (){
-                                      Navigator.push(context, PlanningRoute.allRequests);
-                                      if(notification.isRead == 0){
+                                    onPressed: () {
+                                      if (notification.type == 'rtt_request') {
+                                        Navigator.push(context,
+                                            PlanningRoute.allRequests(1));
+                                      } else if (notification.type ==
+                                          'holiday_request') {
+                                        Navigator.push(context,
+                                            PlanningRoute.allRequests(0));
+                                      } else {
+                                        print("POPUP FOR EVENT");
+                                        if(notification.data['type'] != 0){
+                                          _announcementViewModel.showNotice(context, size, notification: notification);
+                                        }
+                                      }
+                                      if (notification.isRead == 0) {
                                         _service.markAsRead(notification.id);
                                       }
                                     },
-                                    color: notification.isRead == 1 ? Colors.grey.shade200 : Colors.grey.shade300,
+                                    color: notification.isRead == 1
+                                        ? Colors.grey.shade200
+                                        : Colors.grey.shade300,
                                     child: ListTile(
-                                      leading: Container(
-                                        width: 40,
-                                        height: 40,
-                                        decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: Colors.white,
-                                            boxShadow: [
-                                              BoxShadow(
-                                                  color: Colors.black45,
-                                                  blurRadius: 2,
-                                                  offset: Offset(2, 2))
-                                            ],
-                                            image: DecorationImage(
-                                                fit: BoxFit.cover,
-                                                image: NetworkImage(
-                                                    "${notification.sender.image}"))),
-                                      ),
-                                      title: Text(
-                                        "${notification.title}",
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
+                                      leading: notification.type == 'notice'
+                                          ? null
+                                          : Container(
+                                              width: 40,
+                                              height: 40,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Colors.white,
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                      color: Colors.black45,
+                                                      blurRadius: 2,
+                                                      offset: Offset(2, 2))
+                                                ],
+                                                image: DecorationImage(
+                                                    fit: BoxFit.cover,
+                                                    image: NetworkImage(
+                                                        "${notification.sender.image}")),
+                                              ),
+                                            ),
+                                      title: RichText(
+                                        text: TextSpan(
+                                          text: "${notification.title}",
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.w500),
+                                          children: notification.type ==
+                                                  "notice"
+                                              ? [
+                                                  TextSpan(
+                                                      text:
+                                                          " ( ${notification.data['type'] == 0 ? "Basse" : notification.data['type'] == 1 ? "Moyen" : "Haut!"} )",
+                                                      style: TextStyle(
+                                                          fontSize: 15,
+                                                          fontStyle:
+                                                              FontStyle.italic,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color: notification
+                                                                          .data[
+                                                                      'type'] ==
+                                                                  0
+                                                              ? Colors.green
+                                                              : notification.data[
+                                                                          'type'] ==
+                                                                      1
+                                                                  ? Colors
+                                                                      .orange
+                                                                  : Colors.red))
+                                                ]
+                                              : null,
+                                        ),
                                       ),
                                       subtitle: Column(
                                         children: [
@@ -185,9 +235,6 @@ class _NotificationsViewState extends State<NotificationsView> {
                                               overflow: TextOverflow.ellipsis,
                                             ),
                                           ),
-                                          const SizedBox(
-                                            height: 15,
-                                          ),
                                           Container(
                                             width: double.infinity,
                                             child: Text(
@@ -195,18 +242,24 @@ class _NotificationsViewState extends State<NotificationsView> {
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
                                               style: TextStyle(
-                                                fontWeight: FontWeight.w400,
-                                                fontStyle: FontStyle.italic,
-                                                fontSize: 12.5
-                                              ),
+                                                  fontWeight: FontWeight.w400,
+                                                  fontStyle: FontStyle.italic,
+                                                  fontSize: 12.5),
                                               textAlign: TextAlign.left,
                                             ),
                                           )
                                         ],
                                       ),
-                                      trailing: Icon(notification.isRead == 1 ? Icons.check : Icons.mark_as_unread, color: Colors.grey.shade400,),
+                                      trailing: Icon(
+                                        notification.isRead == 1
+                                            ? Icons.check
+                                            : Icons.mark_as_unread,
+                                        color: Colors.grey.shade400,
+                                      ),
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              vertical: 10),
                                     ),
-
                                   )
                                 }
                               ],

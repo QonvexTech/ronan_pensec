@@ -52,8 +52,8 @@ class LoginService {
             _credentialsPreferences.saveCredentials(
                 email: email, password: password);
           }
+          _notificationService.all;
           if(_auth.loggedUser!.roleId <= 2){
-            _notificationService.all;
             _employeeService.fetchRawUsers.then((value) {
               if(value != null){
                 _userRawData.setUsers = value;

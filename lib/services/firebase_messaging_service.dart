@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:ronan_pensec/global/auth.dart';
+import 'package:ronan_pensec/global/constants.dart';
+import 'package:ronan_pensec/models/notification_model.dart';
 import 'package:ronan_pensec/services/data_controls/calendar_data_controllers/pending_holiday_requests_data_control.dart';
 import 'package:ronan_pensec/services/data_controls/calendar_data_controllers/pending_rtt_requests_data_control.dart';
 import 'package:ronan_pensec/services/data_controls/notification_active_badge_control.dart';
 import 'package:ronan_pensec/services/notification_service.dart';
-
+import 'package:ronan_pensec/view_model/announcement_view_model.dart';
 import 'firebase_messaging_token_service.dart';
 
 class FirebaseMessagingService {
@@ -14,11 +16,13 @@ class FirebaseMessagingService {
   PendingHolidayRequestsDataControl _pendingHolidayRequestsDataControl = PendingHolidayRequestsDataControl.instance;
   static final NotificationService _notificationService = NotificationService.instance;
   static final NotificationActiveBadgeControl _activeBadgeControl = NotificationActiveBadgeControl.instance;
+  static final ContextHolder _contextHolder = ContextHolder.instance;
   /// initializing constructor
   static final FirebaseMessagingService _instance =
       FirebaseMessagingService._privateConstructor();
 
   static final Auth _auth = Auth.instance;
+  static final AnnouncementViewModel _announcementViewModel = AnnouncementViewModel.instance;
   ///saved Token
   String? _fcmToken;
 
@@ -60,25 +64,37 @@ class FirebaseMessagingService {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       if(message.data['notificaton_data'] != null){
         try{
+          var data = json.decode(message.data['notificaton_data']);
           _activeBadgeControl.update(true);
           _notificationService.all;
+          if(data['type'] == "rtt_request"){
+            try{
+              _pendingRTTRequestDataControl.append(json.decode(message.data['notificaton_data']['data']));
+            }catch(e){
+              print("ERROR PENDING APPEND : $e");
+            }
+          }
+          else if(data['type'] == "holiday_request"){
+            try{
+              _pendingHolidayRequestsDataControl.append(json.decode(message.data['notificaton_data']['data']));
+            }catch(e){
+              print("ERROR PENDING HOLIDAY APPPEND : $e");
+            }
+          }else{
+            try{
+              if(int.parse(data['data']['type'].toString()) == 2){
+                /// High Important
+                print("SHOW INTERRUPT!");
+                print(data['id']);
+                final NotificationModel notification = NotificationModel.fromJson(data);
+                _announcementViewModel.showNotice(_contextHolder.context, _contextHolder.size!, notification: notification);
+              }
+            }catch(e){
+              print("NOTICE ERROR $e");
+            }
+          }
         }catch(e){
           print("ERROR NOTIFICATION APPEND : $e");
-        }
-      }
-      if(message.data['type'] != null){
-        if(message.data['type'] == "rtt_request"){
-          try{
-            _pendingRTTRequestDataControl.append(json.decode(message.data['secondary_data']));
-          }catch(e){
-            print("ERROR PENDING APPEND : $e");
-          }
-        }else{
-          try{
-            _pendingHolidayRequestsDataControl.append(json.decode(message.data['secondary_data']));
-          }catch(e){
-            print("ERROR PENDING HOLIDAY APPPEND : $e");
-          }
         }
       }
       return;
@@ -87,25 +103,35 @@ class FirebaseMessagingService {
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
       if(message.data['notificaton_data'] != null){
         try{
-          Map<String, dynamic> data = json.decode(message.data['notificaton_data']);
+          var data = json.decode(message.data['notificaton_data']);
+          _activeBadgeControl.update(true);
           _notificationService.all;
+          if(data['type'] == "rtt_request"){
+            try{
+              _pendingRTTRequestDataControl.append(json.decode(message.data['notificaton_data']['data']));
+            }catch(e){
+              print("ERROR PENDING APPEND : $e");
+            }
+          }
+          else if(data['type'] == "holiday_request"){
+            try{
+
+              _pendingHolidayRequestsDataControl.append(json.decode(message.data['notificaton_data']['data']));
+            }catch(e){
+              print("ERROR PENDING HOLIDAY APPPEND : $e");
+            }
+          }else{
+            try{
+              if(int.parse(data['data']['type'].toString()) == 2){
+                /// High Important
+                print("SHOW INTERRUPT!");
+              }
+            }catch(e){
+              print("NOTICE ERROR $e");
+            }
+          }
         }catch(e){
           print("ERROR NOTIFICATION APPEND : $e");
-        }
-      }
-      if(message.data['type'] != null){
-        if(message.data['type'] == "rtt_request"){
-          try{
-            _pendingRTTRequestDataControl.append(json.decode(message.data['secondary_data']));
-          }catch(e){
-            print("ERROR PENDING APPEND : $e");
-          }
-        }else{
-          try{
-            _pendingHolidayRequestsDataControl.append(json.decode(message.data['secondary_data']));
-          }catch(e){
-            print("ERROR PENDING HOLIDAY APPPEND : $e");
-          }
         }
       }
       return;

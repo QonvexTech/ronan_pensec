@@ -53,7 +53,7 @@ class _WebDashboardState extends State<WebPlanning> {
               if(_regionViewModel.auth.loggedUser!.roleId < 3)...{
                 ActionButton(
                   message: "Voir Toutes les demandes en attente",
-                  onPressed: () => Navigator.push(context, PlanningRoute.allRequests),
+                  onPressed: () => Navigator.push(context, PlanningRoute.allRequests(0)),
                   icon: const Icon(Icons.request_page_outlined),
                 ),
               },

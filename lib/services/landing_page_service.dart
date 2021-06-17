@@ -42,13 +42,17 @@ class LandingPageService {
       Navigator.pushReplacement(context, CredentialRoute.login);
       await _credentialsPreferences!.removeCredentials;
       _instance.auth.setToken = null;
-      regionDataControl.populateAll([]);
-      centerDataControl.populateAll([]);
-      employeeDataControl.populateAll([]);
-      notificationDataControl.populateAll([]);
-      _pendingRTTRequestDataControl.populate([]);
-      _pendingHolidayRequestsDataControl.populateAll([]);
+      regionDataControl.clear();
+      regionDataControl.hasFetched = false;
+      centerDataControl.clear();
+      centerDataControl.hasFetched = false;
+      employeeDataControl.clear();
+      employeeDataControl.hasFetched = false;
+      notificationDataControl.clear();
+      _pendingRTTRequestDataControl.clear();
+      _pendingHolidayRequestsDataControl.clear();
       _auth.setUser = null;
+
       await firebaseMessagingService.removeToken;
     }
   }

@@ -25,7 +25,9 @@ class RegionDataControl {
   Stream<List<RegionModel>> get stream$ => _list.stream;
 
   List<RegionModel> get current => _list.value!;
-
+  clear(){
+    _list = BehaviorSubject();
+  }
   populateAll(List data){
     _list.add(data.map((e) => RegionModel.fromJson(e)).toList());
     List<UserModel> users = [];
