@@ -118,7 +118,7 @@ class PendingHolidayRequests extends StatelessWidget {
       child: StreamBuilder<List<HolidayModel>>(
         stream: requestController.dataControl.stream$,
         builder: (_, snapshot) {
-          if (snapshot.hasData) {
+          if (snapshot.hasData && !snapshot.hasError) {
             if (snapshot.data!.length > 0) {
               return ListView(
                 children: [

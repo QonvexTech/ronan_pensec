@@ -121,32 +121,173 @@ class _CenterViewState extends State<CenterView> {
             SliverToBoxAdapter(
               child: StreamBuilder<List<CenterModel>?>(
                 stream: _centerViewModel.centerDataControl.stream,
-                builder: (_, centersList) => !centersList.hasError &&
-                    centersList.hasData
-                    ? Container(
-                  width: double.infinity,
-                  height: _size.height - 120,
-                  child: _centerViewModel.currentView == 0
-                      ? _centerViewModel.centerTemplate
-                      .listView(context, centersList.data!, false,)
-                      : Padding(
+                builder: (_,centersList){
+                  if(centersList.hasData && !centersList.hasError){
+                    if(centersList.data!.length > 0){
+                      return Container(
+                        width: double.infinity,
+                        height: _size.height - 120,
+                        child: _centerViewModel.currentView == 0
+                            ? _centerViewModel.centerTemplate
+                            .listView(context, centersList.data!, false,)
+                            : Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: _centerViewModel.centerTemplate.tableView(
+                            context, centersList.data!,
+                          ),
+                        ),
+                      );
+                    }else{
+                      return Container(
+                        width: _size.width,
+                        height: _size.height - 120,
                         padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: _centerViewModel.centerTemplate.tableView(
-                        context, centersList.data!,
-                  ),
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                width: 60,
+                                height: 60,
+                                child: Image.asset('assets/images/info.png',color: Colors.grey.shade400,),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Text("OOPS!",style: TextStyle(
+                                  fontSize: 55,
+                                  color: Colors.grey.shade400,
+                                  letterSpacing: 1.5,
+                                  fontWeight: FontWeight.w600
+                              ),),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Text("Aucun centre ne vous est attribué",style: TextStyle(
+                                  fontSize: 40,
+                                  color: Colors.grey.shade400,
+                                  letterSpacing: 1.5,
+                                  fontWeight: FontWeight.w600
+                              ),textAlign: TextAlign.center),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+                  }
+                  if(centersList.hasError){
+                    return Container(
+                      width: _size.width,
+                      height: _size.height - 120,
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 60,
+                              height: 60,
+                              child: Image.asset('assets/images/warning.png.png',color: Colors.grey.shade400,),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Text("ERREUR!",style: TextStyle(
+                                fontSize: 55,
+                                color: Colors.grey.shade400,
+                                letterSpacing: 1.5,
+                                fontWeight: FontWeight.w600
+                            ),textAlign: TextAlign.center,),
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            Text("Une erreur s'est produite, veuillez contacter l'administrateur",style: TextStyle(
+                                fontSize: 40,
+                                color: Colors.grey.shade400,
+                                letterSpacing: 1.5,
+                                fontWeight: FontWeight.w600
+                            ),textAlign: TextAlign.center),
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            Container(
+                              width: double.infinity,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.info,color: Colors.grey.shade400,),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  Expanded(
+                                    child: Text("${centersList.error}",style: TextStyle(
+                                      fontSize: 20,
+                                      color: Colors.grey.shade400,
+                                    ),),
+                                  )
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
                       ),
-                )
-                    : Container(
-                  width: double.infinity,
-                  height: _size.height - 180,
-                  child: centersList.hasError
-                      ? Center(child: Text("${centersList.error}"))
-                      : GeneralTemplate.tableLoader(
+                    );
+                  }
+                  return GeneralTemplate.tableLoader(
                       _centerViewModel
                           .centerTemplate.kDataColumn.length,
                       _centerViewModel.centerTemplate.kDataColumn,
-                      _size.width),
-                ),
+                      _size.width);
+                },
+                // builder: (_, centersList) => !centersList.hasError &&
+                //     centersList.hasData
+                //     ? Container(
+                //   width: double.infinity,
+                //   height: _size.height - 120,
+                //   child: _centerViewModel.currentView == 0
+                //       ? _centerViewModel.centerTemplate
+                //       .listView(context, centersList.data!, false,)
+                //       : Padding(
+                //         padding: const EdgeInsets.symmetric(horizontal: 20),
+                //         child: _centerViewModel.centerTemplate.tableView(
+                //         context, centersList.data!,
+                //   ),
+                //       ),
+                // )
+                //     : Container(
+                //   width: double.infinity,
+                //   height: _size.height - 180,
+                //   child: centersList.hasError
+                //       ? Center(child: Text("${centersList.error}"))
+                //       : centersList.data!.length == 0 ? Center(
+                //     child: Column(
+                //       mainAxisAlignment: MainAxisAlignment.center,
+                //       children: [
+                //         Container(
+                //           width: 60,
+                //           height: 60,
+                //           child: Image.asset('assets/images/info.png',color: Colors.grey.shade400,),
+                //         ),
+                //         const SizedBox(
+                //           height: 10,
+                //         ),
+                //         Container(
+                //           width: double.infinity,
+                //           child: Text("OOP!",style: TextStyle(
+                //             fontSize: 50,
+                //             color: Colors.grey.shade400,
+                //             letterSpacing: 1.5,
+                //             fontWeight: FontWeight.w600
+                //           ),),
+                //         )
+                //       ],
+                //     ),
+                //   ) : GeneralTemplate.tableLoader(
+                //       _centerViewModel
+                //           .centerTemplate.kDataColumn.length,
+                //       _centerViewModel.centerTemplate.kDataColumn,
+                //       _size.width),
+                // ),
               ),
             )
           ],

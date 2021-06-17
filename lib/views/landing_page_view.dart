@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ronan_pensec/global/constants.dart';
 import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/global/tabbar_item_class.dart';
 import 'package:ronan_pensec/global/template/general_template.dart';
@@ -20,7 +21,9 @@ class LandingPageView extends StatefulWidget {
 class _LandingPageScreenWebState extends State<LandingPageView>
     with SingleTickerProviderStateMixin, LandingPageMainHelper {
   late final LandingPageService _service = LandingPageService.instance(context);
-  final NotificationActiveBadgeControl _activeBadgeControl = NotificationActiveBadgeControl.instance;
+  final NotificationActiveBadgeControl _activeBadgeControl =
+      NotificationActiveBadgeControl.instance;
+  final ContextHolder _contextHolder = ContextHolder.instance;
   GlobalKey _notificationIconKey = new GlobalKey();
   late final WebPlanning _webPlanning = WebPlanning(
     menuItems: menuItems,
@@ -53,14 +56,19 @@ class _LandingPageScreenWebState extends State<LandingPageView>
   ];
 
   late final TabController _tabController =
-  TabController(length: _contents.length, vsync: this);
+      TabController(length: _contents.length, vsync: this);
   Offset? notificationViewerOffset;
+
   @override
   Widget build(BuildContext context) {
+
     final Size size = MediaQuery.of(context).size;
+    _contextHolder.setContext = context;
+    _contextHolder.setSize = size;
     final bool _isMobile = size.width < 900;
-    if(notificationViewerOffset != null){
-      notificationViewerOffset = Offset(size.width - 60, notificationViewerOffset!.dy);
+    if (notificationViewerOffset != null) {
+      notificationViewerOffset =
+          Offset(size.width - 60, notificationViewerOffset!.dy);
     }
     // xPos= box.localToGlobal(Offset.zero).dx;
     return GestureDetector(
@@ -128,8 +136,8 @@ class _LandingPageScreenWebState extends State<LandingPageView>
                                             height: 20,
                                             child: FittedBox(
                                               child: Text("${item.label}",
-                                                  style:
-                                                  TextStyle(letterSpacing: 1.5)),
+                                                  style: TextStyle(
+                                                      letterSpacing: 1.5)),
                                             ),
                                           ),
                                         ],
@@ -145,8 +153,10 @@ class _LandingPageScreenWebState extends State<LandingPageView>
                                 letterSpacing: 2,
                                 color: Colors.white,
                                 fontWeight: FontWeight.w700,
-                                fontSize:
-                                Theme.of(context).textTheme.headline6!.fontSize),
+                                fontSize: Theme.of(context)
+                                    .textTheme
+                                    .headline6!
+                                    .fontSize),
                           )
                         },
                         const SizedBox(
@@ -154,30 +164,30 @@ class _LandingPageScreenWebState extends State<LandingPageView>
                         ),
 
                         Spacer(),
-
-                        if (auth.loggedUser!.roleId < 3) ...{
-                          StreamBuilder<bool>(
-                            stream: _activeBadgeControl.stream$,
-                            builder: (_, snapshot) => GeneralTemplate.badgedIcon(
-                              key: _notificationIconKey,
-                              isEnabled: snapshot.hasData && snapshot.data!,
-                              tooltip: "Notifications",
-                              onPress: () {
-                                setState(() {
-                                  if(notificationViewerOffset == null){
-                                    final RenderBox _renderBox = _notificationIconKey.currentContext!.findRenderObject()! as RenderBox;
-                                    final offset = _renderBox.localToGlobal(Offset.zero);
-                                    notificationViewerOffset = offset;
-                                  }else{
-                                    notificationViewerOffset = null;
-                                  }
-                                });
-                              },
-                              icon: Icons.notifications_rounded,
-                              backgroundColor: Palette.gradientColor[3],
-                            ),
+                        StreamBuilder<bool>(
+                          stream: _activeBadgeControl.stream$,
+                          builder: (_, snapshot) => GeneralTemplate.badgedIcon(
+                            key: _notificationIconKey,
+                            isEnabled: snapshot.hasData && snapshot.data!,
+                            tooltip: "Notifications",
+                            onPress: () {
+                              setState(() {
+                                if (notificationViewerOffset == null) {
+                                  final RenderBox _renderBox =
+                                      _notificationIconKey.currentContext!
+                                          .findRenderObject()! as RenderBox;
+                                  final offset =
+                                      _renderBox.localToGlobal(Offset.zero);
+                                  notificationViewerOffset = offset;
+                                } else {
+                                  notificationViewerOffset = null;
+                                }
+                              });
+                            },
+                            icon: Icons.notifications_rounded,
+                            backgroundColor: Palette.gradientColor[3],
                           ),
-                        },
+                        ),
                         const SizedBox(
                           width: 10,
                         ),
@@ -185,7 +195,8 @@ class _LandingPageScreenWebState extends State<LandingPageView>
                           tag: "my-profile",
                           child: GeneralTemplate.profileIcon(
                             callback: (value) async {
-                              await _service.profileIconOnChoose(context, value);
+                              await _service.profileIconOnChoose(
+                                  context, value);
                             },
                             imageProvider: userDataControl.imageProvider,
                           ),
@@ -194,52 +205,52 @@ class _LandingPageScreenWebState extends State<LandingPageView>
                     ),
                   ),
                   if (_isMobile) ...{
-                    Container(
-                        height: 70,
-                        alignment: Alignment.bottomCenter,
-                        width: double.infinity,
-                        child: TabBar(
-                          onTap: (index) {
-                            setState(() {
-                              currentTabIndex = index;
-                            });
-                          },
-                          indicatorColor: Palette.textFieldColor,
-                          controller: _tabController,
-                          unselectedLabelColor: Colors.grey.shade400,
-                          physics: NeverScrollableScrollPhysics(),
-                          tabs: [
-                            for (TabbarItem item in tabItems) ...{
-                              Tab(
-                                icon: Icon(
-                                  item.icon,
-                                  color: tabItems.indexOf(item) == currentTabIndex
-                                      ? Palette.textFieldColor
-                                      : Colors.grey.shade400,
-                                ),
-                              )
-                            }
-                          ],
-                        ))
+                    PreferredSize(
+                      preferredSize: Size.fromHeight(70.0),
+                      child: TabBar(
+                        onTap: (index) {
+                          setState(() {
+                            currentTabIndex = index;
+                          });
+                        },
+                        indicatorColor: Palette.textFieldColor,
+                        controller: _tabController,
+                        unselectedLabelColor: Colors.grey.shade400,
+                        physics: NeverScrollableScrollPhysics(),
+                        tabs: [
+                          for (TabbarItem item in tabItems) ...{
+                            Tab(
+                              icon: Icon(
+                                item.icon,
+                                color: tabItems.indexOf(item) == currentTabIndex
+                                    ? Palette.textFieldColor
+                                    : Colors.grey.shade400,
+                              ),
+                            )
+                          }
+                        ],
+                      ),
+                    )
                   },
                   Expanded(
                       child: TabBarView(
-                        controller: _tabController,
-                        physics: NeverScrollableScrollPhysics(),
-                        children: _contents,
-                      ))
+                    controller: _tabController,
+                    physics: NeverScrollableScrollPhysics(),
+                    children: _contents,
+                  ))
                 ],
               ),
             ),
           ),
-          if(notificationViewerOffset != null)...{
+          if (notificationViewerOffset != null) ...{
             Positioned(
               top: notificationViewerOffset!.dy + 45,
               left: notificationViewerOffset!.dx - 360,
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 150),
                 width: 360,
-                height: notificationViewerOffset == null ? 0 : size.height * .85,
+                height:
+                    notificationViewerOffset == null ? 0 : size.height * .85,
                 child: NotificationsView(),
               ),
             )

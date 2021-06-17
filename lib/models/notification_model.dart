@@ -5,9 +5,11 @@ class NotificationModel {
   final String title;
   final String message;
   final RawUserModel sender;
+  final String type;
   String time;
   int isRead;
   final DateTime created_at;
+  final Map data;
   NotificationModel({
     required this.id,
     required this.title,
@@ -15,7 +17,9 @@ class NotificationModel {
     required this.sender,
     required this.isRead,
     required this.time,
+    required this.type,
     required this.created_at,
+    required this.data
   });
 
 
@@ -27,7 +31,9 @@ class NotificationModel {
       sender : RawUserModel.fromJson(parsedJson['user']),
       isRead : int.parse(parsedJson['is_read'].toString()),
       created_at: DateTime.parse(parsedJson['created_at']),
-      time: parsedJson['time']
+      time: parsedJson['time'],
+      type: parsedJson['type'],
+      data: parsedJson['data']
     );
   }
   Map<String,dynamic> toJson()=>{
@@ -36,6 +42,13 @@ class NotificationModel {
     'message' : message,
     'user' : sender,
     'is_read' : isRead,
-    'time' : time
+    'time' : time,
+    'created_at' : created_at,
+    'type' : type,
+    'data' : data
   };
+}
+
+class GenericData<T>{
+
 }

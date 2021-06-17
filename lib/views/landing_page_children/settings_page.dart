@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/global/palette.dart';
+import 'package:ronan_pensec/views/landing_page_children/settings_page_children/announcement_page.dart';
 import 'package:ronan_pensec/views/landing_page_children/settings_page_children/general.dart';
 import 'package:ronan_pensec/views/landing_page_children/settings_page_children/manage_employees.dart';
 import 'package:ronan_pensec/views/landing_page_children/settings_page_children/security_and_login.dart';
@@ -13,7 +15,8 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage>
     with SingleTickerProviderStateMixin {
   late Widget _selectedContent = _contents[0];
-  List<Widget> _contents = [
+  final Auth _auth = Auth.instance;
+  late List<Widget> _contents = [
     Container(
       key: ValueKey("general-settings"),
       child: General(),
@@ -26,6 +29,12 @@ class _SettingsPageState extends State<SettingsPage>
       key: ValueKey("employee-management"),
       child: ManageEmployees(),
     ),
+    if(_auth.loggedUser!.roleId != 3)...{
+      Container(
+        key: ValueKey("announcement"),
+        child: AnnouncementPage(),
+      )
+    }
   ];
   // late final TabController _tabController = new TabController(length: length, vsync: this);
   Widget iconButtons(
@@ -159,6 +168,13 @@ class _SettingsPageState extends State<SettingsPage>
                                   _selectedContent = _contents[2];
                                 });
                               }),
+                          if(_auth.loggedUser!.roleId != 3)...{
+                            this.iconButtons(icon: Icons.announcement_outlined, label: "Annonce", size: size, onPress: (){
+                              setState(() {
+                                _selectedContent = _contents[3];
+                              });
+                            })
+                          }
                         ],
                       ),
                     ),

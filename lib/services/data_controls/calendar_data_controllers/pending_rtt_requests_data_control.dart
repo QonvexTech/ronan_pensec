@@ -9,6 +9,9 @@ class PendingRTTRequestDataControl{
   Stream<List<RTTModel>> get stream => _list.stream;
   List<RTTModel> get current => _list.value!;
 
+  clear(){
+    _list = BehaviorSubject();
+  }
   populate(List data){
     _list.add(data.map((e) => RTTModel.fromJson(e)).toList());
   }
