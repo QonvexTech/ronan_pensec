@@ -58,7 +58,16 @@ class CenterCreateWidget {
     });
     return _instance;
   }
-
+  void dispose(){
+    _name.clear();
+    _street.clear();
+    _city.clear();
+    _zipCode.clear();
+    _mobile.clear();
+    _body.clear();
+    _instance._address = ['', '', ''];
+    _instance.setRegion = _regionController.regionData.regions[0];
+  }
   final TextEditingController _name = new TextEditingController();
   final TextEditingController _street = new TextEditingController();
   final TextEditingController _city = new TextEditingController();
@@ -75,6 +84,7 @@ class CenterCreateWidget {
   set setRegion(RegionModel? data) {
     _chosenRegion = data;
     _instance.appendToBody = {'region_id': "${data!.id}"};
+
   }
   // int? _regionId;
   //
@@ -249,7 +259,11 @@ class CenterCreateWidget {
                             Navigator.of(context).pop(null);
                             print("PROCEED");
                             loadingCallback(true);
-                            await _service.create(context, _instance.body).whenComplete(() => loadingCallback(false));
+                            await _service.create(context, _instance.body).then((value) {
+                              if(value){
+                                _instance.dispose();
+                              }
+                            }).whenComplete(() => loadingCallback(false));
                           }else{
                             print("FILL ALL THE REQUIRED FIELDS");
                             setState((){

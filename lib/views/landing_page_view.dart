@@ -251,7 +251,16 @@ class _LandingPageScreenWebState extends State<LandingPageView>
                 width: 360,
                 height:
                     notificationViewerOffset == null ? 0 : size.height * .85,
-                child: NotificationsView(),
+                child: NotificationsView(
+                  onSelect: (bool val){
+                    print(val);
+                    if(val){
+                      setState(() {
+                        notificationViewerOffset = null;
+                      });
+                    }
+                  },
+                ),
               ),
             )
           }

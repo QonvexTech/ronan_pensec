@@ -17,6 +17,7 @@ class PendingHolidayRequestsDataControl {
   }
   append(Map data){
     try{
+      print("HOLIDAY DATA TO ADD $data");
       this.current.add(HolidayModel.fromJson(data));
       _list.add(this.current);
     }catch(e){
