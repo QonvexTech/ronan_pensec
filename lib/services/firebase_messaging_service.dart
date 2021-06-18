@@ -69,14 +69,16 @@ class FirebaseMessagingService {
           _notificationService.all;
           if(data['type'] == "rtt_request"){
             try{
-              _pendingRTTRequestDataControl.append(json.decode(message.data['notificaton_data']['data']));
+              _pendingRTTRequestDataControl.append(json.decode(data['data']));
             }catch(e){
               print("ERROR PENDING APPEND : $e");
             }
           }
           else if(data['type'] == "holiday_request"){
             try{
-              _pendingHolidayRequestsDataControl.append(json.decode(message.data['notificaton_data']['data']));
+              var holidayData = json.decode(data['data']);
+              print("HOLIDAY DATA : $holidayData");
+              _pendingHolidayRequestsDataControl.append(holidayData);
             }catch(e){
               print("ERROR PENDING HOLIDAY APPPEND : $e");
             }
@@ -108,15 +110,16 @@ class FirebaseMessagingService {
           _notificationService.all;
           if(data['type'] == "rtt_request"){
             try{
-              _pendingRTTRequestDataControl.append(json.decode(message.data['notificaton_data']['data']));
+              _pendingRTTRequestDataControl.append(json.decode(data['data']));
             }catch(e){
               print("ERROR PENDING APPEND : $e");
             }
           }
           else if(data['type'] == "holiday_request"){
             try{
-
-              _pendingHolidayRequestsDataControl.append(json.decode(message.data['notificaton_data']['data']));
+              var holidayData = json.decode(data['data']);
+              print("HOLIDAY DATA : $holidayData");
+              _pendingHolidayRequestsDataControl.append(holidayData);
             }catch(e){
               print("ERROR PENDING HOLIDAY APPPEND : $e");
             }
@@ -125,6 +128,9 @@ class FirebaseMessagingService {
               if(int.parse(data['data']['type'].toString()) == 2){
                 /// High Important
                 print("SHOW INTERRUPT!");
+                print(data['id']);
+                final NotificationModel notification = NotificationModel.fromJson(data);
+                _announcementViewModel.showNotice(_contextHolder.context, _contextHolder.size!, notification: notification);
               }
             }catch(e){
               print("NOTICE ERROR $e");

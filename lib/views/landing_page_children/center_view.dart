@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/global/template/general_template.dart';
 import 'package:ronan_pensec/models/center_model.dart';
 import 'package:ronan_pensec/services/data_controls/region_data_control.dart';
@@ -27,14 +28,29 @@ class _CenterViewState extends State<CenterView> {
   late final CenterViewModel _centerViewModel = CenterViewModel.instance(widget.control);
   final CenterCreateWidget _centerCreateWidget = CenterCreateWidget.instance;
   final CenterViewWidgetHelper _helper = CenterViewWidgetHelper.instance;
+  final TextEditingController _search = new TextEditingController();
   bool _isLoading = false;
-
+  bool _showSearch = false;
+  late List<CenterModel>? _displayData;
   @override
   void initState() {
     if (!_centerViewModel.centerDataControl.hasFetched) {
       _centerViewModel.service.fetch(context).then((value) => setState(
-          () => _centerViewModel.centerDataControl.hasFetched = value));
+          () => _centerViewModel.centerDataControl.hasFetched = value)).whenComplete(() {
+        // setState(() {
+        //   _displayData = List.from(_centerViewModel.centerDataControl.current);
+        // });
+      });
+    }else{
+      // setState(() {
+      //   _displayData = List.from(_centerViewModel.centerDataControl.current);
+      // });
     }
+    _centerViewModel.centerDataControl.stream.listen((List<CenterModel> centersList) {
+      setState(() {
+        _displayData = List.from(_centerViewModel.centerDataControl.current);
+      });
+    });
     super.initState();
   }
 
@@ -58,6 +74,7 @@ class _CenterViewState extends State<CenterView> {
         _centerViewModel.setView = 0;
       }
     }
+
     return Stack(
       children: [
         CustomScrollView(
@@ -80,6 +97,46 @@ class _CenterViewState extends State<CenterView> {
                               ? "Mes centrés"
                               : "Centrés",
                           style: GeneralTemplate.kTextStyle(context),
+                        ),
+                      ),
+                      AnimatedContainer(
+                          duration: const Duration(milliseconds: 600),
+                        width: _showSearch ? _size.width > 900 ? _size.width * .3 : _size.width * .4 : 60,
+                        height: 60,
+                        child: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 600),
+                          child: _showSearch ? Theme(
+                            data: ThemeData(
+                              primaryColor: Palette.gradientColor[0]
+                            ),
+                            child: TextField(
+                              controller: _search,
+                              onChanged: (text){
+                                setState(() {
+                                  _displayData = List.from(_centerViewModel.centerDataControl.current.where((element) => element.name.toLowerCase().contains(_search.text.toLowerCase())).toList());
+                                });
+                              },
+                              cursorColor: Palette.gradientColor[0],
+                              decoration: InputDecoration(
+                                prefixIcon: Icon(Icons.search),
+                                hintText: "Rechercher",
+                                suffixIcon: IconButton(
+                                  icon: Icon(Icons.clear),
+                                  onPressed: (){
+                                    _search.clear();
+                                    setState(() {
+                                      _showSearch = false;
+                                    });
+                                    _displayData = List.from(_centerViewModel.centerDataControl.current);
+                                  },
+                                )
+                              ),
+                            ),
+                          ) : IconButton(icon: Icon(Icons.search), onPressed: (){
+                            setState(() {
+                              _showSearch = true;
+                            });
+                          }),
                         ),
                       ),
                       if (_size.width > 900) ...{
@@ -123,56 +180,58 @@ class _CenterViewState extends State<CenterView> {
                 stream: _centerViewModel.centerDataControl.stream,
                 builder: (_,centersList){
                   if(centersList.hasData && !centersList.hasError){
-                    if(centersList.data!.length > 0){
-                      return Container(
-                        width: double.infinity,
-                        height: _size.height - 120,
-                        child: _centerViewModel.currentView == 0
-                            ? _centerViewModel.centerTemplate
-                            .listView(context, centersList.data!, false,)
-                            : Padding(
+                    if(_displayData != null){
+                      if(_displayData!.length > 0){
+                        return Container(
+                          width: double.infinity,
+                          height: _size.height - 120,
+                          child: _centerViewModel.currentView == 0
+                              ? _centerViewModel.centerTemplate
+                              .listView(context, _displayData!, false,)
+                              : Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: _centerViewModel.centerTemplate.tableView(
+                              context, _displayData!,
+                            ),
+                          ),
+                        );
+                      }else{
+                        return Container(
+                          width: _size.width,
+                          height: _size.height - 120,
                           padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: _centerViewModel.centerTemplate.tableView(
-                            context, centersList.data!,
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  width: 60,
+                                  height: 60,
+                                  child: Image.asset('assets/images/info.png',color: Colors.grey.shade400,),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Text("OOPS!",style: TextStyle(
+                                    fontSize: 55,
+                                    color: Colors.grey.shade400,
+                                    letterSpacing: 1.5,
+                                    fontWeight: FontWeight.w600
+                                ),),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                Text("Aucun centre ne vous est attribué",style: TextStyle(
+                                    fontSize: 40,
+                                    color: Colors.grey.shade400,
+                                    letterSpacing: 1.5,
+                                    fontWeight: FontWeight.w600
+                                ),textAlign: TextAlign.center),
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                    }else{
-                      return Container(
-                        width: _size.width,
-                        height: _size.height - 120,
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                width: 60,
-                                height: 60,
-                                child: Image.asset('assets/images/info.png',color: Colors.grey.shade400,),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Text("OOPS!",style: TextStyle(
-                                  fontSize: 55,
-                                  color: Colors.grey.shade400,
-                                  letterSpacing: 1.5,
-                                  fontWeight: FontWeight.w600
-                              ),),
-                              const SizedBox(
-                                height: 5,
-                              ),
-                              Text("Aucun centre ne vous est attribué",style: TextStyle(
-                                  fontSize: 40,
-                                  color: Colors.grey.shade400,
-                                  letterSpacing: 1.5,
-                                  fontWeight: FontWeight.w600
-                              ),textAlign: TextAlign.center),
-                            ],
-                          ),
-                        ),
-                      );
+                        );
+                      }
                     }
                   }
                   if(centersList.hasError){
@@ -239,55 +298,6 @@ class _CenterViewState extends State<CenterView> {
                       _centerViewModel.centerTemplate.kDataColumn,
                       _size.width);
                 },
-                // builder: (_, centersList) => !centersList.hasError &&
-                //     centersList.hasData
-                //     ? Container(
-                //   width: double.infinity,
-                //   height: _size.height - 120,
-                //   child: _centerViewModel.currentView == 0
-                //       ? _centerViewModel.centerTemplate
-                //       .listView(context, centersList.data!, false,)
-                //       : Padding(
-                //         padding: const EdgeInsets.symmetric(horizontal: 20),
-                //         child: _centerViewModel.centerTemplate.tableView(
-                //         context, centersList.data!,
-                //   ),
-                //       ),
-                // )
-                //     : Container(
-                //   width: double.infinity,
-                //   height: _size.height - 180,
-                //   child: centersList.hasError
-                //       ? Center(child: Text("${centersList.error}"))
-                //       : centersList.data!.length == 0 ? Center(
-                //     child: Column(
-                //       mainAxisAlignment: MainAxisAlignment.center,
-                //       children: [
-                //         Container(
-                //           width: 60,
-                //           height: 60,
-                //           child: Image.asset('assets/images/info.png',color: Colors.grey.shade400,),
-                //         ),
-                //         const SizedBox(
-                //           height: 10,
-                //         ),
-                //         Container(
-                //           width: double.infinity,
-                //           child: Text("OOP!",style: TextStyle(
-                //             fontSize: 50,
-                //             color: Colors.grey.shade400,
-                //             letterSpacing: 1.5,
-                //             fontWeight: FontWeight.w600
-                //           ),),
-                //         )
-                //       ],
-                //     ),
-                //   ) : GeneralTemplate.tableLoader(
-                //       _centerViewModel
-                //           .centerTemplate.kDataColumn.length,
-                //       _centerViewModel.centerTemplate.kDataColumn,
-                //       _size.width),
-                // ),
               ),
             )
           ],
