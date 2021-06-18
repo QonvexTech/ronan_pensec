@@ -100,6 +100,7 @@ class CenterService {
         "Accept": "application/json",
         HttpHeaders.authorizationHeader: "Bearer ${_auth.token}"
       }).then((response) {
+        print("DELETE CODE : ${response.statusCode}");
         if(response.statusCode == 200){
           _centerDataControl.remove(centerId);
         }
@@ -108,17 +109,25 @@ class CenterService {
       _notifier.showContextedBottomToast(context, msg: "Erreur $e");
     }
   }
-  Future create(context, Map body) async {
+  Future<bool> create(context, Map body) async {
     try{
-      await http.post(Uri.parse("${BaseEnpoint.URL}${CenterEndpoint.create}"),headers: {
+      print("BODY TO ADD : $body");
+      return await http.post(Uri.parse("${BaseEnpoint.URL}${CenterEndpoint.create}"),headers: {
         "Accept": "application/json",
         HttpHeaders.authorizationHeader: "Bearer ${_auth.token}"
       }, body: body).then((response) {
         var data = json.decode(response.body);
-        _centerDataControl.append(data);
+        if(response.statusCode == 200 || response.statusCode == 201){
+          _notifier.showUnContextedBottomToast(msg: "Ajout réussi");
+          _centerDataControl.append(data);
+          return true;
+        }
+        _notifier.showUnContextedBottomToast(msg: "${data['message']}");
+        return false;
       });
     }catch(e){
       _notifier.showContextedBottomToast(context, msg: "Erreur $e");
+      return false;
     }
   }
   Future<bool> removeAssignment(context,{required int userId, required centerId}) async {

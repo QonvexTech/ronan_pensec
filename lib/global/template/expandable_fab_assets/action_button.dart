@@ -6,12 +6,11 @@ class ActionButton extends StatelessWidget {
   const ActionButton({
     Key? key,
     this.onPressed,
-
     required this.message,
     required this.icon,
   }) : super(key: key);
 
-  final VoidCallback? onPressed;
+  final Function? onPressed;
 
   final Widget icon;
   final String message;
@@ -27,7 +26,9 @@ class ActionButton extends StatelessWidget {
         data: theme.accentIconTheme,
         child: IconButton(
           tooltip: message,
-          onPressed: onPressed!,
+          onPressed: (){
+            onPressed!();
+          },
           icon: icon,
         ),
       ),

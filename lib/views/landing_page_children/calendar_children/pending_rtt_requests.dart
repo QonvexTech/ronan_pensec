@@ -255,58 +255,53 @@ class PendingRTTRequests extends StatelessWidget {
                                   ],
                                 ),
                               ),
-                              Container(
-                                width: double.infinity,
-                                height: 50,
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: MaterialButton(
-                                        height: 50,
-                                        color: Colors.grey.shade200,
-                                        onPressed: () async {
-                                          Navigator.of(context).pop(null);
-                                          // await requestController.service.reject(context, rttId: rtt.id,reason: _reason.text).then((value) {
-                                          //   if(value){
-                                          //     requestController.dataControl.remove(rtt.id);
-                                          //   }
-                                          // });
-                                        },
-                                        child: Center(
-                                          child: Text("Annuler".toUpperCase(),style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            letterSpacing: 1.5,
-                                          ),),
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    Expanded(
-                                      child: MaterialButton(
-                                        height: 50,
-                                        color: Colors.green,
-                                        onPressed: () async {
-                                          Navigator.of(context).pop(null);
-                                          await requestController.service.approve(context, rttId: rtt.id).then((value) {
-                                            if(value){
-                                              requestController.dataControl.remove(rtt.id);
-                                            }
-                                          });
-                                        },
-                                        child: Center(
-                                          child: Text("J'accepte".toUpperCase(),style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w600,
-                                              letterSpacing: 1.5
-                                          ),),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )
+                              // Container(
+                              //   width: double.infinity,
+                              //   height: 50,
+                              //   child: Row(
+                              //     children: [
+                              //       Expanded(
+                              //         child: MaterialButton(
+                              //           height: 50,
+                              //           color: Colors.grey.shade200,
+                              //           onPressed: () async {
+                              //             Navigator.of(context).pop(null);
+                              //           },
+                              //           child: Center(
+                              //             child: Text("Annuler".toUpperCase(),style: TextStyle(
+                              //               fontWeight: FontWeight.w600,
+                              //               letterSpacing: 1.5,
+                              //             ),),
+                              //           ),
+                              //         ),
+                              //       ),
+                              //       const SizedBox(
+                              //         width: 10,
+                              //       ),
+                              //       Expanded(
+                              //         child: MaterialButton(
+                              //           height: 50,
+                              //           color: Colors.green,
+                              //           onPressed: () async {
+                              //             Navigator.of(context).pop(null);
+                              //             await requestController.service.approve(context, rttId: rtt.id).then((value) {
+                              //               if(value){
+                              //                 requestController.dataControl.remove(rtt.id);
+                              //               }
+                              //             });
+                              //           },
+                              //           child: Center(
+                              //             child: Text("J'accepte".toUpperCase(),style: TextStyle(
+                              //                 color: Colors.white,
+                              //                 fontWeight: FontWeight.w600,
+                              //                 letterSpacing: 1.5
+                              //             ),),
+                              //           ),
+                              //         ),
+                              //       ),
+                              //     ],
+                              //   ),
+                              // )
                             ],
                           ), width: _size.width, height: 230,title: ListTile(
                             leading: Container(

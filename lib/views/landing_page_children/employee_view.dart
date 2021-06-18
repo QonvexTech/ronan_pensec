@@ -52,7 +52,218 @@ class _EmployeeViewState extends State<EmployeeView> {
       }
     });
   }
-
+  dataControl() => Container(
+    width: double.infinity,
+    padding: const EdgeInsets.symmetric(
+        horizontal: 20),
+    height: 50,
+    child: this.employeePagination
+        .totalDataCount ==
+        null
+        ? Text("Loading...")
+        : Row(
+      crossAxisAlignment:
+      CrossAxisAlignment.center,
+      children: [
+        Text("Showing "),
+        const SizedBox(
+          width: 10,
+        ),
+        PopupMenuButton<int>(
+          padding:
+          const EdgeInsets.all(0),
+          initialValue: this
+              .employeePagination
+              .dataToShow,
+          onSelected: (int value) {
+            if (this.mounted) {
+              setState(() {
+                this
+                    .employeePagination
+                    .dataToShow = value;
+                this
+                    .employeePagination
+                    .firstPageUrl =
+                    "${this.employeePagination.dataToShow}" +
+                        "?page=1";
+                this
+                    .employeePagination
+                    .currentPageUrl =
+                    this
+                        .employeePagination
+                        .firstPageUrl;
+                _viewModel
+                    .employeeDataControl
+                    .hasFetched = false;
+              });
+              this.fetcher(this
+                  .employeePagination
+                  .currentPageUrl);
+            }
+          },
+          icon: Container(
+            width: 50,
+            child: Row(
+              children: [
+                Text(
+                    "${this.employeePagination.dataToShow}"),
+                Spacer(),
+                Icon(Icons
+                    .arrow_drop_down),
+              ],
+            ),
+          ),
+          itemBuilder: (_) => [
+            PopupMenuItem(
+              value: 10,
+              child: Text("10"),
+            ),
+            PopupMenuItem(
+              value: 20,
+              child: Text("20"),
+            ),
+            PopupMenuItem(
+              value: 30,
+              child: Text("30"),
+            ),
+            PopupMenuItem(
+              value: 40,
+              child: Text("40"),
+            ),
+            PopupMenuItem(
+              value: 50,
+              child: Text("50"),
+            )
+          ],
+        ),
+        Text(
+            "Out of ${this.employeePagination.totalDataCount}"),
+        Spacer(),
+        if (this.employeePagination
+            .currentPage >
+            this.employeePagination
+                .lastPage! /
+                2) ...{
+          IconButton(
+            icon: Icon(Icons.first_page),
+            tooltip:
+            "Aller à la première page",
+            onPressed: () {
+              setState(() {
+                this
+                    .employeePagination
+                    .currentPage = 1;
+              });
+              this.fetcher(
+                  "${this.employeePagination.dataToShow}?page=1");
+            },
+          ),
+        },
+        if (this.employeePagination
+            .currentPage >
+            1) ...{
+          IconButton(
+            icon:
+            Icon(Icons.chevron_left),
+            tooltip: "Précédent",
+            onPressed: () {
+              setState(() {
+                this
+                    .employeePagination
+                    .currentPage = this
+                    .employeePagination
+                    .currentPage -
+                    1;
+              });
+              this.fetcher(
+                  "${this.employeePagination.dataToShow}?page=${this.employeePagination.currentPage}");
+            },
+          ),
+        },
+        for (int i = 0;
+        i <
+            this
+                .employeePagination
+                .lastPage!;
+        i++) ...{
+          if (i + 1 == 1 ||
+              i + 1 ==
+                  this
+                      .employeePagination
+                      .lastPage ||
+              (i + 1 >
+                  this
+                      .employeePagination
+                      .currentPage -
+                      2 &&
+                  i + 1 <
+                      (this
+                          .employeePagination
+                          .currentPage +
+                          5))) ...{
+            IconButton(
+              icon: Text(
+                "${i + 1}",
+                style: TextStyle(
+                    color: i + 1 ==
+                        this
+                            .employeePagination
+                            .currentPage
+                        ? Palette
+                        .textFieldColor
+                        : Colors.black54),
+              ),
+              onPressed: () {
+                setState(() {
+                  this
+                      .employeePagination
+                      .currentPage = i + 1;
+                });
+                this.fetcher(
+                    "${this.employeePagination.dataToShow}?page=${i + 1}");
+              },
+            )
+          }
+        },
+        if (this.employeePagination
+            .currentPage <
+            this.employeePagination
+                .lastPage!) ...{
+          IconButton(
+            icon:
+            Icon(Icons.chevron_right),
+            tooltip: "Suivant",
+            onPressed: () {
+              setState(() {
+                this
+                    .employeePagination
+                    .currentPage++;
+              });
+              this.fetcher(
+                  "${this.employeePagination.dataToShow}?page=${this.employeePagination.currentPage}");
+            },
+          ),
+        },
+        IconButton(
+          icon: Icon(Icons.last_page),
+          tooltip:
+          "Aller à la dernière page",
+          onPressed: () {
+            setState(() {
+              this
+                  .employeePagination
+                  .currentPage =
+              this
+                  .employeePagination
+                  .lastPage!;
+            });
+            this.fetcher(
+                "${this.employeePagination.dataToShow}?page=${this.employeePagination.lastPage}");
+          },
+        )
+      ],
+    ),
+  );
   @override
   Widget build(BuildContext context) {
     final Size _size = MediaQuery.of(context).size;
@@ -222,235 +433,30 @@ class _EmployeeViewState extends State<EmployeeView> {
                                                 .kDataCell(
                                                     userList.data![index]))),
                                   ),
-                                  Container(
-                                    width: double.infinity,
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 20),
-                                    height: 50,
-                                    child: this.employeePagination
-                                                .totalDataCount ==
-                                            null
-                                        ? Text("Loading...")
-                                        : Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              Text("Showing "),
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
-                                              PopupMenuButton<int>(
-                                                padding:
-                                                    const EdgeInsets.all(0),
-                                                initialValue: this
-                                                    .employeePagination
-                                                    .dataToShow,
-                                                onSelected: (int value) {
-                                                  if (this.mounted) {
-                                                    setState(() {
-                                                      this
-                                                          .employeePagination
-                                                          .dataToShow = value;
-                                                      this
-                                                              .employeePagination
-                                                              .firstPageUrl =
-                                                          "${this.employeePagination.dataToShow}" +
-                                                              "?page=1";
-                                                      this
-                                                              .employeePagination
-                                                              .currentPageUrl =
-                                                          this
-                                                              .employeePagination
-                                                              .firstPageUrl;
-                                                      _viewModel
-                                                          .employeeDataControl
-                                                          .hasFetched = false;
-                                                    });
-                                                    this.fetcher(this
-                                                        .employeePagination
-                                                        .currentPageUrl);
-                                                  }
-                                                },
-                                                icon: Container(
-                                                  width: 50,
-                                                  child: Row(
-                                                    children: [
-                                                      Text(
-                                                          "${this.employeePagination.dataToShow}"),
-                                                      Spacer(),
-                                                      Icon(Icons
-                                                          .arrow_drop_down),
-                                                    ],
-                                                  ),
-                                                ),
-                                                itemBuilder: (_) => [
-                                                  PopupMenuItem(
-                                                    value: 10,
-                                                    child: Text("10"),
-                                                  ),
-                                                  PopupMenuItem(
-                                                    value: 20,
-                                                    child: Text("20"),
-                                                  ),
-                                                  PopupMenuItem(
-                                                    value: 30,
-                                                    child: Text("30"),
-                                                  ),
-                                                  PopupMenuItem(
-                                                    value: 40,
-                                                    child: Text("40"),
-                                                  ),
-                                                  PopupMenuItem(
-                                                    value: 50,
-                                                    child: Text("50"),
-                                                  )
-                                                ],
-                                              ),
-                                              Text(
-                                                  "Out of ${this.employeePagination.totalDataCount}"),
-                                              Spacer(),
-                                              if (this.employeePagination
-                                                      .currentPage >
-                                                  this.employeePagination
-                                                          .lastPage! /
-                                                      2) ...{
-                                                IconButton(
-                                                  icon: Icon(Icons.first_page),
-                                                  tooltip:
-                                                      "Aller à la première page",
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      this
-                                                          .employeePagination
-                                                          .currentPage = 1;
-                                                    });
-                                                    this.fetcher(
-                                                        "${this.employeePagination.dataToShow}?page=1");
-                                                  },
-                                                ),
-                                              },
-                                              if (this.employeePagination
-                                                      .currentPage >
-                                                  1) ...{
-                                                IconButton(
-                                                  icon:
-                                                      Icon(Icons.chevron_left),
-                                                  tooltip: "Précédent",
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      this
-                                                          .employeePagination
-                                                          .currentPage = this
-                                                              .employeePagination
-                                                              .currentPage -
-                                                          1;
-                                                    });
-                                                    this.fetcher(
-                                                        "${this.employeePagination.dataToShow}?page=${this.employeePagination.currentPage}");
-                                                  },
-                                                ),
-                                              },
-                                              for (int i = 0;
-                                                  i <
-                                                      this
-                                                          .employeePagination
-                                                          .lastPage!;
-                                                  i++) ...{
-                                                if (i + 1 == 1 ||
-                                                    i + 1 ==
-                                                        this
-                                                            .employeePagination
-                                                            .lastPage ||
-                                                    (i + 1 >
-                                                            this
-                                                                    .employeePagination
-                                                                    .currentPage -
-                                                                2 &&
-                                                        i + 1 <
-                                                            (this
-                                                                    .employeePagination
-                                                                    .currentPage +
-                                                                5))) ...{
-                                                  IconButton(
-                                                    icon: Text(
-                                                      "${i + 1}",
-                                                      style: TextStyle(
-                                                          color: i + 1 ==
-                                                                  this
-                                                                      .employeePagination
-                                                                      .currentPage
-                                                              ? Palette
-                                                                  .textFieldColor
-                                                              : Colors.black54),
-                                                    ),
-                                                    onPressed: () {
-                                                      setState(() {
-                                                        this
-                                                            .employeePagination
-                                                            .currentPage = i + 1;
-                                                      });
-                                                      this.fetcher(
-                                                          "${this.employeePagination.dataToShow}?page=${i + 1}");
-                                                    },
-                                                  )
-                                                }
-                                              },
-                                              if (this.employeePagination
-                                                      .currentPage <
-                                                  this.employeePagination
-                                                      .lastPage!) ...{
-                                                IconButton(
-                                                  icon:
-                                                      Icon(Icons.chevron_right),
-                                                  tooltip: "Suivant",
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      this
-                                                          .employeePagination
-                                                          .currentPage++;
-                                                    });
-                                                    this.fetcher(
-                                                        "${this.employeePagination.dataToShow}?page=${this.employeePagination.currentPage}");
-                                                  },
-                                                ),
-                                              },
-                                              IconButton(
-                                                icon: Icon(Icons.last_page),
-                                                tooltip:
-                                                    "Aller à la dernière page",
-                                                onPressed: () {
-                                                  setState(() {
-                                                    this
-                                                            .employeePagination
-                                                            .currentPage =
-                                                        this
-                                                            .employeePagination
-                                                            .lastPage!;
-                                                  });
-                                                  this.fetcher(
-                                                      "${this.employeePagination.dataToShow}?page=${this.employeePagination.lastPage}");
-                                                },
-                                              )
-                                            ],
-                                          ),
-                                  )
+                                  dataControl()
                                 ],
                               ))
                           : ListView(
-                              children: List.generate(
-                                userList.data!.length,
-                                (index) => MaterialButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        EmployeeRoute.details(
-                                            userList.data![index],
-                                            widget.regionDataControl));
-                                  },
-                                  child: _viewModel.template
-                                      .kDataList(user: userList.data![index]),
-                                ),
-                              ),
+                              children: [
+                                dataControl(),
+                                for(UserModel user in userList.data! )...{
+                                  MaterialButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          EmployeeRoute.details(
+                                              user,
+                                              widget.regionDataControl));
+                                    },
+                                    child: _viewModel.template
+                                        .kDataList(user: user),
+                                  ),
+                                }
+                                // List.generate(
+                                //   userList.data!.length,
+                                //       (index) =>
+                                // ),
+                              ]
                             )
                       : !userList.hasData
                           ? GeneralTemplate.tableLoader(

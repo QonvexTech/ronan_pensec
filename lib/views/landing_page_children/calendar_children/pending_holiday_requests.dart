@@ -293,64 +293,64 @@ class PendingHolidayRequests extends StatelessWidget {
                                             subtitle: "En attente")
                                       ],
                                     )),
-                                    Container(
-                                      width: double.infinity,
-                                      height: 50,
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                            child: MaterialButton(
-                                              height: 50,
-                                              color: Colors.grey.shade200,
-                                              onPressed: () async {
-                                                Navigator.of(context).pop(null);
-                                              },
-                                              child: Center(
-                                                child: Text(
-                                                  "ANNULER".toUpperCase(),
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.w600,
-                                                    letterSpacing: 1.5,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Expanded(
-                                            child: MaterialButton(
-                                              height: 50,
-                                              color: Colors.green,
-                                              onPressed: () async {
-                                                Navigator.of(context).pop(null);
-                                                await requestController.service
-                                                    .approve(context,
-                                                        holidayId: holiday.id)
-                                                    .then((value) {
-                                                  if (value) {
-                                                    requestController
-                                                        .dataControl
-                                                        .remove(holiday.id);
-                                                  }
-                                                });
-                                              },
-                                              child: Center(
-                                                child: Text(
-                                                  "J'accepte".toUpperCase(),
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      letterSpacing: 1.5),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    )
+                                    // Container(
+                                    //   width: double.infinity,
+                                    //   height: 50,
+                                    //   child: Row(
+                                    //     children: [
+                                    //       Expanded(
+                                    //         child: MaterialButton(
+                                    //           height: 50,
+                                    //           color: Colors.grey.shade200,
+                                    //           onPressed: () async {
+                                    //             Navigator.of(context).pop(null);
+                                    //           },
+                                    //           child: Center(
+                                    //             child: Text(
+                                    //               "ANNULER".toUpperCase(),
+                                    //               style: TextStyle(
+                                    //                 fontWeight: FontWeight.w600,
+                                    //                 letterSpacing: 1.5,
+                                    //               ),
+                                    //             ),
+                                    //           ),
+                                    //         ),
+                                    //       ),
+                                    //       const SizedBox(
+                                    //         width: 10,
+                                    //       ),
+                                    //       Expanded(
+                                    //         child: MaterialButton(
+                                    //           height: 50,
+                                    //           color: Colors.green,
+                                    //           onPressed: () async {
+                                    //             Navigator.of(context).pop(null);
+                                    //             await requestController.service
+                                    //                 .approve(context,
+                                    //                     holidayId: holiday.id)
+                                    //                 .then((value) {
+                                    //               if (value) {
+                                    //                 requestController
+                                    //                     .dataControl
+                                    //                     .remove(holiday.id);
+                                    //               }
+                                    //             });
+                                    //           },
+                                    //           child: Center(
+                                    //             child: Text(
+                                    //               "J'accepte".toUpperCase(),
+                                    //               style: TextStyle(
+                                    //                   color: Colors.white,
+                                    //                   fontWeight:
+                                    //                       FontWeight.w600,
+                                    //                   letterSpacing: 1.5),
+                                    //             ),
+                                    //           ),
+                                    //         ),
+                                    //       ),
+                                    //     ],
+                                    //   ),
+                                    // )
                                   ],
                                 ),
                                 width: _size.width,

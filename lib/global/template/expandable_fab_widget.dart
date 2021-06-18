@@ -104,7 +104,11 @@ class _ExpandableFabState extends State<ExpandableFab> with SingleTickerProvider
           directionInDegrees: angleInDegrees,
           maxDistance: widget.distance,
           progress: _expandAnimation,
-          child: widget.children[i],
+          child: new ActionButton(icon: widget.children[i].icon, message: widget.children[i].message,onPressed: (){
+            _toggle();
+            widget.children[i].onPressed!();
+
+          },),
         ),
       );
     }

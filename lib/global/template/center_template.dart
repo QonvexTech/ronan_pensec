@@ -56,15 +56,19 @@ class CenterTemplate {
       ));
 
   Widget listView(context, List<CenterModel> _list, bool isSliver) => isSliver
-      ? SliverList(
-          delegate: SliverChildListDelegate(List.generate(
-              _list.length, (index) => listData(context, _list, index))),
-        )
-      : ListView.builder(
-          itemCount: _list.length,
-          shrinkWrap: true,
-          itemBuilder: (_, index) => listData(context, _list, index),
-        );
+      ? Scrollbar(
+        child: SliverList(
+            delegate: SliverChildListDelegate(List.generate(
+                _list.length, (index) => listData(context, _list, index))),
+          ),
+      )
+      : Scrollbar(
+        child: ListView.builder(
+            itemCount: _list.length,
+            shrinkWrap: true,
+            itemBuilder: (_, index) => listData(context, _list, index),
+          ),
+      );
 
   Text headerText(String text) => Text(
         text,

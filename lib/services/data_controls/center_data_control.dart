@@ -23,12 +23,18 @@ class CenterDataControl {
   void clear(){
     _list = BehaviorSubject();
   }
-  void append(Map<String, dynamic> data) {
-    this.current.add(CenterModel.fromJson(data));
-    _list.add(this.current);
+  append(Map<String, dynamic> data) {
+    try{
+      this.current.add(CenterModel.fromJson(data));
+      this.current.sort((a,b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+      _list.add(this.current);
+    }catch(e){
+      print("CENTER APPEND ERROR $e");
+    }
   }
 
-  void remove(int id) {
+  remove(int id) {
+    print(id);
     this.current.removeWhere((element) => element.id == id);
     _list.add(this.current);
   }

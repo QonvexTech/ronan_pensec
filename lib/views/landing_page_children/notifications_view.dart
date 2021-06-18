@@ -8,6 +8,8 @@ import 'package:ronan_pensec/services/notification_service.dart';
 import 'package:ronan_pensec/view_model/announcement_view_model.dart';
 
 class NotificationsView extends StatefulWidget {
+  final ValueChanged<bool> onSelect;
+  NotificationsView({Key? key, required this.onSelect}) : super(key: key);
   @override
   _NotificationsViewState createState() => _NotificationsViewState();
 }
@@ -150,6 +152,7 @@ class _NotificationsViewState extends State<NotificationsView> {
                                     in snapshot.data!) ...{
                                   MaterialButton(
                                     onPressed: () {
+                                      widget.onSelect(true);
                                       if (notification.type == 'rtt_request') {
                                         Navigator.push(context,
                                             PlanningRoute.allRequests(1));
