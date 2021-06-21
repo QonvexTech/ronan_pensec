@@ -279,76 +279,76 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                             ),
                                           ),
                                         ),
-                                        Container(
-                                          width: double.infinity,
-                                          height: 50,
-                                          child: Row(
-                                            children: [
-                                              Tooltip(
-                                                message: "Mettre à jour si l'utilisateur est senior ou non",
-                                                child: Icon(Icons.help_outline, color: Colors.black54,),
-                                              ),
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
-                                              Expanded(child: Container(
-                                                child: Text("Sénior",style: TextStyle(
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 15,
-                                                )),
-                                              ),),
-                                              Container(
-                                                width: 30,
-                                                height: 20,
-                                                child: Stack(
-                                                  alignment: AlignmentDirectional.center,
-                                                  children: [
-                                                    Container(
-                                                      width: 30,
-                                                      height: 15,
-                                                      decoration: BoxDecoration(
-                                                          borderRadius: BorderRadius.circular(15),
-                                                          color: _viewModel.isSenior == 0
-                                                              ? Colors.grey
-                                                              : Palette.gradientColor[0]),
-                                                    ),
-                                                    AnimatedPositioned(
-                                                        left: _viewModel.isSenior == 0
-                                                            ? 0
-                                                            : 10,
-                                                        top: 0,
-                                                        bottom: 0,
-                                                        child: Container(
-                                                          width: 20,
-                                                          height: 20,
-                                                          decoration: BoxDecoration(
-                                                              shape: BoxShape.circle,
-                                                              color: Colors.white,
-                                                              boxShadow: [
-                                                                BoxShadow(
-                                                                    color: Colors.black45,
-                                                                    offset: Offset(2, 2),
-                                                                    blurRadius: 2)
-                                                              ]),
-                                                          child: MaterialButton(
-                                                            shape: RoundedRectangleBorder(
-                                                                borderRadius:
-                                                                BorderRadius.circular(100000)),
-                                                            color: Colors.white54,
-                                                            onPressed: () {
-                                                              setState(() {
-                                                                _viewModel.setSeniority = _viewModel.isSenior == 1 ? 0 : 1;
-                                                              });
-                                                            },
-                                                          ),
-                                                        ),
-                                                        duration: const Duration(milliseconds: 300))
-                                                  ],
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
+                                        // Container(
+                                        //   width: double.infinity,
+                                        //   height: 50,
+                                        //   child: Row(
+                                        //     children: [
+                                        //       Tooltip(
+                                        //         message: "Mettre à jour si l'utilisateur est senior ou non",
+                                        //         child: Icon(Icons.help_outline, color: Colors.black54,),
+                                        //       ),
+                                        //       const SizedBox(
+                                        //         width: 10,
+                                        //       ),
+                                        //       Expanded(child: Container(
+                                        //         child: Text("Sénior",style: TextStyle(
+                                        //           fontWeight: FontWeight.w600,
+                                        //           fontSize: 15,
+                                        //         )),
+                                        //       ),),
+                                        //       Container(
+                                        //         width: 30,
+                                        //         height: 20,
+                                        //         child: Stack(
+                                        //           alignment: AlignmentDirectional.center,
+                                        //           children: [
+                                        //             Container(
+                                        //               width: 30,
+                                        //               height: 15,
+                                        //               decoration: BoxDecoration(
+                                        //                   borderRadius: BorderRadius.circular(15),
+                                        //                   color: _viewModel.isSenior == 0
+                                        //                       ? Colors.grey
+                                        //                       : Palette.gradientColor[0]),
+                                        //             ),
+                                        //             AnimatedPositioned(
+                                        //                 left: _viewModel.isSenior == 0
+                                        //                     ? 0
+                                        //                     : 10,
+                                        //                 top: 0,
+                                        //                 bottom: 0,
+                                        //                 child: Container(
+                                        //                   width: 20,
+                                        //                   height: 20,
+                                        //                   decoration: BoxDecoration(
+                                        //                       shape: BoxShape.circle,
+                                        //                       color: Colors.white,
+                                        //                       boxShadow: [
+                                        //                         BoxShadow(
+                                        //                             color: Colors.black45,
+                                        //                             offset: Offset(2, 2),
+                                        //                             blurRadius: 2)
+                                        //                       ]),
+                                        //                   child: MaterialButton(
+                                        //                     shape: RoundedRectangleBorder(
+                                        //                         borderRadius:
+                                        //                         BorderRadius.circular(100000)),
+                                        //                     color: Colors.white54,
+                                        //                     onPressed: () {
+                                        //                       setState(() {
+                                        //                         _viewModel.setSeniority = _viewModel.isSenior == 1 ? 0 : 1;
+                                        //                       });
+                                        //                     },
+                                        //                   ),
+                                        //                 ),
+                                        //                 duration: const Duration(milliseconds: 300))
+                                        //           ],
+                                        //         ),
+                                        //       )
+                                        //     ],
+                                        //   ),
+                                        // ),
                                         Container(
                                             margin: const EdgeInsets.symmetric(
                                                 horizontal: 0, vertical: 15),
