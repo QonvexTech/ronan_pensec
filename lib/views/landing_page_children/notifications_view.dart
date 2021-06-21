@@ -162,8 +162,10 @@ class _NotificationsViewState extends State<NotificationsView> {
                                             PlanningRoute.allRequests(0));
                                       } else {
                                         print("POPUP FOR EVENT");
-                                        if(notification.data['type'] != 0){
-                                          _announcementViewModel.showNotice(context, size, notification: notification);
+                                        if(!notification.type.contains('status')){
+                                          if(notification.data!['type'] != 0){
+                                            _announcementViewModel.showNotice(context, size, notification: notification);
+                                          }
                                         }
                                       }
                                       if (notification.isRead == 0) {
@@ -206,7 +208,7 @@ class _NotificationsViewState extends State<NotificationsView> {
                                               ? [
                                                   TextSpan(
                                                       text:
-                                                          " ( ${notification.data['type'] == 0 ? "Basse" : notification.data['type'] == 1 ? "Moyen" : "Haut!"} )",
+                                                          " ( ${notification.data!['type'] == 0 ? "Basse" : notification.data!['type'] == 1 ? "Moyen" : "Haut!"} )",
                                                       style: TextStyle(
                                                           fontSize: 15,
                                                           fontStyle:
@@ -214,11 +216,11 @@ class _NotificationsViewState extends State<NotificationsView> {
                                                           fontWeight:
                                                               FontWeight.w400,
                                                           color: notification
-                                                                          .data[
+                                                                          .data![
                                                                       'type'] ==
                                                                   0
                                                               ? Colors.green
-                                                              : notification.data[
+                                                              : notification.data![
                                                                           'type'] ==
                                                                       1
                                                                   ? Colors
