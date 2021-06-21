@@ -177,7 +177,7 @@ class _CenterDetailsState extends State<CenterDetails> {
                         setState(() {
                           _imageLoading = true;
                         });
-                        await _helper.service.updateImage(context, centerId: widget.model.id, base64Image: _base64Image!).whenComplete(() => setState(() => _imageLoading = false)).then((value) {
+                        await _helper.service.updateImage(centerId: widget.model.id, base64Image: _base64Image!).whenComplete(() => setState(() => _imageLoading = false)).then((value) {
                           if(value != null){
                             setState(() {
                               widget.model.image = value;
@@ -593,6 +593,9 @@ class _CenterDetailsState extends State<CenterDetails> {
                                         _isForManager = !_isForManager;
                                       });
                                     } else {
+                                      setState(() {
+                                        _isLoading = true;
+                                      });
                                       await _helper.service
                                           .assignManager(context,
                                               centerId: widget.model.id,
@@ -602,18 +605,20 @@ class _CenterDetailsState extends State<CenterDetails> {
                                           setState(() {
                                             widget.model.accountant =
                                                 _selectedNewManager;
+                                            widget.model.users.add(_selectedNewManager!);
+                                          });
+                                        }else{
+                                          setState(() {
+                                            _isLoading = false;
                                           });
                                         }
-                                      }).whenComplete(() => setState(() {
-                                                _selectedNewManager = null;
-                                                _isForManager = false;
-                                              }));
-                                      // setState(() {
-                                      //   widget.model.accountant =
-                                      //       _selectedNewManager!;
-                                      //   _isForManager = false;
-                                      //   _selectedNewManager = null;
-                                      // });
+                                      }).whenComplete(() {
+                                        setState(() {
+                                          _selectedNewManager = null;
+                                          _isForManager = false;
+                                          _isLoading = false;
+                                        });
+                                      });
                                     }
                                   },
                                 )
