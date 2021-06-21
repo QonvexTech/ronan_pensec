@@ -65,7 +65,7 @@ class _EmployeeViewState extends State<EmployeeView> {
       crossAxisAlignment:
       CrossAxisAlignment.center,
       children: [
-        Text("Showing "),
+        Text("Affichage"),
         const SizedBox(
           width: 10,
         ),
@@ -137,7 +137,7 @@ class _EmployeeViewState extends State<EmployeeView> {
           ],
         ),
         Text(
-            "Out of ${this.employeePagination.totalDataCount}"),
+            "sur ${this.employeePagination.totalDataCount}"),
         Spacer(),
         if (this.employeePagination
             .currentPage >

@@ -9,7 +9,7 @@ class NotificationModel {
   String time;
   int isRead;
   final DateTime created_at;
-  final Map data;
+  final Map? data;
   NotificationModel({
     required this.id,
     required this.title,
@@ -24,12 +24,13 @@ class NotificationModel {
 
 
   factory NotificationModel.fromJson(Map<String,dynamic> parsedJson){
+    // print(parsedJson['user']);
     return NotificationModel(
       id : int.parse(parsedJson['id'].toString()),
       title : parsedJson['title'],
       message : parsedJson['message'],
       sender : RawUserModel.fromJson(parsedJson['user']),
-      isRead : int.tryParse(parsedJson['is_read']['is_read'].toString()) ?? 0,
+      isRead : parsedJson['is_read'] != null ? parsedJson['is_read']['is_read'] != null ? int.parse(parsedJson['is_read']['is_read'].toString()) : 0 :  0,
       created_at: DateTime.parse(parsedJson['created_at']),
       time: parsedJson['time'],
       type: parsedJson['type'],
@@ -40,7 +41,7 @@ class NotificationModel {
     'id' : id,
     'title' : title,
     'message' : message,
-    // 'user' : sender,
+    'user' : sender,
     'is_read' : isRead,
     'time' : time,
     'created_at' : created_at,

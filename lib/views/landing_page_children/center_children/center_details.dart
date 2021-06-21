@@ -1331,25 +1331,42 @@ class _CenterDetailsState extends State<CenterDetails> {
                                                 ? MainAxisAlignment.start
                                                 : MainAxisAlignment.center,
                                             children: [
-                                              Text("Showing "),
-                                              PopupMenuButton<int>(
-                                                icon: Text(
-                                                    "${employeePagination.dataToShow}"),
-                                                padding:
-                                                    const EdgeInsets.all(0),
-                                                onSelected: (int val) {
-                                                  onChangePageCount(val);
+                                              Text("Affichage"),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              DropdownButton<int>(
+                                                onChanged: (int? val){
+                                                  if(val != null){
+                                                    onChangePageCount(val);
+                                                  }
+
                                                 },
-                                                itemBuilder: (_) => _helper
-                                                    .popupMenuPageItems
-                                                    .map((e) =>
-                                                        PopupMenuItem<int>(
-                                                            value: e,
-                                                            child: Text("$e")))
-                                                    .toList(),
+                                                value: employeePagination.dataToShow,
+                                                  items: _helper
+                                                      .popupMenuPageItems.map<DropdownMenuItem<int>>((e) => DropdownMenuItem(child: Text("$e"),value: e,)).toList()
+                                              ),
+                                              // PopupMenuButton<int>(
+                                              //   icon: Text(
+                                              //       "${employeePagination.dataToShow}"),
+                                              //   padding:
+                                              //       const EdgeInsets.all(0),
+                                              //   onSelected: (int val) {
+                                              //     onChangePageCount(val);
+                                              //   },
+                                              //   itemBuilder: (_) => _helper
+                                              //       .popupMenuPageItems
+                                              //       .map((e) =>
+                                              //           PopupMenuItem<int>(
+                                              //               value: e,
+                                              //               child: Text("$e")))
+                                              //       .toList(),
+                                              // ),
+                                              const SizedBox(
+                                                width: 10,
                                               ),
                                               Text(
-                                                  " Out of  ${employeePagination.totalDataCount}"),
+                                                  "sur  ${employeePagination.totalDataCount}"),
                                             ],
                                           )),
                                       Container(

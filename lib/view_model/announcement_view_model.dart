@@ -174,11 +174,11 @@ class AnnouncementViewModel {
   void showNotice(context, Size size, {required NotificationModel notification}) {
     GeneralTemplate.showDialog(
       context,
-      child: notification.data['image'] != null ?  ListView(
+      child: notification.data?['image'] != null ?  ListView(
         children: [
           Container(
             alignment: AlignmentDirectional.centerStart,
-            child: Text("${notification.data['message']}",style: TextStyle(
+            child: Text("${notification.data?['message']}",style: TextStyle(
               fontSize: 17,
             ),),
           ),
@@ -186,19 +186,19 @@ class AnnouncementViewModel {
             width: double.infinity,
             child: Image(
               fit: BoxFit.fitWidth,
-              image: NetworkImage("${notification.data['image']}"),
+              image: NetworkImage("${notification.data?['image']}"),
             ),
           ),
         ],
       ) : Container(
         alignment: AlignmentDirectional.centerStart,
-        child: Text("${notification.data['message']}",style: TextStyle(
+        child: Text("${notification.data?['message']}",style: TextStyle(
           fontSize: 17,
         ),),
       ),
       width: size.width,
       height:
-      notification.data['image'] != null
+      notification.data?['image'] != null
           ? 300
           : 100,
       title: ListTile(
@@ -208,11 +208,11 @@ class AnnouncementViewModel {
           child: Image.asset(
             "assets/images/info.png",
             color: notification
-                .data['type'] ==
+                .data?['type'] ==
                 2
                 ? Colors.red
                 : notification
-                .data['type'] ==
+                .data?['type'] ==
                 1
                 ? Colors.orange
                 : Colors.green,
@@ -220,9 +220,9 @@ class AnnouncementViewModel {
         ),
         title: Text(
           notification.title,
-          // notification.data['type'] == 2
+          // notification.data?['type'] == 2
           //     ? "Avis très important !"
-          //     : notification.data['type'] ==
+          //     : notification.data?['type'] ==
           //     1
           //     ? "Attention"
           //     : "Remarquer",
