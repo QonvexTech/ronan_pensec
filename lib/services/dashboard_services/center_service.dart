@@ -49,7 +49,7 @@ class CenterService {
       return false;
     }
   }
-  Future<String?> updateImage(context, {required int centerId, required String base64Image}) async {
+  Future<String?> updateImage({required int centerId, required String base64Image}) async {
     try{
       return await http.post(Uri.parse("${BaseEnpoint.URL}${CenterEndpoint.base}/update_center_photo/$centerId"),headers: {
         "Accept": "application/json",
@@ -59,13 +59,14 @@ class CenterService {
       }).then((response) {
         var data = json.decode(response.body);
         if(response.statusCode == 200){
+          _notifier.showUnContextedBottomToast(msg: "Misé a hour reussie");
           return data['data'];
         }
-        _notifier.showContextedBottomToast(context, msg: "Une erreur s'est produite (${response.statusCode}), veuillez réessayer plus tard ou contacter l'administrateur");
+        _notifier.showUnContextedBottomToast(msg: "Une erreur s'est produite (${response.statusCode}), veuillez réessayer plus tard ou contacter l'administrateur");
         return null;
       });
     }catch(e){
-      _notifier.showContextedBottomToast(context, msg: "Erreur $e");
+      _notifier.showUnContextedBottomToast(msg: "Erreur $e");
       return null;
     }
   }
