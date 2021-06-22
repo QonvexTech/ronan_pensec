@@ -25,4 +25,5 @@ class ContextHolder{
   Size? get size => _size;
   set setSize(Size size) =>  _instance._size = size;
 
+  static final String URL = "http://127.0.0.1:8000/";
 }

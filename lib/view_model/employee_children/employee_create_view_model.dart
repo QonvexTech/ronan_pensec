@@ -41,6 +41,8 @@ class EmployeeCreateViewModel{
     _instance.lastName.clear();
     _instance.address.clear();
     _instance.password.clear();
+    _instance.email.clear();
+    _instance.setBirthDate = null;
     _instance.city.clear();
     _instance.zipCode.clear();
     _instance.mobile.clear();
@@ -109,7 +111,7 @@ class EmployeeCreateViewModel{
   set setBody(Map nBodyData) => _body.addAll(nBodyData);
   void get clearBody => _body.clear();
 
-  Future<UserModel?> create(context) async {
-    return await _instance.service.create(context, body: _instance.body);
+  Future<UserModel?> get create async {
+    return await _instance.service.create(body: _instance.body);
   }
 }
