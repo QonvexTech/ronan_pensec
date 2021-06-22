@@ -26,14 +26,12 @@ class _EmployeeViewState extends State<EmployeeView> {
 
   final EmployeeViewModel _viewModel = EmployeeViewModel.instance;
   final EmployeeCreateViewModel _employeeCreateViewModel = EmployeeCreateViewModel.instance;
-  final TextEditingController _search = new TextEditingController();
   final Auth _auth = Auth.instance;
   List<UserModel>? _displayData;
   PaginationModel employeePagination = new PaginationModel();
   bool _isLoading = false;
   bool _showField = false;
   int i = 0;
-  Timer? _timer;
   bool _isSearching = false;
   @override
   void initState() {
