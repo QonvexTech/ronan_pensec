@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/global/palette.dart';
@@ -7,6 +9,7 @@ import 'package:ronan_pensec/models/user_model.dart';
 import 'package:ronan_pensec/route/employee_route.dart';
 import 'package:ronan_pensec/services/data_controls/region_data_control.dart';
 import 'package:ronan_pensec/view_model/employee_children/employee_create_view_model.dart';
+import 'package:ronan_pensec/view_model/employee_children/employee_textfield_widget.dart';
 import 'package:ronan_pensec/view_model/employee_view_model.dart';
 import 'package:ronan_pensec/views/landing_page_children/employee_view_children/employee_create.dart';
 
@@ -23,10 +26,15 @@ class _EmployeeViewState extends State<EmployeeView> {
 
   final EmployeeViewModel _viewModel = EmployeeViewModel.instance;
   final EmployeeCreateViewModel _employeeCreateViewModel = EmployeeCreateViewModel.instance;
+  final TextEditingController _search = new TextEditingController();
   final Auth _auth = Auth.instance;
+  List<UserModel>? _displayData;
   PaginationModel employeePagination = new PaginationModel();
   bool _isLoading = false;
-
+  bool _showField = false;
+  int i = 0;
+  Timer? _timer;
+  bool _isSearching = false;
   @override
   void initState() {
     if (!_viewModel.employeeDataControl.hasFetched) {
@@ -36,6 +44,11 @@ class _EmployeeViewState extends State<EmployeeView> {
         employeePagination = _viewModel.paginationModel;
       });
     }
+    _viewModel.employeeDataControl.stream.listen((List<UserModel> _event) {
+      setState(() {
+        _displayData = _event;
+      });
+    });
     super.initState();
   }
 
@@ -287,6 +300,53 @@ class _EmployeeViewState extends State<EmployeeView> {
                       GeneralTemplate.kTitle(
                           "Liste de tous les employés", context),
                       Spacer(),
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 600),
+                        width: _showField ? _size.width > 900 ? _size.width * .3 : _size.width * .4 : 60,
+                        height: 60,
+                        child: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 600),
+                          child: _showField ? EmployeeTextField(
+                            textCallback: (String? text) async {
+                              if(text != null){
+                                setState(() {
+                                  _isSearching = true;
+                                  _displayData = null;
+                                });
+                                /// Do THE SEARCH+
+                                await _viewModel.service.search(text).then((List<UserModel>? userList) {
+                                  if(userList != null){
+                                    print(userList);
+                                    setState(() {
+                                      _displayData = userList;
+                                    });
+                                  }
+                                }).whenComplete(() => setState(() => _isSearching = false));
+                                // await Future.delayed(const Duration(seconds: 2));
+                                // setState(() {
+                                //   _isSearching = false;
+                                // });
+                              }else{
+                                print("DISPLAY SHOULD BE PAGINATE");
+                                setState(() {
+                                  _displayData = _viewModel.employeeDataControl.current;
+                                });
+                              }
+                            },
+                            onClear: (){
+                              setState(() {
+                                _showField = false;
+                                _displayData = _viewModel.employeeDataControl.current;
+                              });
+                            },
+
+                          ) : IconButton(icon: Icon(Icons.search), onPressed: (){
+                            setState(() {
+                              _showField = true;
+                            });
+                          }),
+                        ),
+                      ),
                       if (_size.width > 900) ...{
                         IconButton(
                           tooltip: _viewModel.isTable
@@ -308,6 +368,7 @@ class _EmployeeViewState extends State<EmployeeView> {
                           ),
                         )
                       },
+
                       if (_auth.loggedUser!.roleId == 1) ...{
                         IconButton(
                           tooltip: "Créer un nouvel employé",
@@ -349,13 +410,16 @@ class _EmployeeViewState extends State<EmployeeView> {
                                                 _isLoading = true;
                                               });
                                               await _employeeCreateViewModel
-                                                  .create(context)
-                                                  .then((value) => null)
+                                                  .create
+                                                  .then((value) {
+                                                    if(value != null){
+                                                      Navigator.of(context).pop(null);
+                                                      _employeeCreateViewModel.clear();
+                                                    }
+                                              })
                                                   .whenComplete(() =>
                                                   setState(() {
                                                     _isLoading = false;
-                                                    _employeeCreateViewModel.clear();
-                                                    Navigator.of(context).pop(null);
                                                   }));
                                             }
                                           },
@@ -396,7 +460,7 @@ class _EmployeeViewState extends State<EmployeeView> {
                   stream: _viewModel.employeeDataControl.stream,
                   builder: (_, userList) => !userList.hasError &&
                           userList.hasData &&
-                          userList.data!.length > 0
+                          userList.data!.length > 0 && _displayData != null && _displayData!.length > 0
                       ? _viewModel.isTable
                           ? Container(
                               width: double.infinity,
@@ -412,7 +476,7 @@ class _EmployeeViewState extends State<EmployeeView> {
                                             (states) => Palette.gradientColor[0]),
                                     showCheckboxColumn: false,
                                     rows: List.generate(
-                                        userList.data!.length,
+                                        _displayData!.length,
                                         (index) => DataRow(
                                             color: MaterialStateProperty
                                                 .resolveWith((states) =>
@@ -433,13 +497,17 @@ class _EmployeeViewState extends State<EmployeeView> {
                                                 .kDataCell(
                                                     userList.data![index]))),
                                   ),
-                                  dataControl()
+                                  if(!_showField)...{
+                                    dataControl()
+                                  }
                                 ],
                               ))
                           : ListView(
                               children: [
-                                dataControl(),
-                                for(UserModel user in userList.data! )...{
+                                if(!_showField)...{
+                                  dataControl(),
+                                },
+                                for(UserModel user in _displayData! )...{
                                   MaterialButton(
                                     onPressed: () {
                                       Navigator.push(
@@ -458,7 +526,7 @@ class _EmployeeViewState extends State<EmployeeView> {
                                 // ),
                               ]
                             )
-                      : !userList.hasData
+                      : !userList.hasData || _displayData == null
                           ? GeneralTemplate.tableLoader(
                               _viewModel.template.kDataColumn.length,
                               _viewModel.template.kDataColumn,
