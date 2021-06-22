@@ -22,6 +22,7 @@ class _CalendarFullState extends State<CalendarFull> {
 
   bool _showRegionText = true;
   bool _showCenterText= true;
+  bool _showField = false;
   /// 0 = Region
   /// 1 = Center
   /// 2 = Employees
@@ -79,7 +80,11 @@ class _CalendarFullState extends State<CalendarFull> {
                         /// Current Month Text
                         Text(DateFormat.yMMM('fr_FR')
                             .format(DateTime(_calendarViewModel.currentYear, _calendarViewModel.currentMonth, 01))
-                            .toUpperCase()),
+                            .toUpperCase(),style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: Palette.gradientColor[0]
+                        ),),
 
                         /// Go to Next month
                         IconButton(
@@ -108,8 +113,9 @@ class _CalendarFullState extends State<CalendarFull> {
                   /// Legends
                   Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 10),
+                    padding: EdgeInsets.only(top: 10,bottom: 10, left: 20, right: _showField ? 20: 0),
+                    // padding: EdgeInsets.symmetric(
+                    //     horizontal: _showField ? 20 : 0, vertical: 10),
                     child: Row(
                       children: [
                         PopupMenuButton(
@@ -132,46 +138,17 @@ class _CalendarFullState extends State<CalendarFull> {
                           tooltip: "Filtre",
                           onSelected: (int value){
                             if(this.mounted){
-                              setState(() => _calendarViewModel.setType = value);
+                              setState(() {
+                                _calendarViewModel.setType = value;
+                                _calendarViewModel.searchBy.clear();
+                                _showField = false;
+                              });
                             }
                           },
                           initialValue: _calendarViewModel.type,
                         ),
-                        Spacer(),
-                        Container(
-                            width: constraint.maxWidth * .35,
-                            child: Theme(
-                              data: ThemeData(
-                                  primaryColor: Palette.textFieldColor),
-                              child: TextField(
-                                controller: _calendarViewModel.searchBy,
-                                onChanged: (text) {
-                                  if(this.mounted){
-                                    setState(() {
-                                      if (_calendarViewModel.type == 0) {
-                                        _displayData = List<RegionModel>.from(
-                                            _planningViewModel.planningControl.current)
-                                            .where((element) => element.name
-                                            .toLowerCase()
-                                            .contains(text.toLowerCase()))
-                                            .toList();
-                                      } else {
-                                        _displayData = _calendarViewModel.service.searchResult(
-                                            List<RegionModel>.from(
-                                                _planningViewModel.planningControl.current),
-                                            text,
-                                            _calendarViewModel.type);
-                                      }
-                                    });
-                                  }
-                                },
-                                decoration: InputDecoration(
-                                    hintText: "Rechercher ${_calendarViewModel.type == 0 ? "\"Région\"" : _calendarViewModel.type == 1 ? "\"Centre\"" : "\"Employé\""}",
-                                    border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(5)),
-                                    prefixIcon: Icon(Icons.search)),
-                              ),
-                            ),
+                        const SizedBox(
+                          width: 20,
                         ),
                         Container(
                           margin: const EdgeInsets.only(left: 10),
@@ -235,9 +212,101 @@ class _CalendarFullState extends State<CalendarFull> {
                             ],
                           ),
                         ),
-                        const SizedBox(
-                          width: 20,
+                        Spacer(),
+                        AnimatedContainer(
+                          duration: const Duration(milliseconds: 600),
+                          width: _showField ? constraint.maxWidth > 900 ? constraint.maxWidth * .3 : constraint.maxWidth * .4 : 60,
+                          height: 60,
+                          child: AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 600),
+                            child: _showField ? Theme(
+                              data: ThemeData(
+                                  primaryColor: Palette.gradientColor[0]
+                              ),
+                              child: TextField(
+                                controller: _calendarViewModel.searchBy,
+                                onChanged: (text) {
+                                  if(this.mounted){
+                                    setState(() {
+                                      if (_calendarViewModel.type == 0) {
+                                        _displayData = List<RegionModel>.from(
+                                            _planningViewModel.planningControl.current)
+                                            .where((element) => element.name
+                                            .toLowerCase()
+                                            .contains(text.toLowerCase()))
+                                            .toList();
+                                      } else {
+                                        _displayData = _calendarViewModel.service.searchResult(
+                                            List<RegionModel>.from(
+                                                _planningViewModel.planningControl.current),
+                                            text,
+                                            _calendarViewModel.type);
+                                      }
+                                    });
+                                  }
+                                },
+                                cursorColor: Palette.gradientColor[0],
+                                decoration: InputDecoration(
+                                    prefixIcon: Icon(Icons.search),
+                                    hintText: "Rechercher ${_calendarViewModel.type == 0 ? "\"Région\"" : _calendarViewModel.type == 1 ? "\"Centre\"" : "\"Employé\""}",
+                                    suffixIcon: IconButton(
+                                      icon: Icon(Icons.clear),
+                                      onPressed: (){
+                                        _calendarViewModel.searchBy.clear();
+                                        setState(() {
+                                          _showField = false;
+                                        });
+                                      },
+                                    )
+                                ),
+                              ),
+                            ) : IconButton(icon: Icon(Icons.search), onPressed: (){
+                              setState(() {
+                                _showField = true;
+                              });
+                            }),
+                          ),
                         ),
+                        // Container(
+                        //     width: constraint.maxWidth * .35,
+                        //     child: Theme(
+                        //       data: ThemeData(
+                        //           primaryColor: Palette.textFieldColor),
+                        //       child: TextField(
+                        //         controller: _calendarViewModel.searchBy,
+                        //         onChanged: (text) {
+                        //           if(this.mounted){
+                        //             setState(() {
+                        //               if (_calendarViewModel.type == 0) {
+                        //                 _displayData = List<RegionModel>.from(
+                        //                     _planningViewModel.planningControl.current)
+                        //                     .where((element) => element.name
+                        //                     .toLowerCase()
+                        //                     .contains(text.toLowerCase()))
+                        //                     .toList();
+                        //               } else {
+                        //                 _displayData = _calendarViewModel.service.searchResult(
+                        //                     List<RegionModel>.from(
+                        //                         _planningViewModel.planningControl.current),
+                        //                     text,
+                        //                     _calendarViewModel.type);
+                        //               }
+                        //             });
+                        //           }
+                        //         },
+                        //         decoration: InputDecoration(
+                        //             hintText: "Rechercher ${_calendarViewModel.type == 0 ? "\"Région\"" : _calendarViewModel.type == 1 ? "\"Centre\"" : "\"Employé\""}",
+                        //             border: OutlineInputBorder(
+                        //                 borderRadius: BorderRadius.circular(5)),
+                        //             prefixIcon: Icon(Icons.search)),
+                        //       ),
+                        //     ),
+                        // ),
+                        if(!_showField)...{
+                          const SizedBox(
+                            width: 20,
+                          ),
+                        }
                       ],
                     ),
                   ),

@@ -111,23 +111,55 @@ class EmployeeService {
       return false;
     }
   }
-  Future<UserModel?> create(context, {required Map body}) async {
+  Future<List<UserModel>?> search(text) async {
+    try{
+      return await http.get(Uri.parse("${BaseEnpoint.URL}${UserEndpoint.base}/search/$text"),headers: {
+        "Accept" : "application/json",
+        HttpHeaders.authorizationHeader : "Bearer ${_auth.token}"
+      }).then((response) {
+        var data = json.decode(response.body);
+        if(response.statusCode == 200){
+          List _dd = data;
+          List<UserModel> users = _dd.map((e) => UserModel.fromJson(parsedJson: e)).toList();
+          return users;
+        }
+        _notifier.showUnContextedBottomToast(msg: "Erreur de recherche : ${response.statusCode}, ${response.reasonPhrase}");
+        return null;
+      });
+    }catch(e){
+      print("ERROR SEARCH : $e");
+      _notifier.showUnContextedBottomToast(msg: "Erreur : $e");
+      return null;
+    }
+  }
+  Future<UserModel?> create({required Map body}) async {
     try{
       return await http.post(Uri.parse("${BaseEnpoint.URL}${UserEndpoint.base}"),headers: {
         "Accept" : "application/json",
         HttpHeaders.authorizationHeader : "Bearer ${_auth.token}"
       }, body: body).then((response) {
         var data = json.decode(response.body);
+        print(data);
         if(response.statusCode == 200){
-          _notifier.showContextedBottomToast(context, msg: "Créé avec succès");
+          _notifier.showUnContextedBottomToast(msg: "Créé avec succès");
           return UserModel.fromJson(parsedJson: data['user']);
 
         }
-        _notifier.showContextedBottomToast(context, msg: "Erreur ${response.statusCode}, ${response.reasonPhrase}");
+        // _notifier.showUnContextedBottomToast(msg: "Erreur ${response.statusCode}, ${data['message']}");
+        if(data['errors'] != null){
+          Map errors = data['errors'];
+          List _errList = [];
+          // String _error = "";
+          errors.map((key, value) {
+            _errList.add(value[0]);
+            return MapEntry(key, value);
+          });
+          _notifier.showUnContextedBottomToast(msg: "${data['message']} : ${_errList.join(',')}");
+        }
         return null;
       });
     }catch(e){
-      _notifier.showContextedBottomToast(context, msg: "Erreur : $e");
+      _notifier.showUnContextedBottomToast(msg: "Erreur : $e");
       return null;
     }
   }
