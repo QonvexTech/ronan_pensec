@@ -17,13 +17,14 @@ class _EmployeeTextFieldState extends State<EmployeeTextField> {
   Timer? _debounce;
   _onSearchChanged(String query){
     if((_debounce?.isActive ?? false)) _debounce?.cancel();
-    _debounce = Timer(const Duration(milliseconds: 2000), (){
-      if(query.length >= 3){
+    if(query.length >= 3){
+      _debounce = Timer(const Duration(milliseconds: 700), (){
         widget.textCallback(query);
-      }else{
-        widget.textCallback(null);
-      }
-    });
+      });
+    }else{
+      widget.textCallback(null);
+    }
+
   }
 
   @override
