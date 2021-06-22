@@ -320,10 +320,6 @@ class _EmployeeViewState extends State<EmployeeView> {
                                     });
                                   }
                                 }).whenComplete(() => setState(() => _isSearching = false));
-                                // await Future.delayed(const Duration(seconds: 2));
-                                // setState(() {
-                                //   _isSearching = false;
-                                // });
                               }else{
                                 print("DISPLAY SHOULD BE PAGINATE");
                                 setState(() {
@@ -487,13 +483,13 @@ class _EmployeeViewState extends State<EmployeeView> {
                                               Navigator.push(
                                                   context,
                                                   EmployeeRoute.details(
-                                                      userList.data![index],
+                                                      _displayData![index],
                                                       widget
                                                           .regionDataControl));
                                             },
                                             cells: _viewModel.template
                                                 .kDataCell(
-                                                    userList.data![index]))),
+                                                    _displayData![index]))),
                                   ),
                                   if(!_showField)...{
                                     dataControl()
