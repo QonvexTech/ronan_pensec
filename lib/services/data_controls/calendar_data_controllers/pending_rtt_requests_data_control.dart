@@ -18,6 +18,7 @@ class PendingRTTRequestDataControl{
 
   append(Map data){
     this.current.add(RTTModel.fromJson(data));
+    this.current.sort((a,b) => b.createdAt.compareTo(a.createdAt));
     _list.add(this.current);
   }
 

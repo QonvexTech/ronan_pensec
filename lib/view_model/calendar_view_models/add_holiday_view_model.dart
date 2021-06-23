@@ -25,7 +25,9 @@ class AddHolidayViewModel {
 
   bool showMessage = false;
   static AddHolidayViewModel get instance {
-    _instance.appendBody = {"user_id" : _instance.auth.loggedUser!.id.toString()};
+    if(_auth.loggedUser!.roleId != 1){
+      _instance.appendBody = {"user_id" : _instance.auth.loggedUser!.id.toString()};
+    }
     _instance._reason.addListener(() {
       if(_instance.reason.text.isNotEmpty){
         _instance.appendBody = {"reason": _instance._reason.text};
@@ -169,8 +171,8 @@ class AddHolidayViewModel {
     return await showDatePicker(
       context: context,
       locale: Locale("fr"),
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
+      initialDate: DateTime.now().add(const Duration(days: 1)),
+      firstDate: DateTime.now().add(const Duration(days: 1)),
       lastDate: DateTime.now().add(Duration(days: 365)),
     ).then((DateTime? date) => date);
   }
