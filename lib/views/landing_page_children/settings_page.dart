@@ -3,6 +3,7 @@ import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/views/landing_page_children/settings_page_children/announcement_page.dart';
 import 'package:ronan_pensec/views/landing_page_children/settings_page_children/general.dart';
+import 'package:ronan_pensec/views/landing_page_children/settings_page_children/legal_holidays_manager.dart';
 import 'package:ronan_pensec/views/landing_page_children/settings_page_children/manage_employees.dart';
 import 'package:ronan_pensec/views/landing_page_children/settings_page_children/security_and_login.dart';
 
@@ -16,7 +17,7 @@ class _SettingsPageState extends State<SettingsPage>
     with SingleTickerProviderStateMixin {
   late Widget _selectedContent = _contents[0];
   final Auth _auth = Auth.instance;
-  late List<Widget> _contents = [
+  late final List<Widget> _contents = [
     Container(
       key: ValueKey("general-settings"),
       child: General(),
@@ -33,6 +34,12 @@ class _SettingsPageState extends State<SettingsPage>
       Container(
         key: ValueKey("announcement"),
         child: AnnouncementPage(),
+      )
+    },
+    if(_auth.loggedUser!.roleId == 1)...{
+      Container(
+        key: ValueKey("legal-holidays"),
+        child: LegalHolidaysManager(),
       )
     }
   ];
@@ -172,6 +179,13 @@ class _SettingsPageState extends State<SettingsPage>
                             this.iconButtons(icon: Icons.announcement_outlined, label: "Annonce", size: size, onPress: (){
                               setState(() {
                                 _selectedContent = _contents[3];
+                              });
+                            })
+                          },
+                          if(_auth.loggedUser!.roleId == 1)...{
+                            this.iconButtons(icon: Icons.calendar_today_rounded, label: "La fête", size: size, onPress: (){
+                              setState(() {
+                                _selectedContent = _contents[4];
                               });
                             })
                           }
