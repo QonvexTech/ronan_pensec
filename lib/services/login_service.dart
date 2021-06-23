@@ -11,6 +11,7 @@ import 'package:ronan_pensec/models/user_model.dart';
 import 'package:ronan_pensec/route/credential_route.dart';
 import 'package:ronan_pensec/services/dashboard_services/employee_service.dart';
 import 'package:ronan_pensec/services/http_request.dart';
+import 'package:ronan_pensec/services/legal_holiday_service.dart';
 import 'package:ronan_pensec/services/notification_service.dart';
 import 'dart:convert';
 import 'package:ronan_pensec/services/toast_notifier.dart';
@@ -30,6 +31,7 @@ class LoginService {
   late final CredentialsPreferences _credentialsPreferences = CredentialsPreferences.instance;
   static final UserRawData _userRawData = UserRawData.instance;
   static final EmployeeService _employeeService = EmployeeService.rawInstance;
+  static final LegalHolidayService _legalHolidayService = LegalHolidayService.instance;
   Future<bool> login(context,
       {required String email,
       required String password,
@@ -48,6 +50,7 @@ class LoginService {
           _auth.setUser = UserModel.fromJson(parsedJson: data['user']);
           log(_auth.token??"ERRR");
           // print(_auth.loggedUser!.assignedCenters?[0].name??"ERRR");
+          _legalHolidayService.fetch;
           if (isRemembered) {
             _credentialsPreferences.saveCredentials(
                 email: email, password: password);

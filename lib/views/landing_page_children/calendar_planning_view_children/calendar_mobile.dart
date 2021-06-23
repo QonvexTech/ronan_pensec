@@ -3,8 +3,10 @@ import 'package:intl/intl.dart';
 import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/models/calendar/attendance_model.dart';
 import 'package:ronan_pensec/models/calendar/holiday_model.dart';
+import 'package:ronan_pensec/models/calendar/legal_holiday_model.dart';
 import 'package:ronan_pensec/models/calendar/rtt_model.dart';
 import 'package:ronan_pensec/models/user_model.dart';
+import 'package:ronan_pensec/services/data_controls/legal_holiday_data_control.dart';
 import 'package:ronan_pensec/view_model/calendar_half_day_clip.dart';
 import 'package:ronan_pensec/view_model/calendar_view_model.dart';
 import 'package:ronan_pensec/views/landing_page_children/calendar_planning_view_children/calendar_mobile_children/attendance_list_mobile.dart';
@@ -23,6 +25,8 @@ class CalendarMobile extends StatefulWidget {
 class _CalendarMobileState extends State<CalendarMobile>
     with SingleTickerProviderStateMixin {
   final CalendarViewModel _calendarViewModel = CalendarViewModel.instance;
+  final LegalHolidayDataControl _legalHolidayDataControl = LegalHolidayDataControl.instance;
+
   late final TabController _tabController =
       TabController(length: 3, vsync: this);
   int _tabIndex = 0;
@@ -258,27 +262,6 @@ class _CalendarMobileState extends State<CalendarMobile>
                         ],
                       ),
                     ),
-                    // const SizedBox(
-                    //   width: 20,
-                    // ),
-                    // Container(
-                    //   child: Row(
-                    //     crossAxisAlignment: CrossAxisAlignment.center,
-                    //     children: [
-                    //       Container(
-                    //         width: 10,
-                    //         height: 10,
-                    //         decoration: BoxDecoration(
-                    //             borderRadius: BorderRadius.circular(3),
-                    //             color: Colors.grey.shade900),
-                    //       ),
-                    //       const SizedBox(
-                    //         width: 10,
-                    //       ),
-                    //       Text("En retard")
-                    //     ],
-                    //   ),
-                    // )
                   ],
                 ),
               ),
@@ -365,102 +348,8 @@ class _CalendarMobileState extends State<CalendarMobile>
                                         )
                                       }
                                     }
-                                    // if(!_calendarViewModel.service.isSunday(DateTime(_calendarViewModel.currentYear, _calendarViewModel.currentMonth, daysIndex + 1)))...{
-                                    //   if(_calendarViewModel.service.isInRange(
-                                    //       holiday.startDate,
-                                    //       holiday.endDate,
-                                    //       DateTime(_calendarViewModel.currentYear, _calendarViewModel.currentMonth, daysIndex + 1)))...{
-                                    //
-                                    //     Tooltip(
-                                    //       message: "${holiday.requestName}",
-                                    //       child: MaterialButton(
-                                    //         padding: const EdgeInsets.all(0),
-                                    //         onPressed: (){},
-                                    //         child: ClipPath(
-                                    //           clipper: _calendarViewModel.service.isSameDay(holiday.startDate, DateTime(_calendarViewModel.currentYear, _calendarViewModel.currentMonth, daysIndex + 1)) ? holiday.isHalfDay == 1 ? CalendarHalfDayMorningClip() : holiday.isHalfDay == 2 ? CalendarHalfdayClip() : null : _calendarViewModel.service.isSameDay(holiday.endDate, DateTime(_calendarViewModel.currentYear, _calendarViewModel.currentMonth, daysIndex + 1)) ? holiday.isEndDateHalf == 1 ? CalendarHalfDayMorningClip() : holiday.isEndDateHalf == 2 ? CalendarHalfdayClip() : null : null,
-                                    //           child: Container(
-                                    //             width: ((size.width - 150) /
-                                    //                 _calendarViewModel.numOfDays) <
-                                    //                 40
-                                    //                 ? 40
-                                    //                 : (size.width - 150) / _calendarViewModel.numOfDays,
-                                    //             color: Colors.blue,
-                                    //           ),
-                                    //         ),
-                                    //       ),
-                                    //     )
-                                    //   }
-                                    // }
                                   }
                                 },
-                                // for (HolidayModel holiday
-                                //     in widget.userData.holidays) ...{
-                                //   if ((_calendarViewModel.service.isSameMonth(
-                                //               DateTime(
-                                //                   _calendarViewModel
-                                //                       .currentYear,
-                                //                   _calendarViewModel
-                                //                       .currentMonth),
-                                //               holiday.startDate) ||
-                                //           _calendarViewModel.service
-                                //               .isSameMonth(
-                                //                   DateTime(
-                                //                       _calendarViewModel
-                                //                           .currentYear,
-                                //                       _calendarViewModel
-                                //                           .currentMonth),
-                                //                   holiday.endDate)) &&
-                                //       !_calendarViewModel.service.isSunday(
-                                //           DateTime(
-                                //               _calendarViewModel.currentYear,
-                                //               _calendarViewModel.currentMonth,
-                                //               d ?? 0)) &&
-                                //       holiday.status == 1 &&
-                                //       _calendarViewModel.service.isInRange(
-                                //           holiday.startDate,
-                                //           holiday.endDate,
-                                //           DateTime(
-                                //               _calendarViewModel.currentYear,
-                                //               _calendarViewModel.currentMonth,
-                                //               d ?? 0))) ...{
-                                //     Tooltip(
-                                //       message: "${holiday.reason}",
-                                //       child: Container(
-                                //         width: d == null ||
-                                //                 _calendarViewModel.service
-                                //                     .isSunday(DateTime(
-                                //                         _calendarViewModel
-                                //                             .currentYear,
-                                //                         _calendarViewModel
-                                //                             .currentMonth,
-                                //                         d)) ||
-                                //                 holiday.isHalfDay == 0
-                                //             ? size.width / 7
-                                //             : (size.width / 7) / 2,
-                                //         color: !_calendarViewModel.service
-                                //                 .isSunday(DateTime(
-                                //                     _calendarViewModel
-                                //                         .currentYear,
-                                //                     _calendarViewModel
-                                //                         .currentMonth,
-                                //                     d!))
-                                //             ? _calendarViewModel.service
-                                //                     .isInRange(
-                                //                         holiday.startDate,
-                                //                         holiday.endDate,
-                                //                         DateTime(
-                                //                             _calendarViewModel
-                                //                                 .currentYear,
-                                //                             _calendarViewModel
-                                //                                 .currentMonth,
-                                //                             d))
-                                //                 ? Colors.blue
-                                //                 : Colors.transparent
-                                //             : Colors.grey.shade400,
-                                //       ),
-                                //     )
-                                //   }
-                                // },
 
                                 ///RTT
                                 for (RTTModel rtt in widget.userData.rtts) ...{
@@ -552,57 +441,39 @@ class _CalendarMobileState extends State<CalendarMobile>
                                             : Colors.transparent
                                             : Colors.grey.shade400,
                                       ),
-                                      // child: attendance.status == 0
-                                      //     ? Container(
-                                      //         width: size.width / 7,
-                                      //         color: !_calendarViewModel.service
-                                      //                 .isSunday(DateTime(
-                                      //                     _calendarViewModel
-                                      //                         .currentYear,
-                                      //                     _calendarViewModel
-                                      //                         .currentMonth,
-                                      //                     d ?? 0))
-                                      //             ? _calendarViewModel.service.isSameDay(
-                                      //                     DateTime(
-                                      //                         _calendarViewModel
-                                      //                             .currentYear,
-                                      //                         _calendarViewModel
-                                      //                             .currentMonth,
-                                      //                         d ?? 0),
-                                      //                     attendance.date)
-                                      //                 ? Colors.red
-                                      //                 : Colors.transparent
-                                      //             : Colors.grey.shade400,
-                                      //       )
-                                      //     : ClipPath(
-                                      //         clipper: CalendarHalfdayClip(),
-                                      //         child: Container(
-                                      //           width: size.width / 7,
-                                      //           color: !_calendarViewModel
-                                      //                   .service
-                                      //                   .isSunday(DateTime(
-                                      //                       _calendarViewModel
-                                      //                           .currentYear,
-                                      //                       _calendarViewModel
-                                      //                           .currentMonth,
-                                      //                       d ?? 0))
-                                      //               ? _calendarViewModel.service.isSameDay(
-                                      //                       DateTime(
-                                      //                           _calendarViewModel
-                                      //                               .currentYear,
-                                      //                           _calendarViewModel
-                                      //                               .currentMonth,
-                                      //                           d ?? 0),
-                                      //                       attendance.date)
-                                      //                   ? Colors.grey.shade900
-                                      //                   : Colors.transparent
-                                      //               : Colors.grey.shade400,
-                                      //         ),
-                                      //       ),
                                     )
                                   },
                                 },
-
+                                Container(
+                                  child: StreamBuilder<List<LegalHolidayModel>>(
+                                    stream: _legalHolidayDataControl.stream$,
+                                    builder: (_,legal) {
+                                      if(legal.hasData && !legal.hasError && legal.data!.length > 0){
+                                        return Stack(
+                                          children: [
+                                            for(LegalHolidayModel legal in legal.data!)...{
+                                              if(_calendarViewModel.service.isSameDDMM(legal.date, DateTime(
+                                                  _calendarViewModel
+                                                      .currentYear,
+                                                  _calendarViewModel
+                                                      .currentMonth,
+                                                  d ?? 0)))...{
+                                                Tooltip(
+                                                  message: "${legal.name}",
+                                                  child: Container(
+                                                    width: size.width / 7,
+                                                    color: Colors.grey.shade700,
+                                                  ),
+                                                )
+                                              }
+                                            }
+                                          ],
+                                        );
+                                      }
+                                      return Container();
+                                    },
+                                  ),
+                                ),
                                 /// Day of the month
                                 if (_calendarViewModel.service.isSunday(
                                     DateTime(
@@ -617,32 +488,6 @@ class _CalendarMobileState extends State<CalendarMobile>
                                     child: Text("${d ?? ""}"),
                                   )
                                 }
-                                // Container(
-                                //   color: _calendarViewModel.service.isSunday(DateTime(
-                                //           _calendarViewModel.currentYear, _calendarViewModel.currentMonth, d ?? 0))
-                                //       ? Colors.grey.shade300
-                                //       : Colors.transparent,
-                                //   child: Center(
-                                //     child: Text("${d ?? ""}"),
-                                //   ),
-                                // )
-                                // Container(
-                                //   width: double.infinity,
-                                //   height: widget.bodySettings.height,
-                                //   color: d == null
-                                //       ? Colors.grey.shade300
-                                //       : data.indexOf(d) == 0 &&
-                                //       widget.sundayColor != null
-                                //       ? widget.sundayColor
-                                //       : Colors.transparent,
-                                //   child: Center(
-                                //     child: headerText("${d ?? ""}",
-                                //         color: data.indexOf(d) == 0 &&
-                                //             widget.sundayColor != null
-                                //             ? widget.sundayColor!
-                                //             : Colors.white),
-                                //   ),
-                                // )
                               ])),
                         )
                       }

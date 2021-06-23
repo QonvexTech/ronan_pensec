@@ -26,7 +26,7 @@ class CalendarService {
   bool isSameDay(DateTime d1, DateTime d2) =>
       d1.month == d2.month && d1.day == d2.day && d1.year == d2.year;
   bool isSunday(DateTime date) => DateFormat.EEEE().format(date) == "Sunday";
-
+  bool isSameDDMM(DateTime d1, DateTime d2) => d1.month == d2.month && d1.day == d2.day;
   bool isInRange(DateTime from, DateTime to, DateTime compare) => isSameDay(from, compare) || isSameDay(to, compare) || (compare.isAfter(from) && compare.isBefore(to));
   int daysCounter({required int currentYear, required int currentMonth}) => DateTime(currentYear, currentMonth + 1, 01)
       .difference(DateTime(currentYear, currentMonth, 01))
