@@ -22,6 +22,7 @@ class CalendarService {
   static CalendarService get lone_instance => _instance;
   late final ToastNotifier _notifier= ToastNotifier.instance;
 
+  bool isSameMonthPure(DateTime d1, DateTime d2) => d1.month == d2.month;
   bool isSameMonth(DateTime d1, DateTime d2) => d1.year == d2.year && d1.month == d2.month;
   bool isSameDay(DateTime d1, DateTime d2) =>
       d1.month == d2.month && d1.day == d2.day && d1.year == d2.year;

@@ -237,7 +237,7 @@ class _CalendarMobileState extends State<CalendarMobile>
                           const SizedBox(
                             width: 10,
                           ),
-                          Text("Vacance")
+                          Text("Congés")
                         ],
                       ),
                     ),
@@ -259,6 +259,27 @@ class _CalendarMobileState extends State<CalendarMobile>
                             width: 10,
                           ),
                           Text("Absent")
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    Container(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: 10,
+                            height: 10,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(3),
+                                color: Colors.grey.shade700),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Text("Vacances")
                         ],
                       ),
                     ),

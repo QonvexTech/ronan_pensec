@@ -5,24 +5,25 @@ import 'package:ronan_pensec/view_model/calendar_view_model.dart';
 import 'package:ronan_pensec/view_model/planning_view_model.dart';
 
 class CalendarComponents extends StatefulWidget {
-  final CalendarViewModel calendarViewModel;
   final ValueChanged<List<RegionModel>> searchCallback;
-  final PlanningViewModel planningViewModel;
-  bool showField;
-  CalendarComponents({Key? key, required this.calendarViewModel, required this.showField, required this.searchCallback,required this.planningViewModel}) : super(key: key);
+
+  CalendarComponents({Key? key, required this.searchCallback}) : super(key: key);
 
   @override
   _CalendarComponentsState createState() => _CalendarComponentsState();
 }
 
 class _CalendarComponentsState extends State<CalendarComponents> {
+  static final CalendarViewModel calendarViewModel = CalendarViewModel.instance;
+  static final PlanningViewModel planningViewModel = PlanningViewModel.instance;
+  bool showField = false;
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     return Container(
       width: double.infinity,
       padding: EdgeInsets.only(
-          top: 10, bottom: 10, left: 20, right: widget.showField ? 20 : 0),
+          top: 10, bottom: 10, left: 20, right: showField ? 20 : 0),
       // padding: EdgeInsets.symmetric(
       //     horizontal: showField ? 20 : 0, vertical: 10),
       child: Row(
@@ -46,15 +47,16 @@ class _CalendarComponentsState extends State<CalendarComponents> {
             ],
             tooltip: "Filtre",
             onSelected: (int value) {
-              if (this.mounted) {
-                setState(() {
-                  widget.calendarViewModel.setType = value;
-                  widget.calendarViewModel.searchBy.clear();
-                  widget.showField = false;
-                });
-              }
+              setState(() {
+                calendarViewModel.setType = value;
+                calendarViewModel.searchBy.clear();
+                showField = false;
+              });
+              widget.searchCallback(List<RegionModel>.from(
+                  planningViewModel
+                      .planningControl.current));
             },
-            initialValue: widget.calendarViewModel.type,
+            initialValue: calendarViewModel.type,
           ),
           const SizedBox(
             width: 20,
@@ -95,7 +97,7 @@ class _CalendarComponentsState extends State<CalendarComponents> {
                 const SizedBox(
                   width: 10,
                 ),
-                Text("Vacances")
+                Text("Congés")
               ],
             ),
           ),
@@ -121,10 +123,31 @@ class _CalendarComponentsState extends State<CalendarComponents> {
               ],
             ),
           ),
+          const SizedBox(
+            width: 20,
+          ),
+          Container(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  width: 10,
+                  height: 10,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(3),
+                      color: Colors.grey.shade700),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Text("Vacances")
+              ],
+            ),
+          ),
           Spacer(),
           AnimatedContainer(
             duration: const Duration(milliseconds: 600),
-            width: widget.showField
+            width: showField
                 ? size.width > 900
                 ? size.width * .3
                 : size.width * .4
@@ -132,33 +155,34 @@ class _CalendarComponentsState extends State<CalendarComponents> {
             height: 60,
             child: AnimatedSwitcher(
               duration: const Duration(milliseconds: 600),
-              child: widget.showField
+              child: showField
                   ? Theme(
                 data: ThemeData(
                     primaryColor: Palette.gradientColor[0]),
                 child: TextField(
-                  controller: widget.calendarViewModel.searchBy,
+                  controller: calendarViewModel.searchBy,
                   onChanged: (text) {
                     if (this.mounted) {
                       setState(() {
-                        if (widget.calendarViewModel.type == 0) {
+                        if (calendarViewModel.type == 0) {
                           widget.searchCallback(List<RegionModel>.from(
-                              widget.planningViewModel
+                              planningViewModel
                                   .planningControl.current)
                               .where((element) => element.name
                               .toLowerCase()
                               .contains(text.toLowerCase()))
                               .toList());
                         } else {
-                          widget.searchCallback(widget.calendarViewModel
+                          List<RegionModel> _data = calendarViewModel
                               .service
                               .searchResult(
                               List<RegionModel>.from(
-                                  widget.planningViewModel
+                                  planningViewModel
                                       .planningControl
                                       .current),
                               text,
-                              widget.calendarViewModel.type));
+                              calendarViewModel.type);
+                          widget.searchCallback(_data);
                         }
                       });
                     }
@@ -167,14 +191,17 @@ class _CalendarComponentsState extends State<CalendarComponents> {
                   decoration: InputDecoration(
                       prefixIcon: Icon(Icons.search),
                       hintText:
-                      "Rechercher ${widget.calendarViewModel.type == 0 ? "\"Région\"" : widget.calendarViewModel.type == 1 ? "\"Centre\"" : "\"Employé\""}",
+                      "Rechercher ${calendarViewModel.type == 0 ? "\"Région\"" : calendarViewModel.type == 1 ? "\"Centre\"" : "\"Employé\""}",
                       suffixIcon: IconButton(
                         icon: Icon(Icons.clear),
                         onPressed: () {
-                          widget.calendarViewModel.searchBy.clear();
+                          calendarViewModel.searchBy.clear();
                           setState(() {
-                            widget.showField = false;
+                            showField = false;
                           });
+                          widget.searchCallback(List<RegionModel>.from(
+                              planningViewModel
+                                  .planningControl.current));
                         },
                       )),
                 ),
@@ -183,12 +210,12 @@ class _CalendarComponentsState extends State<CalendarComponents> {
                   icon: Icon(Icons.search),
                   onPressed: () {
                     setState(() {
-                      widget.showField = true;
+                      showField = true;
                     });
                   }),
             ),
           ),
-          if (!widget.showField) ...{
+          if (!showField) ...{
             const SizedBox(
               width: 20,
             ),
