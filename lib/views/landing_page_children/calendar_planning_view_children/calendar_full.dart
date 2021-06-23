@@ -181,14 +181,13 @@ class _CalendarFullState extends State<CalendarFull> {
                                   duration: const Duration(milliseconds: 400),
                                   child: _isExpanded
                                       ? CalendarComponents(
-                                          calendarViewModel: _calendarViewModel,
-                                          showField: _showField,
                                           searchCallback: (data) {
                                             setState(() {
                                               _displayData = data;
                                             });
+                                            print(_displayData);
                                           },
-                                          planningViewModel: _planningViewModel)
+                                        )
                                       : Container(),
                                 ),
                               ),
@@ -592,11 +591,49 @@ class _CalendarFullState extends State<CalendarFull> {
                           ),
                           AnimatedContainer(
                             width: double.infinity,
-                            height: _showHolidays ? _legalHolidayDataControl.current.length * 40 : 0,
+                            height: _showHolidays
+                                ? _legalHolidayDataControl
+                                            .current
+                                            .where((element) =>
+                                                _calendarViewModel
+                                                    .service
+                                                    .isSameMonthPure(
+                                                        element.date,
+                                                        DateTime(
+                                                            _calendarViewModel
+                                                                .currentYear,
+                                                            _calendarViewModel
+                                                                .currentMonth,
+                                                            01)))
+                                            .length >
+                                        0
+                                    ? _legalHolidayDataControl
+                                            .current
+                                            .where((element) =>
+                                                _calendarViewModel
+                                                    .service
+                                                    .isSameMonthPure(
+                                                        element.date,
+                                                        DateTime(
+                                                            _calendarViewModel
+                                                                .currentYear,
+                                                            _calendarViewModel
+                                                                .currentMonth,
+                                                            01)))
+                                            .length *
+                                        40
+                                    : 40
+                                : 0,
                             color: Colors.grey.shade100,
                             child: AnimatedSwitcher(
                               duration: const Duration(milliseconds: 600),
-                              child: _showHolidays ? LegalHolidayList() : Container(),
+                              child: _showHolidays
+                                  ? LegalHolidayList(
+                                      currentMonth: DateTime(
+                                          _calendarViewModel.currentYear,
+                                          _calendarViewModel.currentMonth),
+                                    )
+                                  : Container(),
                             ),
                             duration: const Duration(milliseconds: 700),
                           ),
