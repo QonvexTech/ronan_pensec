@@ -352,135 +352,137 @@ class _ProfilePageState extends State<ProfilePage>
                           color: Colors.black54,
                           thickness: 1,
                         ),
-                        Container(
-                          margin: const EdgeInsets.only(bottom: 15),
-                          width: double.infinity,
-                          child: Text(
-                            "Centres assignés",
-                            style: TextStyle(
-                              letterSpacing: 1.5,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 17.5,
+                        if(_profileViewModel.auth.loggedUser!.roleId != 1)...{
+                          Container(
+                            margin: const EdgeInsets.only(bottom: 15),
+                            width: double.infinity,
+                            child: Text(
+                              "Centres assignés",
+                              style: TextStyle(
+                                letterSpacing: 1.5,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 17.5,
+                              ),
                             ),
                           ),
-                        ),
-                        Container(
-                          width: double.infinity,
-                          child: _profileViewModel.auth.loggedUser!
-                                      .assignedCenters!.length >
-                                  0
-                              ? Wrap(
-                                  children: [
-                                    for (CenterModel center in _profileViewModel
-                                        .auth.loggedUser!.assignedCenters!) ...{
-                                      Container(
-                                        width: _size.width > 900
-                                            ? (_size.width - 40) / 3
-                                            : _size.width - 40,
-                                        padding: const EdgeInsets.all(15),
-                                        decoration: BoxDecoration(
-                                            color: Colors.grey.shade100,
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                  color: Colors.black54,
-                                                  offset: Offset(2, 2),
-                                                  blurRadius: 2)
-                                            ]),
-                                        child: Column(
-                                          children: [
-                                            Container(
-                                              width: double.infinity,
-                                              height: 200,
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.vertical(
-                                                          top: Radius.circular(
-                                                              10)),
-                                                  color: Colors.grey.shade200,
-                                                  image: DecorationImage(
-                                                      fit: BoxFit.cover,
-                                                      image: NetworkImage(
-                                                          "${center.image}")),
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                        color: Colors
-                                                            .grey.shade300,
-                                                        offset: Offset(2, 2),
-                                                        blurRadius: 2)
-                                                  ]),
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                    gradient: LinearGradient(
-                                                        begin:
-                                                            AlignmentDirectional
-                                                                .bottomCenter,
-                                                        end:
-                                                            AlignmentDirectional
-                                                                .topCenter,
-                                                        colors: [
+                          Container(
+                            width: double.infinity,
+                            child: _profileViewModel.auth.loggedUser!
+                                .assignedCenters!.length >
+                                0
+                                ? Wrap(
+                              children: [
+                                for (CenterModel center in _profileViewModel
+                                    .auth.loggedUser!.assignedCenters!) ...{
+                                  Container(
+                                    width: _size.width > 900
+                                        ? (_size.width - 40) / 3
+                                        : _size.width - 40,
+                                    padding: const EdgeInsets.all(15),
+                                    decoration: BoxDecoration(
+                                        color: Colors.grey.shade100,
+                                        borderRadius:
+                                        BorderRadius.circular(10),
+                                        boxShadow: [
+                                          BoxShadow(
+                                              color: Colors.black54,
+                                              offset: Offset(2, 2),
+                                              blurRadius: 2)
+                                        ]),
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          width: double.infinity,
+                                          height: 200,
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                              BorderRadius.vertical(
+                                                  top: Radius.circular(
+                                                      10)),
+                                              color: Colors.grey.shade200,
+                                              image: DecorationImage(
+                                                  fit: BoxFit.cover,
+                                                  image: NetworkImage(
+                                                      "${center.image}")),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                    color: Colors
+                                                        .grey.shade300,
+                                                    offset: Offset(2, 2),
+                                                    blurRadius: 2)
+                                              ]),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                gradient: LinearGradient(
+                                                    begin:
+                                                    AlignmentDirectional
+                                                        .bottomCenter,
+                                                    end:
+                                                    AlignmentDirectional
+                                                        .topCenter,
+                                                    colors: [
                                                       Colors.black45,
                                                       Colors.transparent
                                                     ])),
-                                                alignment: AlignmentDirectional
-                                                    .bottomCenter,
-                                                child: ListTile(
-                                                  title: Text(
-                                                    "${center.name}",
-                                                    style: TextStyle(
-                                                        fontSize: 17,
-                                                        letterSpacing: 1,
-                                                        color: Colors.white,
-                                                        fontWeight:
-                                                            FontWeight.w600),
-                                                    maxLines: 2,
+                                            alignment: AlignmentDirectional
+                                                .bottomCenter,
+                                            child: ListTile(
+                                              title: Text(
+                                                "${center.name}",
+                                                style: TextStyle(
+                                                    fontSize: 17,
+                                                    letterSpacing: 1,
+                                                    color: Colors.white,
+                                                    fontWeight:
+                                                    FontWeight.w600),
+                                                maxLines: 2,
+                                              ),
+                                              subtitle: Row(
+                                                children: [
+                                                  Icon(
+                                                    Icons.phone_outlined,
+                                                    color: Colors
+                                                        .grey.shade300,
                                                   ),
-                                                  subtitle: Row(
-                                                    children: [
-                                                      Icon(
-                                                        Icons.phone_outlined,
-                                                        color: Colors
-                                                            .grey.shade300,
-                                                      ),
-                                                      const SizedBox(
-                                                        width: 10,
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          "${center.mobile ?? "NON DÉFINI"}",
-                                                          style: TextStyle(
-                                                              fontSize: 14,
-                                                              color: Colors.grey
-                                                                  .shade300,
-                                                              fontStyle:
-                                                                  FontStyle
-                                                                      .italic),
-                                                        ),
-                                                      )
-                                                    ],
+                                                  const SizedBox(
+                                                    width: 10,
                                                   ),
-                                                ),
+                                                  Expanded(
+                                                    child: Text(
+                                                      "${center.mobile ?? "NON DÉFINI"}",
+                                                      style: TextStyle(
+                                                          fontSize: 14,
+                                                          color: Colors.grey
+                                                              .shade300,
+                                                          fontStyle:
+                                                          FontStyle
+                                                              .italic),
+                                                    ),
+                                                  )
+                                                ],
                                               ),
                                             ),
-                                          ],
+                                          ),
                                         ),
-                                      )
-                                    }
-                                  ],
-                                )
-                              : Container(
-                                  width: double.infinity,
-                                  height: 150,
-                                  child: Center(
-                                    child: Text("NON"),
-                                  ),
-                                ),
-                        ),
-                        Divider(
-                          color: Colors.black54,
-                          thickness: 1,
-                        ),
+                                      ],
+                                    ),
+                                  )
+                                }
+                              ],
+                            )
+                                : Container(
+                              width: double.infinity,
+                              height: 150,
+                              child: Center(
+                                child: Text("NON"),
+                              ),
+                            ),
+                          ),
+                          Divider(
+                            color: Colors.black54,
+                            thickness: 1,
+                          ),
+                        },
                         Container(
                           width: double.infinity,
                           height: 50,

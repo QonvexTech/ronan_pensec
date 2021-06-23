@@ -10,6 +10,7 @@ class RTTModel{
   String startTime;
   String endTime;
   UserModel? user;
+  DateTime createdAt;
   RTTModel({
     required this.id,
     required this.user_id,
@@ -19,7 +20,8 @@ class RTTModel{
     required this.status,
     required this.endTime,
     required this.startTime,
-    required this.user
+    required this.user,
+    required this.createdAt,
   });
 
 
@@ -33,7 +35,8 @@ class RTTModel{
       status: parsedJson['status']??0,
       startTime: parsedJson['start_time'],
       endTime: parsedJson['end_time'],
-      user: parsedJson['user'] == null ? null : UserModel.fromJson(parsedJson: parsedJson['user'])
+      user: parsedJson['user'] == null ? null : UserModel.fromJson(parsedJson: parsedJson['user']),
+      createdAt: DateTime.parse(parsedJson['created_at'])
     );
   }
 
@@ -46,6 +49,7 @@ class RTTModel{
     'status' : status,
     'end_time' : endTime,
     "start_time" : startTime,
-    'user': user
+    'user': user,
+    'created_at' : createdAt
   };
 }

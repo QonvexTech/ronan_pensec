@@ -19,6 +19,7 @@ class PendingHolidayRequestsDataControl {
     try{
       print("HOLIDAY DATA TO ADD $data");
       this.current.add(HolidayModel.fromJson(data));
+      this.current.sort((a,b) => b.createdAt.compareTo(a.createdAt));
       _list.add(this.current);
     }catch(e){
       print("ERROR PENDING HOLIDAY APPEND : $e");
