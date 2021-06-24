@@ -293,64 +293,6 @@ class PendingHolidayRequests extends StatelessWidget {
                                             subtitle: "En attente")
                                       ],
                                     )),
-                                    // Container(
-                                    //   width: double.infinity,
-                                    //   height: 50,
-                                    //   child: Row(
-                                    //     children: [
-                                    //       Expanded(
-                                    //         child: MaterialButton(
-                                    //           height: 50,
-                                    //           color: Colors.grey.shade200,
-                                    //           onPressed: () async {
-                                    //             Navigator.of(context).pop(null);
-                                    //           },
-                                    //           child: Center(
-                                    //             child: Text(
-                                    //               "ANNULER".toUpperCase(),
-                                    //               style: TextStyle(
-                                    //                 fontWeight: FontWeight.w600,
-                                    //                 letterSpacing: 1.5,
-                                    //               ),
-                                    //             ),
-                                    //           ),
-                                    //         ),
-                                    //       ),
-                                    //       const SizedBox(
-                                    //         width: 10,
-                                    //       ),
-                                    //       Expanded(
-                                    //         child: MaterialButton(
-                                    //           height: 50,
-                                    //           color: Colors.green,
-                                    //           onPressed: () async {
-                                    //             Navigator.of(context).pop(null);
-                                    //             await requestController.service
-                                    //                 .approve(context,
-                                    //                     holidayId: holiday.id)
-                                    //                 .then((value) {
-                                    //               if (value) {
-                                    //                 requestController
-                                    //                     .dataControl
-                                    //                     .remove(holiday.id);
-                                    //               }
-                                    //             });
-                                    //           },
-                                    //           child: Center(
-                                    //             child: Text(
-                                    //               "J'accepte".toUpperCase(),
-                                    //               style: TextStyle(
-                                    //                   color: Colors.white,
-                                    //                   fontWeight:
-                                    //                       FontWeight.w600,
-                                    //                   letterSpacing: 1.5),
-                                    //             ),
-                                    //           ),
-                                    //         ),
-                                    //       ),
-                                    //     ],
-                                    //   ),
-                                    // )
                                   ],
                                 ),
                                 width: _size.width,
@@ -393,18 +335,45 @@ class PendingHolidayRequests extends StatelessWidget {
                               ),
                             ),
                             title: Text("${holiday.user!.fullName}"),
-                            subtitle: Row(
+                            subtitle: Column(
                               children: [
-                                Expanded(
-                                    child: Text(
-                                  "De : ${DateFormat.yMMMMd('fr_FR').format(holiday.startDate)}",
-                                  textAlign: TextAlign.left,
-                                )),
-                                Expanded(
-                                    child: Text(
-                                  "Au : ${DateFormat.yMMMMd('fr_FR').format(holiday.endDate)}",
-                                  textAlign: TextAlign.right,
-                                ))
+                                Container(
+                                  width: double.infinity,
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                          child: Text(
+                                            "De : ${DateFormat.yMMMMd('fr_FR').format(holiday.startDate)}",
+                                            textAlign: TextAlign.left,
+                                          )),
+                                      Expanded(
+                                          child: Text(
+                                            "Au : ${DateFormat.yMMMMd('fr_FR').format(holiday.endDate)}",
+                                            textAlign: TextAlign.right,
+                                          ))
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  width: double.infinity,
+                                  child: RichText(
+                                    text: TextSpan(
+                                      text: "Demandé par ${holiday.requestBy.fullName}",
+                                      style: TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 14.5
+                                      ),
+                                      children: [
+                                        TextSpan(
+                                          text: " ( ${holiday.requestBy.roleId == 1 ? "Administrateur" : holiday.requestBy.roleId == 2 ? "Superviseur" : "Employé"} )",
+                                          style: TextStyle(
+                                            fontStyle: FontStyle.italic
+                                          )
+                                        )
+                                      ]
+                                    ),
+                                  ),
+                                )
                               ],
                             ),
                             trailing: Container(

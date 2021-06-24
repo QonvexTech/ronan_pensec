@@ -1,3 +1,4 @@
+import 'package:ronan_pensec/models/raw_user_model.dart';
 import 'package:ronan_pensec/models/user_model.dart';
 
 class RTTModel{
@@ -11,6 +12,7 @@ class RTTModel{
   String endTime;
   UserModel? user;
   DateTime createdAt;
+  RawUserModel requestBy;
   RTTModel({
     required this.id,
     required this.user_id,
@@ -22,6 +24,7 @@ class RTTModel{
     required this.startTime,
     required this.user,
     required this.createdAt,
+    required this.requestBy
   });
 
 
@@ -36,7 +39,8 @@ class RTTModel{
       startTime: parsedJson['start_time'],
       endTime: parsedJson['end_time'],
       user: parsedJson['user'] == null ? null : UserModel.fromJson(parsedJson: parsedJson['user']),
-      createdAt: DateTime.parse(parsedJson['created_at'])
+      createdAt: DateTime.parse(parsedJson['created_at']),
+      requestBy: RawUserModel.fromJson(parsedJson['request_by'])
     );
   }
 
@@ -50,6 +54,7 @@ class RTTModel{
     'end_time' : endTime,
     "start_time" : startTime,
     'user': user,
-    'created_at' : createdAt
+    'created_at' : createdAt,
+    'request_by' : requestBy
   };
 }

@@ -69,15 +69,14 @@ class FirebaseMessagingService {
           _notificationService.all;
           if(data['type'] == "rtt_request"){
             try{
-              _pendingRTTRequestDataControl.append(json.decode(data['data']));
+              _pendingRTTRequestDataControl.append(data['data']);
             }catch(e){
               print("ERROR PENDING APPEND : $e");
             }
           }
           else if(data['type'] == "holiday_request"){
             try{
-              var holidayData = json.decode(data['data']);
-              print("HOLIDAY DATA : $holidayData");
+              var holidayData = data['data'];
               _pendingHolidayRequestsDataControl.append(holidayData);
             }catch(e){
               print("ERROR PENDING HOLIDAY APPPEND : $e");

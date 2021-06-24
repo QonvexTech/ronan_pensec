@@ -9,6 +9,7 @@ class RawUserModel {
   final String firstName;
   final String fullName;
   final String zipCode;
+  final int roleId;
   final int isSenior;
   RawUserModel({
     required this.id,
@@ -22,6 +23,7 @@ class RawUserModel {
     required this.fullName,
     required this.zipCode,
     required this.isSenior,
+    required this.roleId,
   });
   factory RawUserModel.fromJson(Map<String,dynamic> parsedJson){
     return RawUserModel(
@@ -36,6 +38,7 @@ class RawUserModel {
       fullName : parsedJson['full_name'],
       zipCode : parsedJson['zip_code'],
       isSenior : parsedJson['is_senior'],
+      roleId: int.parse(parsedJson['role_id'].toString())
     );
   }
   Map<String,dynamic> toJson()=>{
@@ -50,5 +53,6 @@ class RawUserModel {
     'full_name' : fullName,
     'zip_code' : zipCode,
     'is_senior' : isSenior,
+    'role_id': roleId
   };
 }
