@@ -255,53 +255,6 @@ class PendingRTTRequests extends StatelessWidget {
                                   ],
                                 ),
                               ),
-                              // Container(
-                              //   width: double.infinity,
-                              //   height: 50,
-                              //   child: Row(
-                              //     children: [
-                              //       Expanded(
-                              //         child: MaterialButton(
-                              //           height: 50,
-                              //           color: Colors.grey.shade200,
-                              //           onPressed: () async {
-                              //             Navigator.of(context).pop(null);
-                              //           },
-                              //           child: Center(
-                              //             child: Text("Annuler".toUpperCase(),style: TextStyle(
-                              //               fontWeight: FontWeight.w600,
-                              //               letterSpacing: 1.5,
-                              //             ),),
-                              //           ),
-                              //         ),
-                              //       ),
-                              //       const SizedBox(
-                              //         width: 10,
-                              //       ),
-                              //       Expanded(
-                              //         child: MaterialButton(
-                              //           height: 50,
-                              //           color: Colors.green,
-                              //           onPressed: () async {
-                              //             Navigator.of(context).pop(null);
-                              //             await requestController.service.approve(context, rttId: rtt.id).then((value) {
-                              //               if(value){
-                              //                 requestController.dataControl.remove(rtt.id);
-                              //               }
-                              //             });
-                              //           },
-                              //           child: Center(
-                              //             child: Text("J'accepte".toUpperCase(),style: TextStyle(
-                              //                 color: Colors.white,
-                              //                 fontWeight: FontWeight.w600,
-                              //                 letterSpacing: 1.5
-                              //             ),),
-                              //           ),
-                              //         ),
-                              //       ),
-                              //     ],
-                              //   ),
-                              // )
                             ],
                           ), width: _size.width, height: 230,title: ListTile(
                             leading: Container(
@@ -337,22 +290,49 @@ class PendingRTTRequests extends StatelessWidget {
                             ),
                             title: Text("${rtt.user!.full_name}"),
 // title: Text("${DateFormat.yMMMMd('fr_FR').format(rtt.date)}"),
-                            subtitle: RichText(
-                              text: TextSpan(
-                                  style: TextStyle(
-                                      color: Colors.grey.shade900
-                                  ),
-                                  text: "${DateFormat.yMMMMd('fr_FR').format(rtt.date)}",
-                                  children: <TextSpan>[
-                                    TextSpan(
+                            subtitle: Column(
+                              children: [
+                                Container(
+                                  width: double.infinity,
+                                  child: RichText(
+                                    text: TextSpan(
                                         style: TextStyle(
-                                            fontStyle: FontStyle.italic
+                                            color: Colors.grey
                                         ),
-                                        text: " ( ${rtt.no_of_hrs} Heures )"
-                                    )
-                                  ]
-                              ),
-                            )
+                                        text: "${DateFormat.yMMMMd('fr_FR').format(rtt.date)}",
+                                        children: <TextSpan>[
+                                          TextSpan(
+                                              style: TextStyle(
+                                                  fontStyle: FontStyle.italic
+                                              ),
+                                              text: " ( ${rtt.no_of_hrs} Heures )"
+                                          )
+                                        ]
+                                    ),
+                                  )
+                                ),
+                                Container(
+                                  width: double.infinity,
+                                  child: RichText(
+                                    text: TextSpan(
+                                        text: "Demandé par ${rtt.requestBy.fullName}",
+                                        style: TextStyle(
+                                            color: Colors.grey,
+                                            fontSize: 14.5
+                                        ),
+                                        children: [
+                                          TextSpan(
+                                              text: " ( ${rtt.requestBy.roleId == 1 ? "Administrateur" : rtt.requestBy.roleId == 2 ? "Superviseur" : "Employé"} )",
+                                              style: TextStyle(
+                                                  fontStyle: FontStyle.italic
+                                              )
+                                          )
+                                        ]
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
                         ),
                       ),
                     )

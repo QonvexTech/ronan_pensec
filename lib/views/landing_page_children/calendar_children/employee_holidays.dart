@@ -55,7 +55,7 @@ class _EmployeeHolidaysState extends State<EmployeeHolidays> {
             child: r1,
           ),
 
-          ///REQUEST NAME
+          ///USER NAME
           Expanded(
             flex: 2,
             child: r2,

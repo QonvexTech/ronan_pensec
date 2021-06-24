@@ -17,9 +17,13 @@ class PendingRTTRequestDataControl{
   }
 
   append(Map data){
-    this.current.add(RTTModel.fromJson(data));
-    this.current.sort((a,b) => b.createdAt.compareTo(a.createdAt));
-    _list.add(this.current);
+    try{
+      this.current.add(RTTModel.fromJson(data));
+      this.current.sort((a,b) => b.createdAt.compareTo(a.createdAt));
+      _list.add(this.current);
+    }catch(e){
+      print("ERROR APPENDING NEW RTT : $e");
+    }
   }
 
   remove(int id){
