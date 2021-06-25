@@ -2,39 +2,37 @@ import 'package:flutter/material.dart';
 import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/global/template/animated_widget.dart';
 import 'package:ronan_pensec/global/template/general_template.dart';
-import 'package:ronan_pensec/global/template/login_template.dart';
 import 'package:ronan_pensec/route/password_reset_route.dart';
-import 'package:ronan_pensec/services/login_service.dart';
+import 'package:ronan_pensec/view_model/forgot_password_view_model.dart';
 
-class LoginViewWeb extends StatefulWidget {
-  final TextEditingController email;
-  final TextEditingController password;
-
-  LoginViewWeb({required this.email, required this.password});
-
+class ForgotPassword extends StatefulWidget {
   @override
-  _LoginViewWebState createState() => _LoginViewWebState();
+  _ForgotPasswordState createState() => _ForgotPasswordState();
 }
 
-class _LoginViewWebState extends State<LoginViewWeb> {
-  final LoginService _loginService = LoginService.instance;
-  late TextEditingController _email = widget.email;
-  late TextEditingController _password = widget.password;
-  bool _toRegister = true;
-  bool _obscure = true;
-  bool _remember = true;
+class _ForgotPasswordState extends State<ForgotPassword> {
+  final Duration duration = Duration(milliseconds: 600);
+  final ForgotPasswordViewModel _forgotPasswordViewModel =
+      ForgotPasswordViewModel.instance;
   bool _isLoading = false;
-  Duration duration = Duration(milliseconds: 600);
-  late Size contextSize;
-
-  @override
-  void dispose() {
-    super.dispose();
-    if (this.mounted && !_toRegister) {
-      _email.dispose();
-      _password.dispose();
-    }
+  GlobalKey<FormState> _key = new GlobalKey<FormState>();
+  Future<void> get pashPash async {
+    setState(() {
+      _isLoading = true;
+    });
+    await _forgotPasswordViewModel.service.sendCode(email: _forgotPasswordViewModel.email.text).then((value) {
+      if(value){
+        print("GO TO CODE VALIDATION PAGE");
+        Navigator.push(context, PasswordResetRoute.resetPage);
+      }
+    }).whenComplete(() => setState(() => _isLoading = false));
   }
+  @override
+  void dispose(){
+    _forgotPasswordViewModel.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -50,18 +48,24 @@ class _LoginViewWebState extends State<LoginViewWeb> {
                 flex: 3,
                 child: Container(
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                        colors: Palette.gradientColor,
-                        // stops: Palette.colorStops,
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight),
-                    image: DecorationImage(
-                      fit: BoxFit.fitWidth,
-                      image: AssetImage("assets/images/background.jpeg")
-                    )
-                  ),
+                      gradient: LinearGradient(
+                          colors: Palette.gradientColor,
+                          // stops: Palette.colorStops,
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight),
+                      image: DecorationImage(
+                          fit: BoxFit.fitWidth,
+                          image: AssetImage("assets/images/background.jpeg"))),
                   child: Stack(
                     children: [
+                      // AnimatedWidgetX(
+                      //     child: Container(
+                      //       width: size.width,
+                      //       alignment: AlignmentDirectional.center,
+                      //       child: Image.asset("assets/images/background.jpeg", fit: BoxFit.cover,),
+                      //     ),
+                      //     delay: 2.5,
+                      //     duration: duration),
                       Padding(
                         padding: const EdgeInsets.all(20.0),
                         child: Column(
@@ -193,7 +197,7 @@ class _LoginViewWebState extends State<LoginViewWeb> {
                                   width: double.infinity,
                                   margin: const EdgeInsets.only(top: 30),
                                   child: Text(
-                                    "Compte de connexion",
+                                    "Mot de passe oublié",
                                     style: TextStyle(
                                         fontSize: Theme.of(context)
                                             .textTheme
@@ -210,10 +214,10 @@ class _LoginViewWebState extends State<LoginViewWeb> {
                               AnimatedWidgetX(
                                 child: Container(
                                   margin: const EdgeInsets.only(
-                                      bottom: 45, top: 10),
+                                      bottom: 50, top: 10),
                                   width: double.infinity,
                                   child: Text(
-                                    "Entrez vos informations d'identification et assurez-vous qu'elles sont valides avant de pouvoir continuer à utiliser notre application",
+                                    "Nous essaierons de récupérer votre compte perdu",
                                     style: TextStyle(
                                         fontSize: Theme.of(context)
                                             .textTheme
@@ -228,84 +232,127 @@ class _LoginViewWebState extends State<LoginViewWeb> {
                                 duration: duration,
                               ),
                               AnimatedWidgetX(
-                                  child: LoginTemplate.emailField(_email),
+                                  child: Form(
+                                    key: _key,
+                                    child: TextFormField(
+                                      controller:
+                                          _forgotPasswordViewModel.email,
+                                      cursorColor: Palette.textFieldColor,
+                                      keyboardType: TextInputType.emailAddress,
+                                      style: TextStyle(
+                                          color: Palette.textFieldColor),
+                                      onFieldSubmitted: (text) async {
+                                        if (_key.currentState!.validate()) {
+                                          await pashPash;
+                                        }
+                                      },
+                                      decoration: InputDecoration(
+                                          border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                          contentPadding:
+                                              const EdgeInsets.only(top: 14),
+                                          prefixIcon: Icon(Icons.email,
+                                              color: Palette.textFieldColor),
+                                          hintText: "Entrer votre Email",
+                                          hintStyle: TextStyle(
+                                              color: Palette.textFieldColor
+                                                  .withOpacity(0.5))),
+                                      validator: (text) {
+                                        if (text!.isEmpty) {
+                                          return "Ce champ est requis";
+                                        } else {
+                                          if (!_forgotPasswordViewModel
+                                              .isValidEmail(email: text)) {
+                                            return "Ce n'est pas un e-mail valide";
+                                          }
+                                        }
+                                      },
+                                    ),
+                                  ),
                                   delay: 1.5,
                                   duration: duration),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              AnimatedWidgetX(child: Align(
+                                alignment: AlignmentDirectional.centerEnd,
+                                child: TextButton(
+                                  onPressed: (){
+                                    Navigator.push(context, PasswordResetRoute.resetPage);
+                                  },
+                                  child: Text("Vous avez déjà le code ?"),
+                                ),
+                              ), delay: 1.8, duration: duration),
                               const SizedBox(
                                 height: 20,
                               ),
                               AnimatedWidgetX(
-                                  child: LoginTemplate.passwordField((value) {
-                                    setState(() {
-                                      _obscure = value;
-                                    });
-                                  }, _obscure, _password),
-                                  delay: 2,
-                                  duration: duration),
-                              SizedBox(
-                                height: size.height * .02,
-                              ),
-                              AnimatedWidgetX(
-                                  child: Container(
-                                    width: double.infinity,
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                            child: LoginTemplate.rememberMeBtn(
-                                                _remember, onChange: (value) {
-                                          setState(() {
-                                            _remember = value;
-                                          });
-                                        })),
-                                        Expanded(
-                                          child:
-                                              LoginTemplate.forgotPasswordBtn(
-                                                  () {
-                                                    Navigator.push(context, PasswordResetRoute.forgotPassword);
-                                                  }),
+                                child: Container(
+                                  width: double.infinity,
+                                  height: 50,
+                                  child: MaterialButton(
+                                    color: Palette.textFieldColor,
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                                    onPressed: () async {
+                                      if (_key.currentState!.validate()) {
+                                        await pashPash;
+                                      }
+                                    },
+                                    splashColor: Colors.grey.shade300,
+                                    minWidth: double.infinity,
+                                    height: 60,
+                                    child: Center(
+                                      child: Text(
+                                        "SOUMETTRE",
+                                        style: TextStyle(
+                                          color: Palette.loginTextColor,
+                                          letterSpacing: 2.0,
+                                          fontSize: 16.5,
+                                          fontWeight: FontWeight.bold,
                                         ),
-                                      ],
+                                      ),
                                     ),
-                                  ),
-                                  delay: 2.5,
-                                  duration: duration),
-                              SizedBox(
-                                height: size.height * .1,
+                                  )
+                                ),
+                                delay: 2,
+                                duration: duration,
+                              ),
+                              const SizedBox(
+                                height: 20,
                               ),
                               AnimatedWidgetX(
-                                  child: LoginTemplate.loginBtn(context,
-                                      email: _email.text,
-                                      password: _password.text,
-                                      remember: _remember, onPress: () {
-                                    if (_email.text.isNotEmpty &&
-                                        _password.text.isNotEmpty) {
-                                      setState(() {
-                                        _isLoading = true;
-                                      });
-                                      _loginService
-                                          .login(context,
-                                              email: _email.text,
-                                              password: _password.text,
-                                              isRemembered: _remember)
-                                          .then((value) => setState(
-                                              () => _toRegister = !value))
-                                          .whenComplete(() => setState(
-                                              () => _isLoading = false));
-                                    } else {
-                                      _loginService.notifier!
-                                          .showContextedBottomToast(context,msg:
-                                                  "Merci de compléter tous les champs");
-                                    }
-                                  }),
-                                  delay: 2.5,
-                                  duration: duration),
-                              // const SizedBox(
-                              //   height: 20,
-                              // ),
-                              // AnimatedWidgetX(
-                              //     child: LoginTemplate.noAccntBtn(context),
-                              //     delay: 3,
-                              //     duration: duration),
+                                child: Container(
+                                    width: double.infinity,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(25),
+                                      border: Border.all(color: Palette.textFieldColor,width: 3)
+                                    ),
+                                    child: MaterialButton(
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                                      onPressed: () async {
+                                        Navigator.of(context).pop();
+                                      },
+                                      splashColor: Colors.grey.shade300,
+                                      minWidth: double.infinity,
+                                      height: 60,
+                                      child: Center(
+                                        child: Text(
+                                          "RETOUR",
+                                          style: TextStyle(
+                                            color: Palette.textFieldColor,
+                                            letterSpacing: 2.0,
+                                            fontSize: 16.5,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                ),
+                                delay: 2.5,
+                                duration: duration,
+                              ),
                               SizedBox(
                                 height: size.height * .2,
                               )
