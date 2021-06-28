@@ -517,14 +517,14 @@ class _CenterDetailsState extends State<CenterDetails> {
                                   fontSize: 13.5,
                                   color: Colors.grey.shade600),
                             ),
-                            trailing: IconButton(
+                            trailing: _helper.auth.loggedUser!.roleId == 1 || (_helper.auth.loggedUser!.roleId == 2 && widget.model.accountant?.id == _helper.auth.loggedUser!.id) ? IconButton(
                               icon: Icon(
                                 Icons.edit,
                                 color: Colors.blue,
                               ),
                               onPressed: () =>
                                   setState(() => _editRegion = true),
-                            ),
+                            ) : null,
                           )
                         },
                         if (_editRegion) ...{
