@@ -342,7 +342,7 @@ class _VerificationCodePageState extends State<VerificationCodePage> {
                                                       color: Palette
                                                           .textFieldColor),
                                                   hintText:
-                                                      "Entrer le code de validation",
+                                                      "Entrez votre nouveau mot de passe",
                                                   hintStyle: TextStyle(
                                                       color: Palette
                                                           .textFieldColor
@@ -393,7 +393,7 @@ class _VerificationCodePageState extends State<VerificationCodePage> {
                                                       color: Palette
                                                           .textFieldColor),
                                                   hintText:
-                                                      "Entrer le code de validation",
+                                                      "Confirmer votre mot de passe",
                                                   hintStyle: TextStyle(
                                                       color: Palette
                                                           .textFieldColor
