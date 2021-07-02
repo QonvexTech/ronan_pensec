@@ -155,7 +155,10 @@ class PendingRTTRequests extends StatelessWidget {
                               _reason.clear();
                             },child: Column(
                               children: [
-                                Text("Pour rejeter complètement la demande, vous devez fournir une raison valable"),
+                                Container(
+                                  width: double.infinity,
+                                  child: Text("Pour rejeter complètement la demande, vous devez fournir une raison valable",textAlign: TextAlign.left,),
+                                ),
                                 const SizedBox(
                                   height: 10,
                                 ),
@@ -224,7 +227,7 @@ class PendingRTTRequests extends StatelessWidget {
                                   ),
                                 )
                               ],
-                            ), width: _size.width, height: 200, title: Text("Rejeter la demande de congé?"));
+                            ), width: _size.width, height: 200, title: Text("Rejeter la demande de RTT?"));
                           },
                           caption: "Rejeter",
                           icon: Icons.close,

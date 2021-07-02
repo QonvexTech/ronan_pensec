@@ -76,173 +76,200 @@ class _LandingPageScreenWebState extends State<LandingPageView>
       child: Stack(
         children: [
           Scaffold(
-            body: Container(
-              child: Column(
-                children: [
-                  ///Header
-                  Container(
-                    width: double.infinity,
-                    height: 60,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          colors: Palette.gradientColor,
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter),
-                    ),
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        ///Logo
-                        Container(
-                          width: 60,
-                          height: double.infinity,
-                          padding: const EdgeInsets.all(5),
-                          child: Center(
-                            child: Hero(
-                              tag: "logo",
-                              child: Image.asset("assets/images/logo.png"),
+            body: Stack(
+              children: [
+                Container(
+                  child: Column(
+                    children: [
+                      ///Header
+                      Container(
+                        width: double.infinity,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                              colors: Palette.gradientColor,
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter),
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            ///Logo
+                            Container(
+                              width: 60,
+                              height: double.infinity,
+                              padding: const EdgeInsets.all(5),
+                              child: Center(
+                                child: Hero(
+                                  tag: "logo",
+                                  child: Image.asset("assets/images/logo.png"),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        if (!_isMobile) ...{
-                          Container(
-                              width: size.width * .45,
-                              alignment: AlignmentDirectional.bottomCenter,
-                              child: TabBar(
-                                onTap: (index) {
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            if (!_isMobile) ...{
+                              Container(
+                                  width: size.width * .45,
+                                  alignment: AlignmentDirectional.bottomCenter,
+                                  child: TabBar(
+                                    onTap: (index) {
+                                      setState(() {
+                                        currentTabIndex = index;
+                                      });
+                                    },
+                                    indicatorColor: Colors.white,
+                                    controller: _tabController,
+                                    labelColor: Colors.white,
+                                    unselectedLabelColor: Colors.grey,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    tabs: [
+                                      for (TabbarItem item in tabItems) ...{
+                                        Tab(
+                                          child: Column(
+                                            children: [
+                                              const SizedBox(
+                                                height: 7,
+                                              ),
+                                              Container(
+                                                width: double.infinity,
+                                                height: 20,
+                                                child: FittedBox(
+                                                  child: Text("${item.label}",
+                                                      style: TextStyle(
+                                                          letterSpacing: 1.5)),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      }
+                                    ],
+                                  ))
+                            } else ...{
+                              Text(
+                                "Ronan Pensec",
+                                style: TextStyle(
+                                    letterSpacing: 2,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: Theme.of(context)
+                                        .textTheme
+                                        .headline6!
+                                        .fontSize),
+                              )
+                            },
+                            const SizedBox(
+                              width: 10,
+                            ),
+
+                            Spacer(),
+                            StreamBuilder<bool>(
+                              stream: _activeBadgeControl.stream$,
+                              builder: (_, snapshot) => GeneralTemplate.badgedIcon(
+                                key: _notificationIconKey,
+                                isEnabled: snapshot.hasData && snapshot.data!,
+                                tooltip: "Notifications",
+                                onPress: () {
                                   setState(() {
-                                    currentTabIndex = index;
+                                    if (notificationViewerOffset == null) {
+                                      final RenderBox _renderBox =
+                                          _notificationIconKey.currentContext!
+                                              .findRenderObject()! as RenderBox;
+                                      final offset =
+                                          _renderBox.localToGlobal(Offset.zero);
+                                      notificationViewerOffset = offset;
+                                    } else {
+                                      notificationViewerOffset = null;
+                                    }
                                   });
                                 },
-                                indicatorColor: Colors.white,
-                                controller: _tabController,
-                                labelColor: Colors.white,
-                                unselectedLabelColor: Colors.grey,
-                                physics: NeverScrollableScrollPhysics(),
-                                tabs: [
-                                  for (TabbarItem item in tabItems) ...{
-                                    Tab(
-                                      child: Column(
-                                        children: [
-                                          const SizedBox(
-                                            height: 7,
-                                          ),
-                                          Container(
-                                            width: double.infinity,
-                                            height: 20,
-                                            child: FittedBox(
-                                              child: Text("${item.label}",
-                                                  style: TextStyle(
-                                                      letterSpacing: 1.5)),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  }
-                                ],
-                              ))
-                        } else ...{
-                          Text(
-                            "Ronan Pensec",
-                            style: TextStyle(
-                                letterSpacing: 2,
-                                color: Colors.white,
-                                fontWeight: FontWeight.w700,
-                                fontSize: Theme.of(context)
-                                    .textTheme
-                                    .headline6!
-                                    .fontSize),
-                          )
-                        },
-                        const SizedBox(
-                          width: 10,
-                        ),
-
-                        Spacer(),
-                        StreamBuilder<bool>(
-                          stream: _activeBadgeControl.stream$,
-                          builder: (_, snapshot) => GeneralTemplate.badgedIcon(
-                            key: _notificationIconKey,
-                            isEnabled: snapshot.hasData && snapshot.data!,
-                            tooltip: "Notifications",
-                            onPress: () {
-                              setState(() {
-                                if (notificationViewerOffset == null) {
-                                  final RenderBox _renderBox =
-                                      _notificationIconKey.currentContext!
-                                          .findRenderObject()! as RenderBox;
-                                  final offset =
-                                      _renderBox.localToGlobal(Offset.zero);
-                                  notificationViewerOffset = offset;
-                                } else {
-                                  notificationViewerOffset = null;
-                                }
-                              });
-                            },
-                            icon: Icons.notifications_rounded,
-                            backgroundColor: Palette.gradientColor[3],
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Hero(
-                          tag: "my-profile",
-                          child: GeneralTemplate.profileIcon(
-                            callback: (value) async {
-                              await _service.profileIconOnChoose(
-                                  context, value);
-                            },
-                            imageProvider: userDataControl.imageProvider,
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  if (_isMobile) ...{
-                    PreferredSize(
-                      preferredSize: Size.fromHeight(70.0),
-                      child: TabBar(
-                        onTap: (index) {
-                          setState(() {
-                            currentTabIndex = index;
-                          });
-                        },
-                        indicatorColor: Palette.textFieldColor,
-                        controller: _tabController,
-                        unselectedLabelColor: Colors.grey.shade400,
-                        physics: NeverScrollableScrollPhysics(),
-                        tabs: [
-                          for (TabbarItem item in tabItems) ...{
-                            Tab(
-                              icon: Icon(
-                                item.icon,
-                                color: tabItems.indexOf(item) == currentTabIndex
-                                    ? Palette.textFieldColor
-                                    : Colors.grey.shade400,
+                                icon: Icons.notifications_rounded,
+                                backgroundColor: Palette.gradientColor[3],
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Hero(
+                              tag: "my-profile",
+                              child: GeneralTemplate.profileIcon(
+                                callback: (value) async {
+                                  await _service.profileIconOnChoose(
+                                      context, value);
+                                },
+                                imageProvider: userDataControl.imageProvider,
                               ),
                             )
-                          }
-                        ],
+                          ],
+                        ),
                       ),
-                    )
-                  },
-                  Expanded(
-                      child: TabBarView(
-                    controller: _tabController,
-                    physics: NeverScrollableScrollPhysics(),
-                    children: _contents,
-                  ))
-                ],
-              ),
+                      if (_isMobile) ...{
+                        PreferredSize(
+                          preferredSize: Size.fromHeight(70.0),
+                          child: TabBar(
+                            onTap: (index) {
+                              setState(() {
+                                currentTabIndex = index;
+                              });
+                            },
+                            indicatorColor: Palette.textFieldColor,
+                            controller: _tabController,
+                            unselectedLabelColor: Colors.grey.shade400,
+                            physics: NeverScrollableScrollPhysics(),
+                            tabs: [
+                              for (TabbarItem item in tabItems) ...{
+                                Tab(
+                                  icon: Icon(
+                                    item.icon,
+                                    color: tabItems.indexOf(item) == currentTabIndex
+                                        ? Palette.textFieldColor
+                                        : Colors.grey.shade400,
+                                  ),
+                                )
+                              }
+                            ],
+                          ),
+                        )
+                      },
+                      Expanded(
+                          child: TabBarView(
+                        controller: _tabController,
+                        physics: NeverScrollableScrollPhysics(),
+                        children: _contents,
+                      ))
+                    ],
+                  ),
+                ),
+                if(notificationViewerOffset != null && _isMobile)...{
+                  Container(
+                    width: double.infinity,
+                    child: NotificationsView(
+                      showBack: true,
+                      onBack: (bool val){
+                        if(val){
+                          setState(() {
+                            notificationViewerOffset = null;
+                          });
+                        }
+                      },
+                      onSelect: (bool val){
+                        print(val);
+                        if(val){
+                          setState(() {
+                            notificationViewerOffset = null;
+                          });
+                        }
+                      },
+                    ),
+                  )
+                }
+              ],
             ),
           ),
-          if (notificationViewerOffset != null) ...{
+          if (notificationViewerOffset != null && !_isMobile) ...{
             Positioned(
               top: notificationViewerOffset!.dy + 45,
               left: notificationViewerOffset!.dx - 360,

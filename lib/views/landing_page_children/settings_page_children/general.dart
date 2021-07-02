@@ -50,6 +50,8 @@ class _GeneralState extends State<General> {
               child: Text(
                 "$label",
                 style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
             Expanded(flex: 4, child: triggered ? secondChild : initChild),
@@ -320,6 +322,8 @@ class _GeneralState extends State<General> {
                             color: Colors.black54,
                             letterSpacing: -0.24,
                           ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       triggered: _editName,
@@ -460,6 +464,8 @@ class _GeneralState extends State<General> {
                             color: Colors.black54,
                             fontSize: 15,
                             fontWeight: FontWeight.w600),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     triggered: _editContact,
@@ -637,6 +643,8 @@ class _GeneralState extends State<General> {
                               color: Colors.black54,
                               fontSize: 15,
                               fontWeight: FontWeight.w600),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       triggered: _editAddress,
@@ -810,6 +818,8 @@ class _GeneralState extends State<General> {
                             color: Colors.black54,
                             fontSize: 15,
                             fontWeight: FontWeight.w600),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     triggered: _editBirthday,
@@ -838,6 +848,8 @@ class _GeneralState extends State<General> {
                     ),
                     Expanded(
                       child: RichText(
+                        maxLines: size.width < 500 ? 1 : null,
+                        overflow: TextOverflow.ellipsis,
                         text: TextSpan(
                             text: "Paramètres de notification push",
                             style: TextStyle(

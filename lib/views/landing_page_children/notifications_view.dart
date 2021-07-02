@@ -9,7 +9,9 @@ import 'package:ronan_pensec/view_model/announcement_view_model.dart';
 
 class NotificationsView extends StatefulWidget {
   final ValueChanged<bool> onSelect;
-  NotificationsView({Key? key, required this.onSelect}) : super(key: key);
+  final bool showBack;
+  final ValueChanged<bool>? onBack;
+  NotificationsView({Key? key, required this.onSelect, this.showBack = false, this.onBack}) : super(key: key);
   @override
   _NotificationsViewState createState() => _NotificationsViewState();
 }
@@ -68,6 +70,14 @@ class _NotificationsViewState extends State<NotificationsView> {
               padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
               child: Row(
                 children: [
+                  if(widget.showBack)...{
+                    IconButton(
+                      icon: Icon(Icons.arrow_back_ios),
+                      onPressed: (){
+                        widget.onBack!(true);
+                      },
+                    )
+                  },
                   Expanded(
                     child: Container(
                       margin: const EdgeInsets.only(left: 10),
@@ -236,7 +246,7 @@ class _NotificationsViewState extends State<NotificationsView> {
                                             width: double.infinity,
                                             child: Text(
                                               "${notification.message}",
-                                              maxLines: 1,
+                                              maxLines: 2,
                                               overflow: TextOverflow.ellipsis,
                                             ),
                                           ),

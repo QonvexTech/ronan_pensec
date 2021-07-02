@@ -385,7 +385,9 @@ class _VerificationCodePageState extends State<VerificationCodePage> {
                                                   border: OutlineInputBorder(
                                                       borderRadius:
                                                           BorderRadius.circular(
-                                                              10)),
+                                                              10),
+
+                                                  ),
                                                   contentPadding:
                                                       const EdgeInsets.only(
                                                           top: 14),

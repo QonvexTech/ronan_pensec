@@ -77,6 +77,7 @@ class FirebaseMessagingService {
           else if(data['type'] == "holiday_request"){
             try{
               var holidayData = data['data'];
+              print("HOLIDAY DATA : $holidayData");
               _pendingHolidayRequestsDataControl.append(holidayData);
             }catch(e){
               print("ERROR PENDING HOLIDAY APPPEND : $e");

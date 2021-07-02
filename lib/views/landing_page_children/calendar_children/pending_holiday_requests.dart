@@ -151,8 +151,11 @@ class PendingHolidayRequests extends StatelessWidget {
                                   },
                                   child: Column(
                                     children: [
-                                      Text(
-                                          "Pour rejeter complètement la demande, vous devez fournir une raison valable"),
+                                      Container(
+                                        width: double.infinity,
+                                        child: Text(
+                                            "Pour rejeter complètement la demande, vous devez fournir une raison valable"),
+                                      ),
                                       const SizedBox(
                                         height: 10,
                                       ),

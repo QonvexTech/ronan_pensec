@@ -857,118 +857,124 @@ class _CenterDetailsState extends State<CenterDetails> {
                                         child: Text("${user.mobile}",
                                             textAlign: TextAlign.center),
                                       ),
-                                      Expanded(
-                                        flex: 1,
-                                        child: IconButton(
+                                      if(_helper.auth.loggedUser!
+                                          .roleId == 1 || (_helper.auth.loggedUser!
+                                          .roleId == 2 && _helper.auth.loggedUser!
+                                          .id == widget.model.accountant?.id))...{
+                                        Expanded(
+                                          flex: 1,
+                                          child: IconButton(
 
-                                          onPressed: _helper.auth.loggedUser!
-                                                      .roleId == 1 || (_helper.auth.loggedUser!
-                                              .roleId == 2 && _helper.auth.loggedUser!
-                                              .id == widget.model.accountant?.id)
-                                              ? () {
-                                                  GeneralTemplate.showDialog(context, child: Container(
-                                                    width: double.infinity,
-                                                    height: 50,
-                                                    child: Row(
-                                                      children: [
-                                                        Expanded(
-                                                          child: MaterialButton(
-                                                            onPressed: (){
-                                                              Navigator.of(context).pop(null);
-                                                            },
-                                                            color: Colors.grey.shade200,
-                                                            child: Center(
-                                                              child: Text("ANNULER",style: TextStyle(
-                                                                fontWeight: FontWeight.w600,
-                                                                letterSpacing: 1.5
-                                                              ),),
-                                                            ),
-                                                          ),
+                                            onPressed: _helper.auth.loggedUser!
+                                                .roleId == 1 || (_helper.auth.loggedUser!
+                                                .roleId == 2 && _helper.auth.loggedUser!
+                                                .id == widget.model.accountant?.id)
+                                                ? () {
+                                              GeneralTemplate.showDialog(context, child: Container(
+                                                width: double.infinity,
+                                                height: 50,
+                                                child: Row(
+                                                  children: [
+                                                    Expanded(
+                                                      child: MaterialButton(
+                                                        onPressed: (){
+                                                          Navigator.of(context).pop(null);
+                                                        },
+                                                        color: Colors.grey.shade200,
+                                                        child: Center(
+                                                          child: Text("ANNULER",style: TextStyle(
+                                                              fontWeight: FontWeight.w600,
+                                                              letterSpacing: 1.5
+                                                          ),),
                                                         ),
-                                                        const SizedBox(
-                                                          width: 20,
-                                                        ),
-                                                        Expanded(
-                                                          child: MaterialButton(
-                                                            onPressed: () async {
-                                                              Navigator.of(context).pop(null);
-                                                              await _helper.service
-                                                                  .removeAssignment(context,
-                                                                  userId: user.id,
-                                                                  centerId:
-                                                                  widget.model.id)
-                                                                  .then((value) {
-                                                                if (value) {
-                                                                  setState(() {
-                                                                    widget.model.users
-                                                                        .removeWhere(
-                                                                            (element) =>
-                                                                        element
-                                                                            .id ==
-                                                                            user.id);
-                                                                    widget.regionDataControl
-                                                                        .removeUserFromCenter(
-                                                                        user.id,
-                                                                        widget
-                                                                            .model.id);
-                                                                  });
-                                                                } else {
-                                                                  setState(() {
-                                                                    widget.regionDataControl
-                                                                        .removeUserFromCenter(
-                                                                        user.id,
-                                                                        widget
-                                                                            .model.id);
-                                                                  });
-                                                                }
-                                                              });
-                                                            },
-                                                            color: Palette.gradientColor[0],
-                                                            child: Center(
-                                                              child: Text("OUI",style: TextStyle(
-                                                                  fontWeight: FontWeight.w600,
-                                                                  color: Colors.white,
-                                                                  letterSpacing: 1.5
-                                                              ),),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
+                                                      ),
                                                     ),
-                                                  ), width: size.width, height: 50,title: ListTile(
-                                                    leading: Container(
-                                                      width: 40,
-                                                      height: 40,
-                                                      decoration: BoxDecoration(
-                                                        shape: BoxShape.circle,
-                                                        color: Colors.grey.shade100,
-                                                        boxShadow: [
-                                                          BoxShadow(
+                                                    const SizedBox(
+                                                      width: 20,
+                                                    ),
+                                                    Expanded(
+                                                      child: MaterialButton(
+                                                        onPressed: () async {
+                                                          Navigator.of(context).pop(null);
+                                                          await _helper.service
+                                                              .removeAssignment(context,
+                                                              userId: user.id,
+                                                              centerId:
+                                                              widget.model.id)
+                                                              .then((value) {
+                                                            if (value) {
+                                                              setState(() {
+                                                                widget.model.users
+                                                                    .removeWhere(
+                                                                        (element) =>
+                                                                    element
+                                                                        .id ==
+                                                                        user.id);
+                                                                widget.regionDataControl
+                                                                    .removeUserFromCenter(
+                                                                    user.id,
+                                                                    widget
+                                                                        .model.id);
+                                                              });
+                                                            } else {
+                                                              setState(() {
+                                                                widget.regionDataControl
+                                                                    .removeUserFromCenter(
+                                                                    user.id,
+                                                                    widget
+                                                                        .model.id);
+                                                              });
+                                                            }
+                                                          });
+                                                        },
+                                                        color: Palette.gradientColor[0],
+                                                        child: Center(
+                                                          child: Text("OUI",style: TextStyle(
+                                                              fontWeight: FontWeight.w600,
+                                                              color: Colors.white,
+                                                              letterSpacing: 1.5
+                                                          ),),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ), width: size.width, height: 50,title: ListTile(
+                                                leading: Container(
+                                                  width: 40,
+                                                  height: 40,
+                                                  decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      color: Colors.grey.shade100,
+                                                      boxShadow: [
+                                                        BoxShadow(
                                                             color: Colors.black45,
                                                             blurRadius: 2,
                                                             offset: Offset(2,2)
-                                                          )
-                                                        ],
-                                                        image: DecorationImage(
-                                                          image: NetworkImage("${user.image}")
                                                         )
-                                                      ),
-                                                    ),
-                                                    title: Text("Voulez-vous vraiment supprimer ${user.full_name} de ce centre ?"),
-                                                    subtitle: Text("Les actions ne peuvent pas être annulées."),
-                                                  ));
-                                                }
-                                              : null,
-                                          icon: Icon(
-                                            Icons.clear,
-                                            color: _helper.auth.loggedUser!
-                                                        .roleId !=
-                                                    3
-                                                ? Colors.red
-                                                : Colors.grey,
+                                                      ],
+                                                      image: DecorationImage(
+                                                          image: NetworkImage("${user.image}")
+                                                      )
+                                                  ),
+                                                ),
+                                                title: Text("Voulez-vous vraiment supprimer ${user.full_name} de ce centre ?"),
+                                                subtitle: Text("Les actions ne peuvent pas être annulées."),
+                                              ));
+                                            }
+                                                : null,
+                                            icon: Icon(
+                                              Icons.clear,
+                                              color: _helper.auth.loggedUser!
+                                                  .roleId !=
+                                                  3
+                                                  ? Colors.red
+                                                  : Colors.grey,
+                                            ),
                                           ),
-                                        ),
-                                      )
+                                        )
+                                      }
+
                                     ],
                                   ),
                                 )
