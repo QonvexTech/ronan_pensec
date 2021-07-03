@@ -253,7 +253,7 @@ class CenterCreateWidget {
                       child: MaterialButton(
                         onPressed: () async {
                           _instance.appendToBody = {
-                            "address": _address.join(',')
+                            "address": _address.join(', ')
                           };
                           if(checkBody){
                             Navigator.of(context).pop(null);

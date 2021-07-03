@@ -101,7 +101,6 @@ class CenterService {
         "Accept": "application/json",
         HttpHeaders.authorizationHeader: "Bearer ${_auth.token}"
       }).then((response) {
-        print("DELETE CODE : ${response.statusCode}");
         if(response.statusCode == 200){
           _centerDataControl.remove(centerId);
         }
@@ -112,7 +111,6 @@ class CenterService {
   }
   Future<bool> create(context, Map body) async {
     try{
-      print("BODY TO ADD : $body");
       return await http.post(Uri.parse("${BaseEnpoint.URL}${CenterEndpoint.create}"),headers: {
         "Accept": "application/json",
         HttpHeaders.authorizationHeader: "Bearer ${_auth.token}"

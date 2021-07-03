@@ -60,6 +60,14 @@ class RegionDataControl {
     }
     _list.add(this.current);
   }
+  removeUserFromAllCenters({required int userId}){
+    for(RegionModel region in this.current){
+      for(CenterModel center in region.centers!){
+        center.users.removeWhere((element) => element.id == userId);
+      }
+    }
+    _list.add(this.current);
+  }
   append(Map<String, dynamic> data){
     this.current.add(RegionModel.fromJson(data));
     _list.add(this.current);

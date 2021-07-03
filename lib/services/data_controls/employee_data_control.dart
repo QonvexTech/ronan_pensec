@@ -1,5 +1,7 @@
 import 'dart:core';
 import 'package:ronan_pensec/models/user_model.dart';
+import 'package:ronan_pensec/services/data_controls/center_data_control.dart';
+import 'package:ronan_pensec/services/data_controls/region_data_control.dart';
 import 'package:rxdart/rxdart.dart';
 
 class EmployeeDataControl {
@@ -17,6 +19,8 @@ class EmployeeDataControl {
   List<UserModel> get current => _list.value!;
 
   bool hasFetched = false;
+  static RegionDataControl _regionDataControl = RegionDataControl.rawInstance;
+  static CenterDataControl _centerDataControl = CenterDataControl.instance;
 
   void clear(){
     _list = BehaviorSubject();
@@ -36,5 +40,7 @@ class EmployeeDataControl {
   void remove({required int id}){
     this.current.removeWhere((element) => element.id == id);
     _list.add(this.current);
+    _regionDataControl.removeUserFromAllCenters(userId: id);
+    _centerDataControl.removeUser(id: id);
   }
 }

@@ -37,8 +37,15 @@ class CenterDataControl {
     print(id);
     this.current.removeWhere((element) => element.id == id);
     _list.add(this.current);
+
   }
   List<UserModel> removeLocal(List<UserModel> sauce, int idToRemove){
     return sauce.where((element) => element.id != idToRemove).toList();
+  }
+  void removeUser({required int id}) {
+    for(CenterModel center in this.current){
+      center.users.removeWhere((element) => element.id == id);
+    }
+    _list.add(this.current);
   }
 }

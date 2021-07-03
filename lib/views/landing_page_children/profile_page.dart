@@ -514,10 +514,10 @@ class _ProfilePageState extends State<ProfilePage>
                                           text: "À propos de",
                                         ),
                                         Tab(
-                                          text: _profileViewModel.auth.loggedUser!.roleId == 1 ? "Tous les RTT" : "RTT",
+                                          text: _profileViewModel.auth.loggedUser!.roleId != 3 ? "Tous les RTT" : "RTT",
                                         ),
                                         Tab(
-                                          text: _profileViewModel.auth.loggedUser!.roleId == 1 ? "Tous les congés" : "Congés",
+                                          text: _profileViewModel.auth.loggedUser!.roleId != 3 ? "Tous les congés" : "Congés",
                                         ),
                                       ],
                                     ),

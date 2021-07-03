@@ -79,7 +79,6 @@ class EmployeeService {
       }).then((value) {
 
         var data = json.decode(value.body);
-        print(data);
         if(value.statusCode == 200){
           _notifier.showContextedBottomToast(context, msg: "Mise à jour réussie");
           return true;
