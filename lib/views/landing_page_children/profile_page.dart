@@ -575,12 +575,12 @@ class _ProfilePageState extends State<ProfilePage>
                                           ),
                                       itemCount: _profileViewModel
                                           .userDetails.length)),
-                              if(_profileViewModel.auth.loggedUser!.roleId == 1)...{
+                              if(_profileViewModel.auth.loggedUser!.roleId != 3)...{
                                 _adminRttView
                               }else...{
                                 _rtt
                               },
-                              if(_profileViewModel.auth.loggedUser!.roleId == 1)...{
+                              if(_profileViewModel.auth.loggedUser!.roleId != 3)...{
                                 _adminHolidayView
                               }else...{
                                 _holidays

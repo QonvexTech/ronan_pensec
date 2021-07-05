@@ -336,23 +336,6 @@ class CenterCreateWidget {
       checker = _requiredFields.contains(key) && counter == 5;
       return MapEntry(key, value);
     });
-    // for(var x = 0;x<_instance.body.length;x++){
-    //   MapEntry entry = _instance.body.map((key, value) => MapEntry(key, value));
-    //   if(_requiredFields.contains(entry.key)){
-    //     checker = true;
-    //   }else{
-    //     checker = false;
-    //   }
-    // }
-    // _instance.body.map((key, value) {
-    //   if(_requiredFields.contains(key)){
-    //     checker = true;
-    //     return MapEntry(key, value);
-    //   }else{
-    //     checker = false;
-    //     return MapEntry(key, value);
-    //   }
-    // });
     return checker;
   }
 }
