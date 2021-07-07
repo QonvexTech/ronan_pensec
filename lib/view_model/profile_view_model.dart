@@ -21,7 +21,7 @@ class ProfileViewModel {
     _instance.zipCode.text = _instance.auth.loggedUser!.zip_code;
     _instance.city.text = _instance.auth.loggedUser!.city;
     _instance.mobile.text = _instance.auth.loggedUser!.mobile;
-    _instance.street.text = _instance.auth.loggedUser!.address.split(',')[0];
+    _instance.street.text = _instance.auth.loggedUser!.address.split(',')[0].replaceAll('\n', '');
     _instance.appendToBody = {"role_id" : _instance.auth.loggedUser!.roleId.toString()};
     _instance.appendToBody = {"birth_date" : _instance.auth.loggedUser!.birthdate.toString()};
     _instance.firstName.addListener(() {
