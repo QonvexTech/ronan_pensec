@@ -32,7 +32,7 @@ class HolidayService {
       },body: body).then((response) {
         var data = json.decode(response.body);
         if(response.statusCode == 200){
-          _notifier.showUnContextedBottomToast(msg: "Demande approuvée!");
+          _notifier.showUnContextedBottomToast(msg: "Demande envoyer!");
           // notifier.showContextedBottomToast(context, msg: "Demande approuvée!");
           if(_loggedUserHolidayRequests.hasFetched && isMe){
             _loggedUserHolidayRequests.append(data['data']);
