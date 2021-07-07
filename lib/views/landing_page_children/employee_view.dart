@@ -314,7 +314,6 @@ class _EmployeeViewState extends State<EmployeeView> {
                                 /// Do THE SEARCH+
                                 await _viewModel.service.search(text).then((List<UserModel>? userList) {
                                   if(userList != null){
-                                    print(userList);
                                     setState(() {
                                       _displayData = userList;
                                     });

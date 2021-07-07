@@ -176,7 +176,17 @@ class _SecurityAndLoginState extends State<SecurityAndLogin> {
                           const SizedBox(
                             height: 10,
                           ),
-                          _securityAndLoginViewModel.passwordFields(size, _passwordFormKey),
+                          _securityAndLoginViewModel.passwordFields(size, _passwordFormKey, showPasswordCallback: (Map data){
+                            if(data['controller'] == _securityAndLoginViewModel.newPasswordField){
+                              setState(() {
+                                _securityAndLoginViewModel.showNewPassword = data['show'];
+                              });
+                            }else{
+                              setState(() {
+                                _securityAndLoginViewModel.showOldPassword = data['show'];
+                              });
+                            }
+                          }),
                           const SizedBox(
                             height: 20,
                           ),

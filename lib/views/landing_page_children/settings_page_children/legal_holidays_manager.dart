@@ -117,7 +117,6 @@ class _LegalHolidaysViewState extends State<LegalHolidaysManager> {
                                                       _body.remove("date");
                                                     });
                                                   }
-                                                  print(_body);
                                                 },
                                               )
                                             ],

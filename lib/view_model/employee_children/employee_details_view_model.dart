@@ -90,7 +90,6 @@ class EmployeeDetailsViewModel {
 
 
   Future<bool> userUpdate(context, userId) async {
-    print(body);
     return await _instance.service.update(context, body: body, userId: userId);
   }
 }

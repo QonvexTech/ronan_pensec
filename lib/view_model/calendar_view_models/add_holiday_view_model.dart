@@ -7,6 +7,7 @@ import 'package:ronan_pensec/global/user_raw_data.dart';
 import 'package:ronan_pensec/models/raw_user_model.dart';
 import 'package:ronan_pensec/services/dashboard_services/calendar_service.dart';
 import 'package:ronan_pensec/services/dashboard_services/holiday_service.dart';
+import 'package:ronan_pensec/views/landing_page_children/calendar_children/add_holiday_view.dart';
 
 
 class AddHolidayViewModel {
@@ -19,15 +20,12 @@ class AddHolidayViewModel {
   HolidayService get service => _service;
   Auth get auth => _auth;
   static final UserRawData _userRawData = UserRawData.instance;
-
+  UserRawData get userRawData => _userRawData;
   late RawUserModel initDrpValue = _userRawData.rawUserList[0];
   bool isForOthers = false;
 
   bool showMessage = false;
   static AddHolidayViewModel get instance {
-    if(_auth.loggedUser!.roleId != 1){
-      _instance.appendBody = {"user_id" : _instance.auth.loggedUser!.id.toString()};
-    }
     _instance._reason.addListener(() {
       if(_instance.reason.text.isNotEmpty){
         _instance.appendBody = {"reason": _instance._reason.text};
@@ -42,23 +40,26 @@ class AddHolidayViewModel {
         _instance.body.remove("request_name");
       }
     });
-    _instance.appendBody = {"startDate_isHalf_day": "0", "endDate_isHalf_day" : "0"};
     return _instance;
+  }
+  void dispose() {
+    _instance._reason.removeListener(() {
+      _instance.body.remove("reason");
+    });
+    _instance._requestName.removeListener(() {
+      _instance.body.remove("request_name");
+    });
+    _instance.defaultData();
   }
 
   String _chosenHalfDayAnswer = "Non";
 
   String get chosenHalfDayAnswer => _chosenHalfDayAnswer;
 
-  // set setChoice(String choice) {
-  //   _chosenHalfDayAnswer = choice;
-  //   if (choice == "Oui") {
-  //     _instance.setIsHalf = 1;
-  //   } else {
-  //     _instance.setIsHalf = 0;
-  //   }
-  // }
-
+  defaultData() async {
+    _instance.appendBody = {"startDate_isHalf_day": "0", "endDate_isHalf_day" : "0"};
+    initDrpValue = _userRawData.rawUserList[0];
+  }
   List isHalfDay = ["Oui", "Non"];
   List _dayDropDownVal = [
     {
@@ -76,6 +77,10 @@ class AddHolidayViewModel {
   ];
   late Map _chosenDayValue = _dayDropDownVal[0];
   late Map _chosenEndDayValue = _dayDropDownVal[0];
+  Map get chosenDayValue => _chosenDayValue;
+  Map get chosenEndDayValue => _chosenEndDayValue;
+  set chooseDay(Map day) => _chosenDayValue = day;
+  set chooseEndDay(Map day) => _chosenEndDayValue = day;
 
 
   DropdownButton  dayDropdown({required ValueChanged<Map> callback, required Map value})  => DropdownButton(
@@ -237,342 +242,9 @@ class AddHolidayViewModel {
                           subtitle: Text(
                               "Veuillez remplir tous les champs ci-dessous et cliquez sur soumettre. Merci!"),
                         ),
-                        content: Container(
-                            width: size.width < 900
-                                ? size.width * .65
-                                : size.width * .45,
-                            height: 500,
-                            child: Column(
-                              children: [
-                                Expanded(
-                                  child: Scrollbar(
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 20),
-                                      width: double.infinity,
-                                      height: size.height,
-                                      child: ListView(
-                                        physics: ClampingScrollPhysics(),
-                                        children: [
-                                          const SizedBox(
-                                            height: 20,
-                                          ),
-                                          themedTextField(
-                                              controller: this.requestName,
-                                              icon: Icons
-                                                  .drive_file_rename_outline,
-                                              label: "Nom de la demande"),
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                          themedTextField(
-                                            controller: this.reason,
-                                            icon:
-                                                Icons.drive_file_rename_outline,
-                                            minLine: 3,
-                                            maxLine: 6,
-                                            keyboardType:
-                                                TextInputType.multiline,
-                                            label: "Raison",
-                                          ),
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                          Container(
-                                            width: double.infinity,
-                                            child: Row(
-                                              children: [
-                                                Expanded(
-                                                  flex: 2,
-                                                  child: MaterialButton(
-                                                    height: 60,
-                                                    color: Colors.white54,
-                                                    onPressed: () async {
-                                                      DateTime? _selected = await this
-                                                          .selectDate(context);
-                                                      setState(() {
-                                                        setDate = _selected
-                                                            .toString();
-                                                      });
-                                                      print(this._startDate);
-                                                    },
-                                                    child: Row(
-                                                      children: [
-                                                        Icon(
-                                                          Icons.calendar_today_outlined,
-                                                          color:
-                                                          Palette.gradientColor[0],
-                                                        ),
-                                                        const SizedBox(
-                                                          width: 10,
-                                                        ),
-                                                        Expanded(
-                                                            child:
-                                                            Text(startDateToText))
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                                const SizedBox(
-                                                  width: 10,
-                                                ),
-                                                Expanded(
-                                                  child: dayDropdown(callback: (Map data){
-                                                    setState(() {
-                                                      _chosenDayValue = data;
-                                                      _instance.appendBody = {"startDate_isHalf_day" : data['value'].toString()};
-                                                    });
-                                                  }, value: _chosenDayValue)
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                          Container(
-                                            width: double.infinity,
-                                            child: Row(
-                                              children: [
-                                                Expanded(
-                                                  flex: 2,
-                                                  child: MaterialButton(
-                                                    height: 60,
-                                                    color: Colors.white54,
-                                                    onPressed: () async {
-                                                      DateTime? _selected = await this
-                                                          .selectDate(context);
-                                                      print(_selected);
-                                                      setState(() {
-                                                        setEndDate = _selected
-                                                            .toString();
-                                                      });
-                                                    },
-                                                    child: Row(
-                                                      children: [
-                                                        Icon(
-                                                          Icons.calendar_today_outlined,
-                                                          color:
-                                                          Palette.gradientColor[0],
-                                                        ),
-                                                        const SizedBox(
-                                                          width: 10,
-                                                        ),
-                                                        Expanded(
-                                                          child: Text(endDateToText),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                                const SizedBox(
-                                                  width: 10,
-                                                ),
-                                                Expanded(
-                                                    child: dayDropdown(callback: (Map data){
-                                                      setState(() {
-                                                        _chosenEndDayValue = data;
-                                                        _instance.appendBody = {"endDate_isHalf_day" : data['value'].toString()};
-                                                      });
-                                                    }, value: _chosenEndDayValue)
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                          // if (this.endDate != null &&
-                                          //     this.startDate != null) ...{
-                                          //   if (_dateChecker.isSameDay(
-                                          //       DateTime.parse(
-                                          //           "${this.startDate}"),
-                                          //       DateTime.parse(
-                                          //           "${this.endDate}"))) ...{
-                                          //     const SizedBox(
-                                          //       height: 10,
-                                          //     ),
-                                          //     Container(
-                                          //       width: double.infinity,
-                                          //       child: Text(
-                                          //         "Demi-journée?",
-                                          //         style: TextStyle(
-                                          //             fontSize: 16.5,
-                                          //             letterSpacing: 1.5,
-                                          //             fontWeight:
-                                          //                 FontWeight.w600),
-                                          //       ),
-                                          //       color: Colors.white,
-                                          //       padding:
-                                          //           const EdgeInsets.all(10),
-                                          //     ),
-                                          //     Container(
-                                          //       width: double.infinity,
-                                          //       height: 60,
-                                          //       color: Colors.white,
-                                          //       padding:
-                                          //           const EdgeInsets.symmetric(
-                                          //               horizontal: 10),
-                                          //       child:
-                                          //           DropdownButtonHideUnderline(
-                                          //         child: DropdownButton<String>(
-                                          //           isExpanded: true,
-                                          //           onChanged: (value) {
-                                          //             setState(() {
-                                          //               this.setChoice = value!;
-                                          //             });
-                                          //           },
-                                          //           value: this
-                                          //               .chosenHalfDayAnswer,
-                                          //           items: this
-                                          //               .isHalfDay
-                                          //               .map<
-                                          //                   DropdownMenuItem<
-                                          //                       String>>(
-                                          //                 (e) =>
-                                          //                     DropdownMenuItem<
-                                          //                         String>(
-                                          //                   child: Text("$e"),
-                                          //                   value: e,
-                                          //                 ),
-                                          //               )
-                                          //               .toList(),
-                                          //         ),
-                                          //       ),
-                                          //     ),
-                                          //   },
-                                          // },
-                                          if (auth.loggedUser!.roleId == 2) ...{
-                                            const SizedBox(
-                                              height: 10,
-                                            ),
-                                            Container(
-                                              width: double.infinity,
-                                              child: Row(
-                                                children: [
-                                                  Checkbox(
-                                                    onChanged: (bool? value) {
-                                                      setState(() {
-                                                        isForOthers = value!;
-                                                        if(value){
-                                                          _instance.appendBody = {"user_id" : initDrpValue.id.toString()};
-                                                        }else{
-                                                          _instance.appendBody = {"user_id" : _instance.auth.loggedUser!.id.toString()};
-                                                        }
-                                                      });
-                                                      print(body);
-                                                    },
-                                                    activeColor: Palette.gradientColor[0],
-                                                    value: isForOthers,
-                                                  ),
-                                                  Expanded(child: Text("La demande est pour quelqu'un d'autre.",style: TextStyle(
-                                                      color: Palette.gradientColor[0]
-                                                  ),))
-                                                ],
-                                              ),
-                                            )
-                                          },
-                                          if (auth.loggedUser!.roleId == 1 ||
-                                              (auth.loggedUser!.roleId == 2 &&
-                                                  isForOthers)) ...{
-                                            const SizedBox(
-                                              height: 10,
-                                            ),
-                                            Container(
-                                              width: double.infinity,
-                                              child: _userRawData.showDropdown(
-                                                  onChooseCallback:
-                                                      (RawUserModel chosen) {
-                                                    setState(() {
-                                                      initDrpValue = chosen;
-                                                      _instance.appendBody = {"user_id" : chosen.id.toString()};
-                                                    });
-                                                    print(body);
-                                                  },
-                                                  value: initDrpValue),
-                                            ),
-                                          },
-                                          const SizedBox(
-                                            height: 20,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                if(_instance.showMessage)...{
-                                  Container(
-                                    width: double.infinity,
-                                    child: Row(
-                                      children: [
-                                        Icon(Icons.error,color: Colors.red,),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        Expanded(child: Text("Please dont leave empty fields.",style: TextStyle(
-                                            color: Colors.red,
-                                            letterSpacing: 1
-                                        ),))
-                                      ],
-                                    ),
-                                  ),
-                                },
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Container(
-                                  width: double.infinity,
-                                  height: 50,
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: MaterialButton(
-                                          height: 50,
-                                          onPressed: () =>
-                                              Navigator.of(context).pop(null),
-                                          color: Colors.grey.shade200,
-                                          child: Center(
-                                            child: Text(
-                                              "ANNULER",
-                                              style: TextStyle(
-                                                  letterSpacing: 1.5,
-                                                  fontWeight: FontWeight.w600),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      Expanded(
-                                        child: MaterialButton(
-                                          height: 50,
-                                          onPressed: () async {
-                                            print(body);
-                                            if(body.length == 7){
-                                              Navigator.of(context).pop(null);
-                                              loadingCallback(true);
-                                              await _instance.service.request(body: _instance.body, isMe: !isForOthers).whenComplete(() => loadingCallback(false));
-                                            }else{
-                                              setState((){
-                                                _instance.showMessage = true;
-                                              });
-                                            }
-                                          },
-                                          color: Palette.gradientColor[0],
-                                          child: Center(
-                                            child: Text(
-                                              "SOUMETTRE",
-                                              style: TextStyle(
-                                                  letterSpacing: 1.5,
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.w600),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              ],
-                            )),
+                        content: AddHolidayView(
+                          loadingCallback: loadingCallback,
+                        ),
                       );
                     },
                   )),
@@ -592,6 +264,6 @@ class AddHolidayViewModel {
           _instance._chosenDayValue = _dayDropDownVal[0];
           _instance._chosenEndDayValue = _dayDropDownVal[0];
           _instance.setAllBody = {"user_id" : auth.loggedUser!.id.toString(), "startDate_isHalf_day" : "0", "endDate_isHalf_day" : "0"};
-    });
+    }).whenComplete(() => dispose());
   }
 }

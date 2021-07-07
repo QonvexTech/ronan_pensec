@@ -185,7 +185,6 @@ class _CalendarFullState extends State<CalendarFull> {
                                             setState(() {
                                               _displayData = data;
                                             });
-                                            print(_displayData);
                                           },
                                         )
                                       : Container(),

@@ -115,7 +115,6 @@ class _ManageEmployeesState extends State<ManageEmployees> {
                                       body.addAll(
                                           {"type": reset.id.toString()});
                                     });
-                                    print(body);
                                   },
                                   value: _chosenReset),
                             ))
@@ -134,7 +133,6 @@ class _ManageEmployeesState extends State<ManageEmployees> {
                                   }
                                   // body.addAll({"type": item.id.toString()});
                                 });
-                                print(body);
                               },
                               groupValue: chosenRadioItem),
                           if (chosenRadioItem.id == 3) ...{

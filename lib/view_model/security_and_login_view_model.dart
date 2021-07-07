@@ -41,7 +41,7 @@ class SecurityAndLoginViewModel {
     _newPasswordField.clear();
     _newPasswordConfirmation.clear();
   }
-  Theme themedField(String label,TextEditingController controller,{required bool isEmail}) => Theme(
+  Theme themedField(String label,TextEditingController controller,{required bool isEmail, ValueChanged<Map>? passwordObscureCallback}) => Theme(
     data: ThemeData(primaryColor: Palette.gradientColor[0]),
     child: TextFormField(
       obscureText: isEmail ? false : controller == _oldPasswordField ? !showOldPassword : !showNewPassword,
@@ -80,6 +80,21 @@ class SecurityAndLoginViewModel {
       decoration: InputDecoration(
           labelText: label,
           hintText: label,
+          suffixIcon: controller == _newPasswordField || controller == _newPasswordConfirmation || controller == _oldPasswordField ? IconButton(
+            onPressed: (){
+              passwordObscureCallback!(
+                  controller == _oldPasswordField ? {
+                    "controller" : _oldPasswordField,
+                    "show" : !showOldPassword
+                  } : {
+                    "controller" : _newPasswordField,
+                    "show" : !showNewPassword
+                  }
+                  // controller == _oldPasswordField ? !showOldPassword : !showNewPassword
+              );
+            },
+            icon: Icon(controller == _oldPasswordField ? !showOldPassword ? Icons.visibility_outlined : Icons.visibility_off_outlined : !showNewPassword ? Icons.visibility_outlined : Icons.visibility_off_outlined),
+          ) : null,
           contentPadding: const EdgeInsets.symmetric(
               vertical: 0, horizontal: 10),
           border: OutlineInputBorder(
@@ -100,25 +115,25 @@ class SecurityAndLoginViewModel {
     key: emailKey,
     child: this.field(size, label: "Nouveau Courriel", controller: _newEmailField,isEmail: true),
   );
-  Widget passwordFields(Size size, GlobalKey<FormState> passwordKey) => Form(
+  Widget passwordFields(Size size, GlobalKey<FormState> passwordKey, {required ValueChanged<Map> showPasswordCallback}) => Form(
     key: passwordKey,
     child: Column(
       children: [
-        this.field(size, label: "Ancien mot de passe", controller: _oldPasswordField),
+        this.field(size, label: "Ancien mot de passe", controller: _oldPasswordField, showPasswordCallback: showPasswordCallback),
         const SizedBox(
           height: 5,
         ),
-        this.field(size, label: "Nouveau mot de passe", controller: _newPasswordField),
+        this.field(size, label: "Nouveau mot de passe", controller: _newPasswordField, showPasswordCallback: showPasswordCallback),
         const SizedBox(
           height: 5,
         ),
-        this.field(size, label: "Confirmation du nouveau mot de passe", controller: _newPasswordConfirmation),
+        this.field(size, label: "Confirmation du nouveau mot de passe", controller: _newPasswordConfirmation, showPasswordCallback: showPasswordCallback),
       ],
     ),
   );
 
   Widget field(Size size,
-      {required String label, required TextEditingController controller, bool isEmail = false}) {
+      {required String label, required TextEditingController controller, bool isEmail = false, ValueChanged<Map>? showPasswordCallback}) {
     final List<Widget> _children = [
       Container(
         width: size.width > 700 ? 150 : size.width,
@@ -132,14 +147,14 @@ class SecurityAndLoginViewModel {
           height: 40,
           width: double.infinity,
           margin: const EdgeInsets.only(right: 10),
-          child: themedField(label, controller,isEmail: isEmail),
+          child: themedField(label, controller,isEmail: isEmail, passwordObscureCallback: showPasswordCallback),
         ),
       } else ...{
         Expanded(
           child: Container(
             height: 50,
             margin: const EdgeInsets.only(right: 10),
-            child: themedField(label, controller, isEmail: isEmail),
+            child: themedField(label, controller, isEmail: isEmail, passwordObscureCallback: showPasswordCallback),
           ),
         )
       }
