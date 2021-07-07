@@ -27,4 +27,7 @@ class LoggedUserRttRequests{
     this.current.removeWhere((element) => element.id == id);
     _list.add(this.current);
   }
+  clear(){
+    _list = BehaviorSubject();
+  }
 }

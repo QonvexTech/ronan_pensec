@@ -138,7 +138,6 @@ class EmployeeService {
         HttpHeaders.authorizationHeader : "Bearer ${_auth.token}"
       }, body: body).then((response) {
         var data = json.decode(response.body);
-        print(data);
         if(response.statusCode == 200){
           _notifier.showUnContextedBottomToast(msg: "Créé avec succès");
           return UserModel.fromJson(parsedJson: data['user']);

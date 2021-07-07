@@ -24,7 +24,6 @@ class NotificationService {
         HttpHeaders.authorizationHeader : "Bearer ${_auth.token}"
       }).then((res) {
         var data = json.decode(res.body);
-        print(data);
         if(res.statusCode == 200){
           _dataControl.populateAll(data);
         }

@@ -38,7 +38,6 @@ class NotificationDataControl {
   }
   append(Map<String,dynamic> data){
     try{
-      print("DATA : $data");
       this.current!.add(NotificationModel.fromJson(data));
       _notifications.add(this.current!);
     }catch(e){

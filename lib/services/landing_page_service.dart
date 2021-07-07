@@ -4,6 +4,8 @@ import 'package:ronan_pensec/global/region_raw_data.dart';
 import 'package:ronan_pensec/route/credential_route.dart';
 import 'package:ronan_pensec/route/landing_page_route.dart';
 import 'package:ronan_pensec/services/credentials_preferences.dart';
+import 'package:ronan_pensec/services/data_controls/calendar_data_controllers/logged_user_holiday_requests.dart';
+import 'package:ronan_pensec/services/data_controls/calendar_data_controllers/logged_user_rtt_requests.dart';
 import 'package:ronan_pensec/services/data_controls/calendar_data_controllers/pending_holiday_requests_data_control.dart';
 import 'package:ronan_pensec/services/data_controls/calendar_data_controllers/pending_rtt_requests_data_control.dart';
 import 'package:ronan_pensec/services/data_controls/center_data_control.dart';
@@ -22,6 +24,8 @@ class LandingPageService {
   NotificationDataControl notificationDataControl = NotificationDataControl.instance;
   PendingHolidayRequestsDataControl _pendingHolidayRequestsDataControl = PendingHolidayRequestsDataControl.instance;
   PendingRTTRequestDataControl _pendingRTTRequestDataControl = PendingRTTRequestDataControl.instance;
+  final LoggedUserRttRequests _loggedUserRttRequests = LoggedUserRttRequests.instance;
+  final LoggedUserHolidayRequests _loggedUserHolidayRequests = LoggedUserHolidayRequests.instance;
 
   Auth get auth => _auth;
   static LandingPageService instance(BuildContext context) {
@@ -52,6 +56,11 @@ class LandingPageService {
       _pendingRTTRequestDataControl.clear();
       _pendingHolidayRequestsDataControl.clear();
       _auth.setUser = null;
+      _loggedUserRttRequests.hasFetched  = false;
+      _loggedUserRttRequests.clear();
+      _loggedUserHolidayRequests.hasFetched = false;
+      _loggedUserHolidayRequests.clear();
+
 
       await firebaseMessagingService.removeToken;
     }
