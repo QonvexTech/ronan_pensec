@@ -83,6 +83,8 @@ class FirebaseMessagingService {
               print("ERROR PENDING HOLIDAY APPPEND : $e");
             }
           }else{
+            print("SHOW INTERRUPT!");
+            print(data['id']);
             try{
               if(int.parse(data['data']['type'].toString()) == 2){
                 /// High Important

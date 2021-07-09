@@ -250,12 +250,12 @@ class _CalendarFullState extends State<CalendarFull> {
                                                                       context)
                                                                   .textTheme
                                                                   .subtitle1!
-                                                                  .fontSize! -
+                                                                  .fontSize! +
                                                               1,
                                                           color: Palette
                                                               .gradientColor[0],
                                                           fontWeight:
-                                                              FontWeight.w600,
+                                                              FontWeight.w700,
                                                           letterSpacing: 0.5),
                                                     )
                                                   : Container(),

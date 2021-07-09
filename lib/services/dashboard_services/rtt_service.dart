@@ -59,6 +59,7 @@ class RTTService{
       }).then((response) {
         if(response.statusCode == 200){
           var data = json.decode(response.body);
+          print("RTT APPROVAL BODY : $data");
           notifier.showWebContextedBottomToast(context, msg: "Demande approuvée!");
           RTTModel newRTT = RTTModel.fromJson(data);
           _regionDataControl.appendRTT(newRTT, newRTT.user_id,);
