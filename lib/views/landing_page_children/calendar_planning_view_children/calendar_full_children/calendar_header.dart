@@ -15,7 +15,7 @@ class CalendarHeader extends StatelessWidget {
         children: [
           Container(
             width: 150,
-            height: 60,
+            height: double.infinity,
             decoration: BoxDecoration(color: Colors.grey.shade300),
           ),
           Expanded(
