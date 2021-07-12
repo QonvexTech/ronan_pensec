@@ -92,7 +92,7 @@ class _HolidayRequestState extends State<HolidayRequest> {
                               style: headerStyle, textAlign: TextAlign.center),
                           r4Child: Text("Jours posés",
                               style: headerStyle, textAlign: TextAlign.center),
-                          r5Child: Text("Jours restant",
+                          r5Child: Text("Jours restants",
                               style: headerStyle, textAlign: TextAlign.center)),
                     ),
                     Expanded(
@@ -103,7 +103,7 @@ class _HolidayRequestState extends State<HolidayRequest> {
                               )
                             : widget.demand!.length == 0
                                 ? Center(
-                                    child: Text("No Data"),
+                                    child: Text("Aucune donnée"),
                                   )
                                 : Scrollbar(
                                     child: ListView(children: [

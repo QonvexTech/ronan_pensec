@@ -19,7 +19,7 @@ class LandingPageMainHelper {
         key: new GlobalKey()),
     if (_auth.loggedUser!.roleId < 3) ...{
       TabbarItem(
-        label: "Des employés",
+        label: "Employés",
         icon: Icons.supervisor_account_rounded,
         key: new GlobalKey(),
       ),

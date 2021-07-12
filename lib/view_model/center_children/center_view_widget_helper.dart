@@ -123,7 +123,7 @@ class CenterViewWidgetHelper {
                         decoration: InputDecoration(
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5)),
-                            hintText: "Entrez nouveau email",
+                            hintText: "Entrez nouvel email",
                             prefixIcon: Icon(Icons.email),
                             suffixIcon: IconButton(
                               icon: Icon(Icons.close),
@@ -160,7 +160,7 @@ class CenterViewWidgetHelper {
                         decoration: InputDecoration(
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5)),
-                            hintText: "Entrez nouveau addressé",
+                            hintText: "Entrez nouvelle addresse",
                             alignLabelWithHint: true,
                             prefixIcon: Icon(Icons.location_on_outlined)),
                       ),
@@ -175,7 +175,7 @@ class CenterViewWidgetHelper {
                         decoration: InputDecoration(
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5)),
-                            hintText: "Entrez nouveau ville",
+                            hintText: "Entrez nouvelle ville",
                             alignLabelWithHint: true,
                             prefixIcon: Icon(Icons.location_city_sharp)),
                       ),
@@ -551,7 +551,7 @@ class CenterViewWidgetHelper {
             ),
             Expanded(
               flex: 3,
-              child: Text("Addressé",
+              child: Text("Addresse",
                   style: TextStyle(color: Colors.white),
                   textAlign: TextAlign.center),
             ),

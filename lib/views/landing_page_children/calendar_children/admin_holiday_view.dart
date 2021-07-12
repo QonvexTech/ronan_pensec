@@ -86,7 +86,7 @@ class AdminHolidayView extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: tableRow(
                       r1: body("${holiday.id}"),
-                      r2: Container(),
+                      r2: body("${holiday.user!.fullName}"),
                       r3: body(
                           "${DateFormat.yMMMMd("fr_FR").format(holiday.startDate)}"),
                       r4: body(

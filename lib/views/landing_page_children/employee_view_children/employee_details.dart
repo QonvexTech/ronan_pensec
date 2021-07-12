@@ -690,7 +690,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                           child: Row(
                                             children: [
                                               Tooltip(
-                                                message: "Addressé",
+                                                message: "Addresse",
                                                 child: Icon(
                                                   Icons.location_city_outlined,
                                                   color: Colors.grey.shade700,

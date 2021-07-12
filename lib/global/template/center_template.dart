@@ -88,7 +88,7 @@ class CenterTemplate {
             child: tableFormat(
                 r1: headerText("ID"),
                 r2: headerText("Nom"),
-                r3: headerText("Addressé"),
+                r3: headerText("Addresse"),
                 r4: headerText("Numéro"),
                 r5: headerText("Email")),
           ),
