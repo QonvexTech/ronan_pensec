@@ -137,7 +137,7 @@ class ProfileViewModel {
       "icon" : Icons.drive_file_rename_outline
     },
     {
-      "label" : "Addressé",
+      "label" : "Addresse",
       "value" : "${_instance.auth.loggedUser!.address}",
       "icon" : Icons.location_on_outlined
     },

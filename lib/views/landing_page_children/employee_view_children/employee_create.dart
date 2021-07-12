@@ -42,7 +42,7 @@ class _EmployeeCreateState extends State<EmployeeCreate> {
           height: _fieldSpacing,
         ),
         _employeeCreateViewModel.template.normalTextField(
-            _employeeCreateViewModel.address, "Addressé"),
+            _employeeCreateViewModel.address, "Addresse"),
         SizedBox(
           height: _fieldSpacing,
         ),

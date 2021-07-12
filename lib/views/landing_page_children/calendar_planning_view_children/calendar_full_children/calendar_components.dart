@@ -38,7 +38,7 @@ class _CalendarComponentsState extends State<CalendarComponents> {
               ),
               PopupMenuItem(
                 value: 1,
-                child: Text("Céntre"),
+                child: Text("Centre"),
               ),
               PopupMenuItem(
                 value: 2,

@@ -480,7 +480,7 @@ class _CenterDetailsState extends State<CenterDetails> {
                         Container(
                           margin: const EdgeInsets.symmetric(vertical: 10),
                           child: _helper.templatize(
-                              label: "Addressé",
+                              label: "Addresse",
                               icon: Icons.location_on_outlined,
                               text: widget.model.address??"NON DÉFINI"),
                         ),
