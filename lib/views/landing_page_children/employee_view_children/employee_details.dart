@@ -21,6 +21,7 @@ class EmployeeDetails extends StatefulWidget {
 }
 
 class _EmployeeDetailsState extends State<EmployeeDetails> {
+  bool _isConverting = false;
   late final EmployeeDetailsViewModel _viewModel =
       EmployeeDetailsViewModel.instance(widget.employee);
   late final EmployeeDemands _employeeDemands = EmployeeDemands(
@@ -38,14 +39,16 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
       _viewModel.mobile.text = widget.employee.mobile;
     });
   }
+
   List<int> get managerIds {
     List<int> managerIds = [];
-    for(CenterModel assignedCenter in widget.employee.assignedCenters!){
-      managerIds.add(assignedCenter.accountant?.id??0);
+    for (CenterModel assignedCenter in widget.employee.assignedCenters!) {
+      managerIds.add(assignedCenter.accountant?.id ?? 0);
     }
     managerIds.removeWhere((element) => element == 0);
     return managerIds;
   }
+
   @override
   void initState() {
     populate();
@@ -279,76 +282,6 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                             ),
                                           ),
                                         ),
-                                        // Container(
-                                        //   width: double.infinity,
-                                        //   height: 50,
-                                        //   child: Row(
-                                        //     children: [
-                                        //       Tooltip(
-                                        //         message: "Mettre à jour si l'utilisateur est senior ou non",
-                                        //         child: Icon(Icons.help_outline, color: Colors.black54,),
-                                        //       ),
-                                        //       const SizedBox(
-                                        //         width: 10,
-                                        //       ),
-                                        //       Expanded(child: Container(
-                                        //         child: Text("Sénior",style: TextStyle(
-                                        //           fontWeight: FontWeight.w600,
-                                        //           fontSize: 15,
-                                        //         )),
-                                        //       ),),
-                                        //       Container(
-                                        //         width: 30,
-                                        //         height: 20,
-                                        //         child: Stack(
-                                        //           alignment: AlignmentDirectional.center,
-                                        //           children: [
-                                        //             Container(
-                                        //               width: 30,
-                                        //               height: 15,
-                                        //               decoration: BoxDecoration(
-                                        //                   borderRadius: BorderRadius.circular(15),
-                                        //                   color: _viewModel.isSenior == 0
-                                        //                       ? Colors.grey
-                                        //                       : Palette.gradientColor[0]),
-                                        //             ),
-                                        //             AnimatedPositioned(
-                                        //                 left: _viewModel.isSenior == 0
-                                        //                     ? 0
-                                        //                     : 10,
-                                        //                 top: 0,
-                                        //                 bottom: 0,
-                                        //                 child: Container(
-                                        //                   width: 20,
-                                        //                   height: 20,
-                                        //                   decoration: BoxDecoration(
-                                        //                       shape: BoxShape.circle,
-                                        //                       color: Colors.white,
-                                        //                       boxShadow: [
-                                        //                         BoxShadow(
-                                        //                             color: Colors.black45,
-                                        //                             offset: Offset(2, 2),
-                                        //                             blurRadius: 2)
-                                        //                       ]),
-                                        //                   child: MaterialButton(
-                                        //                     shape: RoundedRectangleBorder(
-                                        //                         borderRadius:
-                                        //                         BorderRadius.circular(100000)),
-                                        //                     color: Colors.white54,
-                                        //                     onPressed: () {
-                                        //                       setState(() {
-                                        //                         _viewModel.setSeniority = _viewModel.isSenior == 1 ? 0 : 1;
-                                        //                       });
-                                        //                     },
-                                        //                   ),
-                                        //                 ),
-                                        //                 duration: const Duration(milliseconds: 300))
-                                        //           ],
-                                        //         ),
-                                        //       )
-                                        //     ],
-                                        //   ),
-                                        // ),
                                         Container(
                                             margin: const EdgeInsets.symmetric(
                                                 horizontal: 0, vertical: 15),
@@ -408,7 +341,11 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                                             _viewModel
                                                                     .setIsEditing =
                                                                 false;
-                                                            widget.employee.isSenior = _viewModel.isSenior == 1;
+                                                            widget.employee
+                                                                    .isSenior =
+                                                                _viewModel
+                                                                        .isSenior ==
+                                                                    1;
                                                           });
                                                           this.populate();
                                                         }
@@ -816,6 +753,133 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                           ),
                                         ),
                                       },
+                                      Divider(),
+                                      if (widget.employee.paidStatus !=
+                                          null) ...{
+                                        Container(
+                                          width: double.infinity,
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 15),
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                child: Text("RTT converti en espèces",
+                                                    style: TextStyle(
+                                                        fontSize: Theme.of(context)
+                                                            .textTheme
+                                                            .headline6!
+                                                            .fontSize! -
+                                                            4,
+                                                        fontWeight: FontWeight.w700)),
+                                              ),
+                                              IconButton(
+                                                tooltip: "Convertir",
+                                                onPressed: (){
+                                                  setState(() {
+                                                    _isConverting = !_isConverting;
+                                                  });
+                                                },
+                                                icon: Icon(Icons.swap_horiz, color: !_isConverting ? Colors.black : Palette.gradientColor[3],),
+                                              )
+                                            ],
+                                          )
+                                        ),
+                                        AnimatedContainer(
+                                          duration: const Duration(milliseconds: 300),
+                                          width: double.infinity,
+                                          height: _isConverting ? 50 : 0,
+                                          child: _isConverting ? Theme(
+                                            data: ThemeData(
+                                              primaryColor: Palette.gradientColor[3]
+                                            ),
+                                            child: TextField(
+                                              onSubmitted: (text) async {
+                                                if(text.isNotEmpty){
+                                                  if(_viewModel.isNumeric(text)){
+                                                    if(double.parse(text) > widget.employee.paidStatus!.remainingAmount){
+                                                      _viewModel.notifier.showUnContextedBottomToast(msg: "Vous avez dépassé votre limite de montant");
+                                                    }else{
+                                                      if(double.parse(text) > 0){
+                                                        setState(() {
+                                                          _isLoading = true;
+                                                        });
+                                                        await _viewModel.service.convertRttToCash(text, widget.employee.id.toString()).then((value) {
+                                                          setState(() {
+                                                            _isConverting = !value;
+                                                          });
+                                                          if(value){
+                                                            setState(() {
+                                                              widget.employee.paidStatus!.remainingAmount -= double.parse(text);
+                                                              widget.employee.paidStatus!.amountConverted += double.parse(text);
+                                                            });
+                                                          }
+                                                        }).whenComplete(() => setState(() => _isLoading = false));
+                                                      }else{
+                                                        _viewModel.notifier.showUnContextedBottomToast(msg: "Veuillez fournir un nombre supérieur à 0");
+                                                      }
+                                                    }
+
+                                                  }else{
+                                                    _viewModel.notifier.showUnContextedBottomToast(msg: "Veuillez fournir un montant valide");
+                                                  }
+                                                }else{
+                                                  _viewModel.notifier.showUnContextedBottomToast(msg: "Veuillez fournir une valeur");
+                                                }
+                                              },
+                                                decoration: InputDecoration(
+                                                    hintText: "0.00"
+                                                )
+                                            ),
+                                          ) : Container(),
+                                        ),
+                                        Divider(),
+                                        Container(
+                                          width: double.infinity,
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 10),
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                child: Column(
+                                                  children: [
+                                                    Text("RTT non payante",style: const TextStyle(
+                                                      fontSize: 16.5,
+                                                      fontWeight: FontWeight.w600
+                                                    ),),
+                                                    const SizedBox(
+                                                      height: 10,
+                                                    ),
+                                                    Text(
+                                                        "${widget.employee.paidStatus!.remainingAmount.toStringAsFixed(2)}",style: TextStyle(
+                                                      fontWeight: FontWeight.w600,
+                                                      fontSize: 25.5
+                                                    ),)
+                                                  ],
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child: Column(
+                                                  children: [
+                                                    Text("RTT payée",style: const TextStyle(
+                                                        fontSize: 16.5,
+                                                        fontWeight: FontWeight.w600
+                                                    ),),
+                                                    const SizedBox(
+                                                      height: 10,
+                                                    ),
+                                                    Text(
+                                                      "${widget.employee.paidStatus!.amountConverted.toStringAsFixed(2)}",style: TextStyle(
+                                                        fontWeight: FontWeight.w600,
+                                                        fontSize: 25.5
+                                                    ),)
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Divider(),
+                                      },
                                       if (!_viewModel.isEditing) ...{
                                         Container(
                                           margin: const EdgeInsets.symmetric(
@@ -867,6 +931,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                             ],
                                           ),
                                         ),
+                                        Divider(),
                                       },
                                       if (widget.employee.assignedCenters!
                                               .length >

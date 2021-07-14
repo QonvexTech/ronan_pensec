@@ -1,4 +1,5 @@
 import 'package:ronan_pensec/models/center_model.dart';
+import 'package:ronan_pensec/models/paid_status_model.dart';
 
 import 'calendar/attendance_model.dart';
 import 'calendar/holiday_model.dart';
@@ -26,6 +27,7 @@ class UserModel {
   List<AttendanceModel> attendances;
   List<CenterModel>? assignedCenters;
   int isSilentOnPush;
+  PaidStatus? paidStatus;
 
   UserModel(
       {required this.id,
@@ -48,6 +50,7 @@ class UserModel {
         required this.isSenior,
         required this.attendances,
         required this.assignedCenters,
+        this.paidStatus,
       required this.isSilentOnPush});
 
   factory UserModel.fromJson({required Map<String, dynamic> parsedJson}) {
@@ -72,7 +75,8 @@ class UserModel {
       full_name: parsedJson['full_name'],
       attendances: attendanceToList(parsedJson['attendances']),
       isSilentOnPush: int.parse(parsedJson['isSilent_onPush'].toString()),
-      assignedCenters: centerToList(parsedJson['centers'])
+      assignedCenters: centerToList(parsedJson['centers']),
+      paidStatus: parsedJson['paid_status'] != null ? PaidStatus.fromJson(parsedJson['paid_status']) : null
     );
   }
 
@@ -148,6 +152,7 @@ class UserModel {
         'rtts': rtts,
         'holidays': holidays,
         'full_name': full_name,
+    'paid_status' : paidStatus,
     'isSilent_onPush' : isSilentOnPush,
     'rtt_remaining_balance' : rttRemainingBalance,
     'is_senior' : isSenior ? 1 : 0,

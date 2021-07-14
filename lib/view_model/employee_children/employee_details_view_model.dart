@@ -4,13 +4,22 @@ import 'package:ronan_pensec/models/user_model.dart';
 import 'package:ronan_pensec/services/dashboard_services/employee_service.dart';
 import 'package:ronan_pensec/services/data_controls/employee_data_control.dart';
 import 'package:ronan_pensec/services/data_controls/user_data_control.dart';
+import 'package:ronan_pensec/services/toast_notifier.dart';
 
 class EmployeeDetailsViewModel {
   EmployeeDetailsViewModel._singleton();
   static final Auth _auth = Auth.instance;
   Auth get auth => _auth;
+  static final ToastNotifier _notifier = ToastNotifier.instance;
+  ToastNotifier get notifier => _notifier;
   static final EmployeeDetailsViewModel _instance = EmployeeDetailsViewModel._singleton();
   static final EmployeeDataControl _dataControl = EmployeeDataControl.instance;
+  bool isNumeric(String? s) {
+    if(s == null) {
+      return false;
+    }
+    return double.tryParse(s) != null;
+  }
   static EmployeeDetailsViewModel instance(UserModel user) {
     _instance.setRole = user.roleId;
     _instance.appendToBody = {"zip_code" : user.zip_code};
