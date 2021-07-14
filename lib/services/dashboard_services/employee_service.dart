@@ -360,4 +360,22 @@ class EmployeeService {
       return null;
     }
   }
+
+  Future<bool> convertRttToCash(String amount,String userId) async {
+    try{
+      return await http.put(Uri.parse("${BaseEnpoint.URL}api/paid_status/use"),headers: {
+        "accept" : "application/json"
+      },body: {
+        "user_id" : userId,
+        "amount" : amount
+      }).then((response) {
+        var data = json.decode(response.body);
+        _notifier.showUnContextedBottomToast(msg: "${data['message']}");
+        return response.statusCode == 200;
+      });
+    }catch(e){
+      print("CONVERSION ERROR : $e");
+      return false;
+    }
+  }
 }
