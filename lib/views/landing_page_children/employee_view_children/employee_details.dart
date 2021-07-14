@@ -796,9 +796,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                               onSubmitted: (text) async {
                                                 if(text.isNotEmpty){
                                                   if(_viewModel.isNumeric(text)){
-                                                    if(double.parse(text) > widget.employee.paidStatus!.remainingAmount){
-                                                      _viewModel.notifier.showUnContextedBottomToast(msg: "Vous avez dépassé votre limite de montant");
-                                                    }else{
+                                                    if(double.parse(text) <= widget.employee.paidStatus!.remainingAmount){
                                                       if(double.parse(text) > 0){
                                                         setState(() {
                                                           _isLoading = true;
@@ -817,6 +815,9 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                                       }else{
                                                         _viewModel.notifier.showUnContextedBottomToast(msg: "Veuillez fournir un nombre supérieur à 0");
                                                       }
+
+                                                    }else{
+                                                      _viewModel.notifier.showUnContextedBottomToast(msg: "Vous avez dépassé votre limite de montant");
                                                     }
 
                                                   }else{
