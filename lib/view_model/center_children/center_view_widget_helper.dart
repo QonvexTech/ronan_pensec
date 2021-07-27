@@ -232,31 +232,34 @@ class CenterViewWidgetHelper {
                       onPressed: () async {
                         isLoading(true);
                         Navigator.of(context).pop(null);
+                        Map body = {
+                          "zip_code": _zipCode.text.isNotEmpty
+                              ? _zipCode.text
+                              : center.zipCode,
+                          "name": _name.text.isNotEmpty
+                              ? _name.text
+                              : center.name,
+                          "address": _address.text.isNotEmpty
+                              ? _address.text
+                              : center.address,
+                          "city": _city.text.isNotEmpty
+                              ? _city.text
+                              : center.city,
+                          "mobile": _number.text.isNotEmpty
+                              ? _number.text
+                              : center.mobile,
+                        };
+                        if(center.email != null || email.text.isNotEmpty){
+                          body.addAll({
+                            "email": _email.text.isNotEmpty
+                              ? _email.text
+                              : center.email
+                          });
+                        }
                         await _service
-                            .update(context, centerId: center.id, body: {
-                              "zip_code": _zipCode.text.isNotEmpty
-                                  ? _zipCode.text
-                                  : center.zipCode,
-                              "name": _name.text.isNotEmpty
-                                  ? _name.text
-                                  : center.name,
-                              "address": _address.text.isNotEmpty
-                                  ? _address.text
-                                  : center.address,
-                              "city": _city.text.isNotEmpty
-                                  ? _city.text
-                                  : center.city,
-                              "mobile": _number.text.isNotEmpty
-                                  ? _number.text
-                                  : center.mobile,
-                              "email": _email.text.isNotEmpty
-                                  ? _email.text
-                                  : center.email
-                            })
+                            .update(context, centerId: center.id, body: body)
                             .then((value) => callback(value))
                             .whenComplete(() => isLoading(false));
-                        // callback(true);
-                        // _service.delete(context, centerId: centerId).whenComplete(() => callback(false));
                       },
                       child: Center(
                         child: Text(

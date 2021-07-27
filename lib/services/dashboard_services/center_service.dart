@@ -33,6 +33,7 @@ class CenterService {
 
   Future<bool> update(context,{required Map body, required int centerId}) async {
     try{
+      print(body);
       return await http.put(Uri.parse("${BaseEnpoint.URL}${CenterEndpoint.update(centerId: centerId)}"),body: body,headers: {
         "Accept": "application/json",
         HttpHeaders.authorizationHeader: "Bearer ${_auth.token}"
@@ -45,7 +46,7 @@ class CenterService {
         return false;
       });
     }catch(e){
-      _notifier.showContextedBottomToast(context, msg: "Erreur $e");
+      _notifier.showContextedBottomToast(context, msg: "UPDATE ERROR Erreur $e");
       return false;
     }
   }
