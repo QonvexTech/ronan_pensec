@@ -387,7 +387,7 @@ class _CalendarFullState extends State<CalendarFull> {
                                                                             DateTime(
                                                                                 _calendarViewModel.currentYear,
                                                                                 _calendarViewModel.currentMonth,
-                                                                                daysIndex + 1))) ...{
+                                                                                daysIndex + 1)) && holiday.status == 1) ...{
                                                                           Tooltip(
                                                                             message:
                                                                                 "${holiday.requestName}",
