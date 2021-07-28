@@ -347,7 +347,7 @@ class _CalendarMobileState extends State<CalendarMobile>
                                           holiday.endDate, DateTime(
                                               _calendarViewModel.currentYear,
                                               _calendarViewModel.currentMonth,
-                                              d ?? 0)))...{
+                                              d ?? 0)) && holiday.status == 1)...{
                                         Tooltip(
                                           message: "${holiday.requestName}",
                                           child: MaterialButton(
