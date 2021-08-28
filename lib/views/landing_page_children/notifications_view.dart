@@ -11,7 +11,9 @@ class NotificationsView extends StatefulWidget {
   final ValueChanged<bool> onSelect;
   final bool showBack;
   final ValueChanged<bool>? onBack;
-  NotificationsView({Key? key, required this.onSelect, this.showBack = false, this.onBack}) : super(key: key);
+  NotificationsView(
+      {Key? key, required this.onSelect, this.showBack = false, this.onBack})
+      : super(key: key);
   @override
   _NotificationsViewState createState() => _NotificationsViewState();
 }
@@ -19,7 +21,8 @@ class NotificationsView extends StatefulWidget {
 class _NotificationsViewState extends State<NotificationsView> {
   final NotificationDataControl _dataControl = NotificationDataControl.instance;
   final NotificationService _service = NotificationService.instance;
-  final AnnouncementViewModel _announcementViewModel = AnnouncementViewModel.instance;
+  final AnnouncementViewModel _announcementViewModel =
+      AnnouncementViewModel.instance;
 
   invalidContent({required Widget image, required String subtext}) => Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -70,10 +73,10 @@ class _NotificationsViewState extends State<NotificationsView> {
               padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
               child: Row(
                 children: [
-                  if(widget.showBack)...{
+                  if (widget.showBack) ...{
                     IconButton(
                       icon: Icon(Icons.arrow_back_ios),
-                      onPressed: (){
+                      onPressed: () {
                         widget.onBack!(true);
                       },
                     )
@@ -172,9 +175,12 @@ class _NotificationsViewState extends State<NotificationsView> {
                                             PlanningRoute.allRequests(0));
                                       } else {
                                         print("POPUP FOR EVENT");
-                                        if(!notification.type.contains('status')){
-                                          if(notification.data!['type'] != 0){
-                                            _announcementViewModel.showNotice(context, size, notification: notification);
+                                        if (!notification.type
+                                            .contains('status')) {
+                                          if (notification.data!['type'] != 0) {
+                                            _announcementViewModel.showNotice(
+                                                context, size,
+                                                notification: notification);
                                           }
                                         }
                                       }
@@ -218,7 +224,7 @@ class _NotificationsViewState extends State<NotificationsView> {
                                               ? [
                                                   TextSpan(
                                                       text:
-                                                          " ( ${notification.data!['type'] == 0 ? "Basse" : notification.data!['type'] == 1 ? "Moyen" : "Haut!"} )",
+                                                          " ( ${notification.data!['type'] == 0 ? "Basse" : notification.data!['type'] == 1 ? "Moyenen" : "Haute"} )",
                                                       style: TextStyle(
                                                           fontSize: 15,
                                                           fontStyle:

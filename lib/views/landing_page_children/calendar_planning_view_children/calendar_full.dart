@@ -380,14 +380,10 @@ class _CalendarFullState extends State<CalendarFull> {
                                                                           daysIndex +
                                                                               1))) ...{
                                                                         if (_calendarViewModel.service.isInRange(
-                                                                            holiday
-                                                                                .startDate,
-                                                                            holiday
-                                                                                .endDate,
-                                                                            DateTime(
-                                                                                _calendarViewModel.currentYear,
-                                                                                _calendarViewModel.currentMonth,
-                                                                                daysIndex + 1)) && holiday.status == 1) ...{
+                                                                                holiday.startDate,
+                                                                                holiday.endDate,
+                                                                                DateTime(_calendarViewModel.currentYear, _calendarViewModel.currentMonth, daysIndex + 1)) &&
+                                                                            holiday.status == 1) ...{
                                                                           Tooltip(
                                                                             message:
                                                                                 "${holiday.requestName}",
@@ -466,7 +462,7 @@ class _CalendarFullState extends State<CalendarFull> {
                                                                           attendance.date)) ...{
                                                                         Tooltip(
                                                                           message:
-                                                                              "Absent",
+                                                                              "Absences",
                                                                           child:
                                                                               Container(
                                                                             width: ((constraint.maxWidth - 150) / _calendarViewModel.numOfDays) < 40

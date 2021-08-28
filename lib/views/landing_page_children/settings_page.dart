@@ -7,7 +7,6 @@ import 'package:ronan_pensec/views/landing_page_children/settings_page_children/
 import 'package:ronan_pensec/views/landing_page_children/settings_page_children/manage_employees.dart';
 import 'package:ronan_pensec/views/landing_page_children/settings_page_children/security_and_login.dart';
 
-
 class SettingsPage extends StatefulWidget {
   @override
   _SettingsPageState createState() => _SettingsPageState();
@@ -30,13 +29,13 @@ class _SettingsPageState extends State<SettingsPage>
       key: ValueKey("employee-management"),
       child: ManageEmployees(),
     ),
-    if(_auth.loggedUser!.roleId != 3)...{
+    if (_auth.loggedUser!.roleId != 3) ...{
       Container(
         key: ValueKey("announcement"),
         child: AnnouncementPage(),
       )
     },
-    if(_auth.loggedUser!.roleId == 1)...{
+    if (_auth.loggedUser!.roleId == 1) ...{
       Container(
         key: ValueKey("legal-holidays"),
         child: LegalHolidaysManager(),
@@ -160,7 +159,7 @@ class _SettingsPageState extends State<SettingsPage>
                                   _selectedContent = _contents[1];
                                 });
                               }),
-                          if(size.width > 900)...{
+                          if (size.width > 900) ...{
                             Divider(
                               thickness: 1,
                               color: Colors.black45,
@@ -175,24 +174,33 @@ class _SettingsPageState extends State<SettingsPage>
                                   _selectedContent = _contents[2];
                                 });
                               }),
-                          if(_auth.loggedUser!.roleId != 3)...{
-                            this.iconButtons(icon: Icons.announcement_outlined, label: "Annonce", size: size, onPress: (){
-                              setState(() {
-                                _selectedContent = _contents[3];
-                              });
-                            })
+                          if (_auth.loggedUser!.roleId != 3) ...{
+                            this.iconButtons(
+                                icon: Icons.announcement_outlined,
+                                label: "Annonce",
+                                size: size,
+                                onPress: () {
+                                  setState(() {
+                                    _selectedContent = _contents[3];
+                                  });
+                                })
                           },
-                          if(_auth.loggedUser!.roleId == 1)...{
-                            this.iconButtons(icon: Icons.calendar_today_rounded, label: "La fête", size: size, onPress: (){
-                              setState(() {
-                                _selectedContent = _contents[4];
-                              });
-                            })
+                          if (_auth.loggedUser!.roleId == 1) ...{
+                            this.iconButtons(
+                                icon: Icons.calendar_today_rounded,
+                                label: "Jours fériés",
+                                size: size,
+                                onPress: () {
+                                  setState(() {
+                                    _selectedContent = _contents[4];
+                                  });
+                                })
                           }
                         ],
                       ),
                     ),
                   ),
+
                   /// Content View
                   Expanded(
                     child: Container(
@@ -205,7 +213,8 @@ class _SettingsPageState extends State<SettingsPage>
                         child: _selectedContent,
                         transitionBuilder: (child, animation) {
                           return SlideTransition(
-                            position: Tween<Offset>(begin: Offset(0, 1), end: Offset(0, 0))
+                            position: Tween<Offset>(
+                                    begin: Offset(0, 1), end: Offset(0, 0))
                                 .animate(animation),
                             child: child,
                           );

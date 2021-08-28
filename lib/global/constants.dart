@@ -6,14 +6,13 @@
 import 'package:flutter/material.dart';
 
 class BaseEnpoint {
-  static final String URL = "https://ronan.checkmy.dev/";
+  static final String URL = "http://127.0.0.1:8000/";
 }
 
-class ContextHolder{
+class ContextHolder {
   ContextHolder._private();
   static final ContextHolder _instance = ContextHolder._private();
-  static ContextHolder get  instance {
-
+  static ContextHolder get instance {
     return _instance;
   }
 
@@ -23,7 +22,7 @@ class ContextHolder{
 
   Size? _size;
   Size? get size => _size;
-  set setSize(Size size) =>  _instance._size = size;
+  set setSize(Size size) => _instance._size = size;
 
   static final String URL = "${BaseEnpoint.URL}";
 }

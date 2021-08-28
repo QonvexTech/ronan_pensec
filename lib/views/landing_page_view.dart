@@ -61,7 +61,6 @@ class _LandingPageScreenWebState extends State<LandingPageView>
 
   @override
   Widget build(BuildContext context) {
-
     final Size size = MediaQuery.of(context).size;
     _contextHolder.setContext = context;
     _contextHolder.setSize = size;
@@ -168,7 +167,8 @@ class _LandingPageScreenWebState extends State<LandingPageView>
                             Spacer(),
                             StreamBuilder<bool>(
                               stream: _activeBadgeControl.stream$,
-                              builder: (_, snapshot) => GeneralTemplate.badgedIcon(
+                              builder: (_, snapshot) =>
+                                  GeneralTemplate.badgedIcon(
                                 key: _notificationIconKey,
                                 isEnabled: snapshot.hasData && snapshot.data!,
                                 tooltip: "Notifications",
@@ -224,7 +224,8 @@ class _LandingPageScreenWebState extends State<LandingPageView>
                                 Tab(
                                   icon: Icon(
                                     item.icon,
-                                    color: tabItems.indexOf(item) == currentTabIndex
+                                    color: tabItems.indexOf(item) ==
+                                            currentTabIndex
                                         ? Palette.textFieldColor
                                         : Colors.grey.shade400,
                                   ),
@@ -243,20 +244,20 @@ class _LandingPageScreenWebState extends State<LandingPageView>
                     ],
                   ),
                 ),
-                if(notificationViewerOffset != null && _isMobile)...{
+                if (notificationViewerOffset != null && _isMobile) ...{
                   Container(
                     width: double.infinity,
                     child: NotificationsView(
                       showBack: true,
-                      onBack: (bool val){
-                        if(val){
+                      onBack: (bool val) {
+                        if (val) {
                           setState(() {
                             notificationViewerOffset = null;
                           });
                         }
                       },
-                      onSelect: (bool val){
-                        if(val){
+                      onSelect: (bool val) {
+                        if (val) {
                           setState(() {
                             notificationViewerOffset = null;
                           });
@@ -278,8 +279,8 @@ class _LandingPageScreenWebState extends State<LandingPageView>
                 height:
                     notificationViewerOffset == null ? 0 : size.height * .85,
                 child: NotificationsView(
-                  onSelect: (bool val){
-                    if(val){
+                  onSelect: (bool val) {
+                    if (val) {
                       setState(() {
                         notificationViewerOffset = null;
                       });

@@ -25,7 +25,8 @@ class CalendarMobile extends StatefulWidget {
 class _CalendarMobileState extends State<CalendarMobile>
     with SingleTickerProviderStateMixin {
   final CalendarViewModel _calendarViewModel = CalendarViewModel.instance;
-  final LegalHolidayDataControl _legalHolidayDataControl = LegalHolidayDataControl.instance;
+  final LegalHolidayDataControl _legalHolidayDataControl =
+      LegalHolidayDataControl.instance;
 
   late final TabController _tabController =
       TabController(length: 3, vsync: this);
@@ -258,7 +259,7 @@ class _CalendarMobileState extends State<CalendarMobile>
                           const SizedBox(
                             width: 10,
                           ),
-                          Text("Absent")
+                          Text("Absences")
                         ],
                       ),
                     ),
@@ -324,37 +325,75 @@ class _CalendarMobileState extends State<CalendarMobile>
                               child: Stack(children: [
                                 ///Colorize
                                 ///Holiday
-                                if(widget.userData.holidays.length > 0)...{
-                                  for(HolidayModel holiday in widget.userData.holidays)...{
-                                    if(_calendarViewModel.service.isSameMonth(DateTime(
-                                        _calendarViewModel
-                                            .currentYear,
-                                        _calendarViewModel
-                                            .currentMonth),
-                                        holiday.startDate) || _calendarViewModel.service
-                                        .isSameMonth(
-                                        DateTime(
-                                            _calendarViewModel
-                                                .currentYear,
-                                            _calendarViewModel
-                                                .currentMonth),
-                                        holiday.endDate) && !_calendarViewModel.service.isSunday(
-                                        DateTime(
-                                            _calendarViewModel.currentYear,
-                                            _calendarViewModel.currentMonth,
-                                            d ?? 0)))...{
-                                      if(_calendarViewModel.service.isInRange(holiday.startDate,
-                                          holiday.endDate, DateTime(
-                                              _calendarViewModel.currentYear,
-                                              _calendarViewModel.currentMonth,
-                                              d ?? 0)) && holiday.status == 1)...{
+                                if (widget.userData.holidays.length > 0) ...{
+                                  for (HolidayModel holiday
+                                      in widget.userData.holidays) ...{
+                                    if (_calendarViewModel.service.isSameMonth(
+                                            DateTime(
+                                                _calendarViewModel.currentYear,
+                                                _calendarViewModel
+                                                    .currentMonth),
+                                            holiday.startDate) ||
+                                        _calendarViewModel.service.isSameMonth(
+                                                DateTime(
+                                                    _calendarViewModel
+                                                        .currentYear,
+                                                    _calendarViewModel
+                                                        .currentMonth),
+                                                holiday.endDate) &&
+                                            !_calendarViewModel.service
+                                                .isSunday(DateTime(
+                                                    _calendarViewModel
+                                                        .currentYear,
+                                                    _calendarViewModel
+                                                        .currentMonth,
+                                                    d ?? 0))) ...{
+                                      if (_calendarViewModel.service.isInRange(
+                                              holiday.startDate,
+                                              holiday.endDate,
+                                              DateTime(
+                                                  _calendarViewModel
+                                                      .currentYear,
+                                                  _calendarViewModel
+                                                      .currentMonth,
+                                                  d ?? 0)) &&
+                                          holiday.status == 1) ...{
                                         Tooltip(
                                           message: "${holiday.requestName}",
                                           child: MaterialButton(
                                             padding: const EdgeInsets.all(0),
-                                            onPressed: (){},
+                                            onPressed: () {},
                                             child: ClipPath(
-                                              clipper: _calendarViewModel.service.isSameDay(holiday.startDate, DateTime(_calendarViewModel.currentYear, _calendarViewModel.currentMonth, d??0 + 1)) ? holiday.isHalfDay == 1 ? CalendarHalfDayMorningClip() : holiday.isHalfDay == 2 ? CalendarHalfdayClip() : null : _calendarViewModel.service.isSameDay(holiday.endDate, DateTime(_calendarViewModel.currentYear, _calendarViewModel.currentMonth, d??0 + 1)) ? holiday.isEndDateHalf == 1 ? CalendarHalfDayMorningClip() : holiday.isEndDateHalf == 2 ? CalendarHalfdayClip() : null : null,
+                                              clipper: _calendarViewModel.service
+                                                      .isSameDay(
+                                                          holiday.startDate,
+                                                          DateTime(
+                                                              _calendarViewModel
+                                                                  .currentYear,
+                                                              _calendarViewModel
+                                                                  .currentMonth,
+                                                              d ?? 0 + 1))
+                                                  ? holiday.isHalfDay == 1
+                                                      ? CalendarHalfDayMorningClip()
+                                                      : holiday.isHalfDay == 2
+                                                          ? CalendarHalfdayClip()
+                                                          : null
+                                                  : _calendarViewModel.service.isSameDay(
+                                                          holiday.endDate,
+                                                          DateTime(
+                                                              _calendarViewModel
+                                                                  .currentYear,
+                                                              _calendarViewModel
+                                                                  .currentMonth,
+                                                              d ?? 0 + 1))
+                                                      ? holiday.isEndDateHalf ==
+                                                              1
+                                                          ? CalendarHalfDayMorningClip()
+                                                          : holiday.isEndDateHalf ==
+                                                                  2
+                                                              ? CalendarHalfdayClip()
+                                                              : null
+                                                      : null,
                                               child: Container(
                                                 width: (size.width / 7),
                                                 // width: ((size.width - 150) /
@@ -439,27 +478,27 @@ class _CalendarMobileState extends State<CalendarMobile>
                                               d ?? 0),
                                           attendance.date)) ...{
                                     Tooltip(
-                                      message:
-                                          "Absent",
+                                      message: "Absences",
                                       child: Container(
                                         width: size.width / 7,
                                         color: !_calendarViewModel.service
-                                            .isSunday(DateTime(
-                                            _calendarViewModel
-                                                .currentYear,
-                                            _calendarViewModel
-                                                .currentMonth,
-                                            d ?? 0))
-                                            ? _calendarViewModel.service.isSameDay(
-                                            DateTime(
-                                                _calendarViewModel
-                                                    .currentYear,
-                                                _calendarViewModel
-                                                    .currentMonth,
-                                                d ?? 0),
-                                            attendance.date)
-                                            ? Colors.red
-                                            : Colors.transparent
+                                                .isSunday(DateTime(
+                                                    _calendarViewModel
+                                                        .currentYear,
+                                                    _calendarViewModel
+                                                        .currentMonth,
+                                                    d ?? 0))
+                                            ? _calendarViewModel.service
+                                                    .isSameDay(
+                                                        DateTime(
+                                                            _calendarViewModel
+                                                                .currentYear,
+                                                            _calendarViewModel
+                                                                .currentMonth,
+                                                            d ?? 0),
+                                                        attendance.date)
+                                                ? Colors.red
+                                                : Colors.transparent
                                             : Colors.grey.shade400,
                                       ),
                                     )
@@ -468,17 +507,23 @@ class _CalendarMobileState extends State<CalendarMobile>
                                 Container(
                                   child: StreamBuilder<List<LegalHolidayModel>>(
                                     stream: _legalHolidayDataControl.stream$,
-                                    builder: (_,legal) {
-                                      if(legal.hasData && !legal.hasError && legal.data!.length > 0){
+                                    builder: (_, legal) {
+                                      if (legal.hasData &&
+                                          !legal.hasError &&
+                                          legal.data!.length > 0) {
                                         return Stack(
                                           children: [
-                                            for(LegalHolidayModel legal in legal.data!)...{
-                                              if(_calendarViewModel.service.isSameDDMM(legal.date, DateTime(
-                                                  _calendarViewModel
-                                                      .currentYear,
-                                                  _calendarViewModel
-                                                      .currentMonth,
-                                                  d ?? 0)))...{
+                                            for (LegalHolidayModel legal
+                                                in legal.data!) ...{
+                                              if (_calendarViewModel.service
+                                                  .isSameDDMM(
+                                                      legal.date,
+                                                      DateTime(
+                                                          _calendarViewModel
+                                                              .currentYear,
+                                                          _calendarViewModel
+                                                              .currentMonth,
+                                                          d ?? 0))) ...{
                                                 Tooltip(
                                                   message: "${legal.name}",
                                                   child: Container(
@@ -495,6 +540,7 @@ class _CalendarMobileState extends State<CalendarMobile>
                                     },
                                   ),
                                 ),
+
                                 /// Day of the month
                                 if (_calendarViewModel.service.isSunday(
                                     DateTime(
