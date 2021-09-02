@@ -14,82 +14,95 @@ class RegionDataControl {
   static final RegionDataControl _instance = RegionDataControl._internal();
   late CalendarDataControl _calendarDataControl;
   CalendarDataControl get calendarDataControl => _calendarDataControl;
-  set setCalendarDataController(CalendarDataControl control) => _calendarDataControl = control;
+  set setCalendarDataController(CalendarDataControl control) =>
+      _calendarDataControl = control;
   static RegionDataControl instance(CalendarDataControl control) {
     _instance._calendarDataControl = control;
     return _instance;
   }
+
   static RegionDataControl get rawInstance => _instance;
   BehaviorSubject<List<RegionModel>> _list = BehaviorSubject();
   bool hasFetched = false;
   Stream<List<RegionModel>> get stream$ => _list.stream;
 
   List<RegionModel> get current => _list.value!;
-  clear(){
+  clear() {
     _list = BehaviorSubject();
   }
-  populateAll(List data){
+
+  populateAll(List data) {
     _list.add(data.map((e) => RegionModel.fromJson(e)).toList());
     List<UserModel> users = [];
-    for(RegionModel region in this.current){
-      for(CenterModel center in region.centers!){
-        for(UserModel user in center.users){
+    for (RegionModel region in this.current) {
+      for (CenterModel center in region.centers!) {
+        for (UserModel user in center.users) {
           users.add(user);
         }
       }
     }
     _calendarDataControl.populateAll(users);
   }
-  appendUserToCenter(UserModel user, centerId){
-    for(RegionModel region in this.current){
-      for(CenterModel center in region.centers!){
-        if(center.id == centerId){
+
+  appendUserToCenter(UserModel user, centerId) {
+    for (RegionModel region in this.current) {
+      for (CenterModel center in region.centers!) {
+        if (center.id == centerId) {
           center.users.add(user);
         }
       }
     }
     _list.add(this.current);
   }
-  removeUserFromCenter(int userId, int centerId){
-    for(RegionModel region in this.current){
-      for(CenterModel center in region.centers!){
-        if(center.id == centerId){
+
+  removeUserFromCenter(int userId, int centerId) {
+    for (RegionModel region in this.current) {
+      for (CenterModel center in region.centers!) {
+        if (center.id == centerId) {
           center.users.removeWhere((element) => element.id == userId);
         }
       }
     }
     _list.add(this.current);
   }
-  removeUserFromAllCenters({required int userId}){
-    for(RegionModel region in this.current){
-      for(CenterModel center in region.centers!){
+
+  removeUserFromAllCenters({required int userId}) {
+    for (RegionModel region in this.current) {
+      for (CenterModel center in region.centers!) {
         center.users.removeWhere((element) => element.id == userId);
       }
     }
     _list.add(this.current);
   }
-  append(Map<String, dynamic> data){
+
+  append(Map<String, dynamic> data) {
     this.current.add(RegionModel.fromJson(data));
     _list.add(this.current);
   }
+
   remove(int id) {
     this.current.removeWhere((region) => region.id == id);
     _list.add(this.current);
   }
-  newCenter(Map<String, dynamic> center, int regionId){
+
+  newCenter(Map<String, dynamic> center, int regionId) {
     this.current.where((element) {
-      if(element.id == regionId){
+      if (element.id == regionId) {
         element.centers!.add(CenterModel.fromJson(center));
       }
       return true;
     });
     _list.add(this.current);
   }
-  appendAttendancePureUser(AttendanceModel attendanceModel, userId,){
-    for(RegionModel region in this.current){
-      for(CenterModel center in region.centers!){
-        for(UserModel user in center.users){
-          if(user.id == userId){
+
+  appendAttendancePureUser(
+    AttendanceModel attendanceModel,
+    userId,
+  ) {
+    for (RegionModel region in this.current) {
+      for (CenterModel center in region.centers!) {
+        for (UserModel user in center.users) {
+          if (user.id == userId) {
             user.attendances.add(attendanceModel);
           }
         }
@@ -97,24 +110,27 @@ class RegionDataControl {
     }
     _list.add(this.current);
   }
+
   removeAttendancePureUser(int attendanceId, int userId) {
-    for(RegionModel region in this.current){
-      for(CenterModel center in region.centers!){
-        for(UserModel user in center.users){
-          if(user.id == userId){
-            user.attendances.removeWhere((element) => element.id == attendanceId);
+    for (RegionModel region in this.current) {
+      for (CenterModel center in region.centers!) {
+        for (UserModel user in center.users) {
+          if (user.id == userId) {
+            user.attendances
+                .removeWhere((element) => element.id == attendanceId);
           }
         }
       }
     }
     _list.add(this.current);
   }
+
   appendAttendance(AttendanceModel attendanceModel, userId, centerId) {
-    for(RegionModel region in this.current){
-      for(CenterModel center in region.centers!){
-        if(center.id == centerId){
-          for(UserModel user in center.users){
-            if(user.id == userId){
+    for (RegionModel region in this.current) {
+      for (CenterModel center in region.centers!) {
+        if (center.id == centerId) {
+          for (UserModel user in center.users) {
+            if (user.id == userId) {
               user.attendances.add(attendanceModel);
             }
           }
@@ -124,11 +140,11 @@ class RegionDataControl {
     _list.add(this.current);
   }
 
-  appendRTT(RTTModel rtt, userId){
-    for(RegionModel region in this.current){
-      for(CenterModel center in region.centers!){
-        for(UserModel user in center.users){
-          if(user.id == userId){
+  appendRTT(RTTModel rtt, userId) {
+    for (RegionModel region in this.current) {
+      for (CenterModel center in region.centers!) {
+        for (UserModel user in center.users) {
+          if (user.id == userId) {
             user.rtts.add(rtt);
           }
         }
@@ -136,11 +152,12 @@ class RegionDataControl {
     }
     _list.add(this.current);
   }
-  removeRTT(int rttId, userId){
-    for(RegionModel region in this.current){
-      for(CenterModel center in region.centers!){
-        for(UserModel user in center.users){
-          if(user.id == userId){
+
+  removeRTT(int rttId, userId) {
+    for (RegionModel region in this.current) {
+      for (CenterModel center in region.centers!) {
+        for (UserModel user in center.users) {
+          if (user.id == userId) {
             user.rtts.removeWhere((element) => element.id == rttId);
           }
         }
@@ -149,11 +166,11 @@ class RegionDataControl {
     _list.add(this.current);
   }
 
-  appendHoliday(HolidayModel holiday,int userId){
-    for(RegionModel region in this.current){
-      for(CenterModel center in region.centers!){
-        for(UserModel user in center.users){
-          if(user.id == userId){
+  appendHoliday(HolidayModel holiday, int userId) {
+    for (RegionModel region in this.current) {
+      for (CenterModel center in region.centers!) {
+        for (UserModel user in center.users) {
+          if (user.id == userId) {
             user.holidays.add(holiday);
           }
         }
@@ -161,11 +178,12 @@ class RegionDataControl {
     }
     _list.add(this.current);
   }
+
   removeHoliday(int holidayId, int userId) {
-    for(RegionModel region in this.current){
-      for(CenterModel center in region.centers!){
-        for(UserModel user in center.users){
-          if(user.id == userId){
+    for (RegionModel region in this.current) {
+      for (CenterModel center in region.centers!) {
+        for (UserModel user in center.users) {
+          if (user.id == userId) {
             user.holidays.removeWhere((element) => element.id == holidayId);
           }
         }

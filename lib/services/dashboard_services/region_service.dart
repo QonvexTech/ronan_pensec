@@ -14,34 +14,38 @@ class RegionService {
   static final Auth _auth = Auth.instance;
 
   static final RegionService _instance = RegionService._internal();
-  static final RawRegionController _regionController = RawRegionController.instance;
+  static final RawRegionController _regionController =
+      RawRegionController.instance;
   RawRegionController get rawRegionController => _regionController;
   // ignore: non_constant_identifier_names
   static RegionService instance(RegionDataControl control) {
     _instance._regionDataControl = control;
     return _instance;
   }
-  late final ToastNotifier _notifier= ToastNotifier.instance;
+
+  late final ToastNotifier _notifier = ToastNotifier.instance;
 
   Future<void> get fetchRaw async {
-    try{
-      await http.get(Uri.parse("${BaseEnpoint.URL}${RegionEndpoint.base}/raw"),headers: {
-        "Accept": "application/json",
-        HttpHeaders.authorizationHeader: "Bearer ${_auth.token}"
-      }).then((response) {
+    try {
+      await http.get(Uri.parse("${BaseEnpoint.URL}${RegionEndpoint.base}/raw"),
+          headers: {
+            "Accept": "application/json",
+            HttpHeaders.authorizationHeader: "Bearer ${_auth.token}"
+          }).then((response) {
         var data = json.decode(response.body);
-        if(response.statusCode == 200){
+        if (response.statusCode == 200) {
           rawRegionController.regionData.populateRegions = data;
-          return ;
+          return;
         }
         print("ERROR ${response.statusCode}");
-        return ;
+        return;
       });
-    }catch(e){
+    } catch (e) {
       print(e);
-      return ;
+      return;
     }
   }
+
   Future<bool> fetch(context) async {
     try {
       String url = "${BaseEnpoint.URL}${RegionEndpoint.base}";
@@ -51,40 +55,46 @@ class RegionService {
       }).then((response) {
         var data = json.decode(response.body);
         if (response.statusCode == 200) {
-          if(data is List){
+          if (data is List) {
             _regionDataControl.populateAll(data);
-          }else{
+          } else {
             _regionDataControl.populateAll(data['']);
           }
           return true;
-        }else {
+        } else {
           _notifier.showContextedBottomToast(context,
-              msg: "REGION Erreur ${response.statusCode}, ${response.reasonPhrase}");
+              msg:
+                  "REGION Erreur ${response.statusCode}, ${response.reasonPhrase}");
           return false;
         }
       });
     } catch (e) {
       print("ERRErreur : $e");
-      _notifier.showContextedBottomToast(context,msg:"Erreur $e");
+      _notifier.showContextedBottomToast(context, msg: "Erreur $e");
       return false;
     }
   }
 
-  Future create(context,Map body) async {
+  Future create(context, Map body) async {
     try {
-      await http.post(Uri.parse("${BaseEnpoint.URL}${RegionEndpoint.base}"),headers: {
-        "Accept": "application/json",
-        HttpHeaders.authorizationHeader: "Bearer ${_auth.token}"
-      },body: body).then((response) {
+      await http
+          .post(Uri.parse("${BaseEnpoint.URL}${RegionEndpoint.base}"),
+              headers: {
+                "Accept": "application/json",
+                HttpHeaders.authorizationHeader: "Bearer ${_auth.token}"
+              },
+              body: body)
+          .then((response) {
         var data = json.decode(response.body);
-        if(response.statusCode == 200 || response.statusCode == 201){
+        if (response.statusCode == 200 || response.statusCode == 201) {
           _regionDataControl.append(data);
-        }else{
-          _notifier.showContextedBottomToast(context,msg: "Erreur ${response.statusCode}, ${response.reasonPhrase}");
+        } else {
+          _notifier.showContextedBottomToast(context,
+              msg: "Erreur ${response.statusCode}, ${response.reasonPhrase}");
         }
       });
     } catch (e) {
-      _notifier.showContextedBottomToast(context,msg:"Erreur $e");
+      _notifier.showContextedBottomToast(context, msg: "Erreur $e");
     }
   }
 }

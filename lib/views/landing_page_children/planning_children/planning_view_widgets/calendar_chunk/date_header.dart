@@ -16,7 +16,6 @@ class _DateHeaderState extends State<DateHeader> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    print(widget.calendarViewModel.numOfDays);
     return Row(
       children: List.generate(
         widget.calendarViewModel.numOfDays,

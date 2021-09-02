@@ -9,16 +9,16 @@ class AttendanceModel {
     required this.date,
   });
 
-  factory AttendanceModel.fromJson(Map parsedJson){
+  factory AttendanceModel.fromJson(Map parsedJson) {
     return AttendanceModel(
-      id : int.parse(parsedJson['id'].toString()),
-      status : int.parse(parsedJson['status'].toString()),
-      date : DateTime.parse(parsedJson['date']),
+      id: int.parse(parsedJson['id'].toString()),
+      status: int.parse(parsedJson['status'].toString()),
+      date: DateTime.tryParse(parsedJson['date']) ?? DateTime.now(),
     );
   }
-  Map<String,dynamic> toJson()=>{
-    'id' : id,
-    'status' : status,
-    'date' : date,
-  };
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'status': status,
+        'date': date,
+      };
 }
