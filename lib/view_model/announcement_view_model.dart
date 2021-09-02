@@ -32,7 +32,10 @@ class AnnouncementViewModel {
         _instance.body.remove('message');
       }
     });
-    _instance.appendToBody = {'sender_id': _auth.loggedUser!.id.toString(), "type" : "0"};
+    _instance.appendToBody = {
+      'sender_id': _auth.loggedUser!.id.toString(),
+      "type": "0"
+    };
     return _instance;
   }
 
@@ -47,19 +50,40 @@ class AnnouncementViewModel {
 
   void clearDataBody() {
     _instance._body.clear();
-    _instance.appendToBody = {'sender_id': _auth.loggedUser!.id.toString(), "type" : "0"};
+    _instance.appendToBody = {
+      'sender_id': _auth.loggedUser!.id.toString(),
+      "type": "0"
+    };
   }
 
-  RawUserModel? _receiver;
+  List<Map> _bud = [];
+  List<Map> get bud => _bud;
+  set appendToBud(Map data) {
+    data['sender_id'] = _auth.loggedUser!.id.toString();
+    data['type'] = body['type'];
+    data['title'] = body['title'];
+    data['message'] = body['message'];
+    _bud.add(data);
+  }
 
-  RawUserModel? get receiver => _receiver;
+  void clearDataBud() {
+    _instance._bud.clear();
+  }
+
+  List<RawUserModel?>? _receiver;
+
+  List<RawUserModel?>? get receiver => _receiver;
 
   set setReceiver(RawUserModel? user) {
-    _receiver = user;
+    if (_receiver == null) {
+      _receiver = <RawUserModel?>[];
+    }
+
     if (user != null) {
-      _instance.appendToBody = {'receiver_id': user.id.toString()};
+      _receiver!.add(user);
+      _instance.appendToBud = {'receiver_id': user.id.toString()};
     } else {
-      _instance.body.remove('receiver_id');
+      _instance.bud.remove(user);
     }
   }
 
@@ -75,6 +99,7 @@ class AnnouncementViewModel {
       _instance.body.remove('image');
     }
   }
+
   void dispose() {
     _instance.clearDataBody();
     _instance.setDropdownValue = _dropdownMenu[0];
@@ -83,28 +108,27 @@ class AnnouncementViewModel {
     _instance.title.clear();
     _instance.message.clear();
   }
+
   GlobalKey<FormState> titleFormKey = new GlobalKey<FormState>();
   GlobalKey<FormState> messageFormKey = new GlobalKey<FormState>();
   Widget get titleField => Theme(
-        data: ThemeData(primaryColor: Palette.gradientColor[0]),
-        child: Form(
-          key: titleFormKey,
-          child: TextFormField(
-            validator: (text){
-              if(text!.isEmpty){
-                return "Ce champ est obligatoire, merci de renseigner";
-              }
-            },
-            controller: _instance.title,
-            cursorColor: Palette.gradientColor[0],
-            decoration: InputDecoration(
+      data: ThemeData(primaryColor: Palette.gradientColor[0]),
+      child: Form(
+        key: titleFormKey,
+        child: TextFormField(
+          validator: (text) {
+            if (text!.isEmpty) {
+              return "Ce champ est obligatoire, merci de renseigner";
+            }
+          },
+          controller: _instance.title,
+          cursorColor: Palette.gradientColor[0],
+          decoration: InputDecoration(
               labelText: "Titre de l'annonce *",
               hintText: "Votre titre",
-              prefixIcon: Icon(Icons.title)
-            ),
-          ),
-        )
-      );
+              prefixIcon: Icon(Icons.title)),
+        ),
+      ));
   Widget get messageField => Theme(
       data: ThemeData(primaryColor: Palette.gradientColor[0]),
       child: Form(
@@ -112,8 +136,8 @@ class AnnouncementViewModel {
         child: TextFormField(
           maxLines: null,
           minLines: 4,
-          validator: (text){
-            if(text!.isEmpty){
+          validator: (text) {
+            if (text!.isEmpty) {
               return "Ce champ est obligatoire, merci de renseigner";
             }
           },
@@ -122,100 +146,107 @@ class AnnouncementViewModel {
           decoration: InputDecoration(
               labelText: "Contenu de l'annonce *",
               hintText: "Contenu",
-              prefixIcon: Icon(Icons.content_copy)
-          ),
+              prefixIcon: Icon(Icons.content_copy)),
         ),
-      )
-  );
+      ));
 
-  bool validateTexts(){
+  bool validateTexts() {
     bool titleIsValid = titleFormKey.currentState!.validate();
     bool messageIsValid = messageFormKey.currentState!.validate();
     return titleIsValid && messageIsValid;
   }
+
   List<Map> _dropdownMenu = [
     {
-      "value" : 0,
-      "title" : "Basse",
-      "description" : "Ceci est un avis de base, pas d'interruptions et pas de données à voir"
+      "value": 0,
+      "title": "Basse",
+      "description":
+          "Ceci est un avis de base, pas d'interruptions et pas de données à voir"
     },
     {
-      "value" : 1,
-      "title" : "Moyen",
-      "description" : "Une importance moyenne vous montrera des données"
+      "value": 1,
+      "title": "Moyenne",
+      "description": "Une importance moyenne vous montrera des données"
     },
     {
-      "value" : 2,
-      "title" : "Haut",
-      "description" : "Cela provoquera des interruptions dans le récepteur et des détails flash à l'écran"
+      "value": 2,
+      "title": "Haute",
+      "description":
+          "Cela provoquera des interruptions dans le récepteur et des détails flash à l'écran"
     }
   ];
   late Map _dropdownValue = _dropdownMenu[0];
   Map get dropdownValue => _dropdownValue;
   set setDropdownValue(Map data) {
     _dropdownValue = data;
-    _instance.appendToBody = {'type' : data['value'].toString()};
+    _instance.appendToBody = {'type': data['value'].toString()};
   }
-  DropdownButton dropdownButtonType({required ValueChanged<Map> chosen, required Map value}) => DropdownButton(
-    value: value,
-      isExpanded: true,
-      hint: Text("Importance de l'annonce"),
-      onChanged: (val){
-        if(val != null){
-          chosen(val);
-        }
-      },
-      items: _dropdownMenu.map<DropdownMenuItem>((e) => DropdownMenuItem(
-        child: Text("${e['title']}"),
-        value: e,
-      )).toList()
-  );
 
-  void showNotice(context, Size size, {required NotificationModel notification}) {
+  DropdownButton dropdownButtonType(
+          {required ValueChanged<Map> chosen, required Map value}) =>
+      DropdownButton(
+          value: value,
+          isExpanded: true,
+          hint: Text("Importance de l'annonce"),
+          onChanged: (val) {
+            if (val != null) {
+              chosen(val);
+            }
+          },
+          items: _dropdownMenu
+              .map<DropdownMenuItem>((e) => DropdownMenuItem(
+                    child: Text("${e['title']}"),
+                    value: e,
+                  ))
+              .toList());
+
+  void showNotice(context, Size size,
+      {required NotificationModel notification}) {
     GeneralTemplate.showDialog(
       context,
-      child: notification.data?['image'] != null ?  ListView(
-        children: [
-          Container(
-            alignment: AlignmentDirectional.centerStart,
-            child: Text("${notification.data?['message']}",style: TextStyle(
-              fontSize: 17,
-            ),),
-          ),
-          Container(
-            width: double.infinity,
-            child: Image(
-              fit: BoxFit.fitWidth,
-              image: NetworkImage("${notification.data?['image']}"),
+      child: notification.data?['image'] != null
+          ? ListView(
+              children: [
+                Container(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: Text(
+                    "${notification.data?['message']}",
+                    style: TextStyle(
+                      fontSize: 17,
+                    ),
+                  ),
+                ),
+                Container(
+                  width: double.infinity,
+                  child: Image(
+                    fit: BoxFit.fitWidth,
+                    image: NetworkImage("${notification.data?['image']}"),
+                  ),
+                ),
+              ],
+            )
+          : Container(
+              alignment: AlignmentDirectional.centerStart,
+              child: Text(
+                "${notification.data?['message']}",
+                style: TextStyle(
+                  fontSize: 17,
+                ),
+              ),
             ),
-          ),
-        ],
-      ) : Container(
-        alignment: AlignmentDirectional.centerStart,
-        child: Text("${notification.data?['message']}",style: TextStyle(
-          fontSize: 17,
-        ),),
-      ),
       width: size.width,
-      height:
-      notification.data?['image'] != null
-          ? 300
-          : 100,
+      height: notification.data?['image'] != null ? 300 : 100,
       title: ListTile(
         leading: Container(
           width: 40,
           height: 40,
           child: Image.asset(
             "assets/images/info.png",
-            color: notification
-                .data?['type'] ==
-                2
+            color: notification.data?['type'] == 2
                 ? Colors.red
-                : notification
-                .data?['type'] ==
-                1
-                ? Colors.orange
-                : Colors.green,
+                : notification.data?['type'] == 1
+                    ? Colors.orange
+                    : Colors.green,
           ),
         ),
         title: Text(
@@ -227,15 +258,11 @@ class AnnouncementViewModel {
           //     ? "Attention"
           //     : "Remarquer",
           style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 1),
+              fontSize: 20, fontWeight: FontWeight.w600, letterSpacing: 1),
         ),
         subtitle: Text(
           "${notification.message}",
-          style: TextStyle(
-              fontSize: 16,
-              fontStyle: FontStyle.italic),
+          style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
         ),
       ),
     );

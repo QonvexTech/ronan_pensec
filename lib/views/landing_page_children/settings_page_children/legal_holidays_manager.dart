@@ -58,7 +58,7 @@ class _LegalHolidaysViewState extends State<LegalHolidaysManager> {
                       children: [
                         Expanded(
                           child: Text(
-                            "La Fête",
+                            "Jours fériés",
                             style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w600,
@@ -68,122 +68,120 @@ class _LegalHolidaysViewState extends State<LegalHolidaysManager> {
                         IconButton(
                           tooltip: "Ajouter un nouveau jour férié",
                           onPressed: () {
-                            GeneralTemplate.showDialog(context,
-                                child: StatefulBuilder(
-                                  builder: (context, setState) {
-                                    return Column(
+                            GeneralTemplate.showDialog(context, child:
+                                    StatefulBuilder(
+                                        builder: (context, setState) {
+                              return Column(
+                                children: [
+                                  Expanded(
+                                    child: ListView(
                                       children: [
-                                        Expanded(
-                                          child: ListView(
-                                            children: [
-                                              Theme(
-                                                data: ThemeData(
-                                                    primaryColor:
-                                                        Palette.gradientColor[0]),
-                                                child: TextField(
-                                                  controller: _name,
-                                                  cursorColor:
-                                                      Palette.gradientColor[0],
-                                                  decoration: InputDecoration(
-                                                      prefixIcon: Icon(Icons
-                                                          .drive_file_rename_outline),
-                                                      labelText: "Nom",
-                                                      hintText:
-                                                          "Nouveau jour férié nom",
-                                                      suffixIcon: IconButton(
-                                                        onPressed: () {
-                                                          setState(() {
-                                                            _name.clear();
-                                                          });
-                                                        },
-                                                        icon: Icon(Icons.clear_all),
-                                                      )),
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                height: 10,
-                                              ),
-                                              DateChooser(
-                                                onChangeCallback: (String? date){
-                                                  if (date != null) {
+                                        Theme(
+                                          data: ThemeData(
+                                              primaryColor:
+                                                  Palette.gradientColor[0]),
+                                          child: TextField(
+                                            controller: _name,
+                                            cursorColor:
+                                                Palette.gradientColor[0],
+                                            decoration: InputDecoration(
+                                                prefixIcon: Icon(Icons
+                                                    .drive_file_rename_outline),
+                                                labelText: "Nom",
+                                                hintText:
+                                                    "Nouveau jour férié nom",
+                                                suffixIcon: IconButton(
+                                                  onPressed: () {
                                                     setState(() {
-                                                      _body.addAll({
-                                                        "date": date
-                                                            .toString()
-                                                      });
+                                                      _name.clear();
                                                     });
-                                                  } else {
-                                                    setState(() {
-                                                      _body.remove("date");
-                                                    });
-                                                  }
-                                                },
-                                              )
-                                            ],
+                                                  },
+                                                  icon: Icon(Icons.clear_all),
+                                                )),
                                           ),
                                         ),
-                                        Container(
-                                          width: double.infinity,
-                                          height: 50,
-                                          child: Row(
-                                            children: [
-                                              Expanded(
-                                                child: MaterialButton(
-                                                  onPressed: () =>
-                                                      Navigator.of(context)
-                                                          .pop(null),
-                                                  color: Colors.grey.shade200,
-                                                  child: Center(
-                                                    child: Text(
-                                                      "ANNULER",
-                                                      style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                          letterSpacing: 1.5),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
-                                              Expanded(
-                                                child: MaterialButton(
-                                                  onPressed: () async {
-                                                    if (_body.length == 2) {
-                                                      setState(() {
-                                                        _isLoading = true;
-                                                      });
-                                                      Navigator.of(context).pop(null);
-                                                      await _holidayService.add(
-                                                          body: _body).whenComplete(() => setState(() => _isLoading = false));
-                                                    } else {
-                                                      _notifier
-                                                          .showUnContextedBottomToast(
-                                                              msg:
-                                                                  "Veuillez remplir toutes les données requises");
-                                                    }
-                                                  },
-                                                  color: Palette.gradientColor[0],
-                                                  child: Center(
-                                                    child: Text(
-                                                      "SOUMETTRE",
-                                                      style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                          color: Colors.white,
-                                                          letterSpacing: 1.5),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        DateChooser(
+                                          onChangeCallback: (String? date) {
+                                            if (date != null) {
+                                              setState(() {
+                                                _body.addAll(
+                                                    {"date": date.toString()});
+                                              });
+                                            } else {
+                                              setState(() {
+                                                _body.remove("date");
+                                              });
+                                            }
+                                          },
                                         )
                                       ],
-                                    );
-                                  }
-                                ),
+                                    ),
+                                  ),
+                                  Container(
+                                    width: double.infinity,
+                                    height: 50,
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: MaterialButton(
+                                            onPressed: () =>
+                                                Navigator.of(context).pop(null),
+                                            color: Colors.grey.shade200,
+                                            child: Center(
+                                              child: Text(
+                                                "ANNULER",
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.w600,
+                                                    letterSpacing: 1.5),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        Expanded(
+                                          child: MaterialButton(
+                                            onPressed: () async {
+                                              if (_body.length == 2) {
+                                                setState(() {
+                                                  _isLoading = true;
+                                                });
+                                                Navigator.of(context).pop(null);
+                                                await _holidayService
+                                                    .add(body: _body)
+                                                    .whenComplete(() =>
+                                                        setState(() =>
+                                                            _isLoading =
+                                                                false));
+                                              } else {
+                                                _notifier
+                                                    .showUnContextedBottomToast(
+                                                        msg:
+                                                            "Veuillez remplir toutes les données requises");
+                                              }
+                                            },
+                                            color: Palette.gradientColor[0],
+                                            child: Center(
+                                              child: Text(
+                                                "SOUMETTRE",
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Colors.white,
+                                                    letterSpacing: 1.5),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              );
+                            }),
                                 width: size.width,
                                 height: 180,
                                 title: ListTile(

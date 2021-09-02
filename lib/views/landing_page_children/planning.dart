@@ -7,8 +7,7 @@ import 'package:ronan_pensec/route/planning_route.dart';
 import 'package:ronan_pensec/view_model/calendar_view_models/add_holiday_view_model.dart';
 import 'package:ronan_pensec/view_model/calendar_view_models/add_rtt_view_model.dart';
 import 'package:ronan_pensec/view_model/region_view_model.dart';
-
-import 'calendar_planning.dart';
+import 'package:ronan_pensec/views/landing_page_children/planning_children/planning_view.dart';
 
 class WebPlanning extends StatefulWidget {
   final List<PopupMenuItem<int>> menuItems;
@@ -22,20 +21,24 @@ class WebPlanning extends StatefulWidget {
 
 class _WebDashboardState extends State<WebPlanning> {
   late final RegionViewModel _regionViewModel = widget.regionViewModel;
-  final CalendarPlanning _calendarPlanning = CalendarPlanning();
+  final PlanningView _planningView = new PlanningView();
+  // final CalendarPlanning _calendarPlanning = CalendarPlanning();
   final AddHolidayViewModel _holidayViewModel = AddHolidayViewModel.instance;
   final AddRTTViewModel _rttViewModel = AddRTTViewModel.instance;
   bool _isLoading = false;
   @override
   void initState() {
-    if(!_regionViewModel.control.hasFetched){
-      _regionViewModel.service.fetch(context).then((value) => setState(() => _regionViewModel.control.hasFetched = true));
+    if (!_regionViewModel.control.hasFetched) {
+      _regionViewModel.service.fetch(context).then((value) =>
+          setState(() => _regionViewModel.control.hasFetched = true));
     }
-    if(_regionViewModel.service.rawRegionController.regionData.regions.isEmpty){
+    if (_regionViewModel
+        .service.rawRegionController.regionData.regions.isEmpty) {
       _regionViewModel.service.fetchRaw;
     }
     super.initState();
   }
+
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
@@ -44,52 +47,57 @@ class _WebDashboardState extends State<WebPlanning> {
     return Stack(
       children: [
         Scaffold(
-          key: _scaffoldKey,
-          floatingActionButton: ExpandableFab(
-            activeIcon: Icons.menu,
-            color: Palette.gradientColor[0],
-            distance: 112,
-            children: [
-              if(_regionViewModel.auth.loggedUser!.roleId < 3)...{
+            key: _scaffoldKey,
+            floatingActionButton: ExpandableFab(
+              activeIcon: Icons.menu,
+              color: Palette.gradientColor[0],
+              distance: 112,
+              children: [
+                if (_regionViewModel.auth.loggedUser!.roleId < 3) ...{
+                  ActionButton(
+                    message: "Voir Toutes les demandes en attente",
+                    onPressed: () =>
+                        Navigator.push(context, PlanningRoute.allRequests(0)),
+                    icon: const Icon(Icons.request_page_outlined),
+                  ),
+                },
+                if (_regionViewModel.auth.loggedUser!.roleId != 1) ...{
+                  ActionButton(
+                    message: "Voir mes demandes",
+                    onPressed: () =>
+                        Navigator.push(context, PlanningRoute.myRequests),
+                    icon: const Icon(Icons.article_outlined),
+                  ),
+                },
                 ActionButton(
-                  message: "Voir Toutes les demandes en attente",
-                  onPressed: () => Navigator.push(context, PlanningRoute.allRequests(0)),
-                  icon: const Icon(Icons.request_page_outlined),
+                  message: "Ajouter de nouvelles congés",
+                  onPressed: () => _holidayViewModel
+                      .showAddHoliday(_scaffoldKey.currentContext!, size: _size,
+                          loadingCallback: (bool b) {
+                    setState(() {
+                      _isLoading = b;
+                    });
+                  }),
+                  icon: const Icon(Icons.beach_access_outlined),
                 ),
-              },
-              if(_regionViewModel.auth.loggedUser!.roleId != 1)...{
                 ActionButton(
-                  message: "Voir mes demandes",
-                  onPressed: () => Navigator.push(context, PlanningRoute.myRequests),
-                  icon: const Icon(Icons.article_outlined),
+                  message: "Ajouter de nouvelles RTT",
+                  onPressed: () => _rttViewModel
+                      .showAddRtt(_scaffoldKey.currentContext!, size: _size,
+                          loadingCallback: (bool b) {
+                    setState(() {
+                      _isLoading = b;
+                    });
+                  }),
+                  icon: const Icon(Icons.hourglass_bottom_outlined),
                 ),
-              },
-              ActionButton(
-                message: "Ajouter de nouvelles congés",
-                onPressed: () => _holidayViewModel.showAddHoliday(_scaffoldKey.currentContext!, size: _size, loadingCallback: (bool b){
-                  setState(() {
-                    _isLoading = b;
-                  });
-                }),
-                icon: const Icon(Icons.beach_access_outlined),
-              ),
-              ActionButton(
-                message: "Ajouter de nouvelles RTT",
-                onPressed: () => _rttViewModel.showAddRtt(_scaffoldKey.currentContext!, size: _size, loadingCallback: (bool b){
-                  setState(() {
-                    _isLoading = b;
-                  });
-                }),
-                icon: const Icon(Icons.hourglass_bottom_outlined),
-              ),
-            ],
-          ),
-          body: Container(
-            width: double.infinity,
-            height: _size.height,
-            child: _calendarPlanning,
-          )
-        ),
+              ],
+            ),
+            body: Container(
+              width: double.infinity,
+              height: _size.height,
+              child: _planningView,
+            )),
         _isLoading ? GeneralTemplate.loader(_size) : Container()
       ],
     );

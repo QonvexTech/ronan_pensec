@@ -7,7 +7,8 @@ import 'package:ronan_pensec/view_model/planning_view_model.dart';
 class CalendarComponents extends StatefulWidget {
   final ValueChanged<List<RegionModel>> searchCallback;
 
-  CalendarComponents({Key? key, required this.searchCallback}) : super(key: key);
+  CalendarComponents({Key? key, required this.searchCallback})
+      : super(key: key);
 
   @override
   _CalendarComponentsState createState() => _CalendarComponentsState();
@@ -53,8 +54,7 @@ class _CalendarComponentsState extends State<CalendarComponents> {
                 showField = false;
               });
               widget.searchCallback(List<RegionModel>.from(
-                  planningViewModel
-                      .planningControl.current));
+                  planningViewModel.planningControl.current));
             },
             initialValue: calendarViewModel.type,
           ),
@@ -119,7 +119,7 @@ class _CalendarComponentsState extends State<CalendarComponents> {
                 const SizedBox(
                   width: 10,
                 ),
-                Text("Absent")
+                Text("Absences")
               ],
             ),
           ),
@@ -149,70 +149,65 @@ class _CalendarComponentsState extends State<CalendarComponents> {
             duration: const Duration(milliseconds: 600),
             width: showField
                 ? size.width > 900
-                ? size.width * .3
-                : size.width * .4
+                    ? size.width * .3
+                    : size.width * .4
                 : 60,
             height: 60,
             child: AnimatedSwitcher(
               duration: const Duration(milliseconds: 600),
               child: showField
                   ? Theme(
-                data: ThemeData(
-                    primaryColor: Palette.gradientColor[0]),
-                child: TextField(
-                  controller: calendarViewModel.searchBy,
-                  onChanged: (text) {
-                    if (this.mounted) {
-                      setState(() {
-                        if (calendarViewModel.type == 0) {
-                          widget.searchCallback(List<RegionModel>.from(
-                              planningViewModel
-                                  .planningControl.current)
-                              .where((element) => element.name
-                              .toLowerCase()
-                              .contains(text.toLowerCase()))
-                              .toList());
-                        } else {
-                          List<RegionModel> _data = calendarViewModel
-                              .service
-                              .searchResult(
-                              List<RegionModel>.from(
-                                  planningViewModel
-                                      .planningControl
-                                      .current),
-                              text,
-                              calendarViewModel.type);
-                          widget.searchCallback(_data);
-                        }
-                      });
-                    }
-                  },
-                  cursorColor: Palette.gradientColor[0],
-                  decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.search),
-                      hintText:
-                      "Rechercher ${calendarViewModel.type == 0 ? "\"Région\"" : calendarViewModel.type == 1 ? "\"Centre\"" : "\"Employé\""}",
-                      suffixIcon: IconButton(
-                        icon: Icon(Icons.clear),
-                        onPressed: () {
-                          calendarViewModel.searchBy.clear();
-                          setState(() {
-                            showField = false;
-                          });
-                          widget.searchCallback(List<RegionModel>.from(
-                              planningViewModel
-                                  .planningControl.current));
+                      data: ThemeData(primaryColor: Palette.gradientColor[0]),
+                      child: TextField(
+                        controller: calendarViewModel.searchBy,
+                        onChanged: (text) {
+                          if (this.mounted) {
+                            setState(() {
+                              if (calendarViewModel.type == 0) {
+                                widget.searchCallback(List<RegionModel>.from(
+                                        planningViewModel
+                                            .planningControl.current)
+                                    .where((element) => element.name
+                                        .toLowerCase()
+                                        .contains(text.toLowerCase()))
+                                    .toList());
+                              } else {
+                                List<RegionModel> _data =
+                                    calendarViewModel.service.searchResult(
+                                        List<RegionModel>.from(planningViewModel
+                                            .planningControl.current),
+                                        text,
+                                        calendarViewModel.type);
+                                widget.searchCallback(_data);
+                              }
+                            });
+                          }
                         },
-                      )),
-                ),
-              )
+                        cursorColor: Palette.gradientColor[0],
+                        decoration: InputDecoration(
+                            prefixIcon: Icon(Icons.search),
+                            hintText:
+                                "Rechercher ${calendarViewModel.type == 0 ? "\"Région\"" : calendarViewModel.type == 1 ? "\"Centre\"" : "\"Employé\""}",
+                            suffixIcon: IconButton(
+                              icon: Icon(Icons.clear),
+                              onPressed: () {
+                                calendarViewModel.searchBy.clear();
+                                setState(() {
+                                  showField = false;
+                                });
+                                widget.searchCallback(List<RegionModel>.from(
+                                    planningViewModel.planningControl.current));
+                              },
+                            )),
+                      ),
+                    )
                   : IconButton(
-                  icon: Icon(Icons.search),
-                  onPressed: () {
-                    setState(() {
-                      showField = true;
-                    });
-                  }),
+                      icon: Icon(Icons.search),
+                      onPressed: () {
+                        setState(() {
+                          showField = true;
+                        });
+                      }),
             ),
           ),
           if (!showField) ...{

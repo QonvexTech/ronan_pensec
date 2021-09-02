@@ -21,15 +21,16 @@ class EmployeeTemplate {
       child: MaterialButton(
         onPressed: () {
           showDatePicker(
-              context: context,
-              locale: Locale("fr"),
-              initialDate: DateTime.now().subtract(Duration(days: 7300)),
-              firstDate:
-                  DateTime(DateTime.now().subtract(Duration(days: 18250)).year),
-              lastDate: DateTime.now()).then((value) {
-                if(value != null){
-                  onChange(value);
-                }
+                  context: context,
+                  locale: Locale("fr"),
+                  initialDate: DateTime.now().subtract(Duration(days: 7300)),
+                  firstDate: DateTime(
+                      DateTime.now().subtract(Duration(days: 18250)).year),
+                  lastDate: DateTime.now())
+              .then((value) {
+            if (value != null) {
+              onChange(value);
+            }
           });
         },
         child: Row(
@@ -37,7 +38,9 @@ class EmployeeTemplate {
             Expanded(
               child: Text(chosenDate == null
                   ? "Choisir la date de naissance"
-                  : DateFormat.yMMMMd('fr_FR').format(chosenDate).toUpperCase()),
+                  : DateFormat.yMMMMd('fr_FR')
+                      .format(chosenDate)
+                      .toUpperCase()),
             ),
             Icon(
               Icons.calendar_today_sharp,
@@ -49,7 +52,8 @@ class EmployeeTemplate {
     );
   }
 
-  Theme normalTextField(TextEditingController controller, String label, {TextInputType type = TextInputType.text, Widget? prefixIcon}) =>
+  Theme normalTextField(TextEditingController controller, String label,
+          {TextInputType type = TextInputType.text, Widget? prefixIcon}) =>
       Theme(
         data: ThemeData(primaryColor: Palette.gradientColor[0]),
         child: TextField(
@@ -59,10 +63,9 @@ class EmployeeTemplate {
           decoration: InputDecoration(
               labelText: label,
               hintText: label,
-              prefixIconConstraints: prefixIcon != null ? BoxConstraints(
-                minHeight: 60,
-                minWidth: 60
-              ) : null,
+              prefixIconConstraints: prefixIcon != null
+                  ? BoxConstraints(minHeight: 60, minWidth: 60)
+                  : null,
               prefixIcon: prefixIcon,
               border:
                   OutlineInputBorder(borderRadius: BorderRadius.circular(5))),
@@ -71,12 +74,7 @@ class EmployeeTemplate {
 
   List<DataColumn> get kDataColumn => [
         DataColumn(
-          label: Text(
-            "ID",
-            style: TextStyle(
-              color: Colors.white,
-            ),
-          ),
+          label: Text(""),
         ),
         DataColumn(
           label: Text(
@@ -96,7 +94,7 @@ class EmployeeTemplate {
         ),
         DataColumn(
           label: Text(
-            "Addresse",
+            "Adresse",
             style: TextStyle(
               color: Colors.white,
             ),
@@ -111,13 +109,29 @@ class EmployeeTemplate {
           ),
         ),
         DataColumn(
-          label: Text(""),
+          label: Text(
+            "Actif",
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
         ),
       ];
 
   List<DataCell> kDataCell(UserModel user) => [
         DataCell(
-          Text("${user.id}"),
+          Container(
+            width: 40,
+            height: 40,
+            child: Hero(
+              tag: "${user.id}",
+              child: CircleAvatar(
+                backgroundColor: Colors.transparent,
+                backgroundImage:
+                    _userViewModel.imageViewer(imageUrl: user.image),
+              ),
+            ),
+          ),
         ),
         DataCell(
           Text("${user.first_name}"),
@@ -133,29 +147,62 @@ class EmployeeTemplate {
         ),
         DataCell(
           Container(
-            width: 40,
-            height: 40,
-            child: Hero(
-              tag: "${user.id}",
-              child: CircleAvatar(
-                backgroundColor: Colors.transparent,
-                backgroundImage:
-                    _userViewModel.imageViewer(imageUrl: user.image),
-              ),
-            ),
-          ),
+              width: 10,
+              height: 10,
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black38,
+                    offset: Offset(-2, 2),
+                    blurRadius: 2,
+                  )
+                ],
+                shape: BoxShape.circle,
+                color: user.isActive == 1 ? Colors.green : Colors.red,
+              )),
         ),
       ];
 
   ListTile kDataList({required UserModel user}) => ListTile(
         contentPadding: const EdgeInsets.symmetric(vertical: 25),
-        title: Text("${user.full_name}"),
-        subtitle: Text(
-          "${user.address}",
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
+        // Text("${user.full_name}")
+        title: RichText(
+          text: TextSpan(
+            text: "${user.full_name}",
+            style: TextStyle(
+              color: Colors.black,
+            ),
+            children: <TextSpan>[
+              TextSpan(
+                text: user.isActive == 1 ? "" : " ( Désactivé )",
+                style: TextStyle(
+                  color: Colors.red,
+                  fontStyle: FontStyle.italic,
+                ),
+              )
+            ],
+          ),
         ),
-        trailing: Icon(Icons.chevron_right),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "${user.address}",
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            Text(
+              "${user.zip_code} ${user.city}",
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            Text(
+              "${user.mobile}",
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
         leading: Container(
           width: 40,
           height: 40,

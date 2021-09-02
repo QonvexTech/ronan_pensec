@@ -114,22 +114,35 @@ class _HolidayRequestState extends State<HolidayRequest> {
                                           controller: _slidableController,
                                           actions: [
                                             IconSlideAction(
-                                              caption: "Save",
+                                              caption: "Sauvegarder",
                                               icon: Icons.save,
                                               color: Colors.green,
                                               onTap: () async {
-                                                 await _service.updateDemand(context,demandId: demand.id, holidayId: demand.holidayId, extension: demand.demands).then((value) {
-                                                   if(value != null){
-                                                     setState(() {
-                                                       demand.demands = value.demands;
-                                                       for(HolidayDemandModel hol in widget.demand!){
-                                                         hol.daysRemaining = value.daysRemaining;
-                                                         hol.daysPosed = value.daysPosed;
-                                                         hol.currentBalance = value.currentBalance;
-                                                       }
-                                                     });
-                                                   }
-                                                 });
+                                                await _service
+                                                    .updateDemand(context,
+                                                        demandId: demand.id,
+                                                        holidayId:
+                                                            demand.holidayId,
+                                                        extension:
+                                                            demand.demands)
+                                                    .then((value) {
+                                                  if (value != null) {
+                                                    setState(() {
+                                                      demand.demands =
+                                                          value.demands;
+                                                      for (HolidayDemandModel hol
+                                                          in widget.demand!) {
+                                                        hol.daysRemaining =
+                                                            value.daysRemaining;
+                                                        hol.daysPosed =
+                                                            value.daysPosed;
+                                                        hol.currentBalance =
+                                                            value
+                                                                .currentBalance;
+                                                      }
+                                                    });
+                                                  }
+                                                });
                                               },
                                               closeOnTap: true,
                                             )
@@ -164,7 +177,9 @@ class _HolidayRequestState extends State<HolidayRequest> {
                                                         1) ...{
                                                       Expanded(
                                                         child: IconButton(
-                                                          padding: const EdgeInsets.all(0),
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(0),
                                                           icon: Center(
                                                             child: Icon(
                                                               Icons.remove,
@@ -173,9 +188,11 @@ class _HolidayRequestState extends State<HolidayRequest> {
                                                           ),
                                                           onPressed: () {
                                                             setState(() {
-                                                              if (demand.demands >
+                                                              if (demand
+                                                                      .demands >
                                                                   1) {
-                                                                demand.demands--;
+                                                                demand
+                                                                    .demands--;
                                                               }
                                                             });
                                                           },
@@ -184,7 +201,6 @@ class _HolidayRequestState extends State<HolidayRequest> {
                                                     },
                                                     Container(
                                                       width: 30,
-
                                                       child: Center(
                                                         child: Text(
                                                             "${demand.demands}"),
@@ -205,8 +221,11 @@ class _HolidayRequestState extends State<HolidayRequest> {
                                                           )),
                                                           onPressed: () {
                                                             setState(() {
-                                                              if(demand.demands < 11){
-                                                                demand.demands++;
+                                                              if (demand
+                                                                      .demands <
+                                                                  11) {
+                                                                demand
+                                                                    .demands++;
                                                               }
                                                             });
                                                           },

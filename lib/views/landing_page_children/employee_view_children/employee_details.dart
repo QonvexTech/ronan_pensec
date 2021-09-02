@@ -22,6 +22,7 @@ class EmployeeDetails extends StatefulWidget {
 
 class _EmployeeDetailsState extends State<EmployeeDetails> {
   bool _isConverting = false;
+  late bool _isActive = widget.employee.isActive == 1;
   late final EmployeeDetailsViewModel _viewModel =
       EmployeeDetailsViewModel.instance(widget.employee);
   late final EmployeeDemands _employeeDemands = EmployeeDemands(
@@ -289,77 +290,83 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                             height: 40,
                                             child: Row(
                                               children: [
-                                                Container(
-                                                  width: 60,
-                                                  child: MaterialButton(
+                                                ElevatedButton(
+                                                  style: ButtonStyle(
+                                                    backgroundColor:
+                                                        MaterialStateProperty
+                                                            .resolveWith(
+                                                      (_) => Palette
+                                                          .gradientColor[0],
+                                                    ),
                                                     padding:
-                                                        const EdgeInsets.all(0),
-                                                    color: Palette
-                                                        .gradientColor[0],
-                                                    onPressed: () async {
-                                                      await _viewModel
-                                                          .userUpdate(
-                                                              context,
-                                                              widget
-                                                                  .employee.id)
-                                                          .then((value) {
-                                                        if (value) {
-                                                          setState(() {
-                                                            widget.employee
-                                                                    .roleId =
-                                                                _viewModel
-                                                                    .roleId;
-                                                            widget.employee
-                                                                    .first_name =
-                                                                _viewModel
-                                                                    .firstName
-                                                                    .text;
-                                                            widget.employee
-                                                                    .last_name =
-                                                                _viewModel
-                                                                    .lastName
-                                                                    .text;
-                                                            widget.employee
-                                                                    .address =
-                                                                _viewModel
-                                                                    .address
-                                                                    .text;
-                                                            widget.employee
-                                                                    .mobile =
-                                                                _viewModel
-                                                                    .mobile
-                                                                    .text;
-                                                            widget.employee
-                                                                    .full_name =
-                                                                _viewModel
-                                                                        .firstName
-                                                                        .text +
-                                                                    " " +
-                                                                    _viewModel
-                                                                        .lastName
-                                                                        .text;
-                                                            _viewModel
-                                                                    .setIsEditing =
-                                                                false;
-                                                            widget.employee
-                                                                    .isSenior =
-                                                                _viewModel
-                                                                        .isSenior ==
-                                                                    1;
-                                                          });
-                                                          this.populate();
-                                                        }
-                                                      });
-                                                      // setState(() {
-                                                      //   _viewModel.setIsEditing = true;
-                                                      // });
-                                                    },
-                                                    child: Center(
-                                                      child: Text(
-                                                        "Save",
-                                                        style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 13),
+                                                        MaterialStateProperty
+                                                            .resolveWith(
+                                                      (_) => const EdgeInsets
+                                                          .symmetric(
+                                                        vertical: 15,
+                                                        horizontal: 15,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  onPressed: () async {
+                                                    await _viewModel
+                                                        .userUpdate(context,
+                                                            widget.employee.id)
+                                                        .then((value) {
+                                                      if (value) {
+                                                        setState(() {
+                                                          widget.employee
+                                                                  .roleId =
+                                                              _viewModel.roleId;
+                                                          widget.employee
+                                                                  .first_name =
+                                                              _viewModel
+                                                                  .firstName
+                                                                  .text;
+                                                          widget.employee
+                                                                  .last_name =
+                                                              _viewModel
+                                                                  .lastName
+                                                                  .text;
+                                                          widget.employee
+                                                                  .address =
+                                                              _viewModel
+                                                                  .address.text;
+                                                          widget.employee
+                                                                  .mobile =
+                                                              _viewModel
+                                                                  .mobile.text;
+                                                          widget.employee
+                                                                  .full_name =
+                                                              _viewModel
+                                                                      .firstName
+                                                                      .text +
+                                                                  " " +
+                                                                  _viewModel
+                                                                      .lastName
+                                                                      .text;
+                                                          _viewModel
+                                                                  .setIsEditing =
+                                                              false;
+                                                          widget.employee
+                                                                  .isSenior =
+                                                              _viewModel
+                                                                      .isSenior ==
+                                                                  1;
+                                                        });
+                                                        this.populate();
+                                                      }
+                                                    });
+                                                    // setState(() {
+                                                    //   _viewModel.setIsEditing = true;
+                                                    // });
+                                                  },
+                                                  child: Center(
+                                                    child: Text(
+                                                      "Sauvegarder",
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 13,
                                                       ),
                                                     ),
                                                   ),
@@ -367,30 +374,57 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                                 const SizedBox(
                                                   width: 5,
                                                 ),
-                                                Container(
-                                                  width: 60,
-                                                  child: MaterialButton(
+                                                ElevatedButton(
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      _viewModel.setIsEditing =
+                                                          false;
+                                                    });
+                                                    populate();
+                                                  },
+                                                  style: ButtonStyle(
+                                                    backgroundColor:
+                                                        MaterialStateProperty
+                                                            .resolveWith(
+                                                      (_) => Colors.red,
+                                                    ),
                                                     padding:
-                                                        const EdgeInsets.all(0),
-                                                    color: Colors.red,
-                                                    onPressed: () {
-                                                      setState(() {
-                                                        _viewModel
-                                                                .setIsEditing =
-                                                            false;
-                                                      });
-                                                      populate();
-                                                    },
-                                                    child: Center(
-                                                      child: Text(
-                                                        "Cancel",
-                                                        style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 13),
+                                                        MaterialStateProperty
+                                                            .resolveWith(
+                                                      (_) => const EdgeInsets
+                                                          .symmetric(
+                                                        vertical: 15,
+                                                        horizontal: 15,
                                                       ),
                                                     ),
                                                   ),
-                                                )
+                                                  child: Center(
+                                                    child: Text(
+                                                      "Annuler",
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 13,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                // Container(
+                                                //   width: 60,
+                                                //   child: MaterialButton(
+                                                //     padding:
+                                                //         const EdgeInsets.all(0),
+                                                //     color: Colors.red,
+                                                //     onPressed: () {},
+                                                //     child: Center(
+                                                //       child: Text(
+                                                //         "Annuler",
+                                                //         style: TextStyle(
+                                                //             color: Colors.white,
+                                                //             fontSize: 13),
+                                                //       ),
+                                                //     ),
+                                                //   ),
+                                                // )
                                               ],
                                             ))
                                       } else ...{
@@ -754,6 +788,108 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                         ),
                                       },
                                       Divider(),
+                                      Container(
+                                        width: double.infinity,
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child: Text(
+                                                "Activer",
+                                                style: TextStyle(
+                                                  fontSize: Theme.of(context)
+                                                          .textTheme
+                                                          .headline6!
+                                                          .fontSize! -
+                                                      4,
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+                                              ),
+                                            ),
+                                            AnimatedContainer(
+                                              duration: const Duration(
+                                                  milliseconds: 400),
+                                              width: 30,
+                                              height: 15,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                                color: _isActive
+                                                    ? Colors.blue
+                                                    : Colors.grey,
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    offset: Offset(2, -2),
+                                                    color: Colors.black38,
+                                                    blurRadius: 3,
+                                                  )
+                                                ],
+                                              ),
+                                              child: MaterialButton(
+                                                height: 40,
+                                                onPressed: () async {
+                                                  setState(() {
+                                                    _isLoading = true;
+                                                    _isActive = !_isActive;
+                                                  });
+                                                  await _viewModel.service
+                                                      .activateEmployee(
+                                                          employeeId: widget
+                                                              .employee.id,
+                                                          active:
+                                                              _isActive ? 1 : 0)
+                                                      .then((value) {
+                                                    if (value) {
+                                                      setState(() {
+                                                        widget.employee
+                                                                .isActive =
+                                                            _isActive ? 1 : 0;
+                                                      });
+                                                    }
+                                                  }).whenComplete(() =>
+                                                          setState(() =>
+                                                              _isLoading =
+                                                                  false));
+                                                },
+                                                padding:
+                                                    const EdgeInsets.all(0),
+                                                child: Stack(
+                                                  alignment: Alignment.center,
+                                                  children: [
+                                                    AnimatedPositioned(
+                                                      top: 0,
+                                                      bottom: 0,
+                                                      duration: const Duration(
+                                                          milliseconds: 300),
+                                                      left: !_isActive ? 0 : 15,
+                                                      right:
+                                                          !_isActive ? 15 : 0,
+                                                      child: Container(
+                                                        width: 30,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          shape:
+                                                              BoxShape.circle,
+                                                          color: Colors.white,
+                                                          boxShadow: [
+                                                            BoxShadow(
+                                                              color: Colors
+                                                                  .black26,
+                                                              offset:
+                                                                  Offset(-2, 2),
+                                                              blurRadius: 3,
+                                                            )
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                      Divider(),
                                       if (widget.employee.paidStatus !=
                                           null) ...{
                                         Container(
@@ -763,75 +899,131 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                           child: Row(
                                             children: [
                                               Expanded(
-                                                child: Text("RTT converti en espèces",
-                                                    style: TextStyle(
-                                                        fontSize: Theme.of(context)
+                                                child: Text(
+                                                  "RTT converti en espèces",
+                                                  style: TextStyle(
+                                                    fontSize: Theme.of(context)
                                                             .textTheme
                                                             .headline6!
                                                             .fontSize! -
-                                                            4,
-                                                        fontWeight: FontWeight.w700)),
+                                                        4,
+                                                    fontWeight: FontWeight.w700,
+                                                  ),
+                                                ),
                                               ),
                                               IconButton(
                                                 tooltip: "Convertir",
-                                                onPressed: (){
+                                                onPressed: () {
                                                   setState(() {
-                                                    _isConverting = !_isConverting;
+                                                    _isConverting =
+                                                        !_isConverting;
                                                   });
                                                 },
-                                                icon: Icon(Icons.swap_horiz, color: !_isConverting ? Colors.black : Palette.gradientColor[3],),
+                                                icon: Icon(
+                                                  Icons.swap_horiz,
+                                                  color: !_isConverting
+                                                      ? Colors.black
+                                                      : Palette
+                                                          .gradientColor[3],
+                                                ),
                                               )
                                             ],
-                                          )
+                                          ),
                                         ),
                                         AnimatedContainer(
-                                          duration: const Duration(milliseconds: 300),
+                                          duration:
+                                              const Duration(milliseconds: 300),
                                           width: double.infinity,
                                           height: _isConverting ? 50 : 0,
-                                          child: _isConverting ? Theme(
-                                            data: ThemeData(
-                                              primaryColor: Palette.gradientColor[3]
-                                            ),
-                                            child: TextField(
-                                              onSubmitted: (text) async {
-                                                if(text.isNotEmpty){
-                                                  if(_viewModel.isNumeric(text)){
-                                                    if(double.parse(text) <= widget.employee.paidStatus!.remainingAmount){
-                                                      if(double.parse(text) > 0){
-                                                        setState(() {
-                                                          _isLoading = true;
-                                                        });
-                                                        await _viewModel.service.convertRttToCash(text, widget.employee.id.toString()).then((value) {
-                                                          setState(() {
-                                                            _isConverting = !value;
-                                                          });
-                                                          if(value){
-                                                            setState(() {
-                                                              widget.employee.paidStatus!.remainingAmount -= double.parse(text);
-                                                              widget.employee.paidStatus!.amountConverted += double.parse(text);
-                                                            });
+                                          child: _isConverting
+                                              ? Theme(
+                                                  data: ThemeData(
+                                                      primaryColor: Palette
+                                                          .gradientColor[3]),
+                                                  child: TextField(
+                                                      onSubmitted:
+                                                          (text) async {
+                                                        if (text.isNotEmpty) {
+                                                          if (_viewModel
+                                                              .isNumeric(
+                                                                  text)) {
+                                                            if (double.parse(
+                                                                    text) <=
+                                                                widget
+                                                                    .employee
+                                                                    .paidStatus!
+                                                                    .remainingAmount) {
+                                                              if (double.parse(
+                                                                      text) >
+                                                                  0) {
+                                                                setState(() {
+                                                                  _isLoading =
+                                                                      true;
+                                                                });
+                                                                await _viewModel
+                                                                    .service
+                                                                    .convertRttToCash(
+                                                                        text,
+                                                                        widget
+                                                                            .employee
+                                                                            .id
+                                                                            .toString())
+                                                                    .then(
+                                                                        (value) {
+                                                                  setState(() {
+                                                                    _isConverting =
+                                                                        !value;
+                                                                  });
+                                                                  if (value) {
+                                                                    setState(
+                                                                        () {
+                                                                      widget
+                                                                          .employee
+                                                                          .paidStatus!
+                                                                          .remainingAmount -= double.parse(text);
+                                                                      widget
+                                                                          .employee
+                                                                          .paidStatus!
+                                                                          .amountConverted += double.parse(text);
+                                                                    });
+                                                                  }
+                                                                }).whenComplete(() =>
+                                                                        setState(() =>
+                                                                            _isLoading =
+                                                                                false));
+                                                              } else {
+                                                                _viewModel
+                                                                    .notifier
+                                                                    .showUnContextedBottomToast(
+                                                                        msg:
+                                                                            "Veuillez fournir un nombre supérieur à 0");
+                                                              }
+                                                            } else {
+                                                              _viewModel
+                                                                  .notifier
+                                                                  .showUnContextedBottomToast(
+                                                                      msg:
+                                                                          "Vous avez dépassé votre limite de montant");
+                                                            }
+                                                          } else {
+                                                            _viewModel.notifier
+                                                                .showUnContextedBottomToast(
+                                                                    msg:
+                                                                        "Veuillez fournir un montant valide");
                                                           }
-                                                        }).whenComplete(() => setState(() => _isLoading = false));
-                                                      }else{
-                                                        _viewModel.notifier.showUnContextedBottomToast(msg: "Veuillez fournir un nombre supérieur à 0");
-                                                      }
-
-                                                    }else{
-                                                      _viewModel.notifier.showUnContextedBottomToast(msg: "Vous avez dépassé votre limite de montant");
-                                                    }
-
-                                                  }else{
-                                                    _viewModel.notifier.showUnContextedBottomToast(msg: "Veuillez fournir un montant valide");
-                                                  }
-                                                }else{
-                                                  _viewModel.notifier.showUnContextedBottomToast(msg: "Veuillez fournir une valeur");
-                                                }
-                                              },
-                                                decoration: InputDecoration(
-                                                    hintText: "0.00"
+                                                        } else {
+                                                          _viewModel.notifier
+                                                              .showUnContextedBottomToast(
+                                                                  msg:
+                                                                      "Veuillez fournir une valeur");
+                                                        }
+                                                      },
+                                                      decoration:
+                                                          InputDecoration(
+                                                              hintText:
+                                                                  "0.00")),
                                                 )
-                                            ),
-                                          ) : Container(),
+                                              : Container(),
                                         ),
                                         Divider(),
                                         Container(
@@ -843,36 +1035,46 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                               Expanded(
                                                 child: Column(
                                                   children: [
-                                                    Text("RTT non payante",style: const TextStyle(
-                                                      fontSize: 16.5,
-                                                      fontWeight: FontWeight.w600
-                                                    ),),
+                                                    Text(
+                                                      "RTT non payante",
+                                                      style: const TextStyle(
+                                                          fontSize: 16.5,
+                                                          fontWeight:
+                                                              FontWeight.w600),
+                                                    ),
                                                     const SizedBox(
                                                       height: 10,
                                                     ),
                                                     Text(
-                                                        "${widget.employee.paidStatus!.remainingAmount.toStringAsFixed(2)}",style: TextStyle(
-                                                      fontWeight: FontWeight.w600,
-                                                      fontSize: 25.5
-                                                    ),)
+                                                      "${widget.employee.paidStatus!.remainingAmount.toStringAsFixed(2)}",
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          fontSize: 25.5),
+                                                    )
                                                   ],
                                                 ),
                                               ),
                                               Expanded(
                                                 child: Column(
                                                   children: [
-                                                    Text("RTT payée",style: const TextStyle(
-                                                        fontSize: 16.5,
-                                                        fontWeight: FontWeight.w600
-                                                    ),),
+                                                    Text(
+                                                      "RTT payée",
+                                                      style: const TextStyle(
+                                                          fontSize: 16.5,
+                                                          fontWeight:
+                                                              FontWeight.w600),
+                                                    ),
                                                     const SizedBox(
                                                       height: 10,
                                                     ),
                                                     Text(
-                                                      "${widget.employee.paidStatus!.amountConverted.toStringAsFixed(2)}",style: TextStyle(
-                                                        fontWeight: FontWeight.w600,
-                                                        fontSize: 25.5
-                                                    ),)
+                                                      "${widget.employee.paidStatus!.amountConverted.toStringAsFixed(2)}",
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          fontSize: 25.5),
+                                                    )
                                                   ],
                                                 ),
                                               ),

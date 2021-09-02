@@ -85,42 +85,41 @@ class _CenterDetailsState extends State<CenterDetails> {
         ),
       );
   Widget get returnButton => Align(
-    alignment: AlignmentDirectional.topStart,
-    child: Container(
-      margin: const EdgeInsets.all(20),
-      width: 400 * .35,
-      child: MaterialButton(
-        onPressed: () {
-          Navigator.of(context).pop(null);
-        },
-        padding: const EdgeInsets.symmetric(
-            horizontal: 20, vertical: 15),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(50),
-        ),
-        color: Colors.white38,
-        child: Row(
-          children: [
-            Icon(
-              Icons.arrow_back,
-              color: Colors.white,
+        alignment: AlignmentDirectional.topStart,
+        child: Container(
+          margin: const EdgeInsets.all(20),
+          width: 400 * .35,
+          child: MaterialButton(
+            onPressed: () {
+              Navigator.of(context).pop(null);
+            },
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(50),
             ),
-            const SizedBox(
-              width: 10,
-            ),
-            Text(
-              "RETOUR",
-              style: TextStyle(
+            color: Colors.white38,
+            child: Row(
+              children: [
+                Icon(
+                  Icons.arrow_back,
                   color: Colors.white,
-                  letterSpacing: 1.5,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 15.5),
-            )
-          ],
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Text(
+                  "RETOUR",
+                  style: TextStyle(
+                      color: Colors.white,
+                      letterSpacing: 1.5,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 15.5),
+                )
+              ],
+            ),
+          ),
         ),
-      ),
-    ),
-  );
+      );
   @override
   void initState() {
     this.fetcher(this.employeePagination.firstPageUrl);
@@ -150,79 +149,84 @@ class _CenterDetailsState extends State<CenterDetails> {
   }
 
   Stack get imageConbo => Stack(
-    children: [
-      this.image,
-      if (_base64Image != null) ...{
-        Align(
-          alignment: AlignmentDirectional.bottomCenter,
-          child: Container(
-            margin: const EdgeInsets.only(bottom: 10),
-            child: Row(
-              mainAxisAlignment:
-              MainAxisAlignment.spaceAround,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(5),
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.green),
-                  child: IconButton(
-                      tooltip: "Sauvegarder",
-                      icon: Icon(
-                        Icons.save,
-                        color: Colors.white,
-                      ),
-                      color: Colors.green,
-                      onPressed: () async {
-                        setState(() {
-                          _imageLoading = true;
-                        });
-                        await _helper.service.updateImage(centerId: widget.model.id, base64Image: _base64Image!).whenComplete(() => setState(() => _imageLoading = false)).then((value) {
-                          if(value != null){
+        children: [
+          this.image,
+          if (_base64Image != null) ...{
+            Align(
+              alignment: AlignmentDirectional.bottomCenter,
+              child: Container(
+                margin: const EdgeInsets.only(bottom: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle, color: Colors.green),
+                      child: IconButton(
+                          tooltip: "Sauvegarder",
+                          icon: Icon(
+                            Icons.save,
+                            color: Colors.white,
+                          ),
+                          color: Colors.green,
+                          onPressed: () async {
                             setState(() {
-                              widget.model.image = value;
+                              _imageLoading = true;
+                            });
+                            await _helper.service
+                                .updateImage(
+                                    centerId: widget.model.id,
+                                    base64Image: _base64Image!)
+                                .whenComplete(
+                                    () => setState(() => _imageLoading = false))
+                                .then((value) {
+                              if (value != null) {
+                                setState(() {
+                                  widget.model.image = value;
+                                  _base64Image = null;
+                                });
+                              }
+                            });
+                          }),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle, color: Colors.red),
+                      child: IconButton(
+                          tooltip: "Annuler",
+                          icon: Icon(
+                            Icons.close,
+                            color: Colors.white,
+                          ),
+                          color: Colors.red,
+                          onPressed: () {
+                            setState(() {
                               _base64Image = null;
                             });
-                          }
-                        });
-                      }),
+                          }),
+                    )
+                  ],
                 ),
-                Container(
-                  padding: const EdgeInsets.all(5),
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.red),
-                  child: IconButton(
-                      tooltip: "Annuler",
-                      icon: Icon(
-                        Icons.close,
-                        color: Colors.white,
-                      ),
-                      color: Colors.red,
-                      onPressed: () {
-                        setState(() {
-                          _base64Image = null;
-                        });
-                      }),
-                )
-              ],
+              ),
             ),
-          ),
-        ),
-      },
-      this.returnButton,
-      _imageLoading ? BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 4,sigmaY: 4),
-        child: Container(
-          width: double.infinity,
-          color: Colors.black54,
-          child: Center(
-            child: CircularProgressIndicator(),
-          ),
-        ),
-      ) : Container()
-    ],
-  );
+          },
+          this.returnButton,
+          _imageLoading
+              ? BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
+                  child: Container(
+                    width: double.infinity,
+                    color: Colors.black54,
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  ),
+                )
+              : Container()
+        ],
+      );
 
   void onFirstPage() {
     setState(() {
@@ -277,6 +281,7 @@ class _CenterDetailsState extends State<CenterDetails> {
     });
     this.fetcher(this.employeePagination.currentPageUrl);
   }
+
   Widget manageButtons(Size size) => Container(
       width: double.infinity,
       margin: const EdgeInsets.only(top: 20, left: 15),
@@ -294,42 +299,32 @@ class _CenterDetailsState extends State<CenterDetails> {
               onPressed: () {
                 _helper.showEditDialog(context,
                     center: widget.model,
-                    width: size.width * .8,
-                    isLoading: (bool l) {
-                      setState(() {
-                        _isLoading = l;
-                      });
-                    }, callback: (bool e) {
-                      if (e) {
-                        setState(() {
-                          widget.model.email =
-                              _helper.email.text;
-                          widget.model.mobile =
-                              _helper.number.text;
-                          widget.model.address =
-                              _helper.address.text;
-                          widget.model.city =
-                              _helper.city.text;
-                          widget.model.zipCode =
-                              _helper.zipCode.text;
-                          widget.model.name =
-                              _helper.name.text;
-                        });
-                      }
+                    width: size.width * .8, isLoading: (bool l) {
+                  setState(() {
+                    _isLoading = l;
+                  });
+                }, callback: (bool e) {
+                  if (e) {
+                    setState(() {
+                      widget.model.email = _helper.email.text;
+                      widget.model.mobile = _helper.number.text;
+                      widget.model.address = _helper.address.text;
+                      widget.model.city = _helper.city.text;
+                      widget.model.zipCode = _helper.zipCode.text;
+                      widget.model.name = _helper.name.text;
                     });
+                  }
+                });
               },
               child: Container(
                 decoration: BoxDecoration(
-                  borderRadius:
-                  BorderRadius.circular(50),
-                  border: Border.all(
-                      color: Colors.grey.shade200),
+                  borderRadius: BorderRadius.circular(50),
+                  border: Border.all(color: Colors.grey.shade200),
                 ),
-                padding: const EdgeInsets.symmetric(
-                    vertical: 10, horizontal: 15),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                 child: Row(
-                  mainAxisAlignment:
-                  MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(
                       Icons.edit,
@@ -362,34 +357,29 @@ class _CenterDetailsState extends State<CenterDetails> {
                 color: Colors.red,
                 padding: const EdgeInsets.all(0),
                 shape: RoundedRectangleBorder(
-                  borderRadius:
-                  BorderRadius.circular(50),
+                  borderRadius: BorderRadius.circular(50),
                 ),
                 onPressed: () {
                   _helper.showDialog(context,
                       centerId: widget.model.id,
                       centerName: widget.model.name,
                       width: size.width * .65,
-                      isMobile: size.width < 900,
-                      callback: (bool call) async {
-                        setState(() => _isLoading = call);
-                        if (!_isLoading) {
-                          await Future.delayed(
-                              Duration(milliseconds: 600));
-                          Navigator.of(context).pop(null);
-                        }
-                      });
+                      isMobile: size.width < 900, callback: (bool call) async {
+                    setState(() => _isLoading = call);
+                    if (!_isLoading) {
+                      await Future.delayed(Duration(milliseconds: 600));
+                      Navigator.of(context).pop(null);
+                    }
+                  });
                 },
                 child: Container(
                   decoration: BoxDecoration(
-                    borderRadius:
-                    BorderRadius.circular(50),
+                    borderRadius: BorderRadius.circular(50),
                   ),
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 10, horizontal: 15),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                   child: Row(
-                    mainAxisAlignment:
-                    MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
                         Icons.delete,
@@ -417,10 +407,13 @@ class _CenterDetailsState extends State<CenterDetails> {
       ));
   @override
   Widget build(BuildContext context) {
-    final List<DropdownMenuItem<RegionModel>> _dropDownchoices = List.generate(_rawRegionController.regionData.regions.length, (index) => DropdownMenuItem(
-      child: Text("${_rawRegionController.regionData.regions[index].name}"),
-      value: _rawRegionController.regionData.regions[index],
-    ),);
+    final List<DropdownMenuItem<RegionModel>> _dropDownchoices = List.generate(
+      _rawRegionController.regionData.regions.length,
+      (index) => DropdownMenuItem(
+        child: Text("${_rawRegionController.regionData.regions[index].name}"),
+        value: _rawRegionController.regionData.regions[index],
+      ),
+    );
     final Size size = MediaQuery.of(context).size;
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
@@ -458,7 +451,8 @@ class _CenterDetailsState extends State<CenterDetails> {
                                         .headline5!
                                         .fontSize),
                               ),
-                              subtitle: Text("${widget.model.email?? "NON DÉFINI"}",
+                              subtitle: Text(
+                                  "${widget.model.email ?? "NON DÉFINI"}",
                                   style: TextStyle(
                                       fontSize: Theme.of(context)
                                               .textTheme
@@ -470,7 +464,7 @@ class _CenterDetailsState extends State<CenterDetails> {
                             )),
                         _helper.templatize(
                           icon: Icons.phone_outlined,
-                          text: "${widget.model.mobile??"NON DÉFINI"}",
+                          text: "${widget.model.mobile ?? "NON DÉFINI"}",
                           label: "Numéro de téléphone",
                         ),
                         Divider(
@@ -482,21 +476,21 @@ class _CenterDetailsState extends State<CenterDetails> {
                           child: _helper.templatize(
                               label: "Addresse",
                               icon: Icons.location_on_outlined,
-                              text: widget.model.address??"NON DÉFINI"),
+                              text: widget.model.address ?? "NON DÉFINI"),
                         ),
                         Container(
                           margin: const EdgeInsets.symmetric(vertical: 10),
                           child: _helper.templatize(
                               label: "Ville",
                               icon: Icons.location_city_outlined,
-                              text: widget.model.city??"NON DÉFINI"),
+                              text: widget.model.city ?? "NON DÉFINI"),
                         ),
                         Container(
                           margin: const EdgeInsets.symmetric(vertical: 10),
                           child: _helper.templatize(
                               label: "Code de postal",
                               icon: Icons.local_post_office_sharp,
-                              text: widget.model.zipCode??"NON DÉFINI"),
+                              text: widget.model.zipCode ?? "NON DÉFINI"),
                         ),
                         Divider(
                           thickness: 0.5,
@@ -517,14 +511,19 @@ class _CenterDetailsState extends State<CenterDetails> {
                                   fontSize: 13.5,
                                   color: Colors.grey.shade600),
                             ),
-                            trailing: _helper.auth.loggedUser!.roleId == 1 || (_helper.auth.loggedUser!.roleId == 2 && widget.model.accountant?.id == _helper.auth.loggedUser!.id) ? IconButton(
-                              icon: Icon(
-                                Icons.edit,
-                                color: Colors.blue,
-                              ),
-                              onPressed: () =>
-                                  setState(() => _editRegion = true),
-                            ) : null,
+                            trailing: _helper.auth.loggedUser!.roleId == 1 ||
+                                    (_helper.auth.loggedUser!.roleId == 2 &&
+                                        widget.model.accountant?.id ==
+                                            _helper.auth.loggedUser!.id)
+                                ? IconButton(
+                                    icon: Icon(
+                                      Icons.edit,
+                                      color: Colors.blue,
+                                    ),
+                                    onPressed: () =>
+                                        setState(() => _editRegion = true),
+                                  )
+                                : null,
                           )
                         },
                         if (_editRegion) ...{
@@ -534,9 +533,13 @@ class _CenterDetailsState extends State<CenterDetails> {
                               child: DropdownButton<RegionModel>(
                                 isExpanded: true,
                                 onChanged: (RegionModel? region) async {
-                                  if(region != null){
-                                    await _helper.service.updateRegion(context, regionId: region.id, centerId: widget.model.id).then((value) {
-                                      if(value) {
+                                  if (region != null) {
+                                    await _helper.service
+                                        .updateRegion(context,
+                                            regionId: region.id,
+                                            centerId: widget.model.id)
+                                        .then((value) {
+                                      if (value) {
                                         setState(() {
                                           widget.model.region = region;
                                           _editRegion = false;
@@ -605,9 +608,10 @@ class _CenterDetailsState extends State<CenterDetails> {
                                           setState(() {
                                             widget.model.accountant =
                                                 _selectedNewManager;
-                                            widget.model.users.add(_selectedNewManager!);
+                                            widget.model.users
+                                                .add(_selectedNewManager!);
                                           });
-                                        }else{
+                                        } else {
                                           setState(() {
                                             _isLoading = false;
                                           });
@@ -638,7 +642,7 @@ class _CenterDetailsState extends State<CenterDetails> {
                         child: ListView(
                           physics: ClampingScrollPhysics(),
                           children: [
-                            if(size.width <=900)...{
+                            if (size.width <= 900) ...{
                               Container(
                                 width: double.infinity,
                                 height: 250,
@@ -650,12 +654,16 @@ class _CenterDetailsState extends State<CenterDetails> {
                                   title: Text("${widget.model.name}"),
                                   subtitle: Row(
                                     children: [
-                                      Icon(Icons.email_outlined,color: Palette.gradientColor[0],),
+                                      Icon(
+                                        Icons.email_outlined,
+                                        color: Palette.gradientColor[0],
+                                      ),
                                       const SizedBox(
                                         width: 10,
                                       ),
                                       Expanded(
-                                        child: Text("${widget.model.email??"NON DÉFINI"}"),
+                                        child: Text(
+                                            "${widget.model.email ?? "NON DÉFINI"}"),
                                       )
                                     ],
                                   ),
@@ -755,7 +763,7 @@ class _CenterDetailsState extends State<CenterDetails> {
                                                   });
                                                 },
                                                 child: Center(
-                                                  child: Text("Dégager"),
+                                                  child: Text("Annuler"),
                                                 ),
                                               ),
                                             ),
@@ -778,8 +786,8 @@ class _CenterDetailsState extends State<CenterDetails> {
                                                       .then((value) {
                                                     if (value) {
                                                       setState(() {
-
-                                                        widget.model.users += _pendingUsers;
+                                                        widget.model.users +=
+                                                            _pendingUsers;
                                                         _pendingUsers.clear();
                                                       });
                                                     }
@@ -790,7 +798,7 @@ class _CenterDetailsState extends State<CenterDetails> {
                                                 },
                                                 child: Center(
                                                   child: Text(
-                                                    "Soumettre",
+                                                    "Valider",
                                                     style: TextStyle(
                                                         color: Colors.white),
                                                   ),
@@ -857,124 +865,143 @@ class _CenterDetailsState extends State<CenterDetails> {
                                         child: Text("${user.mobile}",
                                             textAlign: TextAlign.center),
                                       ),
-                                      if(_helper.auth.loggedUser!
-                                          .roleId == 1 || (_helper.auth.loggedUser!
-                                          .roleId == 2 && _helper.auth.loggedUser!
-                                          .id == widget.model.accountant?.id))...{
+                                      if (_helper.auth.loggedUser!.roleId ==
+                                              1 ||
+                                          (_helper.auth.loggedUser!.roleId ==
+                                                  2 &&
+                                              _helper.auth.loggedUser!.id ==
+                                                  widget.model.accountant
+                                                      ?.id)) ...{
                                         Expanded(
                                           flex: 1,
                                           child: IconButton(
-
-                                            onPressed: _helper.auth.loggedUser!
-                                                .roleId == 1 || (_helper.auth.loggedUser!
-                                                .roleId == 2 && _helper.auth.loggedUser!
-                                                .id == widget.model.accountant?.id)
-                                                ? () {
-                                              GeneralTemplate.showDialog(context, child: Container(
-                                                width: double.infinity,
-                                                height: 50,
-                                                child: Row(
-                                                  children: [
-                                                    Expanded(
-                                                      child: MaterialButton(
-                                                        onPressed: (){
-                                                          Navigator.of(context).pop(null);
-                                                        },
-                                                        color: Colors.grey.shade200,
-                                                        child: Center(
-                                                          child: Text("ANNULER",style: TextStyle(
-                                                              fontWeight: FontWeight.w600,
-                                                              letterSpacing: 1.5
-                                                          ),),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    const SizedBox(
-                                                      width: 20,
-                                                    ),
-                                                    Expanded(
-                                                      child: MaterialButton(
-                                                        onPressed: () async {
-                                                          Navigator.of(context).pop(null);
-                                                          await _helper.service
-                                                              .removeAssignment(context,
-                                                              userId: user.id,
-                                                              centerId:
-                                                              widget.model.id)
-                                                              .then((value) {
-                                                            if (value) {
-                                                              setState(() {
-                                                                widget.model.users
-                                                                    .removeWhere(
-                                                                        (element) =>
-                                                                    element
-                                                                        .id ==
-                                                                        user.id);
-                                                                widget.regionDataControl
-                                                                    .removeUserFromCenter(
-                                                                    user.id,
-                                                                    widget
-                                                                        .model.id);
-                                                              });
-                                                            } else {
-                                                              setState(() {
-                                                                widget.regionDataControl
-                                                                    .removeUserFromCenter(
-                                                                    user.id,
-                                                                    widget
-                                                                        .model.id);
-                                                              });
-                                                            }
-                                                          });
-                                                        },
-                                                        color: Palette.gradientColor[0],
-                                                        child: Center(
-                                                          child: Text("OUI",style: TextStyle(
-                                                              fontWeight: FontWeight.w600,
-                                                              color: Colors.white,
-                                                              letterSpacing: 1.5
-                                                          ),),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ), width: size.width, height: 50,title: ListTile(
-                                                leading: Container(
-                                                  width: 40,
-                                                  height: 40,
-                                                  decoration: BoxDecoration(
-                                                      shape: BoxShape.circle,
-                                                      color: Colors.grey.shade100,
-                                                      boxShadow: [
-                                                        BoxShadow(
-                                                            color: Colors.black45,
-                                                            blurRadius: 2,
-                                                            offset: Offset(2,2)
-                                                        )
-                                                      ],
-                                                      image: DecorationImage(
-                                                          image: NetworkImage("${user.image}")
-                                                      )
-                                                  ),
-                                                ),
-                                                title: Text("Voulez-vous vraiment supprimer ${user.full_name} de ce centre ?"),
-                                                subtitle: Text("Les actions ne peuvent pas être annulées."),
-                                              ));
-                                            }
-                                                : null,
+                                            onPressed:
+                                                _helper.auth.loggedUser!
+                                                                .roleId ==
+                                                            1 ||
+                                                        (_helper
+                                                                    .auth
+                                                                    .loggedUser!
+                                                                    .roleId ==
+                                                                2 &&
+                                                            _helper
+                                                                    .auth
+                                                                    .loggedUser!
+                                                                    .id ==
+                                                                widget
+                                                                    .model
+                                                                    .accountant
+                                                                    ?.id)
+                                                    ? () {
+                                                        GeneralTemplate
+                                                            .showDialog(context,
+                                                                child:
+                                                                    Container(
+                                                                  width: double
+                                                                      .infinity,
+                                                                  height: 50,
+                                                                  child: Row(
+                                                                    children: [
+                                                                      Expanded(
+                                                                        child:
+                                                                            MaterialButton(
+                                                                          onPressed:
+                                                                              () {
+                                                                            Navigator.of(context).pop(null);
+                                                                          },
+                                                                          color: Colors
+                                                                              .grey
+                                                                              .shade200,
+                                                                          child:
+                                                                              Center(
+                                                                            child:
+                                                                                Text(
+                                                                              "ANNULER",
+                                                                              style: TextStyle(fontWeight: FontWeight.w600, letterSpacing: 1.5),
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      const SizedBox(
+                                                                        width:
+                                                                            20,
+                                                                      ),
+                                                                      Expanded(
+                                                                        child:
+                                                                            MaterialButton(
+                                                                          onPressed:
+                                                                              () async {
+                                                                            Navigator.of(context).pop(null);
+                                                                            await _helper.service.removeAssignment(context, userId: user.id, centerId: widget.model.id).then((value) {
+                                                                              if (value) {
+                                                                                setState(() {
+                                                                                  widget.model.users.removeWhere((element) => element.id == user.id);
+                                                                                  widget.regionDataControl.removeUserFromCenter(user.id, widget.model.id);
+                                                                                });
+                                                                              } else {
+                                                                                setState(() {
+                                                                                  widget.regionDataControl.removeUserFromCenter(user.id, widget.model.id);
+                                                                                });
+                                                                              }
+                                                                            });
+                                                                          },
+                                                                          color:
+                                                                              Palette.gradientColor[0],
+                                                                          child:
+                                                                              Center(
+                                                                            child:
+                                                                                Text(
+                                                                              "OUI",
+                                                                              style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white, letterSpacing: 1.5),
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                                width:
+                                                                    size.width,
+                                                                height: 50,
+                                                                title: ListTile(
+                                                                  leading:
+                                                                      Container(
+                                                                    width: 40,
+                                                                    height: 40,
+                                                                    decoration: BoxDecoration(
+                                                                        shape: BoxShape
+                                                                            .circle,
+                                                                        color: Colors
+                                                                            .grey
+                                                                            .shade100,
+                                                                        boxShadow: [
+                                                                          BoxShadow(
+                                                                              color: Colors.black45,
+                                                                              blurRadius: 2,
+                                                                              offset: Offset(2, 2))
+                                                                        ],
+                                                                        image: DecorationImage(
+                                                                            image:
+                                                                                NetworkImage("${user.image}"))),
+                                                                  ),
+                                                                  title: Text(
+                                                                      "Voulez-vous vraiment supprimer ${user.full_name} de ce centre ?"),
+                                                                  subtitle: Text(
+                                                                      "Les actions ne peuvent pas être annulées."),
+                                                                ));
+                                                      }
+                                                    : null,
                                             icon: Icon(
                                               Icons.clear,
                                               color: _helper.auth.loggedUser!
-                                                  .roleId !=
-                                                  3
+                                                          .roleId !=
+                                                      3
                                                   ? Colors.red
                                                   : Colors.grey,
                                             ),
                                           ),
                                         )
                                       }
-
                                     ],
                                   ),
                                 )
@@ -1342,16 +1369,23 @@ class _CenterDetailsState extends State<CenterDetails> {
                                                 width: 10,
                                               ),
                                               DropdownButton<int>(
-                                                onChanged: (int? val){
-                                                  if(val != null){
-                                                    onChangePageCount(val);
-                                                  }
-
-                                                },
-                                                value: employeePagination.dataToShow,
+                                                  onChanged: (int? val) {
+                                                    if (val != null) {
+                                                      onChangePageCount(val);
+                                                    }
+                                                  },
+                                                  value: employeePagination
+                                                      .dataToShow,
                                                   items: _helper
-                                                      .popupMenuPageItems.map<DropdownMenuItem<int>>((e) => DropdownMenuItem(child: Text("$e"),value: e,)).toList()
-                                              ),
+                                                      .popupMenuPageItems
+                                                      .map<
+                                                          DropdownMenuItem<
+                                                              int>>((e) =>
+                                                          DropdownMenuItem(
+                                                            child: Text("$e"),
+                                                            value: e,
+                                                          ))
+                                                      .toList()),
                                               // PopupMenuButton<int>(
                                               //   icon: Text(
                                               //       "${employeePagination.dataToShow}"),

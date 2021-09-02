@@ -15,17 +15,20 @@ class EmployeeAttendance extends StatefulWidget {
       {Key? key,
       this.attendance,
       required this.regionDataControl,
-      required this.userId,required this.managerIds})
+      required this.userId,
+      required this.managerIds})
       : super(key: key);
 
   @override
   _EmployeeAttendanceState createState() => _EmployeeAttendanceState();
 }
 
-class _EmployeeAttendanceState extends State<EmployeeAttendance> with SingleTickerProviderStateMixin {
+class _EmployeeAttendanceState extends State<EmployeeAttendance>
+    with SingleTickerProviderStateMixin {
   final EmployeeAttendanceViewModel _employeeAttendanceViewModel =
       EmployeeAttendanceViewModel.instance;
-  late final AnimateIconController _animateIconController = AnimateIconController();
+  late final AnimateIconController _animateIconController =
+      AnimateIconController();
   // late final AnimationController _animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 600));
   @override
   void dispose() {
@@ -35,10 +38,10 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> with SingleTick
     _employeeAttendanceViewModel.type = 0;
     super.dispose();
   }
+
   bool _handleActionPress() {
     setState(() {
-      _employeeAttendanceViewModel.setAdd =
-      !_employeeAttendanceViewModel.isAdd;
+      _employeeAttendanceViewModel.setAdd = !_employeeAttendanceViewModel.isAdd;
       if (_employeeAttendanceViewModel.showComponents) {
         _employeeAttendanceViewModel.showComponents = false;
       }
@@ -51,31 +54,36 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> with SingleTick
     });
     return true;
   }
+
   @override
   Widget build(BuildContext context) {
     final Size _size = MediaQuery.of(context).size;
     return Scaffold(
-      floatingActionButton:_employeeAttendanceViewModel.auth.loggedUser!.roleId == 1 || (_employeeAttendanceViewModel.auth.loggedUser!.roleId == 2 && widget.managerIds.contains(_employeeAttendanceViewModel.auth.loggedUser!.id)) ? FloatingActionButton(
-        backgroundColor: Palette.gradientColor[0],
-        onPressed: () => _handleActionPress(),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10000)
-        ),
-        // child: AnimatedSwitcher(
-        //   child: ,
-        // ),
-        child:  AnimateIcons(
-          startIcon: Icons.add,
-          endIcon: Icons.close,
-          endIconColor: Colors.white,
-          startIconColor: Colors.white,
-          controller: _animateIconController,
-          duration: Duration(milliseconds: 600),
-          size: 20.0,
-          onEndIconPress: () => _handleActionPress(),
-          onStartIconPress: () => _handleActionPress(),
-        )
-      ) : null,
+      floatingActionButton:
+          _employeeAttendanceViewModel.auth.loggedUser!.roleId == 1 ||
+                  (_employeeAttendanceViewModel.auth.loggedUser!.roleId == 2 &&
+                      widget.managerIds.contains(
+                          _employeeAttendanceViewModel.auth.loggedUser!.id))
+              ? FloatingActionButton(
+                  backgroundColor: Palette.gradientColor[0],
+                  onPressed: () => _handleActionPress(),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10000)),
+                  // child: AnimatedSwitcher(
+                  //   child: ,
+                  // ),
+                  child: AnimateIcons(
+                    startIcon: Icons.add,
+                    endIcon: Icons.close,
+                    endIconColor: Colors.white,
+                    startIconColor: Colors.white,
+                    controller: _animateIconController,
+                    duration: Duration(milliseconds: 600),
+                    size: 20.0,
+                    onEndIconPress: () => _handleActionPress(),
+                    onStartIconPress: () => _handleActionPress(),
+                  ))
+              : null,
       body: Container(
           child: Column(
         children: [
@@ -189,7 +197,8 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> with SingleTick
                                   ),
                                   onPressed: () async {
                                     setState(() {
-                                      _employeeAttendanceViewModel.setAdd = true;
+                                      _employeeAttendanceViewModel.setAdd =
+                                          true;
                                       _employeeAttendanceViewModel
                                           .showComponents = false;
                                     });
@@ -198,8 +207,8 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> with SingleTick
                                             userId: widget.userId,
                                             date: _employeeAttendanceViewModel
                                                 .chosenDate!,
-                                            type:
-                                                _employeeAttendanceViewModel.type)
+                                            type: _employeeAttendanceViewModel
+                                                .type)
                                         .then((attendance) {
                                       if (attendance != null) {
                                         setState(() {

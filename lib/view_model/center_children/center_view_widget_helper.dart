@@ -49,7 +49,7 @@ class CenterViewWidgetHelper {
   static final Auth _auth = Auth.instance;
 
   Auth get auth => _auth;
-  final List<int> popupMenuPageItems = [10, 20, 30, 40, 50];
+  final List<int> popupMenuPageItems = [100, 200, 300, 400, 500];
 
   Widget templatize(
           {required IconData icon,
@@ -236,24 +236,22 @@ class CenterViewWidgetHelper {
                           "zip_code": _zipCode.text.isNotEmpty
                               ? _zipCode.text
                               : center.zipCode,
-                          "name": _name.text.isNotEmpty
-                              ? _name.text
-                              : center.name,
+                          "name":
+                              _name.text.isNotEmpty ? _name.text : center.name,
                           "address": _address.text.isNotEmpty
                               ? _address.text
                               : center.address,
-                          "city": _city.text.isNotEmpty
-                              ? _city.text
-                              : center.city,
+                          "city":
+                              _city.text.isNotEmpty ? _city.text : center.city,
                           "mobile": _number.text.isNotEmpty
                               ? _number.text
                               : center.mobile,
                         };
-                        if(center.email != null || email.text.isNotEmpty){
+                        if (center.email != null || email.text.isNotEmpty) {
                           body.addAll({
                             "email": _email.text.isNotEmpty
-                              ? _email.text
-                              : center.email
+                                ? _email.text
+                                : center.email
                           });
                         }
                         await _service

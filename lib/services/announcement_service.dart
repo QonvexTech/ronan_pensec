@@ -15,21 +15,51 @@ class AnnouncementService {
   static final ToastNotifier _notifier = ToastNotifier.instance;
 
   Future<bool> send({required Map body}) async {
-    try{
-      return await http.post(Uri.parse("${BaseEnpoint.URL}api/notice"),headers: {
-        "Accept" : "application/json",
-        HttpHeaders.authorizationHeader : "Bearer ${_auth.token}"
-      },body: body).then((res) {
+    try {
+      return await http
+          .post(Uri.parse("${BaseEnpoint.URL}api/notice"),
+              headers: {
+                "Accept": "application/json",
+                HttpHeaders.authorizationHeader: "Bearer ${_auth.token}"
+              },
+              body: body)
+          .then((res) {
         var data = json.decode(res.body);
         print("DATA : $data");
-        if(res.statusCode == 200){
+        if (res.statusCode == 200) {
           _notifier.showUnContextedBottomToast(msg: "Annonce publiée!");
           return true;
         }
         _notifier.showUnContextedBottomToast(msg: "${data['message']}");
         return false;
       });
-    }catch(e){
+    } catch (e) {
+      print("Erreur sending $e");
+      _notifier.showUnContextedBottomToast(msg: "Erreur sending $e");
+      return false;
+    }
+  }
+
+  Future<bool> sendToCenter({required Map body}) async {
+    try {
+      return await http
+          .post(Uri.parse("${BaseEnpoint.URL}api/notice/center_all_employees"),
+              headers: {
+                "Accept": "application/json",
+                HttpHeaders.authorizationHeader: "Bearer ${_auth.token}"
+              },
+              body: body)
+          .then((res) {
+        var data = json.decode(res.body);
+        print("DATA : $data");
+        if (res.statusCode == 200) {
+          _notifier.showUnContextedBottomToast(msg: "Annonce publiée!");
+          return true;
+        }
+        _notifier.showUnContextedBottomToast(msg: "${data['message']}");
+        return false;
+      });
+    } catch (e) {
       print("Erreur sending $e");
       _notifier.showUnContextedBottomToast(msg: "Erreur sending $e");
       return false;

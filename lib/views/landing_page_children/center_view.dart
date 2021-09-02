@@ -15,7 +15,7 @@ class CenterView extends StatefulWidget {
   final RegionDataControl control;
   CenterView(
       {required this.onBack,
-        required this.control,
+      required this.control,
       required this.onFilterCallback,
       required this.menuItems,
       this.regionId});
@@ -25,7 +25,8 @@ class CenterView extends StatefulWidget {
 }
 
 class _CenterViewState extends State<CenterView> {
-  late final CenterViewModel _centerViewModel = CenterViewModel.instance(widget.control);
+  late final CenterViewModel _centerViewModel =
+      CenterViewModel.instance(widget.control);
   final CenterCreateWidget _centerCreateWidget = CenterCreateWidget.instance;
   final CenterViewWidgetHelper _helper = CenterViewWidgetHelper.instance;
   final TextEditingController _search = new TextEditingController();
@@ -35,18 +36,22 @@ class _CenterViewState extends State<CenterView> {
   @override
   void initState() {
     if (!_centerViewModel.centerDataControl.hasFetched) {
-      _centerViewModel.service.fetch(context).then((value) => setState(
-          () => _centerViewModel.centerDataControl.hasFetched = value)).whenComplete(() {
+      _centerViewModel.service
+          .fetch(context)
+          .then((value) => setState(
+              () => _centerViewModel.centerDataControl.hasFetched = value))
+          .whenComplete(() {
         // setState(() {
         //   _displayData = List.from(_centerViewModel.centerDataControl.current);
         // });
       });
-    }else{
+    } else {
       // setState(() {
       //   _displayData = List.from(_centerViewModel.centerDataControl.current);
       // });
     }
-    _centerViewModel.centerDataControl.stream.listen((List<CenterModel> centersList) {
+    _centerViewModel.centerDataControl.stream
+        .listen((List<CenterModel> centersList) {
       setState(() {
         _displayData = List.from(_centerViewModel.centerDataControl.current);
       });
@@ -94,49 +99,64 @@ class _CenterViewState extends State<CenterView> {
                       Expanded(
                         child: Text(
                           _centerViewModel.auth.loggedUser!.roleId == 3
-                              ? "Mes centrés"
-                              : "Centrés",
+                              ? "Mes centres"
+                              : "Centres",
                           style: GeneralTemplate.kTextStyle(context),
                         ),
                       ),
                       AnimatedContainer(
-                          duration: const Duration(milliseconds: 600),
-                        width: _showSearch ? _size.width > 900 ? _size.width * .3 : _size.width * .4 : 60,
+                        duration: const Duration(milliseconds: 600),
+                        width: _showSearch
+                            ? _size.width > 900
+                                ? _size.width * .3
+                                : _size.width * .4
+                            : 60,
                         height: 60,
                         child: AnimatedSwitcher(
                           duration: const Duration(milliseconds: 600),
-                          child: _showSearch ? Theme(
-                            data: ThemeData(
-                              primaryColor: Palette.gradientColor[0]
-                            ),
-                            child: TextField(
-                              controller: _search,
-                              onChanged: (text){
-                                setState(() {
-                                  _displayData = List.from(_centerViewModel.centerDataControl.current.where((element) => element.name.toLowerCase().contains(_search.text.toLowerCase())).toList());
-                                });
-                              },
-                              cursorColor: Palette.gradientColor[0],
-                              decoration: InputDecoration(
-                                prefixIcon: Icon(Icons.search),
-                                hintText: "Rechercher",
-                                suffixIcon: IconButton(
-                                  icon: Icon(Icons.clear),
-                                  onPressed: (){
-                                    _search.clear();
-                                    setState(() {
-                                      _showSearch = false;
-                                    });
-                                    _displayData = List.from(_centerViewModel.centerDataControl.current);
-                                  },
+                          child: _showSearch
+                              ? Theme(
+                                  data: ThemeData(
+                                      primaryColor: Palette.gradientColor[0]),
+                                  child: TextField(
+                                    controller: _search,
+                                    onChanged: (text) {
+                                      setState(() {
+                                        _displayData = List.from(
+                                            _centerViewModel
+                                                .centerDataControl.current
+                                                .where((element) => element.name
+                                                    .toLowerCase()
+                                                    .contains(_search.text
+                                                        .toLowerCase()))
+                                                .toList());
+                                      });
+                                    },
+                                    cursorColor: Palette.gradientColor[0],
+                                    decoration: InputDecoration(
+                                        prefixIcon: Icon(Icons.search),
+                                        hintText: "Rechercher",
+                                        suffixIcon: IconButton(
+                                          icon: Icon(Icons.clear),
+                                          onPressed: () {
+                                            _search.clear();
+                                            setState(() {
+                                              _showSearch = false;
+                                            });
+                                            _displayData = List.from(
+                                                _centerViewModel
+                                                    .centerDataControl.current);
+                                          },
+                                        )),
+                                  ),
                                 )
-                              ),
-                            ),
-                          ) : IconButton(icon: Icon(Icons.search), onPressed: (){
-                            setState(() {
-                              _showSearch = true;
-                            });
-                          }),
+                              : IconButton(
+                                  icon: Icon(Icons.search),
+                                  onPressed: () {
+                                    setState(() {
+                                      _showSearch = true;
+                                    });
+                                  }),
                         ),
                       ),
                       if (_size.width > 900) ...{
@@ -162,7 +182,8 @@ class _CenterViewState extends State<CenterView> {
                           tooltip: "Creer Centrés",
                           icon: Icon(Icons.add),
                           onPressed: () {
-                            _centerCreateWidget.create(context, size: _size, loadingCallback: (bool b){
+                            _centerCreateWidget.create(context, size: _size,
+                                loadingCallback: (bool b) {
                               setState(() {
                                 _isLoading = b;
                               });
@@ -178,24 +199,30 @@ class _CenterViewState extends State<CenterView> {
             SliverToBoxAdapter(
               child: StreamBuilder<List<CenterModel>?>(
                 stream: _centerViewModel.centerDataControl.stream,
-                builder: (_,centersList){
-                  if(centersList.hasData && !centersList.hasError){
-                    if(_displayData != null){
-                      if(_displayData!.length > 0){
+                builder: (_, centersList) {
+                  if (centersList.hasData && !centersList.hasError) {
+                    if (_displayData != null) {
+                      if (_displayData!.length > 0) {
                         return Container(
                           width: double.infinity,
                           height: _size.height - 120,
                           child: _centerViewModel.currentView == 0
-                              ? _centerViewModel.centerTemplate
-                              .listView(context, _displayData!, false,)
+                              ? _centerViewModel.centerTemplate.listView(
+                                  context,
+                                  _displayData!,
+                                  false,
+                                )
                               : Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: _centerViewModel.centerTemplate.tableView(
-                              context, _displayData!,
-                            ),
-                          ),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 20),
+                                  child:
+                                      _centerViewModel.centerTemplate.tableView(
+                                    context,
+                                    _displayData!,
+                                  ),
+                                ),
                         );
-                      }else{
+                      } else {
                         return Container(
                           width: _size.width,
                           height: _size.height - 120,
@@ -207,26 +234,32 @@ class _CenterViewState extends State<CenterView> {
                                 Container(
                                   width: 60,
                                   height: 60,
-                                  child: Image.asset('assets/images/info.png',color: Colors.grey.shade400,),
+                                  child: Image.asset(
+                                    'assets/images/info.png',
+                                    color: Colors.grey.shade400,
+                                  ),
                                 ),
                                 const SizedBox(
                                   height: 10,
                                 ),
-                                Text("OOPS!",style: TextStyle(
-                                    fontSize: 55,
-                                    color: Colors.grey.shade400,
-                                    letterSpacing: 1.5,
-                                    fontWeight: FontWeight.w600
-                                ),),
+                                Text(
+                                  "OOPS!",
+                                  style: TextStyle(
+                                      fontSize: 55,
+                                      color: Colors.grey.shade400,
+                                      letterSpacing: 1.5,
+                                      fontWeight: FontWeight.w600),
+                                ),
                                 const SizedBox(
                                   height: 5,
                                 ),
-                                Text("Aucun centre ne vous est attribué",style: TextStyle(
-                                    fontSize: 40,
-                                    color: Colors.grey.shade400,
-                                    letterSpacing: 1.5,
-                                    fontWeight: FontWeight.w600
-                                ),textAlign: TextAlign.center),
+                                Text("Aucun centre ne vous est attribué",
+                                    style: TextStyle(
+                                        fontSize: 40,
+                                        color: Colors.grey.shade400,
+                                        letterSpacing: 1.5,
+                                        fontWeight: FontWeight.w600),
+                                    textAlign: TextAlign.center),
                               ],
                             ),
                           ),
@@ -234,7 +267,7 @@ class _CenterViewState extends State<CenterView> {
                       }
                     }
                   }
-                  if(centersList.hasError){
+                  if (centersList.hasError) {
                     return Container(
                       width: _size.width,
                       height: _size.height - 120,
@@ -246,26 +279,34 @@ class _CenterViewState extends State<CenterView> {
                             Container(
                               width: 60,
                               height: 60,
-                              child: Image.asset('assets/images/warning.png.png',color: Colors.grey.shade400,),
+                              child: Image.asset(
+                                'assets/images/warning.png.png',
+                                color: Colors.grey.shade400,
+                              ),
                             ),
                             const SizedBox(
                               height: 10,
                             ),
-                            Text("ERREUR!",style: TextStyle(
-                                fontSize: 55,
-                                color: Colors.grey.shade400,
-                                letterSpacing: 1.5,
-                                fontWeight: FontWeight.w600
-                            ),textAlign: TextAlign.center,),
+                            Text(
+                              "ERREUR!",
+                              style: TextStyle(
+                                  fontSize: 55,
+                                  color: Colors.grey.shade400,
+                                  letterSpacing: 1.5,
+                                  fontWeight: FontWeight.w600),
+                              textAlign: TextAlign.center,
+                            ),
                             const SizedBox(
                               height: 5,
                             ),
-                            Text("Une erreur s'est produite, veuillez contacter l'administrateur",style: TextStyle(
-                                fontSize: 40,
-                                color: Colors.grey.shade400,
-                                letterSpacing: 1.5,
-                                fontWeight: FontWeight.w600
-                            ),textAlign: TextAlign.center),
+                            Text(
+                                "Une erreur s'est produite, veuillez contacter l'administrateur",
+                                style: TextStyle(
+                                    fontSize: 40,
+                                    color: Colors.grey.shade400,
+                                    letterSpacing: 1.5,
+                                    fontWeight: FontWeight.w600),
+                                textAlign: TextAlign.center),
                             const SizedBox(
                               height: 5,
                             ),
@@ -274,15 +315,21 @@ class _CenterViewState extends State<CenterView> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(Icons.info,color: Colors.grey.shade400,),
+                                  Icon(
+                                    Icons.info,
+                                    color: Colors.grey.shade400,
+                                  ),
                                   const SizedBox(
                                     width: 10,
                                   ),
                                   Expanded(
-                                    child: Text("${centersList.error}",style: TextStyle(
-                                      fontSize: 20,
-                                      color: Colors.grey.shade400,
-                                    ),),
+                                    child: Text(
+                                      "${centersList.error}",
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.grey.shade400,
+                                      ),
+                                    ),
                                   )
                                 ],
                               ),
@@ -293,8 +340,7 @@ class _CenterViewState extends State<CenterView> {
                     );
                   }
                   return GeneralTemplate.tableLoader(
-                      _centerViewModel
-                          .centerTemplate.kDataColumn.length,
+                      _centerViewModel.centerTemplate.kDataColumn.length,
                       _centerViewModel.centerTemplate.kDataColumn,
                       _size.width);
                 },
