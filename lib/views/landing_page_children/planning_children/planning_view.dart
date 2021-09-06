@@ -1,11 +1,10 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/global/planning_filter.dart';
 import 'package:ronan_pensec/view_model/calendar_view_model.dart';
 import 'package:ronan_pensec/view_model/region_view_model.dart';
 import 'package:ronan_pensec/views/landing_page_children/planning_children/planning_view_widgets/calendar.dart';
+import 'package:ronan_pensec/views/landing_page_children/planning_children/planning_view_widgets/calendar_chunk/date_controller.dart';
 import 'package:ronan_pensec/views/landing_page_children/planning_children/planning_view_widgets/legends.dart';
 
 import 'planning_view_widgets/filter_view.dart';
@@ -20,7 +19,6 @@ class PlanningView extends StatefulWidget {
 class _PlanningViewState extends State<PlanningView> {
   @override
   late final RegionViewModel _regionViewModel = RegionViewModel.instance;
-  final PlanningView _planningView = new PlanningView();
   void dispose() {
     super.dispose();
   }
@@ -39,7 +37,7 @@ class _PlanningViewState extends State<PlanningView> {
     super.initState();
   }
 
-  String _initPopupValue = "Centres";
+  String _initPopupValue = "Régions";
   List<PopupMenuItem<String>> _popupMenuItems = [
     PopupMenuItem(
       child: Text(
@@ -62,20 +60,221 @@ class _PlanningViewState extends State<PlanningView> {
       value: "Centres",
     ),
   ];
+
   final CalendarViewModel _calendarViewModel = CalendarViewModel.instance;
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
+  // late final Calendar _calendar =
+  final FilterView _filter = FilterView(
+    callback: (Map<String, dynamic> data) {
+      filterCountStreamController.add(filterCount);
+    },
+  );
+  List _regions = [
+    {"id": 1, "name": "Secteur Nord"},
+    {"id": 2, "name": "Secteur Sud"},
+    {"id": 3, "name": "Autonome"},
+    {"id": 4, "name": "Normandie"},
+  ];
+  List _attendance = [
+    {"id": 1, "name": "Travaillé"},
+    {"id": 0, "name": "Absence"},
+  ];
+  bool _showRegion = true;
+  bool _showRtt = true;
+  bool _showLeaves = true;
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     return Scaffold(
       key: _scaffoldKey,
-      endDrawer: FilterView(
-        callback: (Map<String, dynamic> data) {
-          filterCountStreamController.add(filterCount);
-          print(data);
-          print(filterCount);
-        },
+      endDrawer: Drawer(
+        child: Container(
+          width: size.width,
+          height: size.height,
+          child: ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+            children: [
+              Container(
+                  width: double.infinity,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Filtre :",
+                        style: Theme.of(context).textTheme.headline6,
+                      ),
+                      TextButton(
+                        child: Text("Dégager"),
+                        onPressed: () {
+                          setState(() {
+                            filterData = {
+                              "region": [],
+                              "rtt": null,
+                              "leave": null,
+                              "attendance": null,
+                            };
+                            filterCount = 0;
+                          });
+                          filterCountStreamController.add(filterCount);
+                        },
+                      )
+                    ],
+                  )),
+              Divider(
+                thickness: 1,
+              ),
+              Container(
+                width: double.infinity,
+                child: Text("Région :",
+                    style: Theme.of(context).textTheme.bodyText1!),
+              ),
+              Divider(
+                thickness: 1,
+              ),
+              Container(
+                width: double.infinity,
+                child: Column(
+                  children: _regions
+                      .map((e) => Row(
+                            children: [
+                              Checkbox(
+                                activeColor: Palette.gradientColor[0],
+                                checkColor: Colors.white,
+                                value: filterData['region'].contains(e),
+                                onChanged: (bool? value) {
+                                  setState(() {
+                                    if (filterData['region'].contains(e)) {
+                                      filterData['region'].remove(e);
+                                      filterCount -= 1;
+                                    } else {
+                                      filterData['region'].add(e);
+                                      filterCount += 1;
+                                    }
+                                  });
+                                  filterCountStreamController.add(filterCount);
+                                },
+                              ),
+                              Expanded(
+                                child: Text("${e['name']}"),
+                              )
+                            ],
+                          ))
+                      .toList(),
+                ),
+              ),
+              Divider(
+                thickness: 1,
+              ),
+              Container(
+                width: double.infinity,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("RTT :",
+                        style: Theme.of(context).textTheme.bodyText1!),
+                    Checkbox(
+                      activeColor: Palette.gradientColor[0],
+                      checkColor: Colors.white,
+                      value: filterData['rtt'] ?? false,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          filterData['rtt'] = value;
+                          if (value!) {
+                            filterCount += 1;
+                          } else {
+                            filterCount -= 1;
+                          }
+                        });
+
+                        filterCountStreamController.add(filterCount);
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              Divider(
+                thickness: 1,
+              ),
+              Container(
+                width: double.infinity,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("Vacances :",
+                        style: Theme.of(context).textTheme.bodyText1!),
+                    Checkbox(
+                      activeColor: Palette.gradientColor[0],
+                      checkColor: Colors.white,
+                      value: filterData['leave'] ?? false,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          filterData['leave'] = value;
+                          if (value!) {
+                            filterCount += 1;
+                          } else {
+                            filterCount -= 1;
+                          }
+                        });
+                        filterCountStreamController.add(filterCount);
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              Divider(
+                thickness: 1,
+              ),
+              Container(
+                width: double.infinity,
+                child: Text("Présence :",
+                    style: Theme.of(context).textTheme.bodyText1!),
+              ),
+              Divider(
+                thickness: 1,
+              ),
+              Container(
+                width: double.infinity,
+                child: Column(
+                  children: _attendance
+                      .map(
+                        (e) => Row(
+                          children: [
+                            Checkbox(
+                              activeColor: Palette.gradientColor[0],
+                              checkColor: Colors.white,
+                              value: filterData['attendance'] != null &&
+                                  filterData['attendance']['id'] == e['id'],
+                              onChanged: (bool? value) {
+                                setState(() {
+                                  if (filterData['attendance'] != null) {
+                                    if (filterData['attendance'] == e) {
+                                      filterData['attendance'] = null;
+                                      filterCount -= 1;
+                                    } else {
+                                      filterCount -= 1;
+                                      filterData['attendance'] = e;
+                                      filterCount += 1;
+                                    }
+                                  } else {
+                                    filterCount += 1;
+                                    filterData['attendance'] = e;
+                                  }
+                                });
+                                filterCountStreamController.add(filterCount);
+                              },
+                            ),
+                            Expanded(
+                              child: Text("${e['name']}"),
+                            )
+                          ],
+                        ),
+                      )
+                      .toList(),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
       body: Container(
         child: Column(
@@ -92,92 +291,49 @@ class _PlanningViewState extends State<PlanningView> {
                     child: Row(
                       children: [
                         Expanded(
-                            flex: 2,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                /// Go to previous month
-                                IconButton(
-                                    icon: Icon(
-                                      Icons.chevron_left,
-                                      size: 35,
-                                      color: Colors.black45,
-                                    ),
-                                    padding: const EdgeInsets.all(0),
-                                    onPressed: () {
-                                      setState(() {
-                                        if (_calendarViewModel.currentMonth >
-                                            1) {
-                                          _calendarViewModel.setMonth =
-                                              _calendarViewModel.currentMonth -
-                                                  1;
-                                        } else {
-                                          _calendarViewModel.setYear =
-                                              _calendarViewModel.currentYear -
-                                                  1;
-                                          _calendarViewModel.setMonth = 12;
-                                        }
-                                        _calendarViewModel.numOfDays =
-                                            _calendarViewModel.service
-                                                .daysCounter(
-                                                    currentYear:
-                                                        _calendarViewModel
-                                                            .currentYear,
-                                                    currentMonth:
-                                                        _calendarViewModel
-                                                            .currentMonth);
-                                      });
-                                    }),
-
-                                /// Current Month Text
-                                Text(
-                                  DateFormat.yMMM('fr_FR')
-                                      .format(DateTime(
-                                          _calendarViewModel.currentYear,
-                                          _calendarViewModel.currentMonth,
-                                          01))
-                                      .toUpperCase(),
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.black45,
-                                  ),
-                                ),
-
-                                /// Go to Next month
-                                IconButton(
-                                    icon: Icon(
-                                      Icons.chevron_right,
-                                      size: 35,
-                                      color: Colors.black45,
-                                    ),
-                                    padding: const EdgeInsets.all(0),
-                                    onPressed: () {
-                                      setState(() {
-                                        if (_calendarViewModel.currentMonth <
-                                            12) {
-                                          _calendarViewModel.setMonth =
-                                              _calendarViewModel.currentMonth +
-                                                  1;
-                                        } else {
-                                          _calendarViewModel.setYear =
-                                              _calendarViewModel.currentYear +
-                                                  1;
-                                          _calendarViewModel.setMonth = 1;
-                                        }
-                                        _calendarViewModel.numOfDays =
-                                            _calendarViewModel.service
-                                                .daysCounter(
-                                          currentYear:
-                                              _calendarViewModel.currentYear,
-                                          currentMonth:
-                                              _calendarViewModel.currentMonth,
-                                        );
-                                      });
-                                    }),
-                              ],
-                            )),
+                          flex: 2,
+                          child: DateController(
+                            onPreviousDate: () {
+                              setState(() {
+                                if (_calendarViewModel.currentMonth > 1) {
+                                  _calendarViewModel.setMonth =
+                                      _calendarViewModel.currentMonth - 1;
+                                } else {
+                                  _calendarViewModel.setYear =
+                                      _calendarViewModel.currentYear - 1;
+                                  _calendarViewModel.setMonth = 12;
+                                }
+                                _calendarViewModel.numOfDays =
+                                    _calendarViewModel.service.daysCounter(
+                                        currentYear:
+                                            _calendarViewModel.currentYear,
+                                        currentMonth:
+                                            _calendarViewModel.currentMonth);
+                              });
+                            },
+                            onNextDate: () {
+                              setState(() {
+                                if (_calendarViewModel.currentMonth < 12) {
+                                  _calendarViewModel.setMonth =
+                                      _calendarViewModel.currentMonth + 1;
+                                } else {
+                                  _calendarViewModel.setYear =
+                                      _calendarViewModel.currentYear + 1;
+                                  _calendarViewModel.setMonth = 1;
+                                }
+                                _calendarViewModel.numOfDays =
+                                    _calendarViewModel.service.daysCounter(
+                                  currentYear: _calendarViewModel.currentYear,
+                                  currentMonth: _calendarViewModel.currentMonth,
+                                );
+                              });
+                            },
+                            currentDate: DateTime(
+                                _calendarViewModel.currentYear,
+                                _calendarViewModel.currentMonth,
+                                01),
+                          ),
+                        ),
                         Expanded(
                           flex: 1,
                           child: Row(
@@ -196,6 +352,7 @@ class _PlanningViewState extends State<PlanningView> {
                                 onSelected: (value) {
                                   setState(() {
                                     _initPopupValue = value;
+                                    _showRegion = _initPopupValue == "Régions";
                                   });
                                 },
                                 child: Text(
@@ -289,6 +446,17 @@ class _PlanningViewState extends State<PlanningView> {
                 constrained: false,
                 scaleEnabled: false,
                 child: Calendar(
+                  showRtt: filterData['rtt'] == null
+                      ? 0
+                      : filterData['rtt'] == false
+                          ? 2
+                          : 1,
+                  showLeaves: filterData['leave'] == null
+                      ? 0
+                      : filterData['leave'] == false
+                          ? 2
+                          : 1,
+                  showRegion: _showRegion,
                   calendarViewModel: _calendarViewModel,
                 ),
               ),
