@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:ronan_pensec/global/palette.dart';
+import 'package:ronan_pensec/global/planning_filter.dart';
 import 'package:ronan_pensec/models/center_model.dart';
 import 'package:ronan_pensec/models/region_model.dart';
 import 'package:ronan_pensec/models/user_model.dart';
@@ -12,15 +13,41 @@ import 'package:ronan_pensec/views/landing_page_children/planning_children/plann
 import 'calendar_chunk/copyright_footer.dart';
 
 class Calendar extends StatefulWidget {
-  const Calendar({Key? key, required this.calendarViewModel}) : super(key: key);
+  const Calendar({
+    Key? key,
+    required this.calendarViewModel,
+    this.showRegion = false,
+    required this.showRtt,
+    required this.showLeaves,
+  }) : super(key: key);
   final CalendarViewModel calendarViewModel;
-
+  final bool showRegion;
+  final int showRtt;
+  final int showLeaves;
   @override
   _CalendarState createState() => _CalendarState();
 }
 
 class _CalendarState extends State<Calendar> {
   final PlanningViewModel _planningViewModel = PlanningViewModel.instance;
+  @override
+  void initState() {
+    listenFilter();
+    super.initState();
+  }
+
+  void listenFilter() {
+    filterCountStreamController.stream.listen((event) {
+      setState(() {
+        _regionFromFilter = List.from(filterData['region'])
+            .map((e) => int.parse(e['id'].toString()))
+            .toList();
+      });
+      print("REGION FILTER IDS : $_regionFromFilter");
+    });
+  }
+
+  List<int> _regionFromFilter = [];
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -62,129 +89,183 @@ class _CalendarState extends State<Calendar> {
                 return Column(
                   children: [
                     for (RegionModel region in snapshot.data) ...{
-                      Row(
-                        children: [
-                          Container(
-                            width: 150,
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 5, horizontal: 10),
-                            height: 30,
-                            decoration: BoxDecoration(
-                              color: Colors.grey.shade800,
-                              border: Border(
-                                bottom: BorderSide(
+                      if (_regionFromFilter.contains(region.id) ||
+                          _regionFromFilter.isEmpty) ...{
+                        if (widget.showRegion) ...{
+                          Row(
+                            children: [
+                              Container(
+                                width: 150,
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 5, horizontal: 10),
+                                height: 30,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade800,
+                                  border: Border(
+                                    bottom: BorderSide(
+                                      color: Colors.grey.shade300,
+                                    ),
+                                  ),
+                                ),
+                                child: Text(
+                                  "${region.name}",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              Container(
+                                height: 30,
+                                decoration: BoxDecoration(
                                   color: Colors.grey.shade300,
+                                  border: Border(
+                                    bottom: BorderSide(
+                                      color: Colors.grey.shade200,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                            child: Text(
-                              "${region.name}",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w700,
-                              ),
-                              textAlign: TextAlign.center,
-                              overflow: TextOverflow.ellipsis,
-                            ),
+                                child: EmployeeDate(
+                                  calendarViewModel: widget.calendarViewModel,
+                                ),
+                              )
+                            ],
                           ),
-                          Container(
-                            height: 30,
-                            decoration: BoxDecoration(
-                              color: Colors.grey.shade300,
-                              border: Border(
-                                bottom: BorderSide(
-                                  color: Colors.grey.shade200,
-                                ),
-                              ),
-                            ),
-                            child: EmployeeDate(
-                              calendarViewModel: widget.calendarViewModel,
-                            ),
-                          )
-                        ],
-                      ),
-                      for (CenterModel center in region.centers!) ...{
-                        Row(
-                          children: [
-                            Container(
-                              width: 150,
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 5, horizontal: 10),
-                              height: 30,
-                              decoration: BoxDecoration(
-                                color: Palette.gradientColor[2],
-                                border: Border(
-                                  bottom: BorderSide(
-                                    color: Colors.grey.shade300,
+                        },
+                        for (CenterModel center in region.centers!) ...{
+                          Row(
+                            children: [
+                              Container(
+                                width: 150,
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 5, horizontal: 10),
+                                height: 30,
+                                decoration: BoxDecoration(
+                                  color: Palette.gradientColor[2],
+                                  border: Border(
+                                    bottom: BorderSide(
+                                      color: Colors.grey.shade300,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              child: Text(
-                                "${center.name}",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 13.5,
+                                child: Text(
+                                  "${center.name}",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 13.5,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                textAlign: TextAlign.center,
-                                overflow: TextOverflow.ellipsis,
                               ),
-                            ),
-                            Container(
-                              height: 30,
-                              decoration: BoxDecoration(
-                                color: Colors.grey.shade300,
-                                border: Border(
-                                  bottom: BorderSide(
-                                    color: Colors.grey.shade200,
+                              Container(
+                                height: 30,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade300,
+                                  border: Border(
+                                    bottom: BorderSide(
+                                      color: Colors.grey.shade200,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              child: EmployeeDate(
-                                  calendarViewModel: widget.calendarViewModel),
-                            )
-                          ],
-                        ),
-                        if (center.users.length > 0) ...{
-                          for (UserModel user in center.users) ...{
-                            Row(
-                              children: [
-                                /// Employee Name
-                                Container(
-                                  width: 150,
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 5, horizontal: 10),
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey.shade100,
-                                    border: Border(
-                                      bottom: BorderSide(
+                                child: EmployeeDate(
+                                    calendarViewModel:
+                                        widget.calendarViewModel),
+                              )
+                            ],
+                          ),
+                          if (center.users.length > 0) ...{
+                            for (UserModel user in center.users) ...{
+                              if (widget.showLeaves != 0 ||
+                                  widget.showRtt != 0) ...{
+                                if ((widget.showLeaves == 1 &&
+                                        user.holidays.isNotEmpty) ||
+                                    (widget.showRtt == 1 &&
+                                        user.rtts.isNotEmpty)) ...{
+                                  Row(
+                                    children: [
+                                      /// Employee Name
+                                      Container(
+                                        width: 150,
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 5, horizontal: 10),
+                                        height: 30,
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey.shade100,
+                                          border: Border(
+                                            bottom: BorderSide(
+                                              color: Colors.grey.shade300,
+                                            ),
+                                          ),
+                                        ),
+                                        child: Text(
+                                          "${user.full_name}",
+                                          textAlign: TextAlign.center,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                      Container(
+                                        height: 30,
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey.shade300,
+                                          border: Border(
+                                            bottom: BorderSide(
+                                              color: Colors.grey.shade200,
+                                            ),
+                                          ),
+                                        ),
+                                        child: EmployeeDate(
+                                            user: user,
+                                            calendarViewModel:
+                                                widget.calendarViewModel),
+                                      )
+                                    ],
+                                  )
+                                }
+                              } else ...{
+                                Row(
+                                  children: [
+                                    /// Employee Name
+                                    Container(
+                                      width: 150,
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 5, horizontal: 10),
+                                      height: 30,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey.shade100,
+                                        border: Border(
+                                          bottom: BorderSide(
+                                            color: Colors.grey.shade300,
+                                          ),
+                                        ),
+                                      ),
+                                      child: Text(
+                                        "${user.full_name}",
+                                        textAlign: TextAlign.center,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    Container(
+                                      height: 30,
+                                      decoration: BoxDecoration(
                                         color: Colors.grey.shade300,
+                                        border: Border(
+                                          bottom: BorderSide(
+                                            color: Colors.grey.shade200,
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                  child: Text(
-                                    "${user.full_name}",
-                                    textAlign: TextAlign.center,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                                Container(
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey.shade300,
-                                    border: Border(
-                                      bottom: BorderSide(
-                                        color: Colors.grey.shade200,
-                                      ),
-                                    ),
-                                  ),
-                                  child: EmployeeDate(
-                                      user: user,
-                                      calendarViewModel:
-                                          widget.calendarViewModel),
+                                      child: EmployeeDate(
+                                          user: user,
+                                          calendarViewModel:
+                                              widget.calendarViewModel),
+                                    )
+                                  ],
                                 )
-                              ],
-                            )
+                              },
+                            }
                           }
                         }
                       }

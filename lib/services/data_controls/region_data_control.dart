@@ -36,6 +36,7 @@ class RegionDataControl {
     List<UserModel> users = [];
     for (RegionModel region in this.current) {
       for (CenterModel center in region.centers!) {
+        // print(center.users[0].attendances);
         for (UserModel user in center.users) {
           users.add(user);
         }

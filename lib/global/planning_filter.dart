@@ -4,8 +4,8 @@ import 'package:rxdart/rxdart.dart';
 
 late Map<String, dynamic> filterData = {
   "region": [],
-  "rtt": false,
-  "leave": false,
+  "rtt": null,
+  "leave": null,
   "attendance": null,
 };
 int filterCount = 0;

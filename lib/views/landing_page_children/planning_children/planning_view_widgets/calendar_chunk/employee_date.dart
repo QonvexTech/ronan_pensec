@@ -9,11 +9,13 @@ import 'package:ronan_pensec/view_model/calendar_half_day_clip.dart';
 import 'package:ronan_pensec/view_model/calendar_view_model.dart';
 
 class EmployeeDate extends StatefulWidget {
-  const EmployeeDate({Key? key, required this.calendarViewModel, this.user})
-      : super(key: key);
+  const EmployeeDate({
+    Key? key,
+    required this.calendarViewModel,
+    this.user,
+  }) : super(key: key);
   final CalendarViewModel calendarViewModel;
   final UserModel? user;
-
   @override
   _EmployeeDateState createState() => _EmployeeDateState();
 }
@@ -167,34 +169,37 @@ class _EmployeeDateState extends State<EmployeeDate> {
                       }
                     }
                   },
+                  if (widget.user!.attendances.length > 0) ...{
+                    for (AttendanceModel attendance
+                        in widget.user!.attendances) ...{
+                      if (widget.calendarViewModel.service.isSameDay(
+                          DateTime(widget.calendarViewModel.currentYear,
+                              widget.calendarViewModel.currentMonth, index + 1),
+                          attendance.date)) ...{
+                        Tooltip(
+                          message:
+                              attendance.status == 0 ? "Absent" : "Présent",
+                          child: Container(
+                            width: ((size.width - 150) /
+                                        widget.calendarViewModel.numOfDays) <
+                                    40
+                                ? 40
+                                : (size.width - 150) /
+                                    widget.calendarViewModel.numOfDays,
+                            color: attendance.status == 0
+                                ? Colors.red
+                                : Colors.blue,
+                          ),
+                        )
+                      }
+                    }
+                  },
                 },
                 // if(widget.user!)
                 // Text("${widget.user!.attendances}"),
 
                 // Absences & Late
-                // if (widget.user!.attendances.length > 0) ...{
-                //   for (AttendanceModel attendance
-                //       in widget.user!.attendances) ...{
-                //     // if (widget.calendarViewModel.service.isSameDay(
-                //     //     DateTime(widget.calendarViewModel.currentYear,
-                //     //         widget.calendarViewModel.currentMonth, index + 1),
-                //     //     attendance.date)) ...{
-                //     //   Tooltip(
-                //     //     message: attendance.status == 0 ? "Absent" : "Présent",
-                //     //     child: Container(
-                //     //       width: ((size.width - 150) /
-                //     //                   widget.calendarViewModel.numOfDays) <
-                //     //               40
-                //     //           ? 40
-                //     //           : (size.width - 150) /
-                //     //               widget.calendarViewModel.numOfDays,
-                //     //       color:
-                //     //           attendance.status == 0 ? Colors.red : Colors.blue,
-                //     //     ),
-                //     //   )
-                //     // }
-                //   }
-                // },
+                // if (widget.user != null) ...{},
                 if (widget.calendarViewModel.service.isSunday(DateTime(
                     widget.calendarViewModel.currentYear,
                     widget.calendarViewModel.currentMonth,
