@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
-import 'package:ronan_pensec/global/controllers/calendar_controller.dart';
+
 import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/models/center_model.dart';
 import 'package:ronan_pensec/models/region_model.dart';
 import 'package:ronan_pensec/models/user_model.dart';
-import 'package:ronan_pensec/services/dashboard_services/calendar_service.dart';
 import 'package:ronan_pensec/view_model/planning_view_model.dart';
 import 'package:ronan_pensec/views/landing_page_children/planning_children/new_planning_flow/new_view_test/body_chunks/sunday_and_holiday.dart';
 import 'package:ronan_pensec/views/landing_page_children/planning_children/new_planning_flow/new_view_test/body_chunks/user_planning_data_view.dart';
-import 'package:ronan_pensec/views/landing_page_children/planning_children/new_planning_flow/new_view_test/cell.dart';
-import 'package:ronan_pensec/views/landing_page_children/planning_children/new_planning_flow/planning_v2_chunks/planning_body_chunk/user_view_chunk/holidays_view.dart';
 
 class CustomTableBody extends StatefulWidget {
   final ScrollController scrollController;
@@ -25,8 +22,6 @@ class CustomTableBody extends StatefulWidget {
 class _CustomTableBodyState extends State<CustomTableBody> {
   LinkedScrollControllerGroup _controllers = LinkedScrollControllerGroup();
   late ScrollController _firstColumnController = _controllers.addAndGet();
-  late ScrollController _regionController = _controllers.addAndGet();
-  late ScrollController _centerController = _controllers.addAndGet();
   late ScrollController _restColumnsController = _controllers.addAndGet();
 
   PlanningViewModel _planningViewModel = PlanningViewModel.instance;
