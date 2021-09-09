@@ -51,7 +51,7 @@ class _PlanningV2State extends State<PlanningV2> {
                         style: Theme.of(context).textTheme.headline6,
                       ),
                       TextButton(
-                        child: Text("Dégager"),
+                        child: Text("Réinitialiser"),
                         onPressed: () {
                           setState(() {
                             filterData = {
