@@ -20,17 +20,3 @@ class PlanningBody extends StatelessWidget {
     );
   }
 }
-
-class _Tile extends StatelessWidget {
-  final String caption;
-
-  _Tile(this.caption);
-
-  @override
-  Widget build(_) => Container(
-        margin: const EdgeInsets.all(8.0),
-        padding: const EdgeInsets.all(8.0),
-        height: 250.0,
-        child: Center(child: Text(caption)),
-      );
-}
