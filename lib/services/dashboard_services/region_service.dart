@@ -46,6 +46,35 @@ class RegionService {
     }
   }
 
+  Future<bool> fetchLone() async {
+    try {
+      String url = "${BaseEnpoint.URL}${RegionEndpoint.base}";
+      return await http.get(Uri.parse("$url"), headers: {
+        "Accept": "application/json",
+        HttpHeaders.authorizationHeader: "Bearer ${_auth.token}"
+      }).then((response) {
+        var data = json.decode(response.body);
+        if (response.statusCode == 200) {
+          if (data is List) {
+            _regionDataControl.populateAll(data);
+          } else {
+            _regionDataControl.populateAll(data['']);
+          }
+          return true;
+        } else {
+          _notifier.showUnContextedBottomToast(
+              msg:
+                  "REGION Erreur ${response.statusCode}, ${response.reasonPhrase}");
+          return false;
+        }
+      });
+    } catch (e) {
+      print("ERRErreur : $e");
+      _notifier.showUnContextedBottomToast(msg: "Erreur $e");
+      return false;
+    }
+  }
+
   Future<bool> fetch(context) async {
     try {
       String url = "${BaseEnpoint.URL}${RegionEndpoint.base}";

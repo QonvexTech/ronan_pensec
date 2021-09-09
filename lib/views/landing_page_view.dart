@@ -7,8 +7,6 @@ import 'package:ronan_pensec/services/data_controls/notification_active_badge_co
 import 'package:ronan_pensec/services/landing_page_service.dart';
 import 'package:ronan_pensec/view_model/landing_page_main.dart';
 import 'package:ronan_pensec/views/landing_page_children/notifications_view.dart';
-
-import 'landing_page_children/calendar.dart';
 import 'landing_page_children/center_view.dart';
 import 'landing_page_children/employee_view.dart';
 import 'landing_page_children/planning.dart';
