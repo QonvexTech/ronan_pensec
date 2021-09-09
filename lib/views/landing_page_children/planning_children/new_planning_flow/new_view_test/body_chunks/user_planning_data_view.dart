@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ronan_pensec/global/controllers/calendar_controller.dart';
 import 'package:ronan_pensec/global/palette.dart';
+import 'package:ronan_pensec/models/calendar/attendance_model.dart';
 import 'package:ronan_pensec/models/calendar/holiday_model.dart';
 import 'package:ronan_pensec/models/calendar/rtt_model.dart';
 import 'package:ronan_pensec/models/center_model.dart';
@@ -191,6 +192,20 @@ class UserPlanningDataView extends StatelessWidget {
               )
             }
           },
+        },
+        if (user.attendances.length > 0) ...{
+          for (AttendanceModel attendance in user.attendances) ...{
+            if (_calendarService.isSameDay(currentDate, attendance.date) &&
+                attendance.status == 0) ...{
+              Tooltip(
+                message: "Absent",
+                child: Container(
+                  width: itemWidth,
+                  color: Colors.red,
+                ),
+              )
+            }
+          }
         },
 
         HolidaysView(
