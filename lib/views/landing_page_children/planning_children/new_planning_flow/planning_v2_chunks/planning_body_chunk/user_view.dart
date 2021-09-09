@@ -121,6 +121,52 @@ class UserView extends StatelessWidget {
                         ),
                       ),
                     ),
+                  } else ...{
+                    Container(
+                      width: itemWidth / snapshotDate.length,
+                      height: 30,
+                      child: MaterialButton(
+                        onPressed: () => showGeneralDialog(
+                            barrierColor: Colors.black.withOpacity(0.5),
+                            transitionBuilder: (context, a1, a2, widget) {
+                              return Transform.scale(
+                                scale: a1.value,
+                                child: Opacity(
+                                  opacity: a1.value,
+                                  child: AlertDialog(
+                                    shape: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(16.0)),
+                                    title: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text("Créer un planification"),
+                                        IconButton(
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(null),
+                                          icon: Icon(Icons.close),
+                                        )
+                                      ],
+                                    ),
+                                    content: CreatePlanning(
+                                      center: center,
+                                      user: user,
+                                      startDate: snapshotDate[x],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                            transitionDuration: Duration(milliseconds: 200),
+                            barrierDismissible: true,
+                            barrierLabel: '',
+                            context: context,
+                            pageBuilder: (context, animation1, animation2) {
+                              return Container();
+                            }),
+                      ),
+                    )
                   },
                 },
                 if (user.holidays.length > 0) ...{
@@ -193,53 +239,7 @@ class UserView extends StatelessWidget {
                         ? Colors.grey.shade700
                         : Palette.gradientColor[2],
                   )
-                } else ...{
-                  Container(
-                    width: itemWidth / snapshotDate.length,
-                    height: 30,
-                    child: MaterialButton(
-                      onPressed: () => showGeneralDialog(
-                          barrierColor: Colors.black.withOpacity(0.5),
-                          transitionBuilder: (context, a1, a2, widget) {
-                            return Transform.scale(
-                              scale: a1.value,
-                              child: Opacity(
-                                opacity: a1.value,
-                                child: AlertDialog(
-                                  shape: OutlineInputBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(16.0)),
-                                  title: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text("Créer un planification"),
-                                      IconButton(
-                                        onPressed: () =>
-                                            Navigator.of(context).pop(null),
-                                        icon: Icon(Icons.close),
-                                      )
-                                    ],
-                                  ),
-                                  content: CreatePlanning(
-                                    center: center,
-                                    user: user,
-                                    startDate: snapshotDate[x],
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                          transitionDuration: Duration(milliseconds: 200),
-                          barrierDismissible: true,
-                          barrierLabel: '',
-                          context: context,
-                          pageBuilder: (context, animation1, animation2) {
-                            return Container();
-                          }),
-                    ),
-                  )
-                },
+                }
               ],
             ),
           )
