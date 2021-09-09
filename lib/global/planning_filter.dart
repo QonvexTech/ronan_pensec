@@ -10,3 +10,6 @@ late Map<String, dynamic> filterData = {
 };
 int filterCount = 0;
 StreamController<int> filterCountStreamController = BehaviorSubject();
+
+List<String> category = ["Jours", "Semaine", "Mois"];
+String chosenCat = "Jours";

@@ -2,6 +2,7 @@ import 'package:ronan_pensec/models/calendar/attendance_model.dart';
 import 'package:ronan_pensec/models/calendar/holiday_model.dart';
 import 'package:ronan_pensec/models/calendar/rtt_model.dart';
 import 'package:ronan_pensec/models/center_model.dart';
+import 'package:ronan_pensec/models/planning_model.dart';
 import 'package:ronan_pensec/models/region_model.dart';
 import 'package:ronan_pensec/models/user_model.dart';
 import 'package:rxdart/rxdart.dart';
@@ -187,6 +188,64 @@ class RegionDataControl {
           if (user.id == userId) {
             user.holidays.removeWhere((element) => element.id == holidayId);
           }
+        }
+      }
+    }
+    _list.add(this.current);
+  }
+
+  updatePlanning(
+    int centerId,
+    int userId,
+    int planningId,
+    DateTime startDate,
+    String title,
+    DateTime endDate,
+  ) {
+    for (RegionModel region in this.current) {
+      for (CenterModel center in region.centers!) {
+        if (centerId == center.id) {
+          for (UserModel user in center.users) {
+            if (userId == user.id) {
+              for (PlanningModel planning in user.planning) {
+                if (planningId == planning.id) {
+                  planning.startDate = startDate;
+                  planning.endDate = endDate;
+                  break;
+                }
+              }
+              break;
+            }
+          }
+          break;
+        }
+      }
+    }
+    _list.add(this.current);
+  }
+
+  removePlanning(int id) {
+    for (RegionModel region in this.current) {
+      for (CenterModel center in region.centers!) {
+        for (UserModel user in center.users) {
+          user.planning.removeWhere((element) => element.id == id);
+        }
+      }
+    }
+    _list.add(this.current);
+  }
+
+  appendPlanning(PlanningModel planning) {
+    for (RegionModel region in this.current) {
+      for (CenterModel center in region.centers!) {
+        if (center.id == planning.centerId) {
+          for (UserModel user in center.users) {
+            if (user.id == planning.userId) {
+              user.planning.add(planning);
+              break;
+            }
+          }
+          break;
         }
       }
     }

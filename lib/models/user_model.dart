@@ -1,5 +1,6 @@
 import 'package:ronan_pensec/models/center_model.dart';
 import 'package:ronan_pensec/models/paid_status_model.dart';
+import 'package:ronan_pensec/models/planning_model.dart';
 
 import 'calendar/attendance_model.dart';
 import 'calendar/holiday_model.dart';
@@ -27,6 +28,7 @@ class UserModel {
   List<HolidayModel> holidays;
   List<AttendanceModel> attendances;
   List<CenterModel>? assignedCenters;
+  List<PlanningModel> planning;
   int isSilentOnPush;
   PaidStatus? paidStatus;
 
@@ -52,6 +54,7 @@ class UserModel {
       required this.isSenior,
       required this.attendances,
       required this.assignedCenters,
+      required this.planning,
       this.paidStatus,
       required this.isSilentOnPush});
 
@@ -81,9 +84,17 @@ class UserModel {
         attendances: attendanceToList(parsedJson['attendances']),
         isSilentOnPush: int.parse(parsedJson['isSilent_onPush'].toString()),
         assignedCenters: centerToList(parsedJson['centers']),
+        planning: planningList(parsedJson['planning']),
         paidStatus: parsedJson['paid_status'] != null
             ? PaidStatus.fromJson(parsedJson['paid_status'])
             : null);
+  }
+  static List<PlanningModel> planningList(List? data) {
+    List<PlanningModel> _planning = [];
+    if (data != null) {
+      return data.map((e) => PlanningModel.fromJson(e)).toList();
+    }
+    return _planning;
   }
 
   static List<AttendanceModel> attendanceToList(List? data) {

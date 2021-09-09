@@ -7,7 +7,7 @@ import 'package:ronan_pensec/route/planning_route.dart';
 import 'package:ronan_pensec/view_model/calendar_view_models/add_holiday_view_model.dart';
 import 'package:ronan_pensec/view_model/calendar_view_models/add_rtt_view_model.dart';
 import 'package:ronan_pensec/view_model/region_view_model.dart';
-import 'package:ronan_pensec/views/landing_page_children/planning_children/planning_view.dart';
+import 'package:ronan_pensec/views/landing_page_children/planning_children/new_planning_flow/planning_v2.dart';
 
 class WebPlanning extends StatefulWidget {
   final List<PopupMenuItem<int>> menuItems;
@@ -21,8 +21,7 @@ class WebPlanning extends StatefulWidget {
 
 class _WebDashboardState extends State<WebPlanning> {
   late final RegionViewModel _regionViewModel = widget.regionViewModel;
-  final PlanningView _planningView = new PlanningView();
-  // final CalendarPlanning _calendarPlanning = CalendarPlanning();
+  // final PlanningView _planningView = new PlanningView();
   final AddHolidayViewModel _holidayViewModel = AddHolidayViewModel.instance;
   final AddRTTViewModel _rttViewModel = AddRTTViewModel.instance;
   bool _isLoading = false;
@@ -96,7 +95,7 @@ class _WebDashboardState extends State<WebPlanning> {
             body: Container(
               width: double.infinity,
               height: _size.height,
-              child: _planningView,
+              child: PlanningV2(),
             )),
         _isLoading ? GeneralTemplate.loader(_size) : Container()
       ],
