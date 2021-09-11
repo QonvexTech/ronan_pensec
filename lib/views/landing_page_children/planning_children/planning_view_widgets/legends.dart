@@ -62,16 +62,16 @@ class Legends extends StatelessWidget {
           flex: 1,
           child: _buildLegend(
             size,
-            color: Colors.grey.shade600,
-            label: "Dimanche",
+            color: Colors.red,
+            label: "Absence",
           ),
         ),
         Expanded(
           flex: 1,
           child: _buildLegend(
             size,
-            color: Colors.orange,
-            label: "Jour férié",
+            color: Colors.purple.shade800,
+            label: "Conflit",
           ),
         ),
         Expanded(
@@ -94,10 +94,18 @@ class Legends extends StatelessWidget {
           flex: 1,
           child: _buildLegend(
             size,
-            color: Colors.red,
-            label: "Absence",
+            color: Colors.grey.shade600,
+            label: "Dimanche",
           ),
-        )
+        ),
+        Expanded(
+          flex: 1,
+          child: _buildLegend(
+            size,
+            color: Colors.orange,
+            label: "Jour férié",
+          ),
+        ),
       ],
     );
   }

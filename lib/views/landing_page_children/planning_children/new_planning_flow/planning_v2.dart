@@ -30,6 +30,18 @@ class _PlanningV2State extends State<PlanningV2> {
     {"id": 4, "name": "Normandie"},
   ];
   @override
+  void dispose() {
+    filterData = {
+      "region": [],
+      "rtt": null,
+      "leave": null,
+      "attendance": null,
+    };
+    filterCount = 0;
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     return Scaffold(

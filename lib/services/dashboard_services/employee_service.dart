@@ -140,18 +140,13 @@ class EmployeeService {
             "Accept": "application/json",
             HttpHeaders.authorizationHeader: "Bearer ${_auth.token}"
           }).then((response) {
-        if (response.statusCode == 200) {
-          _model.remove(id: userId);
-          _notifier.showContextedBottomToast(context,
-              msg: "Suppression réussie");
-          return true;
-        }
-        _notifier.showContextedBottomToast(context,
-            msg: "Erreur ${response.statusCode}, ${response.reasonPhrase}");
-        return false;
+        var data = json.decode(response.body);
+        _notifier.showUnContextedBottomToast(msg: "${data['message']}");
+        print(response.statusCode);
+        return response.statusCode == 200;
       });
     } catch (e) {
-      _notifier.showContextedBottomToast(context, msg: "Erreur : $e");
+      // _notifier.showContextedBottomToast(context, msg: "Erreur : $e");
       return false;
     }
   }
@@ -196,6 +191,7 @@ class EmployeeService {
         var data = json.decode(response.body);
         if (response.statusCode == 200) {
           _notifier.showUnContextedBottomToast(msg: "Créé avec succès");
+          // this.getData(context, subDomain: subDomain)
           return UserModel.fromJson(parsedJson: data['user']);
         }
         // _notifier.showUnContextedBottomToast(msg: "Erreur ${response.statusCode}, ${data['message']}");

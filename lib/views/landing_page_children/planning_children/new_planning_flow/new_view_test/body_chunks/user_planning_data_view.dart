@@ -133,7 +133,9 @@ class UserPlanningDataView extends StatelessWidget {
                           ? Radius.circular(20)
                           : Radius.zero,
                     ),
-                    color: Colors.blue,
+                    color: planning.isConflict
+                        ? Colors.purple.shade800
+                        : Colors.blue,
                   ),
                 ),
               ),
