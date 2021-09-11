@@ -363,12 +363,15 @@ class _EmployeeViewState extends State<EmployeeView> {
                                                   });
                                                   await _employeeCreateViewModel
                                                       .create
-                                                      .then((value) {
+                                                      .then((value) async {
                                                     if (value != null) {
                                                       Navigator.of(context)
                                                           .pop(null);
                                                       _employeeCreateViewModel
                                                           .clear();
+                                                      await fetcher(this
+                                                          .employeePagination
+                                                          .currentPageUrl);
                                                     }
                                                   }).whenComplete(
                                                           () => setState(() {

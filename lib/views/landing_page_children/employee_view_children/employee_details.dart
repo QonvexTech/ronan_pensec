@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/global/template/general_template.dart';
 import 'package:ronan_pensec/models/center_model.dart';
+import 'package:ronan_pensec/models/pagination_model.dart';
 import 'package:ronan_pensec/models/user_model.dart';
 import 'package:ronan_pensec/services/data_controls/region_data_control.dart';
 import 'package:ronan_pensec/view_model/employee_children/employee_details_view_model.dart';
+import 'package:ronan_pensec/view_model/employee_view_model.dart';
 
 import 'employee_detail_children/employee_demands.dart';
 
@@ -25,6 +27,8 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
   late bool _isActive = widget.employee.isActive == 1;
   late final EmployeeDetailsViewModel _viewModel =
       EmployeeDetailsViewModel.instance(widget.employee);
+  final EmployeeViewModel _employeeViewModel = EmployeeViewModel.instance;
+  PaginationModel employeePagination = new PaginationModel();
   late final EmployeeDemands _employeeDemands = EmployeeDemands(
     managerId: managerIds,
     userId: widget.employee.id,
@@ -38,6 +42,22 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
       _viewModel.lastName.text = widget.employee.last_name;
       _viewModel.address.text = widget.employee.address;
       _viewModel.mobile.text = widget.employee.mobile;
+    });
+  }
+
+  Future<void> fetcher(String subDomain) async {
+    await _viewModel.service
+        .getData(context, subDomain: subDomain)
+        .then((value) {
+      if (this.mounted) {
+        setState(() {
+          this.employeePagination = value!;
+          _employeeViewModel.employeeDataControl
+              .populateAll(this.employeePagination.data!);
+          _employeeViewModel.employeeDataControl.hasFetched = true;
+          _employeeViewModel.paginationModel = employeePagination;
+        });
+      }
     });
   }
 
@@ -569,9 +589,11 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                                                               setState(() {
                                                                                 _isLoading = true;
                                                                               });
-                                                                              await _viewModel.service.delete(context, userId: widget.employee.id).whenComplete(() => setState(() => _isLoading = false)).then((value) {
+                                                                              await _viewModel.service.delete(context, userId: widget.employee.id).whenComplete(() => setState(() => _isLoading = false)).then((value) async {
                                                                                 if (value) {
-                                                                                  Navigator.of(context).pop(null);
+                                                                                  setState(() => _isLoading = true);
+                                                                                  await fetcher(this.employeePagination.currentPageUrl).whenComplete(() => setState(() => _isLoading = false));
+                                                                                  Navigator.of(context).pop();
                                                                                 }
                                                                               });
                                                                             },
