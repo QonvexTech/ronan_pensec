@@ -28,16 +28,32 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
 
   Offset? _mobileReceiverOffset;
   GlobalKey _iconKey = new GlobalKey();
-  List _receivers = [];
+  List<RawUserModel> _receivers = [];
   List<String> _dropdownChoice = [
     "Personne",
     "Centre",
   ];
   String _dropdownValue = "Personne";
-  Future<void> send() async {
+  Future<bool> send() async {
     if (_dropdownValue == "Personne") {
       if (_receivers.length > 0) {
         // for()
+        for (RawUserModel user in _receivers) {
+          setState(() {
+            _announcementViewModel.setReceiver = user;
+          });
+          await _announcementService
+              .send(body: _announcementViewModel.body)
+              .then((value) {
+            setState(() {
+              _announcementViewModel.dispose();
+            });
+          });
+        }
+        setState(() {
+          _isLoading = false;
+        });
+        return true;
       } else {
         /// Send to ALL
         await _announcementService
@@ -49,8 +65,10 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
             });
           }
         }).whenComplete(() => setState(() => _isLoading = false));
+        return true;
       }
     }
+    return false;
   }
 
   Widget get _contacts => Container(
@@ -83,15 +101,21 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
                               onPressed: () {
                                 if (_dropdownValue == "Personne") {
                                   setState(() {
-                                    if (_mobileReceiverOffset != null) {
-                                      _mobileReceiverOffset = null;
-                                    }
-                                    if (_announcementViewModel.receiver!
-                                        .contains(user)) {
-                                      _announcementViewModel.setReceiver = null;
+                                    if (_receivers.contains(user)) {
+                                      _receivers.removeWhere(
+                                          (element) => element.id == user.id);
                                     } else {
-                                      _announcementViewModel.setReceiver = user;
+                                      _receivers.add(user);
                                     }
+                                    // if (_mobileReceiverOffset != null) {
+                                    //   _mobileReceiverOffset = null;
+                                    // }
+                                    // if (_announcementViewModel.receiver!
+                                    //     .contains(user)) {
+                                    //   _announcementViewModel.setReceiver = null;
+                                    // } else {
+                                    //   _announcementViewModel.setReceiver = user;
+                                    // }
                                     // if (_announcementViewModel.receiver != user) {
                                     //   _announcementViewModel.setReceiver = user;
                                     // } else {
@@ -234,13 +258,50 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
                                             fontWeight: FontWeight.w600,
                                             letterSpacing: 1),
                                       ),
-                                      Container(
-                                        width: size.width > 900
-                                            ? size.width * .15
-                                            : double.infinity,
-                                        height: 50,
-                                        color: Colors.red,
-                                      )
+                                      if (_receivers.length == 0) ...{
+                                        Container(
+                                          width: size.width > 900
+                                              ? size.width * .15
+                                              : double.infinity,
+                                          height: 50,
+                                          child: Text(
+                                            "Tout",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline5,
+                                          ),
+                                        )
+                                      } else ...{
+                                        for (RawUserModel user
+                                            in _receivers) ...{
+                                          Container(
+                                            width: size.width > 900
+                                                ? size.width * .15
+                                                : double.infinity,
+                                            height: 50,
+                                            child: ListTile(
+                                              leading: Container(
+                                                width: 40,
+                                                height: 40,
+                                                decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: Colors.grey.shade100,
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                          color: Colors.black45,
+                                                          blurRadius: 2,
+                                                          offset: Offset(2, 2))
+                                                    ],
+                                                    image: DecorationImage(
+                                                        fit: BoxFit.cover,
+                                                        image: NetworkImage(
+                                                            "${user.image}"))),
+                                              ),
+                                              title: Text("${user.fullName}"),
+                                            ),
+                                          )
+                                        }
+                                      },
                                     ],
                                   ),
                                 ),
@@ -470,6 +531,7 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
                                         setState(() {
                                           _isLoading = true;
                                         });
+                                        await send();
                                       }
                                     },
                                     color: Palette.gradientColor[0],
