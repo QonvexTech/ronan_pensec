@@ -5,6 +5,7 @@ import 'package:ronan_pensec/views/landing_page_children/settings_page_children/
 import 'package:ronan_pensec/views/landing_page_children/settings_page_children/general.dart';
 import 'package:ronan_pensec/views/landing_page_children/settings_page_children/legal_holidays_manager.dart';
 import 'package:ronan_pensec/views/landing_page_children/settings_page_children/manage_employees.dart';
+import 'package:ronan_pensec/views/landing_page_children/settings_page_children/region_page.dart';
 import 'package:ronan_pensec/views/landing_page_children/settings_page_children/security_and_login.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -39,6 +40,12 @@ class _SettingsPageState extends State<SettingsPage>
       Container(
         key: ValueKey("legal-holidays"),
         child: LegalHolidaysManager(),
+      )
+    },
+    if (_auth.loggedUser!.roleId == 1) ...{
+      Container(
+        key: ValueKey("region-control"),
+        child: RegionPage(),
       )
     }
   ];
@@ -193,6 +200,17 @@ class _SettingsPageState extends State<SettingsPage>
                                 onPress: () {
                                   setState(() {
                                     _selectedContent = _contents[4];
+                                  });
+                                })
+                          },
+                          if (_auth.loggedUser!.roleId == 1) ...{
+                            this.iconButtons(
+                                icon: Icons.account_balance_outlined,
+                                label: "Régions",
+                                size: size,
+                                onPress: () {
+                                  setState(() {
+                                    _selectedContent = _contents[5];
                                   });
                                 })
                           }

@@ -9,7 +9,7 @@ import 'package:ronan_pensec/services/data_controls/region_data_control.dart';
 import 'package:ronan_pensec/services/toast_notifier.dart';
 
 class RegionService {
-  late RegionDataControl _regionDataControl;
+  late RegionDataControl? _regionDataControl;
   RegionService._internal();
   static final Auth _auth = Auth.instance;
 
@@ -22,6 +22,8 @@ class RegionService {
     _instance._regionDataControl = control;
     return _instance;
   }
+
+  static RegionService get loneInstance => _instance;
 
   late final ToastNotifier _notifier = ToastNotifier.instance;
 
@@ -46,6 +48,27 @@ class RegionService {
     }
   }
 
+  // Future<void> add(Map body) async {
+  //   try {
+  //     await http.get(Uri.parse("${BaseEnpoint.URL}${RegionEndpoint.base}/raw"),
+  //         headers: {
+  //           "Accept": "application/json",
+  //           HttpHeaders.authorizationHeader: "Bearer ${_auth.token}"
+  //         }).then((response) {
+  //       var data = json.decode(response.body);
+  //       if (response.statusCode == 200) {
+  //         rawRegionController.regionData.populateRegions = data;
+  //         return;
+  //       }
+  //       print("ERROR ${response.statusCode}");
+  //       return;
+  //     });
+  //   } catch (e) {
+  //     print(e);
+  //     return;
+  //   }
+  // }
+
   Future<bool> fetchLone() async {
     try {
       String url = "${BaseEnpoint.URL}${RegionEndpoint.base}";
@@ -55,10 +78,12 @@ class RegionService {
       }).then((response) {
         var data = json.decode(response.body);
         if (response.statusCode == 200) {
-          if (data is List) {
-            _regionDataControl.populateAll(data);
-          } else {
-            _regionDataControl.populateAll(data['']);
+          if (_regionDataControl != null) {
+            if (data is List) {
+              _regionDataControl!.populateAll(data);
+            } else {
+              _regionDataControl!.populateAll(data['']);
+            }
           }
           return true;
         } else {
@@ -84,10 +109,12 @@ class RegionService {
       }).then((response) {
         var data = json.decode(response.body);
         if (response.statusCode == 200) {
-          if (data is List) {
-            _regionDataControl.populateAll(data);
-          } else {
-            _regionDataControl.populateAll(data['']);
+          if (_regionDataControl != null) {
+            if (data is List) {
+              _regionDataControl!.populateAll(data);
+            } else {
+              _regionDataControl!.populateAll(data['']);
+            }
           }
           return true;
         } else {
@@ -104,9 +131,9 @@ class RegionService {
     }
   }
 
-  Future create(context, Map body) async {
+  Future<bool> create(context, Map body) async {
     try {
-      await http
+      return await http
           .post(Uri.parse("${BaseEnpoint.URL}${RegionEndpoint.base}"),
               headers: {
                 "Accept": "application/json",
@@ -116,14 +143,42 @@ class RegionService {
           .then((response) {
         var data = json.decode(response.body);
         if (response.statusCode == 200 || response.statusCode == 201) {
-          _regionDataControl.append(data);
+          if (_regionDataControl != null) {
+            _regionDataControl!.append(data);
+          }
+
+          this.fetchRaw;
         } else {
           _notifier.showContextedBottomToast(context,
               msg: "Erreur ${response.statusCode}, ${response.reasonPhrase}");
         }
+        return response.statusCode == 200;
       });
     } catch (e) {
       _notifier.showContextedBottomToast(context, msg: "Erreur $e");
+      return false;
     }
+  }
+
+  Future<void> delete(int id) async {
+    try {
+      await http.delete(
+        Uri.parse("${BaseEnpoint.URL}${RegionEndpoint.base}/delete/$id"),
+        headers: {
+          "Accept": "application/json",
+          HttpHeaders.authorizationHeader: "Bearer ${_auth.token}"
+        },
+      ).then((response) {
+        var data = json.decode(response.body);
+        _notifier.showUnContextedBottomToast(msg: "${data['message']}");
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          this.fetchRaw;
+        } else {
+          _notifier.showUnContextedBottomToast(
+              msg: "Erreur ${response.statusCode}, ${response.reasonPhrase}");
+        }
+        return response.statusCode == 200;
+      });
+    } catch (e) {}
   }
 }
