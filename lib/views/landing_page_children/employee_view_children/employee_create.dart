@@ -53,7 +53,7 @@ class _EmployeeCreateState extends State<EmployeeCreate> {
           height: _fieldSpacing,
         ),
         _employeeCreateViewModel.template.normalTextField(
-            _employeeCreateViewModel.zipCode, "Code dé postal",
+            _employeeCreateViewModel.zipCode, "Code postal",
             type: TextInputType.number),
         SizedBox(
           height: _fieldSpacing,
@@ -83,24 +83,6 @@ class _EmployeeCreateState extends State<EmployeeCreate> {
         SizedBox(
           height: _fieldSpacing,
         ),
-        // AdaptiveContainer(children: [
-        //   AdaptiveItem(
-        //     content: Container(
-        //         margin: const EdgeInsets.only(bottom: 5),
-        //         child: _employeeCreateViewModel.template
-        //             .normalTextField(
-        //             _employeeCreateViewModel.city,
-        //             "Villé")),
-        //   ),
-        //   AdaptiveItem(
-        //     content: Container(
-        //         margin: const EdgeInsets.only(bottom: 5),
-        //         child: _employeeCreateViewModel.template
-        //             .normalTextField(
-        //             _employeeCreateViewModel.zipCode,
-        //             "Code dé postal")),
-        //   ),
-        // ]),
         _employeeCreateViewModel.template.calendarForm(context,
             chosenDate: _employeeCreateViewModel.birthDate,
             onChange: (DateTime birthdate) {

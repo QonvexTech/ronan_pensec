@@ -15,30 +15,32 @@ class _AddHolidayViewState extends State<AddHolidayView> {
   @override
   void initState() {
     _viewModel.defaultData();
-    if(_viewModel.auth.loggedUser!.roleId == 1){
-      _viewModel.appendBody = {"user_id" : _viewModel.initDrpValue.id.toString()};
-    }else{
-      _viewModel.appendBody = {"user_id" : _viewModel.auth.loggedUser!.id.toString()};
+    if (_viewModel.auth.loggedUser!.roleId == 1) {
+      _viewModel.appendBody = {
+        "user_id": _viewModel.initDrpValue.id.toString()
+      };
+    } else {
+      _viewModel.appendBody = {
+        "user_id": _viewModel.auth.loggedUser!.id.toString()
+      };
     }
 
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     return Material(
       child: Container(
-          width: size.width < 900
-              ? size.width * .65
-              : size.width * .45,
+          width: size.width < 900 ? size.width * .65 : size.width * .45,
           height: 500,
           child: Column(
             children: [
               Expanded(
                 child: Scrollbar(
                   child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20),
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
                     width: double.infinity,
                     height: size.height,
                     child: ListView(
@@ -49,20 +51,17 @@ class _AddHolidayViewState extends State<AddHolidayView> {
                         ),
                         _viewModel.themedTextField(
                             controller: _viewModel.requestName,
-                            icon: Icons
-                                .drive_file_rename_outline,
+                            icon: Icons.drive_file_rename_outline,
                             label: "Nom de la demande"),
                         const SizedBox(
                           height: 10,
                         ),
                         _viewModel.themedTextField(
                           controller: _viewModel.reason,
-                          icon:
-                          Icons.drive_file_rename_outline,
+                          icon: Icons.drive_file_rename_outline,
                           minLine: 3,
                           maxLine: 6,
-                          keyboardType:
-                          TextInputType.multiline,
+                          keyboardType: TextInputType.multiline,
                           label: "Raison",
                         ),
                         const SizedBox(
@@ -78,26 +77,24 @@ class _AddHolidayViewState extends State<AddHolidayView> {
                                   height: 60,
                                   color: Colors.white54,
                                   onPressed: () async {
-                                    DateTime? _selected = await _viewModel
-                                        .selectDate(context);
+                                    DateTime? _selected =
+                                        await _viewModel.selectDate(context);
                                     setState(() {
-                                      _viewModel.setDate = _selected
-                                          .toString();
+                                      _viewModel.setDate = _selected.toString();
                                     });
                                   },
                                   child: Row(
                                     children: [
                                       Icon(
                                         Icons.calendar_today_outlined,
-                                        color:
-                                        Palette.gradientColor[0],
+                                        color: Palette.gradientColor[0],
                                       ),
                                       const SizedBox(
                                         width: 10,
                                       ),
                                       Expanded(
                                           child:
-                                          Text(_viewModel.startDateToText))
+                                              Text(_viewModel.startDateToText))
                                     ],
                                   ),
                                 ),
@@ -106,13 +103,17 @@ class _AddHolidayViewState extends State<AddHolidayView> {
                                 width: 10,
                               ),
                               Expanded(
-                                  child: _viewModel.dayDropdown(callback: (Map data){
-                                    setState(() {
-                                      _viewModel.chooseDay = data;
-                                      _viewModel.appendBody = {"startDate_isHalf_day" : data['value'].toString()};
-                                    });
-                                  }, value: _viewModel.chosenDayValue)
-                              )
+                                  child: _viewModel.dayDropdown(
+                                      callback: (Map data) {
+                                        setState(() {
+                                          _viewModel.chooseDay = data;
+                                          _viewModel.appendBody = {
+                                            "startDate_isHalf_day":
+                                                data['value'].toString()
+                                          };
+                                        });
+                                      },
+                                      value: _viewModel.chosenDayValue))
                             ],
                           ),
                         ),
@@ -129,19 +130,18 @@ class _AddHolidayViewState extends State<AddHolidayView> {
                                   height: 60,
                                   color: Colors.white54,
                                   onPressed: () async {
-                                    DateTime? _selected = await _viewModel
-                                        .selectDate(context);
+                                    DateTime? _selected =
+                                        await _viewModel.selectDate(context);
                                     setState(() {
-                                      _viewModel.setEndDate = _selected
-                                          .toString();
+                                      _viewModel.setEndDate =
+                                          _selected.toString();
                                     });
                                   },
                                   child: Row(
                                     children: [
                                       Icon(
                                         Icons.calendar_today_outlined,
-                                        color:
-                                        Palette.gradientColor[0],
+                                        color: Palette.gradientColor[0],
                                       ),
                                       const SizedBox(
                                         width: 10,
@@ -157,13 +157,17 @@ class _AddHolidayViewState extends State<AddHolidayView> {
                                 width: 10,
                               ),
                               Expanded(
-                                  child: _viewModel.dayDropdown(callback: (Map data){
-                                    setState(() {
-                                      _viewModel.chooseEndDay = data;
-                                      _viewModel.appendBody = {"endDate_isHalf_day" : data['value'].toString()};
-                                    });
-                                  }, value: _viewModel.chosenEndDayValue)
-                              )
+                                  child: _viewModel.dayDropdown(
+                                      callback: (Map data) {
+                                        setState(() {
+                                          _viewModel.chooseEndDay = data;
+                                          _viewModel.appendBody = {
+                                            "endDate_isHalf_day":
+                                                data['value'].toString()
+                                          };
+                                        });
+                                      },
+                                      value: _viewModel.chosenEndDayValue))
                             ],
                           ),
                         ),
@@ -179,19 +183,29 @@ class _AddHolidayViewState extends State<AddHolidayView> {
                                   onChanged: (bool? value) {
                                     setState(() {
                                       _viewModel.isForOthers = value!;
-                                      if(value){
-                                        _viewModel.appendBody = {"user_id" : _viewModel.initDrpValue.id.toString()};
-                                      }else{
-                                        _viewModel.appendBody = {"user_id" : _viewModel.auth.loggedUser!.id.toString()};
+                                      if (value) {
+                                        _viewModel.appendBody = {
+                                          "user_id": _viewModel.initDrpValue.id
+                                              .toString()
+                                        };
+                                      } else {
+                                        _viewModel.appendBody = {
+                                          "user_id": _viewModel
+                                              .auth.loggedUser!.id
+                                              .toString()
+                                        };
                                       }
                                     });
                                   },
                                   activeColor: Palette.gradientColor[0],
                                   value: _viewModel.isForOthers,
                                 ),
-                                Expanded(child: Text("La demande est pour quelqu'un d'autre.",style: TextStyle(
-                                    color: Palette.gradientColor[0]
-                                ),))
+                                Expanded(
+                                    child: Text(
+                                  "La demande est pour quelqu'un d'autre.",
+                                  style: TextStyle(
+                                      color: Palette.gradientColor[0]),
+                                ))
                               ],
                             ),
                           )
@@ -205,11 +219,12 @@ class _AddHolidayViewState extends State<AddHolidayView> {
                           Container(
                             width: double.infinity,
                             child: _viewModel.userRawData.showDropdown(
-                                onChooseCallback:
-                                    (RawUserModel chosen) {
+                                onChooseCallback: (RawUserModel chosen) {
                                   setState(() {
                                     _viewModel.initDrpValue = chosen;
-                                    _viewModel.appendBody = {"user_id" : chosen.id.toString()};
+                                    _viewModel.appendBody = {
+                                      "user_id": chosen.id.toString()
+                                    };
                                   });
                                 },
                                 value: _viewModel.initDrpValue),
@@ -223,19 +238,23 @@ class _AddHolidayViewState extends State<AddHolidayView> {
                   ),
                 ),
               ),
-              if(_viewModel.showMessage)...{
+              if (_viewModel.showMessage) ...{
                 Container(
                   width: double.infinity,
                   child: Row(
                     children: [
-                      Icon(Icons.error,color: Colors.red,),
+                      Icon(
+                        Icons.error,
+                        color: Colors.red,
+                      ),
                       const SizedBox(
                         width: 10,
                       ),
-                      Expanded(child: Text("Please dont leave empty fields.",style: TextStyle(
-                          color: Colors.red,
-                          letterSpacing: 1
-                      ),))
+                      Expanded(
+                          child: Text(
+                        "Please dont leave empty fields.",
+                        style: TextStyle(color: Colors.red, letterSpacing: 1),
+                      ))
                     ],
                   ),
                 ),
@@ -251,8 +270,7 @@ class _AddHolidayViewState extends State<AddHolidayView> {
                     Expanded(
                       child: MaterialButton(
                         height: 50,
-                        onPressed: () =>
-                            Navigator.of(context).pop(null),
+                        onPressed: () => Navigator.of(context).pop(null),
                         color: Colors.grey.shade200,
                         child: Center(
                           child: Text(
@@ -272,12 +290,17 @@ class _AddHolidayViewState extends State<AddHolidayView> {
                         height: 50,
                         onPressed: () async {
                           print(_viewModel.body);
-                          if(_viewModel.body.length == 7){
+                          if (_viewModel.body.length == 7) {
                             Navigator.of(context).pop(null);
                             widget.loadingCallback(true);
-                            await _viewModel.service.request(body: _viewModel.body, isMe: !_viewModel.isForOthers).whenComplete(() => widget.loadingCallback(false));
-                          }else{
-                            setState((){
+                            await _viewModel.service
+                                .request(
+                                    body: _viewModel.body,
+                                    isMe: !_viewModel.isForOthers)
+                                .whenComplete(
+                                    () => widget.loadingCallback(false));
+                          } else {
+                            setState(() {
                               _viewModel.showMessage = true;
                             });
                           }
@@ -285,7 +308,7 @@ class _AddHolidayViewState extends State<AddHolidayView> {
                         color: Palette.gradientColor[0],
                         child: Center(
                           child: Text(
-                            "SOUMETTRE",
+                            "VALIDER",
                             style: TextStyle(
                                 letterSpacing: 1.5,
                                 color: Colors.white,

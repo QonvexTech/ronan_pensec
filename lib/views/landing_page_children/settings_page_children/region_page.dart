@@ -123,7 +123,7 @@ class _RegionPageState extends State<RegionPage> {
                                         color: Palette.gradientColor[0],
                                         child: Center(
                                           child: Text(
-                                            "SOUMETTRE",
+                                            "VALIDER",
                                             style: TextStyle(
                                                 fontWeight: FontWeight.w600,
                                                 color: Colors.white,

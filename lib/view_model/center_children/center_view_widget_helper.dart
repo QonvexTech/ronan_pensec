@@ -190,7 +190,7 @@ class CenterViewWidgetHelper {
                         decoration: InputDecoration(
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5)),
-                            hintText: "Entrez nouveau code de postal",
+                            hintText: "Entrez nouveau code postal",
                             alignLabelWithHint: true,
                             prefixIcon: Icon(Icons.mail)),
                       ),

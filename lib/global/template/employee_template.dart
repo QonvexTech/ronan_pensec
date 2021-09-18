@@ -94,6 +94,14 @@ class EmployeeTemplate {
         ),
         DataColumn(
           label: Text(
+            "Numéro de contact",
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        ),
+        DataColumn(
+          label: Text(
             "Adresse",
             style: TextStyle(
               color: Colors.white,
@@ -138,6 +146,9 @@ class EmployeeTemplate {
         ),
         DataCell(
           Text("${user.last_name}"),
+        ),
+        DataCell(
+          Text("${user.mobile ?? "NON DÉFINI"}"),
         ),
         DataCell(
           Text("${user.address}"),

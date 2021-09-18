@@ -21,8 +21,9 @@ class _RegionViewState extends State<RegionView> {
   final RegionViewModel _regionViewModel = RegionViewModel.instance;
   @override
   void initState() {
-    if(!_regionViewModel.control.hasFetched){
-      _regionViewModel.service.fetch(context).then((value) => setState(() => _regionViewModel.control.hasFetched = true));
+    if (!_regionViewModel.control.hasFetched) {
+      _regionViewModel.service.fetch(context).then((value) =>
+          setState(() => _regionViewModel.control.hasFetched = true));
     }
     super.initState();
   }
@@ -70,14 +71,17 @@ class _RegionViewState extends State<RegionView> {
                               IconButton(
                                   tooltip:
                                       "${!_regionViewModel.isList ? "Vue de liste" : "Vue de la grille"}",
-                                  icon: Icon(
-                                      !_regionViewModel.isList ? Icons.list : Icons.grid_view),
+                                  icon: Icon(!_regionViewModel.isList
+                                      ? Icons.list
+                                      : Icons.grid_view),
                                   onPressed: () {
                                     setState(() {
-                                      _regionViewModel.setIsList = !_regionViewModel.isList;
+                                      _regionViewModel.setIsList =
+                                          !_regionViewModel.isList;
                                     });
                                   }),
-                              if (_regionViewModel.auth.loggedUser!.roleId == 1) ...{
+                              if (_regionViewModel.auth.loggedUser!.roleId ==
+                                  1) ...{
                                 IconButton(
                                   tooltip: "Creer Région",
                                   icon: Icon(Icons.add),
@@ -89,7 +93,8 @@ class _RegionViewState extends State<RegionView> {
                                           child: Column(
                                             children: [
                                               TextField(
-                                                controller: _regionViewModel.name,
+                                                controller:
+                                                    _regionViewModel.name,
                                                 decoration: InputDecoration(
                                                     border: OutlineInputBorder(
                                                       borderRadius:
@@ -157,25 +162,34 @@ class _RegionViewState extends State<RegionView> {
                                                             const EdgeInsets
                                                                 .all(0),
                                                         onPressed: () {
-                                                          if(_regionViewModel.name.text.isNotEmpty){
+                                                          if (_regionViewModel
+                                                              .name
+                                                              .text
+                                                              .isNotEmpty) {
                                                             /// pop alert dialog
-                                                            Navigator.of(context)
+                                                            Navigator.of(
+                                                                    context)
                                                                 .pop(null);
                                                             setState(() {
-                                                              _regionViewModel.setIsLoading = true;
+                                                              _regionViewModel
+                                                                      .setIsLoading =
+                                                                  true;
                                                             });
                                                             _regionViewModel.service.create(
                                                                 context, {
-                                                              "name": _regionViewModel.name.text
+                                                              "name":
+                                                                  _regionViewModel
+                                                                      .name.text
                                                             }).whenComplete(() =>
                                                                 setState(() =>
-                                                                _regionViewModel.setIsLoading =
-                                                                false));
+                                                                    _regionViewModel
+                                                                            .setIsLoading =
+                                                                        false));
                                                           }
                                                         },
                                                         child: Center(
                                                           child: Text(
-                                                            "Soumettre",
+                                                            "Valider",
                                                             style: TextStyle(
                                                                 color: Palette
                                                                     .loginTextColor),
@@ -208,9 +222,10 @@ class _RegionViewState extends State<RegionView> {
                             width: double.infinity,
                             height: _size.height - 120,
                             child: Center(
-                              child: Text(_regionViewModel.auth.loggedUser!.roleId == 3
-                                  ? "There are no assigned regions for you"
-                                  : "No regions found"),
+                              child: Text(
+                                  _regionViewModel.auth.loggedUser!.roleId == 3
+                                      ? "There are no assigned regions for you"
+                                      : "No regions found"),
                             ),
                           ),
                         )
@@ -221,49 +236,61 @@ class _RegionViewState extends State<RegionView> {
                               List.generate(
                                   regionList.data!.length,
                                   (index) => Slidable(
-                                    controller: _regionViewModel.slideController,
-                                    key: Key("$index"),
-                                    secondaryActions: GeneralTemplate.sliders(onEdit: (){}, onDelete: (){}, showCaption: true),
-                                    actionPane: SlidableDrawerActionPane(),
-                                    child: MaterialButton(
-                                      padding: const EdgeInsets.symmetric(vertical: 50),
-                                      onPressed: () {
-                                        setState(() {
-                                          _regionViewModel.setRegion = regionList.data![index];
-                                          _regionViewModel.setPage = 1;
-                                        });
-                                      },
-                                      child: Container(
-                                        child: Text(
-                                            regionList.data![index].name),
-                                      ),
-                                    ),
-                                  )),
+                                        controller:
+                                            _regionViewModel.slideController,
+                                        key: Key("$index"),
+                                        secondaryActions:
+                                            GeneralTemplate.sliders(
+                                                onEdit: () {},
+                                                onDelete: () {},
+                                                showCaption: true),
+                                        actionPane: SlidableDrawerActionPane(),
+                                        child: MaterialButton(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 50),
+                                          onPressed: () {
+                                            setState(() {
+                                              _regionViewModel.setRegion =
+                                                  regionList.data![index];
+                                              _regionViewModel.setPage = 1;
+                                            });
+                                          },
+                                          child: Container(
+                                            child: Text(
+                                                regionList.data![index].name),
+                                          ),
+                                        ),
+                                      )),
                             ),
                           )
                         } else ...{
                           SliverGrid(
                             gridDelegate:
                                 SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: _gridCount,
-                                    childAspectRatio: _size.width < 900 ? 2 : 3,
-                                ),
+                              crossAxisCount: _gridCount,
+                              childAspectRatio: _size.width < 900 ? 2 : 3,
+                            ),
                             delegate: SliverChildBuilderDelegate(
                               (_, index) {
                                 return Padding(
                                   padding: const EdgeInsets.all(20.0),
                                   child: Slidable(
-                                    controller: _regionViewModel.slideController,
+                                    controller:
+                                        _regionViewModel.slideController,
                                     actionPane: SlidableDrawerActionPane(),
-                                    secondaryActions: GeneralTemplate.sliders(onEdit: (){}, onDelete: (){},showCaption: !(_size.width < 600)),
+                                    secondaryActions: GeneralTemplate.sliders(
+                                        onEdit: () {},
+                                        onDelete: () {},
+                                        showCaption: !(_size.width < 600)),
                                     child: Container(
                                         decoration: BoxDecoration(
-                                            color: Colors.grey.shade200,
+                                          color: Colors.grey.shade200,
                                         ),
                                         child: MaterialButton(
                                           onPressed: () {
                                             setState(() {
-                                              _regionViewModel.setRegion=regionList.data![index];
+                                              _regionViewModel.setRegion =
+                                                  regionList.data![index];
                                               _regionViewModel.setPage = 1;
                                             });
                                           },
@@ -301,7 +328,9 @@ class _RegionViewState extends State<RegionView> {
                   ],
                 );
               }),
-          _regionViewModel.isLoading ? GeneralTemplate.loader(_size) : Container()
+          _regionViewModel.isLoading
+              ? GeneralTemplate.loader(_size)
+              : Container()
         ],
       );
     } else {

@@ -16,7 +16,7 @@ class UserModel {
   DateTime birthdate;
   String city;
   String zip_code;
-  String mobile;
+  String? mobile;
   int isActive;
   String? image;
   int roleId;

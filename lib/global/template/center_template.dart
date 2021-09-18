@@ -35,19 +35,16 @@ class CenterTemplate {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black54,
-                  offset: Offset(2,2),
-                  blurRadius: 2
-                )
-              ],
-              image: DecorationImage(
-                fit: BoxFit.cover,
-                image: NetworkImage("${_list[index].image}")
-              )
-            ),
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.black54,
+                      offset: Offset(2, 2),
+                      blurRadius: 2)
+                ],
+                image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: NetworkImage("${_list[index].image}"))),
           ),
           title: Text("${_list[index].name}"),
           subtitle: Text("${_list[index].address ?? "NON DÉFINI"}"),
@@ -57,27 +54,28 @@ class CenterTemplate {
 
   Widget listView(context, List<CenterModel> _list, bool isSliver) => isSliver
       ? Scrollbar(
-        child: SliverList(
+          child: SliverList(
             delegate: SliverChildListDelegate(List.generate(
                 _list.length, (index) => listData(context, _list, index))),
           ),
-      )
+        )
       : Scrollbar(
-        child: ListView.builder(
+          child: ListView.builder(
             itemCount: _list.length,
             shrinkWrap: true,
             itemBuilder: (_, index) => listData(context, _list, index),
           ),
-      );
+        );
 
   Text headerText(String text) => Text(
         text,
         style: TextStyle(color: Colors.white, fontSize: 15),
       );
-  Text bodyText(String text) => Text(text, style: TextStyle(
-    color: Colors.black54,fontSize: 15
-  ),);
-  Widget tableView(context,List<CenterModel> sauce) => Column(
+  Text bodyText(String text) => Text(
+        text,
+        style: TextStyle(color: Colors.black54, fontSize: 15),
+      );
+  Widget tableView(context, List<CenterModel> sauce) => Column(
         children: [
           ///HEADER
           Container(
@@ -86,7 +84,6 @@ class CenterTemplate {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             color: Palette.gradientColor[0],
             child: tableFormat(
-                r1: headerText("ID"),
                 r2: headerText("Nom"),
                 r3: headerText("Addresse"),
                 r4: headerText("Numéro"),
@@ -99,7 +96,9 @@ class CenterTemplate {
                 (index) => Container(
                   width: double.infinity,
                   height: 50,
-                  color: index % 2 == 0 ? Colors.grey.shade200 : Palette.gradientColor[0].withOpacity(0.3),
+                  color: index % 2 == 0
+                      ? Colors.grey.shade200
+                      : Palette.gradientColor[0].withOpacity(0.3),
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: MaterialButton(
                     onPressed: () {
@@ -109,11 +108,10 @@ class CenterTemplate {
                               sauce[index], _regionDataControl));
                     },
                     child: tableFormat(
-                      r1: bodyText("${sauce[index].id}"),
                       r2: bodyText("${sauce[index].name}"),
-                      r3: bodyText("${sauce[index].address??"NON DÉFINI"}"),
-                      r4: bodyText("${sauce[index].mobile??"NON DÉFINI"}"),
-                      r5: bodyText("${sauce[index].email??"NON DÉFINI"}"),
+                      r3: bodyText("${sauce[index].address ?? "NON DÉFINI"}"),
+                      r4: bodyText("${sauce[index].mobile ?? "NON DÉFINI"}"),
+                      r5: bodyText("${sauce[index].email ?? "NON DÉFINI"}"),
                     ),
                   ),
                 ),
@@ -124,7 +122,6 @@ class CenterTemplate {
       );
 
   Widget tableFormat({
-    required Widget r1,
     required Widget r2,
     required Widget r3,
     required Widget r4,
@@ -132,25 +129,19 @@ class CenterTemplate {
   }) =>
       Row(
         children: [
-          Expanded(child: r1),
           Expanded(
             child: r2,
           ),
-          Expanded(child: r3,flex: 2,),
+          Expanded(
+            child: r3,
+            flex: 2,
+          ),
           Expanded(child: r4),
           Expanded(child: r5),
         ],
       );
 
   List<DataColumn> get kDataColumn => [
-        DataColumn(
-          label: Text(
-            "ID",
-            style: TextStyle(
-              color: Colors.white,
-            ),
-          ),
-        ),
         DataColumn(
           label: Text(
             "Nom",
@@ -209,9 +200,6 @@ class CenterTemplate {
                                 _list[index], _regionDataControl));
                       },
                       cells: [
-                        DataCell(
-                          Text("${_list[index].id}"),
-                        ),
                         DataCell(
                           Text("${_list[index].name}"),
                         ),

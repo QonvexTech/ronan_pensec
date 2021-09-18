@@ -488,7 +488,7 @@ class _CenterDetailsState extends State<CenterDetails> {
                         Container(
                           margin: const EdgeInsets.symmetric(vertical: 10),
                           child: _helper.templatize(
-                              label: "Code de postal",
+                              label: "Code postal",
                               icon: Icons.local_post_office_sharp,
                               text: widget.model.zipCode ?? "NON DÉFINI"),
                         ),
