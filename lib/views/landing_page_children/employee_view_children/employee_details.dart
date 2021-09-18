@@ -41,7 +41,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
       _viewModel.firstName.text = widget.employee.first_name;
       _viewModel.lastName.text = widget.employee.last_name;
       _viewModel.address.text = widget.employee.address;
-      _viewModel.mobile.text = widget.employee.mobile;
+      _viewModel.mobile.text = widget.employee.mobile!;
     });
   }
 
@@ -602,7 +602,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                                                             child:
                                                                                 Center(
                                                                               child: Text(
-                                                                                "SOUMETTRE",
+                                                                                "VALIDER",
                                                                                 style: TextStyle(fontWeight: FontWeight.w600, letterSpacing: 1.5, color: Colors.white),
                                                                               ),
                                                                             ),
@@ -773,7 +773,8 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                               ),
                                               Expanded(
                                                   child: Text(
-                                                widget.employee.mobile,
+                                                widget.employee.mobile ??
+                                                    "NON DÉFINI",
                                                 style: TextStyle(
                                                     color:
                                                         Colors.grey.shade700),

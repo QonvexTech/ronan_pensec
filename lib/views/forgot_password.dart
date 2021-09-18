@@ -20,15 +20,18 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     setState(() {
       _isLoading = true;
     });
-    await _forgotPasswordViewModel.service.sendCode(email: _forgotPasswordViewModel.email.text).then((value) {
-      if(value){
+    await _forgotPasswordViewModel.service
+        .sendCode(email: _forgotPasswordViewModel.email.text)
+        .then((value) {
+      if (value) {
         print("GO TO CODE VALIDATION PAGE");
         Navigator.push(context, PasswordResetRoute.resetPage);
       }
     }).whenComplete(() => setState(() => _isLoading = false));
   }
+
   @override
-  void dispose(){
+  void dispose() {
     _forgotPasswordViewModel.dispose();
     super.dispose();
   }
@@ -275,46 +278,51 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                               const SizedBox(
                                 height: 5,
                               ),
-                              AnimatedWidgetX(child: Align(
-                                alignment: AlignmentDirectional.centerEnd,
-                                child: TextButton(
-                                  onPressed: (){
-                                    Navigator.push(context, PasswordResetRoute.resetPage);
-                                  },
-                                  child: Text("Vous avez déjà le code ?"),
-                                ),
-                              ), delay: 1.8, duration: duration),
+                              AnimatedWidgetX(
+                                  child: Align(
+                                    alignment: AlignmentDirectional.centerEnd,
+                                    child: TextButton(
+                                      onPressed: () {
+                                        Navigator.push(context,
+                                            PasswordResetRoute.resetPage);
+                                      },
+                                      child: Text("Vous avez déjà le code ?"),
+                                    ),
+                                  ),
+                                  delay: 1.8,
+                                  duration: duration),
                               const SizedBox(
                                 height: 20,
                               ),
                               AnimatedWidgetX(
                                 child: Container(
-                                  width: double.infinity,
-                                  height: 50,
-                                  child: MaterialButton(
-                                    color: Palette.textFieldColor,
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                                    onPressed: () async {
-                                      if (_key.currentState!.validate()) {
-                                        await pashPash;
-                                      }
-                                    },
-                                    splashColor: Colors.grey.shade300,
-                                    minWidth: double.infinity,
-                                    height: 60,
-                                    child: Center(
-                                      child: Text(
-                                        "SOUMETTRE",
-                                        style: TextStyle(
-                                          color: Palette.loginTextColor,
-                                          letterSpacing: 2.0,
-                                          fontSize: 16.5,
-                                          fontWeight: FontWeight.bold,
+                                    width: double.infinity,
+                                    height: 50,
+                                    child: MaterialButton(
+                                      color: Palette.textFieldColor,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(25)),
+                                      onPressed: () async {
+                                        if (_key.currentState!.validate()) {
+                                          await pashPash;
+                                        }
+                                      },
+                                      splashColor: Colors.grey.shade300,
+                                      minWidth: double.infinity,
+                                      height: 60,
+                                      child: Center(
+                                        child: Text(
+                                          "VALIDER",
+                                          style: TextStyle(
+                                            color: Palette.loginTextColor,
+                                            letterSpacing: 2.0,
+                                            fontSize: 16.5,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  )
-                                ),
+                                    )),
                                 delay: 2,
                                 duration: duration,
                               ),
@@ -327,10 +335,13 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                     height: 50,
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(25),
-                                      border: Border.all(color: Palette.textFieldColor,width: 3)
-                                    ),
+                                        border: Border.all(
+                                            color: Palette.textFieldColor,
+                                            width: 3)),
                                     child: MaterialButton(
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(25)),
                                       onPressed: () async {
                                         Navigator.of(context).pop();
                                       },
@@ -348,8 +359,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                           ),
                                         ),
                                       ),
-                                    )
-                                ),
+                                    )),
                                 delay: 2.5,
                                 duration: duration,
                               ),

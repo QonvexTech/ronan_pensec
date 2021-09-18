@@ -4,6 +4,7 @@ class RegionModel {
   final int id;
   String name;
   List<CenterModel>? centers;
+  bool show = true;
 
   RegionModel({
     required this.id,
@@ -20,7 +21,7 @@ class RegionModel {
   }
   static List<CenterModel> centerToList(List? data) {
     List<CenterModel> _centers = [];
-    if(data != null){
+    if (data != null) {
       return data.map((e) => CenterModel.fromJson(e)).toList();
     }
     return _centers;

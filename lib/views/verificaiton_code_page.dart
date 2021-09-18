@@ -26,12 +26,12 @@ class _VerificationCodePageState extends State<VerificationCodePage> {
     await _passwordCodeViewModel.service
         .resetPassword(
             newPassword: _passwordCodeViewModel.newPassword.text,
-            token: _passwordCodeViewModel.validationCode.text).then((value) {
-              if(value){
-                Navigator.pushReplacement(context, CredentialRoute.login);
-              }
-    })
-        .whenComplete(() => setState(() => _isLoading = false));
+            token: _passwordCodeViewModel.validationCode.text)
+        .then((value) {
+      if (value) {
+        Navigator.pushReplacement(context, CredentialRoute.login);
+      }
+    }).whenComplete(() => setState(() => _isLoading = false));
   }
 
   bool _showPassword = false;
@@ -383,10 +383,9 @@ class _VerificationCodePageState extends State<VerificationCodePage> {
                                               },
                                               decoration: InputDecoration(
                                                   border: OutlineInputBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
                                                   ),
                                                   contentPadding:
                                                       const EdgeInsets.only(
@@ -426,19 +425,19 @@ class _VerificationCodePageState extends State<VerificationCodePage> {
                                   child: Row(
                                     children: [
                                       Checkbox(
-                                          value: !_obscure,
-                                          onChanged: (val) {
-                                            setState(() {
-                                              _obscure = !_obscure;
-                                            });
-                                          },
+                                        value: !_obscure,
+                                        onChanged: (val) {
+                                          setState(() {
+                                            _obscure = !_obscure;
+                                          });
+                                        },
                                         activeColor: Palette.textFieldColor,
                                       ),
                                       Expanded(
                                         child: Text(
                                           "Montrer le mot de passe",
                                           style: TextStyle(
-                                              color: Palette.textFieldColor,
+                                            color: Palette.textFieldColor,
                                           ),
                                         ),
                                       )
@@ -483,7 +482,7 @@ class _VerificationCodePageState extends State<VerificationCodePage> {
                                       height: 60,
                                       child: Center(
                                         child: Text(
-                                          "SOUMETTRE",
+                                          "VALIDER",
                                           style: TextStyle(
                                             color: Palette.loginTextColor,
                                             letterSpacing: 2.0,

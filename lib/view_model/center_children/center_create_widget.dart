@@ -50,15 +50,16 @@ class CenterCreateWidget {
       }
     });
     _instance._mobile.addListener(() {
-      if(_instance._mobile.text.isNotEmpty){
-        _instance.appendToBody = {"mobile" : _instance._mobile.text};
-      }else{
+      if (_instance._mobile.text.isNotEmpty) {
+        _instance.appendToBody = {"mobile": _instance._mobile.text};
+      } else {
         _instance.body.remove('mobile');
       }
     });
     return _instance;
   }
-  void dispose(){
+
+  void dispose() {
     _name.clear();
     _street.clear();
     _city.clear();
@@ -68,6 +69,7 @@ class CenterCreateWidget {
     _instance._address = ['', '', ''];
     _instance.setRegion = _regionController.regionData.regions[0];
   }
+
   final TextEditingController _name = new TextEditingController();
   final TextEditingController _street = new TextEditingController();
   final TextEditingController _city = new TextEditingController();
@@ -84,7 +86,6 @@ class CenterCreateWidget {
   set setRegion(RegionModel? data) {
     _chosenRegion = data;
     _instance.appendToBody = {'region_id': "${data!.id}"};
-
   }
   // int? _regionId;
   //
@@ -110,7 +111,8 @@ class CenterCreateWidget {
         ),
       );
   bool showErrorText = false;
-  create(context, {required Size size, required loadingCallback}) => GeneralTemplate.showDialog(
+  create(context, {required Size size, required loadingCallback}) =>
+      GeneralTemplate.showDialog(
         context,
         child: StatefulBuilder(
           builder: (context, setState) => Column(
@@ -120,12 +122,14 @@ class CenterCreateWidget {
                   children: [
                     Container(
                       width: double.infinity,
-                      child: Text("Obligatoire",style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
-                          color: Palette.gradientColor[0],
-                          letterSpacing: 1.5
-                      ),),
+                      child: Text(
+                        "Obligatoire",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                            color: Palette.gradientColor[0],
+                            letterSpacing: 1.5),
+                      ),
                     ),
                     Divider(
                       thickness: 0.5,
@@ -154,25 +158,30 @@ class CenterCreateWidget {
                     ),
                     this.themedField(
                         controller: _zipCode,
-                        label: "Code de postal",
+                        label: "Code postal",
                         icon: Icons.mail_outline_rounded),
                     const SizedBox(
                       height: 10,
                     ),
                     Container(
                       width: double.infinity,
-                      child: Text("Optionnel",style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
-                          color: Palette.gradientColor[0],
-                          letterSpacing: 1.5
-                      ),),
+                      child: Text(
+                        "Optionnel",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                            color: Palette.gradientColor[0],
+                            letterSpacing: 1.5),
+                      ),
                     ),
                     Divider(
                       color: Colors.black45,
                       thickness: 0.5,
                     ),
-                    this.themedField(controller: _mobile, label: "Numéro de contact", icon: Icons.phone_outlined),
+                    this.themedField(
+                        controller: _mobile,
+                        label: "Numéro de contact",
+                        icon: Icons.phone_outlined),
                     Divider(
                       color: Colors.black45,
                       thickness: 0.5,
@@ -180,26 +189,29 @@ class CenterCreateWidget {
                     Container(
                       margin: const EdgeInsets.only(bottom: 5),
                       width: double.infinity,
-                      child: Text("Choisissez la région",style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                          color: Palette.gradientColor[0],
-                        fontSize: 16,
-                        letterSpacing: 1.5
-                      ),),
+                      child: Text(
+                        "Choisissez la région",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: Palette.gradientColor[0],
+                            fontSize: 16,
+                            letterSpacing: 1.5),
+                      ),
                     ),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       decoration: BoxDecoration(
-                        color: Colors.grey.shade200,
-                        borderRadius: BorderRadius.circular(3)
-                      ),
+                          color: Colors.grey.shade200,
+                          borderRadius: BorderRadius.circular(3)),
                       width: double.infinity,
                       height: 50,
-                      child: this.dropdown(regionCallback: (RegionModel? region){
-                        setState((){
-                          _instance.setRegion = region;
-                        });
-                      }, currentRegion: _instance.chosenRegion!),
+                      child: this.dropdown(
+                          regionCallback: (RegionModel? region) {
+                            setState(() {
+                              _instance.setRegion = region;
+                            });
+                          },
+                          currentRegion: _instance.chosenRegion!),
                     ),
                     const SizedBox(
                       height: 20,
@@ -207,25 +219,28 @@ class CenterCreateWidget {
                   ],
                 ),
               ),
-              if(showErrorText)...{
+              if (showErrorText) ...{
                 Container(
-                  margin: const EdgeInsets.symmetric(vertical: 10),
+                    margin: const EdgeInsets.symmetric(vertical: 10),
                     width: double.infinity,
                     child: Row(
                       children: [
-                        Icon(Icons.info_outline,color: Colors.red,),
+                        Icon(
+                          Icons.info_outline,
+                          color: Colors.red,
+                        ),
                         const SizedBox(
                           width: 10,
                         ),
                         Expanded(
-                          child: Text("Veuillez remplir tous les champs obligatoires",style: TextStyle(
-                              color: Colors.red,
-                              letterSpacing: 1.5
-                          ),),
+                          child: Text(
+                            "Veuillez remplir tous les champs obligatoires",
+                            style: TextStyle(
+                                color: Colors.red, letterSpacing: 1.5),
+                          ),
                         )
                       ],
-                    )
-                ),
+                    )),
               },
               Container(
                 width: double.infinity,
@@ -255,18 +270,20 @@ class CenterCreateWidget {
                           _instance.appendToBody = {
                             "address": _address.join(', ')
                           };
-                          if(checkBody){
+                          if (checkBody) {
                             Navigator.of(context).pop(null);
                             print("PROCEED");
                             loadingCallback(true);
-                            await _service.create(context, _instance.body).then((value) {
-                              if(value){
+                            await _service
+                                .create(context, _instance.body)
+                                .then((value) {
+                              if (value) {
                                 _instance.dispose();
                               }
                             }).whenComplete(() => loadingCallback(false));
-                          }else{
+                          } else {
                             print("FILL ALL THE REQUIRED FIELDS");
-                            setState((){
+                            setState(() {
                               showErrorText = true;
                             });
                           }
@@ -274,7 +291,7 @@ class CenterCreateWidget {
                         color: Palette.gradientColor[0],
                         child: Center(
                           child: Text(
-                            "SOUMETTRE",
+                            "VALIDER",
                             style: TextStyle(
                                 fontWeight: FontWeight.w600,
                                 color: Colors.white,
@@ -292,27 +309,33 @@ class CenterCreateWidget {
         width: size.width,
         height: 500,
         title: ListTile(
-          title: Text("Créer une centre",style: TextStyle(
-            color: Palette.gradientColor[0],
-            fontWeight: FontWeight.w600,
-            letterSpacing: 1.5
-          ),),
+          title: Text(
+            "Créer une centre",
+            style: TextStyle(
+                color: Palette.gradientColor[0],
+                fontWeight: FontWeight.w600,
+                letterSpacing: 1.5),
+          ),
           subtitle: Text("L'action ne peut pas être annulée"),
         ),
       );
 
   DropdownButtonHideUnderline dropdown(
-          {required ValueChanged<RegionModel> regionCallback, required RegionModel currentRegion}) =>
+          {required ValueChanged<RegionModel> regionCallback,
+          required RegionModel currentRegion}) =>
       DropdownButtonHideUnderline(
         child: DropdownButton<RegionModel>(
           isExpanded: true,
           value: currentRegion,
-          onChanged: (RegionModel? region){
+          onChanged: (RegionModel? region) {
             regionCallback(region!);
           },
           items: _instance.rawRegionController.regionData.regions
               .map<DropdownMenuItem<RegionModel>>(
-                (e) => DropdownMenuItem<RegionModel>(child: Text("${e.name}"), value: e,),
+                (e) => DropdownMenuItem<RegionModel>(
+                  child: Text("${e.name}"),
+                  value: e,
+                ),
               )
               .toList(),
         ),
@@ -327,9 +350,9 @@ class CenterCreateWidget {
   bool get checkBody {
     bool checker = false;
     int counter = 0;
-    _instance.body.map((key, value){
+    _instance.body.map((key, value) {
       print(key);
-      if(_requiredFields.contains(key)){
+      if (_requiredFields.contains(key)) {
         counter++;
       }
 

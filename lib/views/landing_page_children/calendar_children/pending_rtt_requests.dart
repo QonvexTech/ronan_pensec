@@ -75,9 +75,9 @@ class _PendingRTTRequestsState extends State<PendingRTTRequests> {
       );
 
   Column snapText(
-      {required Widget image,
-        required String title,
-        required String subtitle}) =>
+          {required Widget image,
+          required String title,
+          required String subtitle}) =>
       Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -128,6 +128,7 @@ class _PendingRTTRequestsState extends State<PendingRTTRequests> {
     }
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     final Size _size = MediaQuery.of(context).size;
@@ -139,11 +140,11 @@ class _PendingRTTRequestsState extends State<PendingRTTRequests> {
           child: StreamBuilder<List<RTTModel>>(
             stream: requestController.dataControl.stream,
             builder: (_, snapshot) {
-              if(snapshot.hasData && !snapshot.hasError){
-                if(snapshot.data!.length > 0){
+              if (snapshot.hasData && !snapshot.hasError) {
+                if (snapshot.data!.length > 0) {
                   return ListView(
                     children: [
-                      for(RTTModel rtt in snapshot.data!)...{
+                      for (RTTModel rtt in snapshot.data!) ...{
                         Slidable(
                           controller: _slidableController,
                           key: Key("${rtt.id}"),
@@ -154,15 +155,19 @@ class _PendingRTTRequestsState extends State<PendingRTTRequests> {
                                 setState(() {
                                   _isLoading = true;
                                 });
-                                await requestController.service.approve(context, rttId: rtt.id).then((value) {
-                                  if(value){
-                                    requestController.dataControl.remove(rtt.id);
-                                  }else{
+                                await requestController.service
+                                    .approve(context, rttId: rtt.id)
+                                    .then((value) {
+                                  if (value) {
+                                    requestController.dataControl
+                                        .remove(rtt.id);
+                                  } else {
                                     setState(() {
                                       _isLoading = false;
                                     });
                                   }
-                                }).whenComplete(() => setState(() => _isLoading = false));
+                                }).whenComplete(() =>
+                                        setState(() => _isLoading = false));
                               },
                               caption: "J'accepte",
                               icon: Icons.check,
@@ -171,91 +176,120 @@ class _PendingRTTRequestsState extends State<PendingRTTRequests> {
                             IconSlideAction(
                               closeOnTap: true,
                               onTap: () async {
-                                GeneralTemplate.showDialog(context, onDismissed: (){
+                                GeneralTemplate.showDialog(context,
+                                    onDismissed: () {
                                   _reason.clear();
-                                },child: Column(
-                                  children: [
-                                    Container(
-                                      width: double.infinity,
-                                      child: Text("Pour rejeter complètement la demande, vous devez fournir une raison valable",textAlign: TextAlign.left,),
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    Expanded(child: Container(
-                                      child: TextField(
-                                        controller: _reason,
-                                        maxLines: 3,
-                                        decoration: InputDecoration(
-                                          alignLabelWithHint: true,
-                                            border: OutlineInputBorder(
-                                                borderRadius: BorderRadius.circular(5)
-                                            ),
-                                          hintText: "Raison",
-                                          labelText: "Raison"
+                                },
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          width: double.infinity,
+                                          child: Text(
+                                            "Pour rejeter complètement la demande, vous devez fournir une raison valable",
+                                            textAlign: TextAlign.left,
+                                          ),
                                         ),
-                                      ),
-                                    ),),
-
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    Container(
-                                      width: double.infinity,
-                                      height: 50,
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                            child: MaterialButton(
-                                              height: 50,
-                                              onPressed: (){
-                                                Navigator.of(context).pop(null);
-                                              },
-                                              color: Colors.grey.shade200,
-                                              child: Center(
-                                                child: Text("ANNULER",style: TextStyle(
-                                                    letterSpacing: 1.5,
-                                                    fontWeight: FontWeight.w600
-                                                ),),
-                                              ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Expanded(
+                                          child: Container(
+                                            child: TextField(
+                                              controller: _reason,
+                                              maxLines: 3,
+                                              decoration: InputDecoration(
+                                                  alignLabelWithHint: true,
+                                                  border: OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5)),
+                                                  hintText: "Raison",
+                                                  labelText: "Raison"),
                                             ),
                                           ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Expanded(
-                                            child: MaterialButton(
-                                              height: 50,
-                                              onPressed: () async {
-                                                Navigator.of(context).pop(null);
-                                                setState(() {
-                                                  _isLoading = true;
-                                                });
-                                                await requestController.service.reject(context, rttId: rtt.id,reason: _reason.text).then((value) {
-                                                  if(value){
-                                                    requestController.dataControl.remove(rtt.id);
-                                                  }else{
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Container(
+                                          width: double.infinity,
+                                          height: 50,
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                child: MaterialButton(
+                                                  height: 50,
+                                                  onPressed: () {
+                                                    Navigator.of(context)
+                                                        .pop(null);
+                                                  },
+                                                  color: Colors.grey.shade200,
+                                                  child: Center(
+                                                    child: Text(
+                                                      "ANNULER",
+                                                      style: TextStyle(
+                                                          letterSpacing: 1.5,
+                                                          fontWeight:
+                                                              FontWeight.w600),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              Expanded(
+                                                child: MaterialButton(
+                                                  height: 50,
+                                                  onPressed: () async {
+                                                    Navigator.of(context)
+                                                        .pop(null);
                                                     setState(() {
-                                                      _isLoading = false;
+                                                      _isLoading = true;
                                                     });
-                                                  }
-                                                }).whenComplete(() => setState(() => _isLoading = false));
-                                              },
-                                              color: Palette.gradientColor[0],
-                                              child: Center(
-                                                child: Text("SOUMETTRE",style: TextStyle(
-                                                    letterSpacing: 1.5,
-                                                    fontWeight: FontWeight.w600,
-                                                    color: Colors.white
-                                                ),),
-                                              ),
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                ), width: _size.width, height: 200, title: Text("Rejeter la demande de RTT?"));
+                                                    await requestController
+                                                        .service
+                                                        .reject(context,
+                                                            rttId: rtt.id,
+                                                            reason:
+                                                                _reason.text)
+                                                        .then((value) {
+                                                      if (value) {
+                                                        requestController
+                                                            .dataControl
+                                                            .remove(rtt.id);
+                                                      } else {
+                                                        setState(() {
+                                                          _isLoading = false;
+                                                        });
+                                                      }
+                                                    }).whenComplete(() =>
+                                                            setState(() =>
+                                                                _isLoading =
+                                                                    false));
+                                                  },
+                                                  color:
+                                                      Palette.gradientColor[0],
+                                                  child: Center(
+                                                    child: Text(
+                                                      "VALIDER",
+                                                      style: TextStyle(
+                                                          letterSpacing: 1.5,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          color: Colors.white),
+                                                    ),
+                                                  ),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                    width: _size.width,
+                                    height: 200,
+                                    title: Text("Rejeter la demande de RTT?"));
                               },
                               caption: "Rejeter",
                               icon: Icons.close,
@@ -265,119 +299,141 @@ class _PendingRTTRequestsState extends State<PendingRTTRequests> {
                           actionPane: SlidableDrawerActionPane(),
                           child: MaterialButton(
                             color: Colors.grey.shade100,
-                            onPressed: (){
-                              GeneralTemplate.showDialog(context, child: Column(
-                                children: [
-                                  Expanded(
-                                    child: ListView(
-                                      children: [
-                                        dialogDetailFormat(icon: Icons.calendar_today_outlined, title: header(context,"Date"), subTitle: body(context, "${DateFormat.yMMMMd('fr_FR').format(rtt.date)}")),
-                                        const SizedBox(
-                                          height: 10,
+                            onPressed: () {
+                              GeneralTemplate.showDialog(context,
+                                  child: Column(
+                                    children: [
+                                      Expanded(
+                                        child: ListView(
+                                          children: [
+                                            dialogDetailFormat(
+                                                icon: Icons
+                                                    .calendar_today_outlined,
+                                                title: header(context, "Date"),
+                                                subTitle: body(context,
+                                                    "${DateFormat.yMMMMd('fr_FR').format(rtt.date)}")),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            dialogDetailFormat(
+                                                icon:
+                                                    Icons.watch_later_outlined,
+                                                title: header(
+                                                    context, "nombre d'heures"),
+                                                subTitle: body(context,
+                                                    "${rtt.no_of_hrs} Heures")),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            dialogDetailFormat(
+                                                icon: Icons.comment_rounded,
+                                                title:
+                                                    header(context, "raison"),
+                                                subTitle: body(
+                                                    context, "${rtt.comment}")),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                          ],
                                         ),
-                                        dialogDetailFormat(icon: Icons.watch_later_outlined, title: header(context,"nombre d'heures"), subTitle: body(context, "${rtt.no_of_hrs} Heures")),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        dialogDetailFormat(icon: Icons.comment_rounded, title: header(context,"raison"), subTitle: body(context, "${rtt.comment}")),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                      ],
+                                      ),
+                                    ],
+                                  ),
+                                  width: _size.width,
+                                  height: 230,
+                                  title: ListTile(
+                                    leading: Container(
+                                      width: 40,
+                                      height: 40,
+                                      decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          image: DecorationImage(
+                                              fit: BoxFit.cover,
+                                              image: NetworkImage(
+                                                  "${rtt.user!.image}"))),
                                     ),
-                                  ),
-                                ],
-                              ), width: _size.width, height: 230,title: ListTile(
-                                leading: Container(
-                                  width: 40,
-                                  height: 40,
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      image: DecorationImage(
-                                          fit: BoxFit.cover,
-                                          image: NetworkImage("${rtt.user!.image}")
-                                      )
-                                  ),
-                                ),
-                                title: Text("${rtt.user!.full_name} Demande des RTT".toUpperCase(),style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    letterSpacing: 1.5
-                                ),),
-                                subtitle: Text("DÉTAILS DE LA DEMANDE RTT"),
-                                trailing: IconButton(
-                                  icon: Icon(Icons.close),
-                                  onPressed: () => Navigator.of(context).pop(null),
-                                ),
-                              ));
+                                    title: Text(
+                                      "${rtt.user!.full_name} Demande des RTT"
+                                          .toUpperCase(),
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          letterSpacing: 1.5),
+                                    ),
+                                    subtitle: Text("DÉTAILS DE LA DEMANDE RTT"),
+                                    trailing: IconButton(
+                                      icon: Icon(Icons.close),
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(null),
+                                    ),
+                                  ));
                             },
                             padding: const EdgeInsets.all(0),
                             child: ListTile(
-                                leading: Tooltip(
-                                  message: "${rtt.user!.full_name}",
-                                  child: CircleAvatar(
-                                    backgroundColor: Colors.grey.shade200,
-                                    backgroundImage: NetworkImage("${rtt.user!.image}"),
-                                  ),
+                              leading: Tooltip(
+                                message: "${rtt.user!.full_name}",
+                                child: CircleAvatar(
+                                  backgroundColor: Colors.grey.shade200,
+                                  backgroundImage:
+                                      NetworkImage("${rtt.user!.image}"),
                                 ),
-                                title: Text("${rtt.user!.full_name}"),
+                              ),
+                              title: Text("${rtt.user!.full_name}"),
 // title: Text("${DateFormat.yMMMMd('fr_FR').format(rtt.date)}"),
-                                subtitle: Column(
-                                  children: [
-                                    Container(
+                              subtitle: Column(
+                                children: [
+                                  Container(
                                       width: double.infinity,
                                       child: RichText(
                                         text: TextSpan(
-                                            style: TextStyle(
-                                                color: Colors.grey
-                                            ),
-                                            text: "${DateFormat.yMMMMd('fr_FR').format(rtt.date)}",
+                                            style:
+                                                TextStyle(color: Colors.grey),
+                                            text:
+                                                "${DateFormat.yMMMMd('fr_FR').format(rtt.date)}",
                                             children: <TextSpan>[
                                               TextSpan(
                                                   style: TextStyle(
-                                                      fontStyle: FontStyle.italic
-                                                  ),
-                                                  text: " ( ${rtt.no_of_hrs} Heures )"
-                                              )
-                                            ]
-                                        ),
-                                      )
+                                                      fontStyle:
+                                                          FontStyle.italic),
+                                                  text:
+                                                      " ( ${rtt.no_of_hrs} Heures )")
+                                            ]),
+                                      )),
+                                  Container(
+                                    width: double.infinity,
+                                    child: RichText(
+                                      text: TextSpan(
+                                          text:
+                                              "Demandé par ${rtt.requestBy.fullName}",
+                                          style: TextStyle(
+                                              color: Colors.grey,
+                                              fontSize: 14.5),
+                                          children: [
+                                            TextSpan(
+                                                text:
+                                                    " ( ${rtt.requestBy.roleId == 1 ? "Administrateur" : rtt.requestBy.roleId == 2 ? "Superviseur" : "Employé"} )",
+                                                style: TextStyle(
+                                                    fontStyle:
+                                                        FontStyle.italic))
+                                          ]),
                                     ),
-                                    Container(
-                                      width: double.infinity,
-                                      child: RichText(
-                                        text: TextSpan(
-                                            text: "Demandé par ${rtt.requestBy.fullName}",
-                                            style: TextStyle(
-                                                color: Colors.grey,
-                                                fontSize: 14.5
-                                            ),
-                                            children: [
-                                              TextSpan(
-                                                  text: " ( ${rtt.requestBy.roleId == 1 ? "Administrateur" : rtt.requestBy.roleId == 2 ? "Superviseur" : "Employé"} )",
-                                                  style: TextStyle(
-                                                      fontStyle: FontStyle.italic
-                                                  )
-                                              )
-                                            ]
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
+                                  )
+                                ],
+                              ),
                             ),
                           ),
                         )
                       }
                     ],
                   );
-                }else{
+                } else {
                   return snapText(
                       image: Image.asset(
                         "assets/images/info.png",
                         color: Colors.grey.shade300,
                       ),
                       title: "Oops!".toUpperCase(),
-                      subtitle: "Il n'y a pas de données enregistrées trouvées");
+                      subtitle:
+                          "Il n'y a pas de données enregistrées trouvées");
                 }
               }
               if (snapshot.hasError) {
@@ -388,7 +444,7 @@ class _PendingRTTRequestsState extends State<PendingRTTRequests> {
                     ),
                     title: "Se casser!",
                     subtitle:
-                    "Une erreur s'est produite, veuillez contacter l'administrateur, ${snapshot.error}");
+                        "Une erreur s'est produite, veuillez contacter l'administrateur, ${snapshot.error}");
               }
               return Center(
                 child: CircularProgressIndicator(
@@ -407,4 +463,3 @@ class _PendingRTTRequestsState extends State<PendingRTTRequests> {
     );
   }
 }
-

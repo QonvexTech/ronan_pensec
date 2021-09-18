@@ -250,7 +250,8 @@ class _ManageEmployeesState extends State<ManageEmployees> {
                                 width: size.width > 900 ? 120 : double.infinity,
                                 height: 50,
                                 child: submitButton(onPressed: () {
-                                  TextEditingController _keyControl = new TextEditingController();
+                                  TextEditingController _keyControl =
+                                      new TextEditingController();
                                   GeneralTemplate.showDialog(
                                     context,
                                     child: Column(
@@ -258,19 +259,21 @@ class _ManageEmployeesState extends State<ManageEmployees> {
                                         Expanded(
                                           child: Theme(
                                             data: ThemeData(
-                                              primaryColor: Palette.gradientColor[0]
-                                            ),
+                                                primaryColor:
+                                                    Palette.gradientColor[0]),
                                             child: TextField(
                                               controller: _keyControl,
-                                              cursorColor: Palette.gradientColor[0],
+                                              cursorColor:
+                                                  Palette.gradientColor[0],
                                               decoration: InputDecoration(
-                                                labelText: "Clé",
-                                                hintText: "Clé",
-                                                prefixIcon: Icon(Icons.vpn_key_outlined),
-                                                border: OutlineInputBorder(
-                                                  borderRadius: BorderRadius.circular(5)
-                                                )
-                                              ),
+                                                  labelText: "Clé",
+                                                  hintText: "Clé",
+                                                  prefixIcon: Icon(
+                                                      Icons.vpn_key_outlined),
+                                                  border: OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5))),
                                             ),
                                           ),
                                         ),
@@ -285,7 +288,8 @@ class _ManageEmployeesState extends State<ManageEmployees> {
                                               Expanded(
                                                 child: MaterialButton(
                                                   onPressed: () {
-                                                    Navigator.of(context).pop(null);
+                                                    Navigator.of(context)
+                                                        .pop(null);
                                                     _keyControl.clear();
                                                   },
                                                   color: Colors.grey.shade100,
@@ -307,31 +311,44 @@ class _ManageEmployeesState extends State<ManageEmployees> {
                                               Expanded(
                                                 child: MaterialButton(
                                                   onPressed: () async {
-
-                                                    await _viewModel.keyAuth.check(key: _keyControl.text).then((value) async {
-                                                      if(value){
-                                                        Navigator.of(context).pop(null);
-                                                        if (chosenRadioItem.id == 3) {
+                                                    await _viewModel.keyAuth
+                                                        .check(
+                                                            key: _keyControl
+                                                                .text)
+                                                        .then((value) async {
+                                                      if (value) {
+                                                        Navigator.of(context)
+                                                            .pop(null);
+                                                        if (chosenRadioItem
+                                                                .id ==
+                                                            3) {
                                                           setState(() {
                                                             _isLoading = true;
                                                           });
-                                                          if (_validateKey.currentState!
+                                                          if (_validateKey
+                                                              .currentState!
                                                               .validate()) {
-                                                            await _viewModel.consumablService
+                                                            await _viewModel
+                                                                .consumablService
                                                                 .all(body: body)
-                                                                .whenComplete(() => setState(
-                                                                    () => _isLoading = false));
+                                                                .whenComplete(() =>
+                                                                    setState(() =>
+                                                                        _isLoading =
+                                                                            false));
                                                           }
                                                         } else {
                                                           setState(() {
                                                             _isLoading = true;
                                                           });
-                                                          await _viewModel.consumablService
+                                                          await _viewModel
+                                                              .consumablService
                                                               .all(body: body)
-                                                              .whenComplete(() => setState(
-                                                                  () => _isLoading = false));
+                                                              .whenComplete(() =>
+                                                                  setState(() =>
+                                                                      _isLoading =
+                                                                          false));
                                                         }
-                                                      }else{
+                                                      } else {
                                                         setState(() {
                                                           _isLoading = false;
                                                         });
@@ -342,7 +359,7 @@ class _ManageEmployeesState extends State<ManageEmployees> {
                                                       Palette.gradientColor[0],
                                                   child: Center(
                                                     child: Text(
-                                                      "SOUMETTRE",
+                                                      "VALIDER",
                                                       style: TextStyle(
                                                         color: Colors.white,
                                                         fontWeight:

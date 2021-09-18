@@ -119,6 +119,7 @@ class _PendingHolidayRequestsState extends State<PendingHolidayRequests> {
     }
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     final Size _size = MediaQuery.of(context).size;
@@ -150,12 +151,13 @@ class _PendingHolidayRequestsState extends State<PendingHolidayRequests> {
                                     if (value) {
                                       requestController.dataControl
                                           .remove(holiday.id);
-                                    }else{
+                                    } else {
                                       setState(() {
                                         _isLoading = false;
                                       });
                                     }
-                                  }).whenComplete(() => setState(() => _isLoading = false));
+                                  }).whenComplete(() =>
+                                          setState(() => _isLoading = false));
                                 },
                                 caption: "J'accepte",
                                 icon: Icons.check,
@@ -165,9 +167,9 @@ class _PendingHolidayRequestsState extends State<PendingHolidayRequests> {
                                 closeOnTap: true,
                                 onTap: () async {
                                   GeneralTemplate.showDialog(context,
-                                      onDismissed: (){
-                                        _reason.clear();
-                                      },
+                                      onDismissed: () {
+                                    _reason.clear();
+                                  },
                                       child: Column(
                                         children: [
                                           Container(
@@ -185,12 +187,12 @@ class _PendingHolidayRequestsState extends State<PendingHolidayRequests> {
                                                 maxLines: 3,
                                                 decoration: InputDecoration(
                                                     border: OutlineInputBorder(
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                                5),),
-                                                  hintText: "Raison",
-                                                  labelText: "Raison"
-                                                ),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5),
+                                                    ),
+                                                    hintText: "Raison",
+                                                    labelText: "Raison"),
                                               ),
                                             ),
                                           ),
@@ -216,7 +218,8 @@ class _PendingHolidayRequestsState extends State<PendingHolidayRequests> {
                                                         style: TextStyle(
                                                             letterSpacing: 1.5,
                                                             fontWeight:
-                                                                FontWeight.w600),
+                                                                FontWeight
+                                                                    .w600),
                                                       ),
                                                     ),
                                                   ),
@@ -236,29 +239,37 @@ class _PendingHolidayRequestsState extends State<PendingHolidayRequests> {
                                                       await requestController
                                                           .service
                                                           .reject(context,
-                                                              holidayId: holiday.id,
-                                                              reason: _reason.text)
+                                                              holidayId:
+                                                                  holiday.id,
+                                                              reason:
+                                                                  _reason.text)
                                                           .then((value) {
                                                         if (value) {
                                                           requestController
                                                               .dataControl
-                                                              .remove(holiday.id);
-                                                        }else{
+                                                              .remove(
+                                                                  holiday.id);
+                                                        } else {
                                                           setState(() {
                                                             _isLoading = false;
                                                           });
                                                         }
-                                                      }).whenComplete(() => setState(() => _isLoading = false));
+                                                      }).whenComplete(() =>
+                                                              setState(() =>
+                                                                  _isLoading =
+                                                                      false));
                                                     },
-                                                    color: Palette.gradientColor[0],
+                                                    color: Palette
+                                                        .gradientColor[0],
                                                     child: Center(
                                                       child: Text(
-                                                        "SOUMETTRE",
+                                                        "VALIDER",
                                                         style: TextStyle(
                                                             letterSpacing: 1.5,
                                                             fontWeight:
                                                                 FontWeight.w600,
-                                                            color: Colors.white),
+                                                            color:
+                                                                Colors.white),
                                                       ),
                                                     ),
                                                   ),
@@ -270,7 +281,8 @@ class _PendingHolidayRequestsState extends State<PendingHolidayRequests> {
                                       ),
                                       width: _size.width,
                                       height: 200,
-                                      title: Text("Rejeter la demande de congé?"));
+                                      title:
+                                          Text("Rejeter la demande de congé?"));
                                 },
                                 caption: "Rejeter",
                                 icon: Icons.close,
@@ -308,7 +320,8 @@ class _PendingHolidayRequestsState extends State<PendingHolidayRequests> {
                                                     .drive_file_rename_outline),
                                             detailsDialog(
                                                 label: "Nom de la demande",
-                                                subtitle: "${holiday.requestName}",
+                                                subtitle:
+                                                    "${holiday.requestName}",
                                                 iconData: Icons
                                                     .drive_file_rename_outline),
                                             detailsDialog(
@@ -316,7 +329,8 @@ class _PendingHolidayRequestsState extends State<PendingHolidayRequests> {
                                                     "Remarque de l'administrateur",
                                                 subtitle:
                                                     "${holiday.adminComment ?? "NON DEFINI"}",
-                                                iconData: Icons.comment_outlined),
+                                                iconData:
+                                                    Icons.comment_outlined),
                                             detailsDialog(
                                                 label: "Statut",
                                                 subtitle: "En attente")
@@ -344,8 +358,8 @@ class _PendingHolidayRequestsState extends State<PendingHolidayRequests> {
                                             fontWeight: FontWeight.w600,
                                             letterSpacing: 1.5),
                                       ),
-                                      subtitle:
-                                          Text("DÉTAILS DE LA DEMANDE DE LAISSER"),
+                                      subtitle: Text(
+                                          "DÉTAILS DE LA DEMANDE DE LAISSER"),
                                       trailing: IconButton(
                                         icon: Icon(Icons.close),
                                         onPressed: () =>
@@ -372,14 +386,14 @@ class _PendingHolidayRequestsState extends State<PendingHolidayRequests> {
                                         children: [
                                           Expanded(
                                               child: Text(
-                                                "De : ${DateFormat.yMMMMd('fr_FR').format(holiday.startDate)}",
-                                                textAlign: TextAlign.left,
-                                              )),
+                                            "De : ${DateFormat.yMMMMd('fr_FR').format(holiday.startDate)}",
+                                            textAlign: TextAlign.left,
+                                          )),
                                           Expanded(
                                               child: Text(
-                                                "Au : ${DateFormat.yMMMMd('fr_FR').format(holiday.endDate)}",
-                                                textAlign: TextAlign.right,
-                                              ))
+                                            "Au : ${DateFormat.yMMMMd('fr_FR').format(holiday.endDate)}",
+                                            textAlign: TextAlign.right,
+                                          ))
                                         ],
                                       ),
                                     ),
@@ -387,20 +401,19 @@ class _PendingHolidayRequestsState extends State<PendingHolidayRequests> {
                                       width: double.infinity,
                                       child: RichText(
                                         text: TextSpan(
-                                          text: "Demandé par ${holiday.requestBy.fullName}",
-                                          style: TextStyle(
-                                            color: Colors.grey,
-                                            fontSize: 14.5
-                                          ),
-                                          children: [
-                                            TextSpan(
-                                              text: " ( ${holiday.requestBy.roleId == 1 ? "Administrateur" : holiday.requestBy.roleId == 2 ? "Superviseur" : "Employé"} )",
-                                              style: TextStyle(
-                                                fontStyle: FontStyle.italic
-                                              )
-                                            )
-                                          ]
-                                        ),
+                                            text:
+                                                "Demandé par ${holiday.requestBy.fullName}",
+                                            style: TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: 14.5),
+                                            children: [
+                                              TextSpan(
+                                                  text:
+                                                      " ( ${holiday.requestBy.roleId == 1 ? "Administrateur" : holiday.requestBy.roleId == 2 ? "Superviseur" : "Employé"} )",
+                                                  style: TextStyle(
+                                                      fontStyle:
+                                                          FontStyle.italic))
+                                            ]),
                                       ),
                                     )
                                   ],
@@ -409,7 +422,8 @@ class _PendingHolidayRequestsState extends State<PendingHolidayRequests> {
                                   width: 10,
                                   height: 10,
                                   decoration: BoxDecoration(
-                                      shape: BoxShape.circle, color: Colors.grey),
+                                      shape: BoxShape.circle,
+                                      color: Colors.grey),
                                 ),
                               ),
                             ))
@@ -423,7 +437,8 @@ class _PendingHolidayRequestsState extends State<PendingHolidayRequests> {
                         color: Colors.grey.shade300,
                       ),
                       title: "Oops!".toUpperCase(),
-                      subtitle: "Il n'y a pas de données enregistrées trouvées");
+                      subtitle:
+                          "Il n'y a pas de données enregistrées trouvées");
                 }
               }
               if (snapshot.hasError) {

@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:ronan_pensec/global/controllers/calendar_controller.dart';
+import 'package:ronan_pensec/global/controllers/raw_region_controller.dart';
 import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/global/planning_filter.dart';
+import 'package:ronan_pensec/models/region_model.dart';
 import 'package:ronan_pensec/views/landing_page_children/planning_children/new_planning_flow/planning_v2_chunks/category_filter.dart';
 import 'package:ronan_pensec/views/landing_page_children/planning_children/new_planning_flow/planning_v2_chunks/date_controller_widget.dart';
 import 'package:ronan_pensec/views/landing_page_children/planning_children/new_planning_flow/planning_v2_chunks/planning_body.dart';
@@ -17,20 +21,24 @@ class PlanningV2 extends StatefulWidget {
 class _PlanningV2State extends State<PlanningV2> {
   CalendarController _calendarController = CalendarController.instance;
   final GlobalKey<ScaffoldState> _key = new GlobalKey<ScaffoldState>();
+  final RawRegionController _rawRegionController = RawRegionController.instance;
+
+  late StreamSubscription<List<RegionModel>> _subscription;
   @override
   void initState() {
     _calendarController.switchDate(DateTime.now());
+    _subscription = _rawRegionController.regionData.stream$
+        .listen((List<RegionModel> model) {
+      setState(() => _regions = _rawRegionController.regionData.regions);
+    });
+    //
     super.initState();
   }
 
-  List _regions = [
-    {"id": 1, "name": "Secteur Nord"},
-    {"id": 2, "name": "Secteur Sud"},
-    {"id": 3, "name": "Autonome"},
-    {"id": 4, "name": "Normandie"},
-  ];
+  List<RegionModel>? _regions;
   @override
   void dispose() {
+    _subscription.cancel();
     filterData = {
       "region": [],
       "rtt": null,
@@ -92,34 +100,40 @@ class _PlanningV2State extends State<PlanningV2> {
               ),
               Container(
                 width: double.infinity,
-                child: Column(
-                  children: _regions
-                      .map((e) => Row(
-                            children: [
-                              Checkbox(
-                                activeColor: Palette.gradientColor[0],
-                                checkColor: Colors.white,
-                                value: filterData['region'].contains(e),
-                                onChanged: (bool? value) {
-                                  setState(() {
-                                    if (filterData['region'].contains(e)) {
-                                      filterData['region'].remove(e);
-                                      filterCount -= 1;
-                                    } else {
-                                      filterData['region'].add(e);
-                                      filterCount += 1;
-                                    }
-                                  });
-                                  filterCountStreamController.add(filterCount);
-                                },
-                              ),
-                              Expanded(
-                                child: Text("${e['name']}"),
-                              )
-                            ],
-                          ))
-                      .toList(),
-                ),
+                child: _regions == null
+                    ? Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : Column(
+                        children: _regions!
+                            .map((e) => Row(
+                                  children: [
+                                    Checkbox(
+                                      activeColor: Palette.gradientColor[0],
+                                      checkColor: Colors.white,
+                                      value: filterData['region'].contains(e),
+                                      onChanged: (bool? value) {
+                                        setState(() {
+                                          if (filterData['region']
+                                              .contains(e)) {
+                                            filterData['region'].remove(e);
+                                            filterCount -= 1;
+                                          } else {
+                                            filterData['region'].add(e);
+                                            filterCount += 1;
+                                          }
+                                        });
+                                        filterCountStreamController
+                                            .add(filterCount);
+                                      },
+                                    ),
+                                    Expanded(
+                                      child: Text("${e.name}"),
+                                    )
+                                  ],
+                                ))
+                            .toList(),
+                      ),
               ),
               Divider(
                 thickness: 1,

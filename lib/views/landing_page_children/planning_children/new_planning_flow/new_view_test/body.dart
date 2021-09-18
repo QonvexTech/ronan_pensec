@@ -32,7 +32,7 @@ class _CustomTableBodyState extends State<CustomTableBody> {
     filterCountStreamController.stream.listen((event) {
       setState(() {
         _regionFromFilter = List.from(filterData['region'])
-            .map((e) => int.parse(e['id'].toString()))
+            .map((e) => int.parse(e.id.toString()))
             .toList();
       });
       print("REGION FILTER IDS : $_regionFromFilter");
@@ -45,6 +45,8 @@ class _CustomTableBodyState extends State<CustomTableBody> {
     required Color bgColor,
     Color titleColor = Colors.white,
     bool isBold = true,
+    VoidCallback? onPressed,
+    bool isShown = true,
   }) =>
       Container(
         width: 300,
@@ -58,14 +60,36 @@ class _CustomTableBodyState extends State<CustomTableBody> {
             ),
           ),
         ),
-        child: Text(
-          "$title",
-          style: TextStyle(
-            color: titleColor,
-            fontWeight: isBold ? FontWeight.w700 : FontWeight.w500,
-          ),
-          textAlign: TextAlign.center,
-          overflow: TextOverflow.ellipsis,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Center(
+              child: Text(
+                "$title",
+                style: TextStyle(
+                  color: titleColor,
+                  fontWeight: isBold ? FontWeight.w700 : FontWeight.w500,
+                ),
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            if (onPressed != null) ...{
+              Positioned(
+                right: -20,
+                child: MaterialButton(
+                  onPressed: onPressed,
+                  padding: const EdgeInsets.all(0),
+                  child: Center(
+                    child: Icon(
+                      isShown ? Icons.remove : Icons.add,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              )
+            }
+          ],
         ),
       );
 
@@ -94,26 +118,42 @@ class _CustomTableBodyState extends State<CustomTableBody> {
                       physics: ClampingScrollPhysics(),
                       children: [
                         for (RegionModel region in regionSnap.data!) ...{
-                          if (_regionFromFilter.contains(region.id) ||
-                              _regionFromFilter.isEmpty) ...{
+                          if ((_regionFromFilter.contains(region.id) ||
+                              _regionFromFilter.isEmpty)) ...{
                             titleHolder(
                               title: region.name,
                               bgColor: Colors.grey.shade800,
+                              onPressed: () {
+                                setState(() {
+                                  region.show = !region.show;
+                                });
+                              },
+                              isShown: region.show,
                             ),
-                            for (CenterModel center in region.centers!) ...{
-                              titleHolder(
-                                title: center.name,
-                                bgColor: Palette.gradientColor[2],
-                              ),
-                              for (UserModel user in center.users) ...{
+                            if (region.show) ...{
+                              for (CenterModel center in region.centers!) ...{
                                 titleHolder(
-                                  title: user.full_name,
-                                  bgColor: Colors.grey.shade100,
-                                  titleColor: Colors.grey.shade800,
-                                  isBold: false,
+                                  title: center.name,
+                                  bgColor: Palette.gradientColor[2],
+                                  onPressed: () {
+                                    setState(() {
+                                      center.show = !center.show;
+                                    });
+                                  },
+                                  isShown: center.show,
                                 ),
-                              }
-                            },
+                                if (center.show) ...{
+                                  for (UserModel user in center.users) ...{
+                                    titleHolder(
+                                      title: user.full_name,
+                                      bgColor: Colors.grey.shade100,
+                                      titleColor: Colors.grey.shade800,
+                                      isBold: false,
+                                    ),
+                                  }
+                                }
+                              },
+                            }
                           },
                         }
                       ],
@@ -133,40 +173,46 @@ class _CustomTableBodyState extends State<CustomTableBody> {
                           // children: List.generate(regionSnap.data!.length, (index) => null),
                           children: [
                             for (RegionModel region in regionSnap.data!) ...{
-                              if (_regionFromFilter.contains(region.id) ||
-                                  _regionFromFilter.isEmpty) ...{
+                              if ((_regionFromFilter.contains(region.id) ||
+                                  _regionFromFilter.isEmpty)) ...{
                                 SundayAndHoliday(
                                   snapDate: widget.snapDate,
                                 ),
-                                for (CenterModel center in region.centers!) ...{
-                                  SundayAndHoliday(
-                                    snapDate: widget.snapDate,
-                                  ),
-                                  for (UserModel user in center.users) ...{
-                                    Row(
-                                      children: List.generate(
-                                        widget.snapDate.length,
-                                        (index) => Container(
-                                          width: itemWidth /
-                                              widget.snapDate.length,
-                                          height: 30,
-                                          decoration: BoxDecoration(
-                                            border: Border(
-                                              bottom: BorderSide(
-                                                color: Colors.grey.shade300,
+                                if (region.show) ...{
+                                  for (CenterModel center
+                                      in region.centers!) ...{
+                                    SundayAndHoliday(
+                                      snapDate: widget.snapDate,
+                                    ),
+                                    if (center.show) ...{
+                                      for (UserModel user in center.users) ...{
+                                        Row(
+                                          children: List.generate(
+                                            widget.snapDate.length,
+                                            (index) => Container(
+                                              width: itemWidth /
+                                                  widget.snapDate.length,
+                                              height: 30,
+                                              decoration: BoxDecoration(
+                                                border: Border(
+                                                  bottom: BorderSide(
+                                                    color: Colors.grey.shade300,
+                                                  ),
+                                                ),
+                                              ),
+                                              child: UserPlanningDataView(
+                                                currentDate:
+                                                    widget.snapDate[index],
+                                                center: center,
+                                                itemWidth: itemWidth /
+                                                    widget.snapDate.length,
+                                                user: user,
                                               ),
                                             ),
                                           ),
-                                          child: UserPlanningDataView(
-                                            currentDate: widget.snapDate[index],
-                                            center: center,
-                                            itemWidth: itemWidth /
-                                                widget.snapDate.length,
-                                            user: user,
-                                          ),
-                                        ),
-                                      ),
-                                    )
+                                        )
+                                      }
+                                    }
                                   }
                                 }
                               }
