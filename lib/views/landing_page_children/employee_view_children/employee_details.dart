@@ -40,8 +40,8 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
     setState(() {
       _viewModel.firstName.text = widget.employee.first_name;
       _viewModel.lastName.text = widget.employee.last_name;
-      _viewModel.address.text = widget.employee.address;
-      _viewModel.mobile.text = widget.employee.mobile!;
+      _viewModel.address.text = widget.employee.address ?? "";
+      _viewModel.mobile.text = widget.employee.mobile ?? "";
     });
   }
 
@@ -694,7 +694,8 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                               ),
                                               Expanded(
                                                   child: Text(
-                                                widget.employee.address,
+                                                widget.employee.address ??
+                                                    "NON DÉFINI",
                                                 style: TextStyle(
                                                     color:
                                                         Colors.grey.shade700),
@@ -720,7 +721,8 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                               ),
                                               Expanded(
                                                   child: Text(
-                                                widget.employee.city,
+                                                widget.employee.city ??
+                                                    "NON DÉFINI",
                                                 style: TextStyle(
                                                     color:
                                                         Colors.grey.shade700),
@@ -747,7 +749,8 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                               ),
                                               Expanded(
                                                   child: Text(
-                                                widget.employee.zip_code,
+                                                widget.employee.zip_code ??
+                                                    "NON DÉFINI",
                                                 style: TextStyle(
                                                     color:
                                                         Colors.grey.shade700),
