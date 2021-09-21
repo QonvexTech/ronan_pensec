@@ -151,7 +151,7 @@ class EmployeeTemplate {
           Text("${user.mobile ?? "NON DÉFINI"}"),
         ),
         DataCell(
-          Text("${user.address}"),
+          Text("${user.address ?? "NON DÉFINI"}"),
         ),
         DataCell(
           Text("${user.email}"),
