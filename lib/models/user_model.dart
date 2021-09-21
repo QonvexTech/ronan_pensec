@@ -12,10 +12,10 @@ class UserModel {
   String last_name;
   String full_name;
   String email;
-  String address;
-  DateTime birthdate;
-  String city;
-  String zip_code;
+  String? address;
+  DateTime? birthdate;
+  String? city;
+  String? zip_code;
   String? mobile;
   int isActive;
   String? image;
@@ -65,7 +65,8 @@ class UserModel {
         last_name: parsedJson['last_name'],
         email: parsedJson['email'],
         address: parsedJson['address'],
-        birthdate: DateTime.parse(parsedJson['birth_date'].toString()),
+        birthdate:
+            DateTime.tryParse(parsedJson['birth_date'].toString()) ?? null,
         city: parsedJson['city'],
         zip_code: parsedJson['zip_code'],
         mobile: parsedJson['mobile'],

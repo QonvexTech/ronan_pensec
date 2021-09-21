@@ -286,7 +286,11 @@ class _GeneralState extends State<General> {
                                                           .first_name =
                                                       _profileViewModel
                                                           .firstName.text;
-                                                  _profileViewModel.auth.loggedUser!.full_name = "${_profileViewModel.firstName.text} ${_profileViewModel.lastName.text}";
+                                                  _profileViewModel
+                                                          .auth
+                                                          .loggedUser!
+                                                          .full_name =
+                                                      "${_profileViewModel.firstName.text} ${_profileViewModel.lastName.text}";
                                                   _profileViewModel.reset();
                                                 });
                                               }
@@ -426,14 +430,19 @@ class _GeneralState extends State<General> {
                                           _editContact = false;
                                           _isLoading = true;
                                         });
-                                        await _profileViewModel.update(context).then((value) {
-                                          if(value){
+                                        await _profileViewModel
+                                            .update(context)
+                                            .then((value) {
+                                          if (value) {
                                             setState(() {
-                                              _profileViewModel.auth.loggedUser!.mobile = _profileViewModel.mobile.text;
+                                              _profileViewModel
+                                                      .auth.loggedUser!.mobile =
+                                                  _profileViewModel.mobile.text;
                                               _profileViewModel.reset();
                                             });
                                           }
-                                        }).whenComplete(() => setState(() => _isLoading = false));
+                                        }).whenComplete(() => setState(
+                                                () => _isLoading = false));
                                       },
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 5),
@@ -604,15 +613,22 @@ class _GeneralState extends State<General> {
                                           setState(() {
                                             _editAddress = false;
                                             _isLoading = true;
-                                            _profileViewModel.address.text = "${_profileViewModel.street.text}, ${_profileViewModel.zipCode.text} ${_profileViewModel.city.text}";
+                                            _profileViewModel.address.text =
+                                                "${_profileViewModel.street.text}, ${_profileViewModel.zipCode.text} ${_profileViewModel.city.text}";
                                           });
-                                          await _profileViewModel.update(context).then((value) {
-                                            if(value){
+                                          await _profileViewModel
+                                              .update(context)
+                                              .then((value) {
+                                            if (value) {
                                               setState(() {
-                                                _profileViewModel.auth.loggedUser!.address = _profileViewModel.address.text;
+                                                _profileViewModel.auth
+                                                        .loggedUser!.address =
+                                                    _profileViewModel
+                                                        .address.text;
                                               });
                                             }
-                                          }).whenComplete(() => setState(() => _isLoading = false));
+                                          }).whenComplete(() => setState(
+                                                  () => _isLoading = false));
                                         },
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 5),
@@ -678,7 +694,7 @@ class _GeneralState extends State<General> {
                             Container(
                               width: double.infinity,
                               child: Text(
-                                "${DateFormat.yMMMMd('fr_FR').format(_auth.loggedUser!.birthdate)}",
+                                "${_auth.loggedUser!.birthdate == null ? "NON DÉFINI" : DateFormat.yMMMMd('fr_FR').format(_auth.loggedUser!.birthdate!)}",
                                 style: TextStyle(
                                     color: Colors.black54,
                                     fontSize: 15,
@@ -713,7 +729,8 @@ class _GeneralState extends State<General> {
                                                 .subtract(Duration(days: 5840)),
                                             firstDate: DateTime.now().subtract(
                                                 Duration(days: 25550)),
-                                          ).then((value) => setState(() => _newBirthday = value));
+                                          ).then((value) => setState(
+                                              () => _newBirthday = value));
                                         },
                                         child: Text(
                                           _newBirthday == null
@@ -771,22 +788,29 @@ class _GeneralState extends State<General> {
                                         borderRadius: BorderRadius.circular(2),
                                       ),
                                       onPressed: () async {
-                                        if(_newBirthday != null){
+                                        if (_newBirthday != null) {
                                           setState(() {
                                             _editBirthday = false;
                                             _profileViewModel.appendToBody = {
-                                              "birth_date" : _newBirthday.toString()
+                                              "birth_date":
+                                                  _newBirthday.toString()
                                             };
                                           });
-                                          await _profileViewModel.update(context).then((value) {
-                                            if(value){
+                                          await _profileViewModel
+                                              .update(context)
+                                              .then((value) {
+                                            if (value) {
                                               setState(() {
-                                                _profileViewModel.auth.loggedUser!.birthdate = _newBirthday!;
+                                                _profileViewModel
+                                                    .auth
+                                                    .loggedUser!
+                                                    .birthdate = _newBirthday!;
                                                 _newBirthday = null;
                                                 _profileViewModel.reset();
                                               });
                                             }
-                                          }).whenComplete(() => setState(() => _isLoading = false));
+                                          }).whenComplete(() => setState(
+                                                  () => _isLoading = false));
                                         }
                                       },
                                       padding: const EdgeInsets.symmetric(
@@ -813,7 +837,7 @@ class _GeneralState extends State<General> {
                       height: 60,
                       alignment: AlignmentDirectional.centerStart,
                       child: Text(
-                        "${DateFormat.yMMMMd('fr_FR').format(_auth.loggedUser!.birthdate)}",
+                        "${_auth.loggedUser!.birthdate == null ? "NON DÈFINI" : DateFormat.yMMMMd('fr_FR').format(_auth.loggedUser!.birthdate!)}",
                         style: TextStyle(
                             color: Colors.black54,
                             fontSize: 15,
@@ -919,12 +943,15 @@ class _GeneralState extends State<General> {
                                     setState(() {
                                       _isLoading = true;
                                     });
-                                    await _profileViewModel.service.updatePushService.then((value) {
-                                      if(value != null){
-                                        setState(() =>
-                                        _auth.loggedUser!.isSilentOnPush = value);
+                                    await _profileViewModel
+                                        .service.updatePushService
+                                        .then((value) {
+                                      if (value != null) {
+                                        setState(() => _auth.loggedUser!
+                                            .isSilentOnPush = value);
                                       }
-                                    }).whenComplete(() => setState(() => _isLoading = false));
+                                    }).whenComplete(() =>
+                                            setState(() => _isLoading = false));
                                   },
                                 ),
                               ),

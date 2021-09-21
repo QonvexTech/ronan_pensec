@@ -17,12 +17,12 @@ class ProfileViewModel {
   static ProfileViewModel get instance {
     _instance.firstName.text = _instance.auth.loggedUser!.first_name;
     _instance.lastName.text = _instance.auth.loggedUser!.last_name;
-    _instance.address.text = _instance.auth.loggedUser!.address;
-    _instance.zipCode.text = _instance.auth.loggedUser!.zip_code;
-    _instance.city.text = _instance.auth.loggedUser!.city;
-    _instance.mobile.text = _instance.auth.loggedUser!.mobile!;
+    _instance.address.text = _instance.auth.loggedUser!.address ?? "";
+    _instance.zipCode.text = _instance.auth.loggedUser!.zip_code ?? "";
+    _instance.city.text = _instance.auth.loggedUser!.city ?? "null";
+    _instance.mobile.text = _instance.auth.loggedUser!.mobile ?? "";
     _instance.street.text =
-        _instance.auth.loggedUser!.address.split(',')[0].replaceAll('\n', '');
+        _instance.auth.loggedUser!.address!.split(',')[0].replaceAll('\n', '');
     _instance.appendToBody = {
       "role_id": _instance.auth.loggedUser!.roleId.toString()
     };
@@ -110,11 +110,13 @@ class ProfileViewModel {
     _instance.fullChangeBody = {
       "first_name": _instance.auth.loggedUser!.first_name,
       "last_name": _instance.auth.loggedUser!.last_name,
-      "address": _instance.auth.loggedUser!.address,
-      "zip_code": _instance.auth.loggedUser!.zip_code,
-      "city": _instance.auth.loggedUser!.city,
-      "mobile": _instance.auth.loggedUser!.mobile,
-      'birth_date': _instance.auth.loggedUser!.birthdate.toString(),
+      "address": _instance.auth.loggedUser!.address ?? "",
+      "zip_code": _instance.auth.loggedUser!.zip_code ?? "",
+      "city": _instance.auth.loggedUser!.city ?? "",
+      "mobile": _instance.auth.loggedUser!.mobile ?? "",
+      'birth_date': _instance.auth.loggedUser!.birthdate == null
+          ? ""
+          : _instance.auth.loggedUser!.birthdate.toString(),
     };
   }
 
@@ -155,22 +157,22 @@ class ProfileViewModel {
     },
     {
       "label": "Addresse",
-      "value": "${_instance.auth.loggedUser!.address}",
+      "value": "${_instance.auth.loggedUser!.address ?? ""}",
       "icon": Icons.location_on_outlined
     },
     {
       "label": "Villé",
-      "value": "${_instance.auth.loggedUser!.city}",
+      "value": "${_instance.auth.loggedUser!.city ?? ""}",
       "icon": Icons.location_city_outlined
     },
     {
       "label": "Code postal",
-      "value": "${_instance.auth.loggedUser!.zip_code}",
+      "value": "${_instance.auth.loggedUser!.zip_code ?? ""}",
       "icon": Icons.local_post_office_outlined
     },
     {
       "label": "Numéro de portable",
-      "value": "${_instance.auth.loggedUser!.mobile}",
+      "value": "${_instance.auth.loggedUser!.mobile ?? ""}",
       "icon": Icons.phone_outlined
     },
   ];
