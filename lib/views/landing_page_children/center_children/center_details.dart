@@ -854,7 +854,7 @@ class _CenterDetailsState extends State<CenterDetails> {
                                       Expanded(
                                         flex: 3,
                                         child: Text(
-                                          "${user.address}",
+                                          "${user.address ?? "NON DEFINI"}",
                                           textAlign: TextAlign.center,
                                           maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
@@ -862,7 +862,8 @@ class _CenterDetailsState extends State<CenterDetails> {
                                       ),
                                       Expanded(
                                         flex: 2,
-                                        child: Text("${user.mobile}",
+                                        child: Text(
+                                            "${user.mobile ?? "NON DÉFINI"}",
                                             textAlign: TextAlign.center),
                                       ),
                                       if (_helper.auth.loggedUser!.roleId ==
