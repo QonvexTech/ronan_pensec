@@ -28,7 +28,15 @@ class EmployeeDetailsViewModel {
     if (user.birthdate != null) {
       _instance.appendToBody = {"birth_date": user.birthdate.toString()};
     }
-    _instance.appendToBody = {"city": user.city};
+    if (user.address != null) {
+      _instance.appendToBody = {"address": user.address.toString()};
+    }
+    if (user.city != null) {
+      _instance.appendToBody = {"city": user.city};
+    }
+    if (user.mobile != null) {
+      _instance.appendToBody = {"mobile": user.mobile};
+    }
     _instance.appendToBody = {"email": user.email};
     _instance.appendToBody = {'is_senior': user.isSenior ? "1" : "0"};
     _instance.setSeniority = user.isSenior ? 1 : 0;
@@ -60,6 +68,13 @@ class EmployeeDetailsViewModel {
         _instance.appendToBody = {"mobile": _instance.mobile.text};
       } else {
         _instance.appendToBody = {"mobile": user.mobile};
+      }
+    });
+    _instance.email.addListener(() {
+      if (_instance.mobile.text.isNotEmpty) {
+        _instance.appendToBody = {"email": _instance.mobile.text};
+      } else {
+        _instance.appendToBody = {"email": user.mobile};
       }
     });
     return _instance;
@@ -106,6 +121,21 @@ class EmployeeDetailsViewModel {
   Future<bool> userUpdate(context, userId) async {
     if (body['birth_date'].toString() == "null") {
       body.remove("birth_date");
+    }
+    if (body['address'].toString() == "null") {
+      body.remove("address");
+    }
+    if (body['mobile'].toString() == "null") {
+      body.remove("mobile");
+    }
+    if (body['city'].toString() == "null") {
+      body.remove("city");
+    }
+    if (body['email'].toString() == "null") {
+      body.remove("email");
+    }
+    if (body['zip_code'].toString() == "null") {
+      body.remove("zip_code");
     }
     return await _instance.service.update(body: body, userId: userId);
   }

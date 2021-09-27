@@ -398,9 +398,14 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                                                       .isSenior ==
                                                                   1;
                                                           widget.employee
-                                                                  .email =
-                                                              _viewModel
-                                                                  .email.text;
+                                                              .email = _viewModel
+                                                                  .email
+                                                                  .text
+                                                                  .isNotEmpty
+                                                              ? _viewModel
+                                                                  .email.text
+                                                              : widget.employee
+                                                                  .email;
                                                         });
                                                         this.populate();
                                                       }
