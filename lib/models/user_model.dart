@@ -71,7 +71,7 @@ class UserModel {
         zip_code: parsedJson['zip_code'],
         mobile: parsedJson['mobile'],
         image: parsedJson['image'],
-        roleId: parsedJson['role_id'],
+        roleId: int.parse(parsedJson['role_id'].toString()),
         workDays: parsedJson['work_days'],
         isActive: int.parse(parsedJson['isActive'].toString()),
         isSenior: parsedJson['is_senior'] != null

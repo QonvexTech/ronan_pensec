@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ronan_pensec/global/auth.dart';
+import 'package:ronan_pensec/models/user_model.dart';
 import 'package:ronan_pensec/services/dashboard_services/employee_service.dart';
 import 'package:ronan_pensec/services/data_controls/employee_data_control.dart';
 
@@ -120,7 +121,7 @@ class ProfileViewModel {
     };
   }
 
-  Future<bool> update(context) async {
+  Future<UserModel?> update(context) async {
     return await _instance.service
         .update(body: _instance.body, userId: _instance.auth.loggedUser!.id);
   }
