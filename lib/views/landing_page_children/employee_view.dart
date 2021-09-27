@@ -458,6 +458,9 @@ class _EmployeeViewState extends State<EmployeeView> {
                                                             .withOpacity(0.3)
                                                         : Colors.grey.shade100),
                                             onSelectChanged: (selected) {
+                                              setState(() {
+                                                _displayData = userList.data;
+                                              });
                                               Navigator.push(
                                                   context,
                                                   EmployeeRoute.details(

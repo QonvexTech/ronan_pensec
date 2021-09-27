@@ -118,7 +118,7 @@ class EmployeeDetailsViewModel {
     _isSenior = i;
   }
 
-  Future<UserModel?> userUpdate(context, userId) async {
+  Future<UserModel?> userUpdate(int userId) async {
     if (body['birth_date'].toString() == "null") {
       body.remove("birth_date");
     }
