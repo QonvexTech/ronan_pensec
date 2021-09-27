@@ -354,7 +354,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                                   ),
                                                   onPressed: () async {
                                                     await _viewModel
-                                                        .userUpdate(context,
+                                                        .userUpdate(
                                                             widget.employee.id)
                                                         .then((value) {
                                                       if (value != null) {
