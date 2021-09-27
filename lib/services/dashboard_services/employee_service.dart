@@ -106,7 +106,7 @@ class EmployeeService {
     }
   }
 
-  Future<bool> update({required Map body, required int userId}) async {
+  Future<UserModel?> update({required Map body, required int userId}) async {
     try {
       print(body);
       return await http.put(
@@ -119,15 +119,16 @@ class EmployeeService {
         var data = json.decode(value.body);
         if (value.statusCode == 200) {
           _notifier.showUnContextedBottomToast(msg: "Mise à jour réussie");
-          return true;
+          UserModel user = UserModel.fromJson(parsedJson: data);
+          return user;
         }
         _notifier.showUnContextedBottomToast(
             msg: "Erreur ${value.statusCode}, ${data['message']}");
-        return false;
+        return null;
       });
     } catch (e) {
       _notifier.showUnContextedBottomToast(msg: "UPDATE Erreur : $e");
-      return false;
+      return null;
     }
   }
 

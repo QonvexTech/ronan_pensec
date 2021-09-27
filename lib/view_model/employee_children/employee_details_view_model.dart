@@ -72,9 +72,9 @@ class EmployeeDetailsViewModel {
     });
     _instance.email.addListener(() {
       if (_instance.mobile.text.isNotEmpty) {
-        _instance.appendToBody = {"email": _instance.mobile.text};
+        _instance.appendToBody = {"email": _instance.email.text};
       } else {
-        _instance.appendToBody = {"email": user.mobile};
+        _instance.appendToBody = {"email": user.email};
       }
     });
     return _instance;
@@ -118,7 +118,7 @@ class EmployeeDetailsViewModel {
     _isSenior = i;
   }
 
-  Future<bool> userUpdate(context, userId) async {
+  Future<UserModel?> userUpdate(context, userId) async {
     if (body['birth_date'].toString() == "null") {
       body.remove("birth_date");
     }

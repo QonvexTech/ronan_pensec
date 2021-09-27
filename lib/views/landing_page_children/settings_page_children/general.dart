@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/global/template/general_template.dart';
+import 'package:ronan_pensec/models/user_model.dart';
 import 'package:ronan_pensec/view_model/profile_view_model.dart';
 
 class General extends StatefulWidget {
@@ -271,8 +272,8 @@ class _GeneralState extends State<General> {
                                             });
                                             _profileViewModel
                                                 .update(context)
-                                                .then((bool val) {
-                                              if (val) {
+                                                .then((UserModel? val) {
+                                              if (val != null) {
                                                 setState(() {
                                                   _profileViewModel
                                                           .auth
@@ -433,7 +434,7 @@ class _GeneralState extends State<General> {
                                         await _profileViewModel
                                             .update(context)
                                             .then((value) {
-                                          if (value) {
+                                          if (value != null) {
                                             setState(() {
                                               _profileViewModel
                                                       .auth.loggedUser!.mobile =
@@ -619,7 +620,7 @@ class _GeneralState extends State<General> {
                                           await _profileViewModel
                                               .update(context)
                                               .then((value) {
-                                            if (value) {
+                                            if (value != null) {
                                               setState(() {
                                                 _profileViewModel.auth
                                                         .loggedUser!.address =
@@ -798,8 +799,8 @@ class _GeneralState extends State<General> {
                                           });
                                           await _profileViewModel
                                               .update(context)
-                                              .then((value) {
-                                            if (value) {
+                                              .then((user) {
+                                            if (user != null) {
                                               setState(() {
                                                 _profileViewModel
                                                     .auth
