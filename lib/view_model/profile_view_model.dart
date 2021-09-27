@@ -121,8 +121,8 @@ class ProfileViewModel {
   }
 
   Future<bool> update(context) async {
-    return await _instance.service.update(context,
-        body: _instance.body, userId: _instance.auth.loggedUser!.id);
+    return await _instance.service
+        .update(body: _instance.body, userId: _instance.auth.loggedUser!.id);
   }
 
   late final List extras = [

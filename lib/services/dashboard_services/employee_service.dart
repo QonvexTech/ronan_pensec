@@ -106,7 +106,7 @@ class EmployeeService {
     }
   }
 
-  Future<bool> update(context, {required Map body, required int userId}) async {
+  Future<bool> update({required Map body, required int userId}) async {
     try {
       return await http.put(
           Uri.parse("${BaseEnpoint.URL}${UserEndpoint.update(userId)}"),
@@ -117,16 +117,15 @@ class EmployeeService {
           }).then((value) {
         var data = json.decode(value.body);
         if (value.statusCode == 200) {
-          _notifier.showContextedBottomToast(context,
-              msg: "Mise à jour réussie");
+          _notifier.showUnContextedBottomToast(msg: "Mise à jour réussie");
           return true;
         }
-        _notifier.showContextedBottomToast(context,
-            msg: "Erreur ${value.statusCode}, ${value.reasonPhrase}");
+        _notifier.showUnContextedBottomToast(
+            msg: "Erreur ${value.statusCode}, ${data['message']}");
         return false;
       });
     } catch (e) {
-      _notifier.showContextedBottomToast(context, msg: "UPDATE Erreur : $e");
+      _notifier.showUnContextedBottomToast(msg: "UPDATE Erreur : $e");
       return false;
     }
   }

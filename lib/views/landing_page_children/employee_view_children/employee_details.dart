@@ -172,6 +172,30 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                         Container(
                                           width: double.infinity,
                                           child: TextField(
+                                            controller: _viewModel.email,
+                                            decoration: InputDecoration(
+                                                border: OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5)),
+                                                hintText:
+                                                    "Entrez votre nouveau email",
+                                                prefixIcon:
+                                                    Icon(Icons.email_outlined),
+                                                suffixIcon: IconButton(
+                                                  icon: Icon(Icons.clear),
+                                                  onPressed: () {
+                                                    _viewModel.email.clear();
+                                                  },
+                                                )),
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Container(
+                                          width: double.infinity,
+                                          child: TextField(
                                             controller: _viewModel.firstName,
                                             decoration: InputDecoration(
                                                 border: OutlineInputBorder(
@@ -373,6 +397,10 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                                               _viewModel
                                                                       .isSenior ==
                                                                   1;
+                                                          widget.employee
+                                                                  .email =
+                                                              _viewModel
+                                                                  .email.text;
                                                         });
                                                         this.populate();
                                                       }
