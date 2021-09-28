@@ -458,15 +458,19 @@ class _EmployeeViewState extends State<EmployeeView> {
                                                             .withOpacity(0.3)
                                                         : Colors.grey.shade100),
                                             onSelectChanged: (selected) {
-                                              setState(() {
-                                                _displayData = userList.data;
-                                              });
                                               Navigator.push(
-                                                  context,
-                                                  EmployeeRoute.details(
-                                                      _displayData![index],
-                                                      widget
-                                                          .regionDataControl));
+                                                      context,
+                                                      EmployeeRoute.details(
+                                                          _displayData![index],
+                                                          widget
+                                                              .regionDataControl))
+                                                  .whenComplete(
+                                                () => setState(() {
+                                                  _displayData = _viewModel
+                                                      .employeeDataControl
+                                                      .current;
+                                                }),
+                                              );
                                             },
                                             cells: _viewModel.template
                                                 .kDataCell(
@@ -483,9 +487,15 @@ class _EmployeeViewState extends State<EmployeeView> {
                                 MaterialButton(
                                   onPressed: () {
                                     Navigator.push(
-                                        context,
-                                        EmployeeRoute.details(
-                                            user, widget.regionDataControl));
+                                            context,
+                                            EmployeeRoute.details(
+                                                user, widget.regionDataControl))
+                                        .whenComplete(
+                                      () => setState(() {
+                                        _displayData = _viewModel
+                                            .employeeDataControl.current;
+                                      }),
+                                    );
                                   },
                                   child:
                                       _viewModel.template.kDataList(user: user),
