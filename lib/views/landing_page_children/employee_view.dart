@@ -23,6 +23,7 @@ class EmployeeView extends StatefulWidget {
 }
 
 class _EmployeeViewState extends State<EmployeeView> {
+  final TextEditingController _search = new TextEditingController();
   final EmployeeViewModel _viewModel = EmployeeViewModel.instance;
   final EmployeeCreateViewModel _employeeCreateViewModel =
       EmployeeCreateViewModel.instance;
@@ -252,6 +253,7 @@ class _EmployeeViewState extends State<EmployeeView> {
                           duration: const Duration(milliseconds: 600),
                           child: _showField
                               ? EmployeeTextField(
+                                  controller: _search,
                                   textCallback: (String? text) async {
                                     if (text != null) {
                                       setState(() {
@@ -466,6 +468,7 @@ class _EmployeeViewState extends State<EmployeeView> {
                                                               .regionDataControl))
                                                   .whenComplete(
                                                 () => setState(() {
+                                                  _search.clear();
                                                   _displayData = _viewModel
                                                       .employeeDataControl
                                                       .current;
@@ -492,6 +495,7 @@ class _EmployeeViewState extends State<EmployeeView> {
                                                 user, widget.regionDataControl))
                                         .whenComplete(
                                       () => setState(() {
+                                        _search.clear();
                                         _displayData = _viewModel
                                             .employeeDataControl.current;
                                       }),

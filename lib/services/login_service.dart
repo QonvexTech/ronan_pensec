@@ -27,28 +27,35 @@ class LoginService {
   static LoginService get instance => _instance;
   final HttpRequest _rqst = HttpRequest.instance;
   static final Auth _auth = Auth.instance;
-  static final NotificationService _notificationService = NotificationService.instance;
-  late final CredentialsPreferences _credentialsPreferences = CredentialsPreferences.instance;
+  static final NotificationService _notificationService =
+      NotificationService.instance;
+  late final CredentialsPreferences _credentialsPreferences =
+      CredentialsPreferences.instance;
   static final UserRawData _userRawData = UserRawData.instance;
   static final EmployeeService _employeeService = EmployeeService.rawInstance;
-  static final LegalHolidayService _legalHolidayService = LegalHolidayService.instance;
+  static final LegalHolidayService _legalHolidayService =
+      LegalHolidayService.instance;
   Future<bool> login(context,
       {required String email,
       required String password,
       required bool isRemembered,
       bool showNotif = true}) async {
     try {
-      return await http.post(Uri.parse("${BaseEnpoint.URL}${AuthEndpoint.login}"),
+      return await http.post(
+          Uri.parse("${BaseEnpoint.URL}${AuthEndpoint.login}"),
           headers: _rqst.defaultHeader,
           body: {"email": email, "password": password}).then((respo) async {
         var data = json.decode(respo.body);
         if (respo.statusCode == 200 || respo.statusCode == 201) {
-          if(showNotif){
-            _notifier.showContextedBottomToast(context,msg: "Login Successful");
+          if (showNotif) {
+            _notifier.showContextedBottomToast(context,
+                msg: "Login Successful");
           }
-          _auth.setToken = data['access_token'];/// LIVE
+          _auth.setToken = data['access_token'];
+
+          /// LIVE
           _auth.setUser = UserModel.fromJson(parsedJson: data['user']);
-          log(_auth.token??"ERRR");
+          log(_auth.token ?? "ERRR");
           // print(_auth.loggedUser!.assignedCenters?[0].name??"ERRR");
           _legalHolidayService.fetch;
           if (isRemembered) {
@@ -56,25 +63,24 @@ class LoginService {
                 email: email, password: password);
           }
           _notificationService.all;
-          if(_auth.loggedUser!.roleId <= 2){
+          if (_auth.loggedUser!.roleId <= 2) {
             _employeeService.fetchRawUsers.then((value) {
-              if(value != null){
-                _userRawData.setUsers = value;
+              if (value != null) {
+                _userRawData.setUsers(value);
               }
             });
           }
           Navigator.pushReplacement(
               context,
               PageTransition(
-                  child: LandingPageScreen(),
-                  type: PageTransitionType.fade));
+                  child: LandingPageScreen(), type: PageTransitionType.fade));
           return true;
         }
-        if(showNotif){
+        if (showNotif) {
           if (data['errors'] != null) {
             _notifier.showContextedBottomToast(context,
                 msg:
-                "Showing ${data['errors'].length} error(s), ${data['errors']}");
+                    "Showing ${data['errors'].length} error(s), ${data['errors']}");
             return false;
           }
           if (data['message'] != null) {
@@ -84,8 +90,7 @@ class LoginService {
           }
           _notifier.showContextedBottomToast(context,
               msg: "Error ${respo.statusCode}, ${respo.reasonPhrase}");
-
-        }else{
+        } else {
           Navigator.pushReplacement(context, CredentialRoute.login);
           _credentialsPreferences.removeCredentials;
           _auth.setToken = null;
@@ -95,7 +100,7 @@ class LoginService {
     } catch (e) {
       _notifier.showContextedBottomToast(context,
           msg: "An error has occurred, please contact the administrator. $e");
-      if(!showNotif){
+      if (!showNotif) {
         Navigator.pushReplacement(context, CredentialRoute.login);
         _credentialsPreferences.removeCredentials;
       }

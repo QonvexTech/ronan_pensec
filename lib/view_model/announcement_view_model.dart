@@ -13,9 +13,11 @@ class AnnouncementViewModel {
   static final AnnouncementViewModel _instance =
       AnnouncementViewModel._private();
   static final Auth _auth = Auth.instance;
+  Auth get auth => _auth;
   static final UserRawData _userRawData = UserRawData.instance;
+  UserRawData get rawUserController => _userRawData;
 
-  UserRawData get userRawDataControl => _userRawData;
+  UserRawData rawUserDataControl = UserRawData.instance;
 
   static AnnouncementViewModel get instance {
     _instance.title.addListener(() {
