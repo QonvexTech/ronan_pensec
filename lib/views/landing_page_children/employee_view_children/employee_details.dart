@@ -42,6 +42,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
       _viewModel.lastName.text = widget.employee.last_name;
       _viewModel.address.text = widget.employee.address ?? "";
       _viewModel.mobile.text = widget.employee.mobile ?? "";
+      _viewModel.email.text = widget.employee.email;
     });
   }
 

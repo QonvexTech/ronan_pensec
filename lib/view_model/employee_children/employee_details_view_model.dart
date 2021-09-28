@@ -85,6 +85,7 @@ class EmployeeDetailsViewModel {
 
   @override
   void dispose() {
+    email.clear();
     _isEditing = false;
   }
 
