@@ -20,7 +20,7 @@ class AddRTTViewModel {
   RTTService get service => _service;
   static final UserRawData _userRawData = UserRawData.instance;
 
-  late RawUserModel initDrpValue = _userRawData.rawUserList[0];
+  late RawUserModel initDrpValue = _userRawData.current![0];
   late bool isForOthers = _instance.auth.loggedUser!.roleId == 1;
 
   Auth get auth => _auth;
@@ -507,7 +507,7 @@ class AddRTTViewModel {
       _instance.setDate = null;
       _instance.showMessage = false;
     }).then((value) {
-      initDrpValue = _userRawData.rawUserList[0];
+      initDrpValue = _userRawData.current![0];
     });
   }
 }
