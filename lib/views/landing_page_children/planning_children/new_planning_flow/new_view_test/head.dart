@@ -3,6 +3,7 @@ import 'package:ronan_pensec/global/controllers/calendar_controller.dart';
 import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/services/dashboard_services/calendar_service.dart';
 import 'package:ronan_pensec/views/landing_page_children/planning_children/new_planning_flow/new_view_test/cell.dart';
+import 'package:ronan_pensec/views/landing_page_children/planning_children/new_planning_flow/planning_v2_chunks/planning_body_chunk/user_view_chunk/holidays_view.dart';
 
 class TableHead extends StatelessWidget {
   final ScrollController scrollController;
@@ -54,30 +55,38 @@ class TableHead extends StatelessWidget {
                         ),
                       ),
                       Expanded(
-                        child: Container(
-                          color: _calendarController.type < 2
-                              ? _calendarService.isSunday(daysDate[index])
-                                  ? Colors.grey.shade700
-                                  : _calendarService.isSameDay(
-                                          DateTime.now(), daysDate[index])
-                                      ? Palette.gradientColor[2]
-                                      : Colors.transparent
-                              : Colors.transparent,
-                          child: Center(
-                            child: Text(
-                              "${daysDate[index].day} ${_calendarController.type == 2 ? "- ${DateTime(daysDate[index].year, daysDate[index].month + 1, 0).day}" : ""}",
-                              style: TextStyle(
-                                color: _calendarController.type < 2 &&
-                                        (_calendarService
-                                                .isSunday(daysDate[index]) ||
-                                            _calendarService.isSameDay(
-                                                DateTime.now(),
-                                                daysDate[index]))
-                                    ? Colors.white
-                                    : Colors.grey.shade800,
+                        child: Stack(
+                          children: [
+                            HolidaysView(
+                              currentDate: daysDate[index],
+                              itemWidth: itemWidth / daysDate.length,
+                            ),
+                            Container(
+                              color: _calendarController.type < 2
+                                  ? _calendarService.isSunday(daysDate[index])
+                                      ? Colors.grey.shade700
+                                      : _calendarService.isSameDay(
+                                              DateTime.now(), daysDate[index])
+                                          ? Palette.gradientColor[2]
+                                          : Colors.transparent
+                                  : Colors.transparent,
+                              child: Center(
+                                child: Text(
+                                  "${daysDate[index].day} ${_calendarController.type == 2 ? "- ${DateTime(daysDate[index].year, daysDate[index].month + 1, 0).day}" : ""}",
+                                  style: TextStyle(
+                                    color: _calendarController.type < 2 &&
+                                            (_calendarService.isSunday(
+                                                    daysDate[index]) ||
+                                                _calendarService.isSameDay(
+                                                    DateTime.now(),
+                                                    daysDate[index]))
+                                        ? Colors.white
+                                        : Colors.grey.shade800,
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
+                          ],
                         ),
                       ),
                     ],
