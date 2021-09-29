@@ -13,74 +13,100 @@ class CalendarController {
   BehaviorSubject<List<DateTime>> _daysList = BehaviorSubject();
   Stream<List<DateTime>> get $dayStream => _daysList.stream;
   List<DateTime> get currentDays => _daysList.value!;
+  DateTime findFirstDateNextWeek(DateTime dateTime) {
+    final DateTime sameWeekDayOfLastWeek =
+        dateTime.add(const Duration(days: 7));
+    return findFirstDateOfTheWeek(sameWeekDayOfLastWeek);
+  }
+
+  DateTime findFirstDateOfPreviousWeek(DateTime dateTime) {
+    final DateTime sameWeekDayOfLastWeek =
+        dateTime.subtract(const Duration(days: 7));
+    return findFirstDateOfTheWeek(sameWeekDayOfLastWeek);
+  }
+
+  DateTime findFirstDateOfTheWeek(DateTime dateTime) {
+    return dateTime.subtract(Duration(days: dateTime.weekday - 1));
+  }
+
+  DateTime findLastDateOfTheWeek(DateTime dateTime) {
+    return dateTime
+        .add(Duration(days: DateTime.daysPerWeek - dateTime.weekday));
+  }
+
+  DateTime findLastDateOfPreviousWeek(DateTime dateTime) {
+    final DateTime sameWeekDayOfLastWeek =
+        dateTime.subtract(const Duration(days: 7));
+    return findLastDateOfTheWeek(sameWeekDayOfLastWeek);
+  }
 
   /// 0 = whole month day,
   /// 1 = week in month,
   int type = 0;
   void populateDays(DateTime date) {
-    if (this.type == 0) {
-      int lastDay = DateTime(this.current.year, this.current.month + 1, 0).day;
+    if (type == 0) {
+      int lastDay = DateTime(current.year, current.month + 1, 0).day;
       List<DateTime> curr = [];
       for (var x = 1; x <= lastDay; x++) {
-        curr.add(DateTime(this.current.year, this.current.month, x));
+        curr.add(DateTime(current.year, current.month, x));
       }
-      this._daysList.add(curr);
-    } else if (this.type == 1) {
-      int firstDayOfTheWeek = this
-          .current
-          .subtract(new Duration(days: this.current.weekday + 1))
-          .day;
-      int lastDay = this
-          .current
-          .add(Duration(days: DateTime.daysPerWeek - this.current.weekday))
-          .day;
+      _daysList.add(curr);
+    } else if (type == 1) {
+      int lastDayOfMonth = DateTime(current.year, current.month + 1, 0).day;
+      int firstDayOfTheWeek = findFirstDateOfTheWeek(current).day;
+      int lastDay = findLastDateOfTheWeek(current).day;
+
       List<DateTime> curr = [];
-      for (var x = firstDayOfTheWeek; x <= lastDay; x++) {
-        curr.add(DateTime(this.current.year, this.current.month, x));
+      if (lastDay < 7) {
+        for (var x = firstDayOfTheWeek; x <= lastDayOfMonth; x++) {
+          curr.add(DateTime(current.year, current.month, x));
+        }
+      } else {
+        for (var x = firstDayOfTheWeek; x <= lastDay; x++) {
+          curr.add(DateTime(current.year, current.month, x));
+        }
       }
-      this._daysList.add(curr);
+      _daysList.add(curr);
     } else {
       List<DateTime> curr = [];
       for (var x = 1; x <= 12; x++) {
-        curr.add(DateTime(this.current.year, x, 1));
+        curr.add(DateTime(current.year, x, 1));
       }
-      this._daysList.add(curr);
+      _daysList.add(curr);
     }
   }
 
   void toggleNext() {
-    if (this.type == 0) {
-      _date.add(DateTime(
-          this.current.year, this.current.month + 1, this.current.day));
-    } else if (this.type == 1) {
-      _date.add(this.current.add(const Duration(days: 7)));
+    if (type == 0) {
+      _date.add(DateTime(current.year, current.month + 1, current.day));
+    } else if (type == 1) {
+      DateTime nextweek = findFirstDateNextWeek(current);
+      _date.add(nextweek);
     } else {
-      _date.add(DateTime(
-          this.current.year + 1, this.current.month, this.current.day));
+      _date.add(DateTime(current.year + 1, current.month, current.day));
     }
-    this.populateDays(this.current);
+    populateDays(current);
   }
 
   void togglePrevious() {
-    if (this.type == 0) {
-      _date.add(DateTime(
-          this.current.year, this.current.month - 1, this.current.day));
-    } else if (this.type == 1) {
-      _date.add(this.current.subtract(const Duration(days: 7)));
+    if (type == 0) {
+      _date.add(DateTime(current.year, current.month - 1, current.day));
+    } else if (type == 1) {
+      DateTime prevWeek = findFirstDateOfPreviousWeek(current);
+      _date.add(prevWeek);
     } else {
-      _date.add(DateTime(
-          this.current.year - 1, this.current.month, this.current.day));
+      _date.add(DateTime(current.year - 1, current.month, current.day));
     }
-    this.populateDays(this.current);
+    populateDays(current);
   }
 
   void switchType() {
-    populateDays(this.current);
+    populateDays(current);
   }
 
   void switchDate(DateTime date) {
     _date.add(date);
-    populateDays(this.current);
+    populateDays(current);
   }
 
   String topHeaderText(DateTime dateTime, int type) {
@@ -101,7 +127,7 @@ class CalendarController {
 
   String controllerTitle(context, DateTime datetime) {
     switchDate(datetime);
-    if (this.type < 2) {
+    if (type < 2) {
       return DateFormat.yMMM('fr_FR').format(datetime).toUpperCase();
     }
     return DateFormat.y('fr_FR').format(datetime).toUpperCase();

@@ -5,9 +5,11 @@ import 'package:ronan_pensec/services/data_controls/legal_holiday_data_control.d
 import 'package:ronan_pensec/view_model/calendar_view_model.dart';
 
 class HolidaysView extends StatelessWidget {
-  const HolidaysView(
-      {Key? key, required this.currentDate, required this.itemWidth})
-      : super(key: key);
+  const HolidaysView({
+    Key? key,
+    required this.currentDate,
+    required this.itemWidth,
+  }) : super(key: key);
   final DateTime currentDate;
   static final CalendarViewModel calendarViewModel = CalendarViewModel.instance;
   static final LegalHolidayDataControl _legalHolidayDataControl =

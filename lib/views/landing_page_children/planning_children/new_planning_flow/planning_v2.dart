@@ -49,6 +49,7 @@ class _PlanningV2State extends State<PlanningV2> {
     super.dispose();
   }
 
+  final DateControllerWidget dateController = new DateControllerWidget();
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -221,7 +222,7 @@ class _PlanningV2State extends State<PlanningV2> {
                   width:
                       size.width > 900 ? (size.width * .45) * .5 : size.width,
                   height: 60,
-                  child: DateControllerWidget(),
+                  child: dateController,
                 ),
                 Container(
                   width:
