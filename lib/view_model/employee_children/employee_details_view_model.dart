@@ -71,7 +71,7 @@ class EmployeeDetailsViewModel {
       }
     });
     _instance.email.addListener(() {
-      if (_instance.mobile.text.isNotEmpty) {
+      if (_instance.email.text.isNotEmpty) {
         _instance.appendToBody = {"email": _instance.email.text};
       } else {
         _instance.appendToBody = {"email": user.email};
@@ -138,6 +138,7 @@ class EmployeeDetailsViewModel {
     if (body['zip_code'].toString() == "null") {
       body.remove("zip_code");
     }
+    print(body);
     return await _instance.service.update(body: body, userId: userId);
   }
 }
