@@ -362,53 +362,9 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                                         setState(() {
                                                           widget.employee =
                                                               value;
-                                                          // widget.employee
-                                                          //         .roleId =
-                                                          //     _viewModel.roleId;
-                                                          // widget.employee
-                                                          //         .first_name =
-                                                          //     _viewModel
-                                                          //         .firstName
-                                                          //         .text;
-                                                          // widget.employee
-                                                          //         .last_name =
-                                                          //     _viewModel
-                                                          //         .lastName
-                                                          //         .text;
-                                                          // widget.employee
-                                                          //         .address =
-                                                          //     _viewModel
-                                                          //         .address.text;
-                                                          // widget.employee
-                                                          //         .mobile =
-                                                          //     _viewModel
-                                                          //         .mobile.text;
-                                                          // widget.employee
-                                                          //         .full_name =
-                                                          //     _viewModel
-                                                          //             .firstName
-                                                          //             .text +
-                                                          //         " " +
-                                                          //         _viewModel
-                                                          //             .lastName
-                                                          //             .text;
                                                           _viewModel
                                                                   .setIsEditing =
                                                               false;
-                                                          // widget.employee
-                                                          //         .isSenior =
-                                                          //     _viewModel
-                                                          //             .isSenior ==
-                                                          //         1;
-                                                          // widget.employee
-                                                          //     .email = _viewModel
-                                                          //         .email
-                                                          //         .text
-                                                          //         .isNotEmpty
-                                                          //     ? _viewModel
-                                                          //         .email.text
-                                                          //     : widget.employee
-                                                          //         .email;
                                                         });
                                                         this.populate();
                                                       }
