@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ronan_pensec/global/controllers/calendar_controller.dart';
 import 'package:ronan_pensec/models/planning_model.dart';
+import 'package:ronan_pensec/models/raw_user_model.dart';
 import 'package:ronan_pensec/models/user_model.dart';
 import 'package:ronan_pensec/services/planning_services.dart';
 import 'package:ronan_pensec/view_model/planning_view_model.dart';
@@ -9,10 +10,12 @@ class ShowPlanning extends StatefulWidget {
   const ShowPlanning({
     Key? key,
     required this.planning,
-    required this.user,
+    this.user,
+    this.rawUser,
   }) : super(key: key);
   final PlanningModel planning;
-  final UserModel user;
+  final UserModel? user;
+  final RawUserModel? rawUser;
   @override
   _ShowPlanningState createState() => _ShowPlanningState();
 }
@@ -62,18 +65,18 @@ class _ShowPlanningState extends State<ShowPlanning> {
                       shape: BoxShape.circle,
                       image: DecorationImage(
                         image: NetworkImage(
-                          "${widget.user.image}",
+                          "${widget.user?.image ?? widget.rawUser!.image}",
                         ),
                       ),
                     ),
                   ),
                   ListTile(
                     title: Text(
-                      "${widget.user.full_name}",
+                      "${widget.user?.full_name ?? widget.rawUser!.fullName}",
                       textAlign: TextAlign.center,
                     ),
                     subtitle: Text(
-                      "${widget.user.email}",
+                      "${widget.user?.email ?? "Vue des employés"}",
                       textAlign: TextAlign.center,
                     ),
                   ),

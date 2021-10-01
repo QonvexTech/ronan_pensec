@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ronan_pensec/global/controllers/calendar_controller.dart';
 import 'package:ronan_pensec/models/center_model.dart';
+import 'package:ronan_pensec/models/raw_user_model.dart';
 import 'package:ronan_pensec/models/user_model.dart';
 import 'package:ronan_pensec/services/planning_services.dart';
 
@@ -8,11 +9,13 @@ class CreatePlanning extends StatefulWidget {
   const CreatePlanning({
     Key? key,
     required this.center,
-    required this.user,
+    this.user,
     required this.startDate,
+    this.rawUser,
   }) : super(key: key);
   final CenterModel center;
-  final UserModel user;
+  final UserModel? user;
+  final RawUserModel? rawUser;
   final DateTime startDate;
 
   @override
@@ -50,10 +53,13 @@ class _CreatePlanningState extends State<CreatePlanning> {
                         decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             image: DecorationImage(
-                                image: NetworkImage("${widget.user.image}"))),
+                                image: NetworkImage(
+                                    "${widget.user?.image ?? widget.rawUser!.image}"))),
                       ),
-                      title: Text("${widget.user.full_name}"),
-                      subtitle: Text("${widget.user.email}"),
+                      title: Text(
+                          "${widget.user?.full_name ?? widget.rawUser!.fullName}"),
+                      subtitle:
+                          Text("${widget.user?.email ?? "Vue des employés"}"),
                     ),
                   ),
                   Container(
@@ -208,7 +214,8 @@ class _CreatePlanningState extends State<CreatePlanning> {
                         ? () async {
                             await _service
                                 .create(
-                                    userId: widget.user.id,
+                                    userId:
+                                        widget.user?.id ?? widget.rawUser!.id,
                                     centerId: widget.center.id,
                                     start: chosenStart,
                                     end: chosenEnd!)

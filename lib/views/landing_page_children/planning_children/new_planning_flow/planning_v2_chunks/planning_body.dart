@@ -4,6 +4,7 @@ import 'package:ronan_pensec/views/landing_page_children/planning_children/new_p
 
 class PlanningBody extends StatelessWidget {
   const PlanningBody({Key? key}) : super(key: key);
+
   static CalendarController _calendarController = CalendarController.instance;
   @override
   Widget build(BuildContext context) {

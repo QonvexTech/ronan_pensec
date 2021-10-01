@@ -7,6 +7,7 @@ late Map<String, dynamic> filterData = {
   "rtt": null,
   "leave": null,
   "attendance": null,
+  "employee-view": false,
 };
 int filterCount = 0;
 StreamController<int> filterCountStreamController = BehaviorSubject();

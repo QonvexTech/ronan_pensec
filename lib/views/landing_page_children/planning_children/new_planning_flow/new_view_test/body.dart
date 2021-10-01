@@ -30,11 +30,17 @@ class _CustomTableBodyState extends State<CustomTableBody> {
 
   void listenFilter() {
     filterCountStreamController.stream.listen((event) {
-      setState(() {
+      if (this.mounted) {
+        setState(() {
+          _regionFromFilter = List.from(filterData['region'])
+              .map((e) => int.parse(e.id.toString()))
+              .toList();
+        });
+      } else {
         _regionFromFilter = List.from(filterData['region'])
             .map((e) => int.parse(e.id.toString()))
             .toList();
-      });
+      }
       print("REGION FILTER IDS : $_regionFromFilter");
     });
   }
@@ -100,6 +106,11 @@ class _CustomTableBodyState extends State<CustomTableBody> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     return StreamBuilder<List<RegionModel>>(
@@ -113,50 +124,53 @@ class _CustomTableBodyState extends State<CustomTableBody> {
                 children: [
                   SizedBox(
                     width: 300,
-                    child: ListView(
+                    child: Scrollbar(
                       controller: _firstColumnController,
-                      physics: ClampingScrollPhysics(),
-                      children: [
-                        for (RegionModel region in regionSnap.data!) ...{
-                          if ((_regionFromFilter.contains(region.id) ||
-                              _regionFromFilter.isEmpty)) ...{
-                            titleHolder(
-                              title: region.name,
-                              bgColor: Colors.grey.shade800,
-                              onPressed: () {
-                                setState(() {
-                                  region.show = !region.show;
-                                });
-                              },
-                              isShown: region.show,
-                            ),
-                            if (region.show) ...{
-                              for (CenterModel center in region.centers!) ...{
-                                titleHolder(
-                                  title: center.name,
-                                  bgColor: Palette.gradientColor[2],
-                                  onPressed: () {
-                                    setState(() {
-                                      center.show = !center.show;
-                                    });
-                                  },
-                                  isShown: center.show,
-                                ),
-                                if (center.show) ...{
-                                  for (UserModel user in center.users) ...{
-                                    titleHolder(
-                                      title: user.full_name,
-                                      bgColor: Colors.grey.shade100,
-                                      titleColor: Colors.grey.shade800,
-                                      isBold: false,
-                                    ),
+                      child: ListView(
+                        controller: _firstColumnController,
+                        physics: ClampingScrollPhysics(),
+                        children: [
+                          for (RegionModel region in regionSnap.data!) ...{
+                            if ((_regionFromFilter.contains(region.id) ||
+                                _regionFromFilter.isEmpty)) ...{
+                              titleHolder(
+                                title: region.name,
+                                bgColor: Colors.grey.shade800,
+                                onPressed: () {
+                                  setState(() {
+                                    region.show = !region.show;
+                                  });
+                                },
+                                isShown: region.show,
+                              ),
+                              if (region.show) ...{
+                                for (CenterModel center in region.centers!) ...{
+                                  titleHolder(
+                                    title: center.name,
+                                    bgColor: Palette.gradientColor[2],
+                                    onPressed: () {
+                                      setState(() {
+                                        center.show = !center.show;
+                                      });
+                                    },
+                                    isShown: center.show,
+                                  ),
+                                  if (center.show) ...{
+                                    for (UserModel user in center.users) ...{
+                                      titleHolder(
+                                        title: user.full_name,
+                                        bgColor: Colors.grey.shade100,
+                                        titleColor: Colors.grey.shade800,
+                                        isBold: false,
+                                      ),
+                                    }
                                   }
-                                }
-                              },
-                            }
-                          },
-                        }
-                      ],
+                                },
+                              }
+                            },
+                          }
+                        ],
+                      ),
                     ),
                   ),
                   Expanded(
@@ -167,57 +181,62 @@ class _CustomTableBodyState extends State<CustomTableBody> {
                       child: SizedBox(
                         width: (itemWidth / widget.snapDate.length) *
                             (widget.snapDate.length),
-                        child: ListView(
+                        child: Scrollbar(
                           controller: _restColumnsController,
-                          physics: const ClampingScrollPhysics(),
-                          // children: List.generate(regionSnap.data!.length, (index) => null),
-                          children: [
-                            for (RegionModel region in regionSnap.data!) ...{
-                              if ((_regionFromFilter.contains(region.id) ||
-                                  _regionFromFilter.isEmpty)) ...{
-                                SundayAndHoliday(
-                                  snapDate: widget.snapDate,
-                                ),
-                                if (region.show) ...{
-                                  for (CenterModel center
-                                      in region.centers!) ...{
-                                    SundayAndHoliday(
-                                      snapDate: widget.snapDate,
-                                    ),
-                                    if (center.show) ...{
-                                      for (UserModel user in center.users) ...{
-                                        Row(
-                                          children: List.generate(
-                                            widget.snapDate.length,
-                                            (index) => Container(
-                                              width: itemWidth /
-                                                  widget.snapDate.length,
-                                              height: 30,
-                                              decoration: BoxDecoration(
-                                                border: Border(
-                                                  bottom: BorderSide(
-                                                    color: Colors.grey.shade300,
+                          child: ListView(
+                            controller: _restColumnsController,
+                            physics: const ClampingScrollPhysics(),
+                            // children: List.generate(regionSnap.data!.length, (index) => null),
+                            children: [
+                              for (RegionModel region in regionSnap.data!) ...{
+                                if ((_regionFromFilter.contains(region.id) ||
+                                    _regionFromFilter.isEmpty)) ...{
+                                  SundayAndHoliday(
+                                    snapDate: widget.snapDate,
+                                  ),
+                                  if (region.show) ...{
+                                    for (CenterModel center
+                                        in region.centers!) ...{
+                                      SundayAndHoliday(
+                                        snapDate: widget.snapDate,
+                                      ),
+                                      if (center.show) ...{
+                                        for (UserModel user
+                                            in center.users) ...{
+                                          Row(
+                                            children: List.generate(
+                                              widget.snapDate.length,
+                                              (index) => Container(
+                                                width: itemWidth /
+                                                    widget.snapDate.length,
+                                                height: 30,
+                                                decoration: BoxDecoration(
+                                                  border: Border(
+                                                    bottom: BorderSide(
+                                                      color:
+                                                          Colors.grey.shade300,
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                              child: UserPlanningDataView(
-                                                currentDate:
-                                                    widget.snapDate[index],
-                                                center: center,
-                                                itemWidth: itemWidth /
-                                                    widget.snapDate.length,
-                                                user: user,
+                                                child: UserPlanningDataView(
+                                                  currentDate:
+                                                      widget.snapDate[index],
+                                                  center: center,
+                                                  itemWidth: itemWidth /
+                                                      widget.snapDate.length,
+                                                  user: user,
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        )
+                                          )
+                                        }
                                       }
                                     }
                                   }
                                 }
                               }
-                            }
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
