@@ -142,69 +142,25 @@ class _PlanningV2State extends State<PlanningV2> {
               Container(
                 width: double.infinity,
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("RTT :",
-                        style: Theme.of(context).textTheme.bodyText1!),
-                    Checkbox(
-                      activeColor: Palette.gradientColor[0],
-                      checkColor: Colors.white,
-                      value: filterData['rtt'] ?? false,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          filterData['rtt'] = value;
-                          if (value!) {
-                            filterCount += 1;
-                          } else {
-                            filterCount -= 1;
-                          }
-                        });
-
-                        filterCountStreamController.add(filterCount);
-                      },
+                    Expanded(
+                      child: Text("Vue des employés :",
+                          style: Theme.of(context).textTheme.bodyText1!),
                     ),
-                  ],
-                ),
-              ),
-              Divider(
-                thickness: 1,
-              ),
-              Container(
-                width: double.infinity,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("Vacances :",
-                        style: Theme.of(context).textTheme.bodyText1!),
                     Checkbox(
                       activeColor: Palette.gradientColor[0],
                       checkColor: Colors.white,
-                      value: filterData['leave'] ?? false,
+                      value: filterData['employee-view'],
                       onChanged: (bool? value) {
                         setState(() {
-                          filterData['leave'] = value;
-                          if (value!) {
-                            filterCount += 1;
-                          } else {
-                            filterCount -= 1;
-                          }
+                          filterData['employee-view'] =
+                              !filterData['employee-view'];
                         });
                         filterCountStreamController.add(filterCount);
                       },
                     ),
                   ],
                 ),
-              ),
-              Divider(
-                thickness: 1,
-              ),
-              Container(
-                width: double.infinity,
-                child: Text("Présence :",
-                    style: Theme.of(context).textTheme.bodyText1!),
-              ),
-              Divider(
-                thickness: 1,
               ),
             ],
           ),
