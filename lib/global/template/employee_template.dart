@@ -55,11 +55,11 @@ class EmployeeTemplate {
   Theme normalTextField(TextEditingController controller, String label,
           {TextInputType type = TextInputType.text, Widget? prefixIcon}) =>
       Theme(
-        data: ThemeData(primaryColor: Palette.gradientColor[0]),
+        data: ThemeData(primaryColor: Palette.gradientColor[3]),
         child: TextField(
           keyboardType: type,
           controller: controller,
-          cursorColor: Palette.gradientColor[0],
+          cursorColor: Palette.gradientColor[3],
           decoration: InputDecoration(
               labelText: label,
               hintText: label,

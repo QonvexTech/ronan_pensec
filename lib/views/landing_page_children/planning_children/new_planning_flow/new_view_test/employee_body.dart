@@ -167,6 +167,7 @@ class _EmployeeViewBodyState extends State<EmployeeViewBody> {
                             width: (itemWidth / widget.snapDate.length) *
                                 (widget.snapDate.length),
                             child: Scrollbar(
+                              isAlwaysShown: true,
                               controller: _restColumnsController,
                               child: ListView.builder(
                                 controller: _restColumnsController,

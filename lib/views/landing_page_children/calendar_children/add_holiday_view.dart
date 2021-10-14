@@ -290,15 +290,32 @@ class _AddHolidayViewState extends State<AddHolidayView> {
                         height: 50,
                         onPressed: () async {
                           print(_viewModel.body);
-                          if (_viewModel.body.length == 7) {
+                          if (_viewModel.body
+                                  .containsKey("endDate_isHalf_day") &&
+                              _viewModel.body
+                                  .containsKey("startDate_isHalf_day") &&
+                              _viewModel.body.containsKey("user_id") &&
+                              _viewModel.body.containsKey("request_name") &&
+                              _viewModel.body.containsKey("start_date") &&
+                              _viewModel.body.containsKey("end_date")) {
                             Navigator.of(context).pop(null);
                             widget.loadingCallback(true);
-                            await _viewModel.service
-                                .request(
+                            if (_viewModel.auth.loggedUser!.roleId == 1) {
+                              await _viewModel.service
+                                  .create(
+                                    context,
                                     body: _viewModel.body,
-                                    isMe: !_viewModel.isForOthers)
-                                .whenComplete(
-                                    () => widget.loadingCallback(false));
+                                  )
+                                  .whenComplete(
+                                      () => widget.loadingCallback(false));
+                            } else {
+                              await _viewModel.service
+                                  .request(
+                                      body: _viewModel.body,
+                                      isMe: !_viewModel.isForOthers)
+                                  .whenComplete(
+                                      () => widget.loadingCallback(false));
+                            }
                           } else {
                             setState(() {
                               _viewModel.showMessage = true;

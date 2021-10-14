@@ -47,10 +47,6 @@ class LoginService {
           body: {"email": email, "password": password}).then((respo) async {
         var data = json.decode(respo.body);
         if (respo.statusCode == 200 || respo.statusCode == 201) {
-          if (showNotif) {
-            _notifier.showContextedBottomToast(context,
-                msg: "Login Successful");
-          }
           _auth.setToken = data['access_token'];
 
           /// LIVE

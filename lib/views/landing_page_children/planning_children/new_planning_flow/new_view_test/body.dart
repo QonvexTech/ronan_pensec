@@ -147,7 +147,7 @@ class _CustomTableBodyState extends State<CustomTableBody> {
                                 for (CenterModel center in region.centers!) ...{
                                   titleHolder(
                                     title: center.name,
-                                    bgColor: Palette.gradientColor[2],
+                                    bgColor: Palette.gradientColor[3],
                                     onPressed: () {
                                       setState(() {
                                         center.show = !center.show;
@@ -182,6 +182,7 @@ class _CustomTableBodyState extends State<CustomTableBody> {
                         width: (itemWidth / widget.snapDate.length) *
                             (widget.snapDate.length),
                         child: Scrollbar(
+                          isAlwaysShown: true,
                           controller: _restColumnsController,
                           child: ListView(
                             controller: _restColumnsController,

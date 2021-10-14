@@ -83,10 +83,7 @@ class _LandingPageScreenWebState extends State<LandingPageView>
                         width: double.infinity,
                         height: 60,
                         decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                              colors: Palette.gradientColor,
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter),
+                          color: Palette.gradientColor[3],
                         ),
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Row(
@@ -120,7 +117,7 @@ class _LandingPageScreenWebState extends State<LandingPageView>
                                     indicatorColor: Colors.white,
                                     controller: _tabController,
                                     labelColor: Colors.white,
-                                    unselectedLabelColor: Colors.grey,
+                                    unselectedLabelColor: Colors.white,
                                     physics: NeverScrollableScrollPhysics(),
                                     tabs: [
                                       for (TabbarItem item in tabItems) ...{

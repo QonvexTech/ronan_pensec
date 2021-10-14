@@ -82,7 +82,7 @@ class CenterTemplate {
             width: double.infinity,
             height: 60,
             padding: const EdgeInsets.symmetric(horizontal: 20),
-            color: Palette.gradientColor[0],
+            color: Palette.gradientColor[3],
             child: tableFormat(
                 r2: headerText("Nom"),
                 r3: headerText("Addresse"),

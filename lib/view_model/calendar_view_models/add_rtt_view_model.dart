@@ -458,12 +458,22 @@ class AddRTTViewModel {
                                           if (body.length == 5) {
                                             Navigator.of(context).pop(null);
                                             loadingCallback(true);
-                                            await _instance.service
-                                                .request(
+                                            if (_auth.loggedUser!.roleId == 1) {
+                                              await _instance.service
+                                                  .create(
+                                                    context,
                                                     body: _instance.body,
-                                                    isMe: !isForOthers)
-                                                .whenComplete(() =>
-                                                    loadingCallback(false));
+                                                  )
+                                                  .whenComplete(() =>
+                                                      loadingCallback(false));
+                                            } else {
+                                              await _instance.service
+                                                  .request(
+                                                      body: _instance.body,
+                                                      isMe: !isForOthers)
+                                                  .whenComplete(() =>
+                                                      loadingCallback(false));
+                                            }
                                           } else {
                                             setState(() {
                                               _instance.showMessage = true;

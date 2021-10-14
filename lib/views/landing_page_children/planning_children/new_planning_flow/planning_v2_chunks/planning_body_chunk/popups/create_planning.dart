@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ronan_pensec/global/controllers/calendar_controller.dart';
+import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/models/center_model.dart';
 import 'package:ronan_pensec/models/raw_user_model.dart';
 import 'package:ronan_pensec/models/user_model.dart';
@@ -66,52 +67,19 @@ class _CreatePlanningState extends State<CreatePlanning> {
                     width: double.infinity,
                     child: ListTile(
                       title: Text("${widget.center.name}".toUpperCase()),
-                      subtitle: Column(
+                      subtitle: Row(
                         children: [
-                          Container(
-                            width: double.infinity,
-                            child: Row(
-                              children: [
-                                Icon(Icons.location_on_rounded),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                Expanded(
-                                  child: Text("${widget.center.address}"),
-                                )
-                              ],
-                            ),
+                          Icon(
+                            Icons.account_balance_rounded,
+                            color: Colors.grey.shade400,
                           ),
-                          Container(
-                            width: double.infinity,
-                            child: Row(
-                              children: [
-                                Icon(Icons.account_balance_rounded),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                Expanded(
-                                  child: Text(
-                                      "${widget.center.region?.name ?? "N/A"}"),
-                                )
-                              ],
-                            ),
+                          const SizedBox(
+                            width: 10,
                           ),
-                          Container(
-                            width: double.infinity,
-                            child: Row(
-                              children: [
-                                Icon(Icons.phone_enabled),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                Expanded(
-                                  child:
-                                      Text("${widget.center.mobile ?? "N/A"}"),
-                                )
-                              ],
-                            ),
-                          ),
+                          Expanded(
+                            child:
+                                Text("${widget.center.region?.name ?? "N/A"}"),
+                          )
                         ],
                       ),
                     ),
@@ -209,7 +177,10 @@ class _CreatePlanningState extends State<CreatePlanning> {
                   width: double.infinity,
                   height: 60,
                   alignment: AlignmentDirectional.centerEnd,
-                  child: IconButton(
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.resolveWith(
+                            (states) => Palette.gradientColor[0])),
                     onPressed: chosenEnd != null
                         ? () async {
                             await _service
@@ -226,13 +197,37 @@ class _CreatePlanningState extends State<CreatePlanning> {
                             });
                           }
                         : null,
-                    icon: Icon(
-                      Icons.save_alt_sharp,
-                      color: chosenEnd == null
-                          ? Colors.grey.shade600
-                          : Colors.green,
+                    child: Text(
+                      "Valider",
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
                     ),
                   ),
+                  // child: IconButton(
+                  //   onPressed: chosenEnd != null
+                  //       ? () async {
+                  //           await _service
+                  //               .create(
+                  //                   userId:
+                  //                       widget.user?.id ?? widget.rawUser!.id,
+                  //                   centerId: widget.center.id,
+                  //                   start: chosenStart,
+                  //                   end: chosenEnd!)
+                  //               .then((value) {
+                  //             if (value != null) {
+                  //               Navigator.of(context).pop(null);
+                  //             }
+                  //           });
+                  //         }
+                  //       : null,
+                  //   icon: Icon(
+                  //     Icons.save_alt_sharp,
+                  //     color: chosenEnd == null
+                  //         ? Colors.grey.shade600
+                  //         : Colors.green,
+                  //   ),
+                  // ),
                 )
               ],
             )),

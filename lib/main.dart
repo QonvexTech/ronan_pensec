@@ -16,24 +16,23 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   static FirebaseAnalytics analytics = FirebaseAnalytics();
-  static FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(analytics: analytics);
+  static FirebaseAnalyticsObserver observer =
+      FirebaseAnalyticsObserver(analytics: analytics);
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorObservers: <NavigatorObserver>[observer],
-
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
-      supportedLocales: [
-        const Locale('en'),
-        const Locale('fr')
-      ],
-
+      supportedLocales: [const Locale('en'), const Locale('fr')],
       debugShowCheckedModeBanner: false,
       title: 'Ronan Pensec',
       theme: ThemeData(
+          scrollbarTheme: ScrollbarThemeData(
+            thumbColor: MaterialStateProperty.resolveWith(
+                (states) => Colors.grey.withOpacity(0.7)),
+          ),
           fontFamily: "Noto_Sans",
-          primaryColor: Palette.textFieldColor
-      ),
+          primaryColor: Palette.textFieldColor),
       home: SplashScreen(),
     );
   }
