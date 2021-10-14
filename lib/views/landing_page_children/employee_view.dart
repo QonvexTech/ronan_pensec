@@ -447,7 +447,7 @@ class _EmployeeViewState extends State<EmployeeView> {
                                     headingRowColor:
                                         MaterialStateProperty.resolveWith(
                                             (states) =>
-                                                Palette.gradientColor[0]),
+                                                Palette.gradientColor[3]),
                                     showCheckboxColumn: false,
                                     rows: List.generate(
                                         _displayData!.length,
@@ -456,7 +456,7 @@ class _EmployeeViewState extends State<EmployeeView> {
                                                 .resolveWith((states) =>
                                                     index % 2 == 0
                                                         ? Palette
-                                                            .gradientColor[0]
+                                                            .gradientColor[3]
                                                             .withOpacity(0.3)
                                                         : Colors.grey.shade100),
                                             onSelectChanged: (selected) {

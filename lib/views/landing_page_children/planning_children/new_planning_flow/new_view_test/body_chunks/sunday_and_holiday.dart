@@ -24,6 +24,9 @@ class SundayAndHoliday extends StatelessWidget {
               bottom: BorderSide(
                 color: Colors.grey.shade300,
               ),
+              right: BorderSide(
+                color: Colors.grey.shade300,
+              ),
             ),
           ),
           child: Stack(

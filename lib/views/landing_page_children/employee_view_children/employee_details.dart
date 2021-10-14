@@ -7,6 +7,7 @@ import 'package:ronan_pensec/models/user_model.dart';
 import 'package:ronan_pensec/services/data_controls/region_data_control.dart';
 import 'package:ronan_pensec/view_model/employee_children/employee_details_view_model.dart';
 import 'package:ronan_pensec/view_model/employee_view_model.dart';
+import 'package:ronan_pensec/views/landing_page_children/employee_view_children/employee_detail_children/add_planning.dart';
 
 import 'employee_detail_children/employee_demands.dart';
 
@@ -447,6 +448,8 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                             width: double.infinity,
                                             height: 40,
                                             child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
                                               children: [
                                                 Container(
                                                   width: 110,
@@ -804,6 +807,43 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                             ],
                                           ),
                                         ),
+                                      },
+                                      if (_viewModel.auth.loggedUser!.roleId ==
+                                          1) ...{
+                                        Divider(),
+                                        MaterialButton(
+                                            onPressed: () {
+                                              GeneralTemplate.showDialog(
+                                                context,
+                                                title: Text(
+                                                    "Créer un planification"),
+                                                child: AddPlanning(
+                                                  user: widget.employee,
+                                                ),
+                                                height: 250,
+                                                width: size.width * .4,
+                                              );
+                                            },
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Icon(Icons.add),
+                                                const SizedBox(
+                                                  width: 5,
+                                                ),
+                                                Text(
+                                                  "Ajouter planification",
+                                                  style: TextStyle(
+                                                    fontSize: Theme.of(context)
+                                                            .textTheme
+                                                            .headline6!
+                                                            .fontSize! -
+                                                        5,
+                                                  ),
+                                                ),
+                                              ],
+                                            )),
                                       },
                                       Divider(),
                                       Container(

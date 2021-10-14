@@ -35,6 +35,13 @@ class UserPlanningDataView extends StatelessWidget {
         Container(
           width: itemWidth,
           height: 30,
+          decoration: BoxDecoration(
+            border: Border(
+              right: BorderSide(
+                color: Colors.grey.shade300,
+              ),
+            ),
+          ),
           child: MaterialButton(
             onPressed: () => showGeneralDialog(
                 barrierColor: Colors.black.withOpacity(0.5),

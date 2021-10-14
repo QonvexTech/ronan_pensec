@@ -44,6 +44,7 @@ class _PlanningV2State extends State<PlanningV2> {
       "rtt": null,
       "leave": null,
       "attendance": null,
+      "employee-view": false,
     };
     filterCount = 0;
     super.dispose();
@@ -112,7 +113,9 @@ class _PlanningV2State extends State<PlanningV2> {
                                     Checkbox(
                                       activeColor: Palette.gradientColor[0],
                                       checkColor: Colors.white,
-                                      value: filterData['region'].contains(e),
+                                      value: filterData['region'].length > 0
+                                          ? filterData['region'].contains(e)
+                                          : false,
                                       onChanged: (bool? value) {
                                         setState(() {
                                           if (filterData['region']

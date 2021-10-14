@@ -14,9 +14,14 @@ class CenterEndpoint {
   static String deleteCenter({required int centerId}) =>
       "$_baseEndpoint/$centerId";
 
+  static String getMyCenters({required int userId}) =>
+      "$_baseEndpoint/assigned_centers/$userId";
+
   /// Method : POST
-  static  String get assignUsersToCenter => "$_baseEndpoint/add_users";
-  static String removeAssignedUser(int centerId) => "$_baseEndpoint/delete_users/$centerId";
+  static String get assignUsersToCenter => "$_baseEndpoint/add_users";
+  static String removeAssignedUser(int centerId) =>
+      "$_baseEndpoint/delete_users/$centerId";
+
   /// Method : POST
   static final String create = "$_baseEndpoint";
 
@@ -26,5 +31,6 @@ class CenterEndpoint {
   ///Method: POST
   static final String assignManager = "$_baseEndpoint/assign_manager";
 
-  static String updateRegion({required int centerId}) => "$_baseEndpoint/update_region/$centerId";
+  static String updateRegion({required int centerId}) =>
+      "$_baseEndpoint/update_region/$centerId";
 }

@@ -39,197 +39,210 @@ class _ShowPlanningState extends State<ShowPlanning> {
     return Container(
       width: width,
       height: 200,
-      child: Row(
+      child: Column(
         children: [
           Expanded(
-            child: Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.grey.shade200,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black12,
-                    offset: Offset(2, 2),
-                    blurRadius: 5,
-                  )
-                ],
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    width: size.width > 900 ? 115 : 95,
-                    height: size.width > 900 ? 115 : 95,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                        image: NetworkImage(
-                          "${widget.user?.image ?? widget.rawUser!.image}",
-                        ),
-                      ),
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.grey.shade200,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12,
+                          offset: Offset(2, 2),
+                          blurRadius: 5,
+                        )
+                      ],
                     ),
-                  ),
-                  ListTile(
-                    title: Text(
-                      "${widget.user?.full_name ?? widget.rawUser!.fullName}",
-                      textAlign: TextAlign.center,
-                    ),
-                    subtitle: Text(
-                      "${widget.user?.email ?? "Vue des employés"}",
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Expanded(
-            child: Container(
-              child: Column(
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                      ),
-                      child: Column(
-                        children: [
-                          Container(
-                            width: double.infinity,
-                            child: Text(
-                              "Date de début",
-                              style: TextStyle(
-                                color: Colors.grey.shade600,
-                                fontSize: 14,
-                              ),
-                            ),
-                          ),
-                          MaterialButton(
-                            onPressed: isEditing
-                                ? () {
-                                    showDatePicker(
-                                      context: context,
-                                      firstDate:
-                                          DateTime(DateTime.now().year, 1, 1),
-                                      initialDate: widget.planning.startDate,
-                                      lastDate: DateTime(
-                                        DateTime.now().year + 1,
-                                        1,
-                                        1,
-                                      ),
-                                    ).then((DateTime? newStart) {
-                                      if (newStart != null) {
-                                        setState(() {
-                                          chosenStart = newStart;
-                                        });
-                                      }
-                                    });
-                                  }
-                                : null,
-                            child: Container(
-                              width: double.infinity,
-                              child: Text(
-                                  "${_calendarController.dateAsText(chosenStart)}"),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          Container(
-                            width: double.infinity,
-                            child: Text(
-                              "Date de fin",
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey.shade600,
-                              ),
-                            ),
-                          ),
-                          MaterialButton(
-                            onPressed: isEditing
-                                ? () {
-                                    showDatePicker(
-                                      context: context,
-                                      firstDate:
-                                          DateTime(DateTime.now().year, 1, 1),
-                                      initialDate: widget.planning.endDate,
-                                      lastDate: DateTime(
-                                        DateTime.now().year + 1,
-                                        1,
-                                        1,
-                                      ),
-                                    ).then((DateTime? newEnd) {
-                                      if (newEnd != null) {
-                                        setState(() {
-                                          chosenEnd = newEnd;
-                                        });
-                                      }
-                                    });
-                                  }
-                                : null,
-                            child: Container(
-                              width: double.infinity,
-                              child: Text(
-                                  "${_calendarController.dateAsText(widget.planning.endDate)}"),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Container(
-                    width: double.infinity,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        IconButton(
-                          tooltip: isEditing ? "Sauvegarder" : "Mise á jour",
-                          onPressed: () async {
-                            if (isEditing) {
-                              await _service
-                                  .update(
-                                start: chosenStart,
-                                end: chosenEnd,
-                                id: widget.planning.id,
-                              )
-                                  .then((value) {
-                                if (value) {
-                                  setState(() {
-                                    widget.planning.startDate = chosenStart;
-                                    widget.planning.endDate = chosenEnd;
-                                  });
-                                  Navigator.of(context).pop(null);
-                                }
-                              });
-                            }
-                            setState(() {
-                              isEditing = !isEditing;
-                            });
-                          },
-                          icon: Icon(
-                            isEditing ? Icons.save_alt : Icons.edit_outlined,
-                            color: isEditing ? Colors.green : Colors.black45,
+                        Container(
+                          width: size.width > 900 ? 115 : 95,
+                          height: size.width > 900 ? 115 : 95,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              image: NetworkImage(
+                                "${widget.user?.image ?? widget.rawUser!.image}",
+                              ),
+                            ),
                           ),
                         ),
-                        IconButton(
-                          tooltip: "Supprimer",
-                          onPressed: () async {
-                            Navigator.of(context).pop(null);
-                            await _service.delete(widget.planning.id);
-                          },
-                          icon: Icon(
-                            Icons.delete_outline,
-                            color: Colors.black45,
+                        ListTile(
+                          title: Text(
+                            "${widget.user?.full_name ?? widget.rawUser!.fullName}",
+                            textAlign: TextAlign.center,
+                          ),
+                          subtitle: Text(
+                            "${widget.user?.email ?? "Vue des employés"}",
+                            textAlign: TextAlign.center,
                           ),
                         ),
                       ],
                     ),
-                  )
-                ],
-              ),
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                            ),
+                            child: Column(
+                              children: [
+                                Container(
+                                  width: double.infinity,
+                                  child: Text(
+                                    "Date de début",
+                                    style: TextStyle(
+                                      color: Colors.grey.shade600,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ),
+                                MaterialButton(
+                                  onPressed: isEditing
+                                      ? () {
+                                          showDatePicker(
+                                            context: context,
+                                            firstDate: DateTime(
+                                                DateTime.now().year, 1, 1),
+                                            initialDate:
+                                                widget.planning.startDate,
+                                            lastDate: DateTime(
+                                              DateTime.now().year + 1,
+                                              1,
+                                              1,
+                                            ),
+                                          ).then((DateTime? newStart) {
+                                            if (newStart != null) {
+                                              setState(() {
+                                                chosenStart = newStart;
+                                              });
+                                            }
+                                          });
+                                        }
+                                      : null,
+                                  child: Container(
+                                    width: double.infinity,
+                                    child: Text(
+                                        "${_calendarController.dateAsText(chosenStart)}"),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                Container(
+                                  width: double.infinity,
+                                  child: Text(
+                                    "Date de fin",
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.grey.shade600,
+                                    ),
+                                  ),
+                                ),
+                                MaterialButton(
+                                  onPressed: isEditing
+                                      ? () {
+                                          showDatePicker(
+                                            context: context,
+                                            firstDate: DateTime(
+                                                DateTime.now().year, 1, 1),
+                                            initialDate:
+                                                widget.planning.endDate,
+                                            lastDate: DateTime(
+                                              DateTime.now().year + 1,
+                                              1,
+                                              1,
+                                            ),
+                                          ).then((DateTime? newEnd) {
+                                            if (newEnd != null) {
+                                              setState(() {
+                                                chosenEnd = newEnd;
+                                              });
+                                            }
+                                          });
+                                        }
+                                      : null,
+                                  child: Container(
+                                    width: double.infinity,
+                                    child: Text(
+                                        "${_calendarController.dateAsText(widget.planning.endDate)}"),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Container(
+                          width: double.infinity,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              IconButton(
+                                tooltip:
+                                    isEditing ? "Sauvegarder" : "Mise á jour",
+                                onPressed: () async {
+                                  if (isEditing) {
+                                    await _service
+                                        .update(
+                                      start: chosenStart,
+                                      end: chosenEnd,
+                                      id: widget.planning.id,
+                                    )
+                                        .then((value) {
+                                      if (value) {
+                                        setState(() {
+                                          widget.planning.startDate =
+                                              chosenStart;
+                                          widget.planning.endDate = chosenEnd;
+                                        });
+                                        Navigator.of(context).pop(null);
+                                      }
+                                    });
+                                  }
+                                  setState(() {
+                                    isEditing = !isEditing;
+                                  });
+                                },
+                                icon: Icon(
+                                  isEditing
+                                      ? Icons.save_alt
+                                      : Icons.edit_outlined,
+                                  color:
+                                      isEditing ? Colors.green : Colors.black45,
+                                ),
+                              ),
+                              IconButton(
+                                tooltip: "Supprimer",
+                                onPressed: () async {
+                                  Navigator.of(context).pop(null);
+                                  await _service.delete(widget.planning.id);
+                                },
+                                icon: Icon(
+                                  Icons.delete_outline,
+                                  color: Colors.black45,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                )
+              ],
             ),
-          )
+          ),
         ],
       ),
     );

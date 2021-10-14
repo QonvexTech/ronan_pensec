@@ -11,15 +11,20 @@ class CenterViewModel {
   static final CenterViewModel _instance = CenterViewModel._singleton();
   bool hasInstance = false;
   static CenterViewModel instance(RegionDataControl control) {
-    if(!_instance.hasInstance){
-      _instance.centerTemplate = CenterTemplate.instance(regionDataControl: control);
+    if (!_instance.hasInstance) {
+      _instance.centerTemplate =
+          CenterTemplate.instance(regionDataControl: control);
       _instance.hasInstance = true;
     }
     return _instance;
   }
+
+  static CenterViewModel get loneInstance => _instance;
+
   /// 0 => List, 1 => Table
   int _currentView = 1;
-  static final CenterDataControl _centerDataControl = CenterDataControl.instance;
+  static final CenterDataControl _centerDataControl =
+      CenterDataControl.instance;
   CenterDataControl get centerDataControl => _centerDataControl;
   final CenterService _service = CenterService.instance(_centerDataControl);
 
@@ -34,8 +39,6 @@ class CenterViewModel {
   late final CenterTemplate centerTemplate;
 
   int get currentView => _currentView;
-
-
 
   set setView(int v) => _currentView = v;
 
