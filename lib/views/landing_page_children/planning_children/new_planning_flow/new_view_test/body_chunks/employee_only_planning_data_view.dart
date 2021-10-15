@@ -70,20 +70,22 @@ class EmployeeOnlyPlanningDataView extends StatelessWidget {
                     return Container();
                   }),
               child: Tooltip(
-                message: "${plan.title}",
+                message: "${plan.title} ${plan.startType} ${plan.endType}",
                 child: Container(
                   width: itemWidth,
                   height: 30,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.horizontal(
-                      left: _calendarService.isSameDay(
-                              plan.startDate, currentDate)
+                      left: plan.startType == 1 &&
+                              _calendarService.isSameDay(
+                                  plan.startDate, currentDate)
                           ? Radius.circular(20)
                           : Radius.zero,
-                      right:
-                          _calendarService.isSameDay(plan.endDate, currentDate)
-                              ? Radius.circular(20)
-                              : Radius.zero,
+                      right: plan.endType == 1 &&
+                              _calendarService.isSameDay(
+                                  plan.endDate, currentDate)
+                          ? Radius.circular(20)
+                          : Radius.zero,
                     ),
                     color:
                         plan.isConflict ? Colors.purple.shade800 : Colors.blue,
