@@ -126,23 +126,44 @@ class UserPlanningDataView extends StatelessWidget {
                   }),
               child: Tooltip(
                 message: "${planning.title}",
-                child: Container(
-                  width: itemWidth,
-                  height: 30,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.horizontal(
-                      left: _calendarService.isSameDay(
-                              planning.startDate, currentDate)
-                          ? Radius.circular(20)
-                          : Radius.zero,
-                      right: _calendarService.isSameDay(
-                              planning.endDate, currentDate)
-                          ? Radius.circular(20)
-                          : Radius.zero,
+                child: ClipPath(
+                  clipper: _calendarService.isSameDay(
+                              planning.startDate, currentDate) &&
+                          planning.startType == 2
+                      ? CalendarHalfDayMorningClip()
+                      : _calendarService.isSameDay(
+                                  planning.startDate, currentDate) &&
+                              planning.startType == 3
+                          ? CalendarHalfdayClip()
+                          : _calendarService.isSameDay(
+                                      planning.endDate, currentDate) &&
+                                  planning.endType == 2
+                              ? CalendarHalfDayMorningClip()
+                              : _calendarService.isSameDay(
+                                          planning.endDate, currentDate) &&
+                                      planning.endType == 3
+                                  ? CalendarHalfdayClip()
+                                  : null,
+                  child: Container(
+                    width: itemWidth,
+                    height: 30,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.horizontal(
+                        left: planning.startType == 1 &&
+                                _calendarService.isSameDay(
+                                    planning.startDate, currentDate)
+                            ? Radius.circular(20)
+                            : Radius.zero,
+                        right: planning.endType == 1 &&
+                                _calendarService.isSameDay(
+                                    planning.endDate, currentDate)
+                            ? Radius.circular(20)
+                            : Radius.zero,
+                      ),
+                      color: planning.isConflict
+                          ? Colors.purple.shade800
+                          : Colors.blue,
                     ),
-                    color: planning.isConflict
-                        ? Colors.purple.shade800
-                        : Colors.blue,
                   ),
                 ),
               ),

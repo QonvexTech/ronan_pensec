@@ -820,7 +820,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                                 child: AddPlanning(
                                                   user: widget.employee,
                                                 ),
-                                                height: 250,
+                                                height: 300,
                                                 width: size.width * .4,
                                               );
                                             },

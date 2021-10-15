@@ -27,6 +27,13 @@ class _CreatePlanningState extends State<CreatePlanning> {
   final CalendarController _calendarController = CalendarController.instance;
   final PlanningService _service = new PlanningService();
   late DateTime chosenStart = widget.startDate;
+  List _type = [
+    {"id": 1, "name": "Toute la journée"},
+    {"id": 2, "name": "Demi-journée - matin"},
+    {"id": 3, "name": "Demi-journée - après-midi"},
+  ];
+  late Map _chosenType = _type[0];
+  late Map _chosenEndType = _type[0];
   DateTime? chosenEnd;
   @override
   Widget build(BuildContext context) {
@@ -38,200 +45,285 @@ class _CreatePlanningState extends State<CreatePlanning> {
         : size.width * .3;
     return Container(
       width: width,
-      height: 200,
-      child: Row(
+      height: 280,
+      child: Column(
         children: [
           Expanded(
-            child: Container(
-              child: Column(
-                children: [
-                  Container(
-                    width: double.infinity,
-                    child: ListTile(
-                      leading: Container(
-                        width: 50,
-                        height: 50,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                                image: NetworkImage(
-                                    "${widget.user?.image ?? widget.rawUser!.image}"))),
-                      ),
-                      title: Text(
-                          "${widget.user?.full_name ?? widget.rawUser!.fullName}"),
-                      subtitle:
-                          Text("${widget.user?.email ?? "Vue des employés"}"),
-                    ),
-                  ),
-                  Container(
-                    width: double.infinity,
-                    child: ListTile(
-                      title: Text("${widget.center.name}".toUpperCase()),
-                      subtitle: Row(
-                        children: [
-                          Icon(
-                            Icons.account_balance_rounded,
-                            color: Colors.grey.shade400,
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Expanded(
-                            child:
-                                Text("${widget.center.region?.name ?? "N/A"}"),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Expanded(
-            child: Container(
-                child: Column(
+            child: Row(
               children: [
                 Expanded(
                   child: Container(
                     child: Column(
                       children: [
                         Container(
-                          width: double.infinity,
-                          child: Text(
-                            "Date de début",
-                            style: TextStyle(
-                              color: Colors.grey.shade600,
-                              fontSize: 14,
-                            ),
+                          width: 200 * .5,
+                          height: 200 * .5,
+                          decoration: BoxDecoration(
+                              color: Colors.grey.shade200,
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                  fit: BoxFit.fill,
+                                  image: NetworkImage(
+                                      "${widget.user?.image ?? widget.rawUser!.image}"))),
+                        ),
+                        Text(
+                          "${widget.user?.full_name ?? widget.rawUser!.fullName}",
+                          style: TextStyle(
+                            fontSize: 14,
                           ),
                         ),
-                        MaterialButton(
-                          onPressed: () {
-                            showDatePicker(
-                              context: context,
-                              firstDate: chosenStart,
-                              initialDate: widget.startDate,
-                              lastDate: DateTime(
-                                DateTime.now().year + 1,
-                                1,
-                                1,
-                              ),
-                            ).then((DateTime? newStart) {
-                              if (newStart != null) {
-                                setState(() {
-                                  chosenStart = newStart;
-                                });
-                              }
-                            });
-                          },
-                          child: Container(
-                            width: double.infinity,
-                            child: Text(
-                                "${_calendarController.dateAsText(chosenStart)}"),
+                        Text(
+                          "${widget.user?.email ?? "Vue des employés"}",
+                          style: TextStyle(
+                            fontSize: 12.5,
+                            color: Colors.grey.shade400,
                           ),
                         ),
                         const SizedBox(
-                          height: 20,
+                          height: 15,
                         ),
-                        Container(
-                          width: double.infinity,
-                          child: Text(
-                            "Date de fin",
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey.shade600,
-                            ),
-                          ),
-                        ),
-                        MaterialButton(
-                          onPressed: () {
-                            showDatePicker(
-                              context: context,
-                              firstDate: DateTime(DateTime.now().year, 1, 1),
-                              initialDate: chosenEnd ?? DateTime.now(),
-                              lastDate: DateTime(
-                                DateTime.now().year + 1,
-                                1,
-                                1,
-                              ),
-                            ).then((DateTime? newEnd) {
-                              if (newEnd != null) {
-                                setState(() {
-                                  chosenEnd = newEnd;
-                                });
-                              }
-                            });
-                          },
-                          child: Container(
-                            width: double.infinity,
-                            child: Text(
-                                "${chosenEnd == null ? "Sélectionner une date" : _calendarController.dateAsText(chosenEnd!)}"),
+                        Spacer(),
+                        ListTile(
+                          title: Text("${widget.center.name}"),
+                          subtitle:
+                              Text("${widget.center.region?.name ?? "N/A"}"),
+                          leading: Icon(
+                            Icons.account_balance_rounded,
+                            color: Colors.grey.shade400,
                           ),
                         ),
                       ],
                     ),
                   ),
                 ),
-                Container(
-                  width: double.infinity,
-                  height: 60,
-                  alignment: AlignmentDirectional.centerEnd,
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.resolveWith(
-                            (states) => Palette.gradientColor[0])),
-                    onPressed: chosenEnd != null
-                        ? () async {
-                            await _service
-                                .create(
-                                    userId:
-                                        widget.user?.id ?? widget.rawUser!.id,
-                                    centerId: widget.center.id,
-                                    start: chosenStart,
-                                    end: chosenEnd!)
-                                .then((value) {
-                              if (value != null) {
-                                Navigator.of(context).pop(null);
-                              }
-                            });
-                          }
-                        : null,
-                    child: Text(
-                      "Valider",
-                      style: TextStyle(
-                        color: Colors.white,
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            child: Text(
+                              "Date de début",
+                              style: TextStyle(
+                                color: Colors.grey.shade600,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                          MaterialButton(
+                            onPressed: () {
+                              showDatePicker(
+                                context: context,
+                                firstDate: chosenStart,
+                                initialDate: widget.startDate,
+                                lastDate: DateTime(
+                                  DateTime.now().year + 1,
+                                  1,
+                                  1,
+                                ),
+                              ).then((DateTime? newStart) {
+                                if (newStart != null) {
+                                  setState(() {
+                                    chosenStart = newStart;
+                                  });
+                                }
+                              });
+                            },
+                            child: Container(
+                              width: double.infinity,
+                              child: Text(
+                                  "${_calendarController.dateAsText(chosenStart)}"),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
+                      Column(
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            child: Text(
+                              "Taper",
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey.shade600,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            width: double.infinity,
+                            height: 38,
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(2),
+                              color: Colors.grey.shade200,
+                            ),
+                            child: DropdownButtonHideUnderline(
+                                child: DropdownButton(
+                              value: _chosenType,
+                              isExpanded: true,
+                              onChanged: (Map? val) {
+                                setState(() {
+                                  _chosenType = val!;
+                                });
+                              },
+                              items: _type
+                                  .map(
+                                    (e) => DropdownMenuItem<Map>(
+                                      value: e,
+                                      child: Text("${e['name']}"),
+                                    ),
+                                  )
+                                  .toList(),
+                            )),
+                          )
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            child: Text(
+                              "Date de fin",
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey.shade600,
+                              ),
+                            ),
+                          ),
+                          MaterialButton(
+                            onPressed: () {
+                              showDatePicker(
+                                context: context,
+                                firstDate: DateTime(DateTime.now().year, 1, 1),
+                                initialDate: chosenEnd ?? DateTime.now(),
+                                lastDate: DateTime(
+                                  DateTime.now().year + 1,
+                                  1,
+                                  1,
+                                ),
+                              ).then((DateTime? newEnd) {
+                                if (newEnd != null) {
+                                  setState(() {
+                                    chosenEnd = newEnd;
+                                  });
+                                }
+                              });
+                            },
+                            child: Container(
+                              width: double.infinity,
+                              child: Text(
+                                  "${chosenEnd == null ? "Sélectionner une date" : _calendarController.dateAsText(chosenEnd!)}"),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            child: Text(
+                              "Taper",
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey.shade600,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            width: double.infinity,
+                            height: 38,
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(2),
+                              color: Colors.grey.shade200,
+                            ),
+                            child: DropdownButtonHideUnderline(
+                                child: DropdownButton(
+                              value: _chosenEndType,
+                              isExpanded: true,
+                              onChanged: (Map? val) {
+                                setState(() {
+                                  _chosenEndType = val!;
+                                });
+                              },
+                              items: _type
+                                  .map(
+                                    (e) => DropdownMenuItem<Map>(
+                                      value: e,
+                                      child: Text("${e['name']}"),
+                                    ),
+                                  )
+                                  .toList(),
+                            )),
+                          )
+                        ],
+                      )
+                    ],
                   ),
-                  // child: IconButton(
-                  //   onPressed: chosenEnd != null
-                  //       ? () async {
-                  //           await _service
-                  //               .create(
-                  //                   userId:
-                  //                       widget.user?.id ?? widget.rawUser!.id,
-                  //                   centerId: widget.center.id,
-                  //                   start: chosenStart,
-                  //                   end: chosenEnd!)
-                  //               .then((value) {
-                  //             if (value != null) {
-                  //               Navigator.of(context).pop(null);
-                  //             }
-                  //           });
-                  //         }
-                  //       : null,
-                  //   icon: Icon(
-                  //     Icons.save_alt_sharp,
-                  //     color: chosenEnd == null
-                  //         ? Colors.grey.shade600
-                  //         : Colors.green,
-                  //   ),
-                  // ),
-                )
+                ),
               ],
-            )),
+            ),
           ),
+          Container(
+            width: double.infinity,
+            height: 60,
+            alignment: AlignmentDirectional.centerEnd,
+            child: ElevatedButton(
+              style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.resolveWith(
+                      (states) => Palette.gradientColor[0])),
+              onPressed: chosenEnd != null
+                  ? () async {
+                      await _service
+                          .create(
+                        userId: widget.user?.id ?? widget.rawUser!.id,
+                        centerId: widget.center.id,
+                        start: chosenStart,
+                        end: chosenEnd!,
+                        startType: _chosenType['id'],
+                        endType: _chosenEndType['id'],
+                      )
+                          .then((value) {
+                        if (value != null) {
+                          Navigator.of(context).pop(null);
+                        }
+                      });
+                    }
+                  : null,
+              child: Text(
+                "Valider",
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            // child: IconButton(
+            //   onPressed: chosenEnd != null
+            //       ? () async {
+            //           await _service
+            //               .create(
+            //                   userId:
+            //                       widget.user?.id ?? widget.rawUser!.id,
+            //                   centerId: widget.center.id,
+            //                   start: chosenStart,
+            //                   end: chosenEnd!)
+            //               .then((value) {
+            //             if (value != null) {
+            //               Navigator.of(context).pop(null);
+            //             }
+            //           });
+            //         }
+            //       : null,
+            //   icon: Icon(
+            //     Icons.save_alt_sharp,
+            //     color: chosenEnd == null
+            //         ? Colors.grey.shade600
+            //         : Colors.green,
+            //   ),
+            // ),
+          )
         ],
       ),
     );

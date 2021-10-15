@@ -438,78 +438,86 @@ class _EmployeeViewState extends State<EmployeeView> {
                               width: double.infinity,
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 20),
-                              child: ListView(
-                                physics: ClampingScrollPhysics(),
-                                children: [
-                                  DataTable(
-                                    showBottomBorder: true,
-                                    columns: _viewModel.template.kDataColumn,
-                                    headingRowColor:
-                                        MaterialStateProperty.resolveWith(
-                                            (states) =>
-                                                Palette.gradientColor[3]),
-                                    showCheckboxColumn: false,
-                                    rows: List.generate(
-                                        _displayData!.length,
-                                        (index) => DataRow(
-                                            color: MaterialStateProperty
-                                                .resolveWith((states) =>
-                                                    index % 2 == 0
-                                                        ? Palette
-                                                            .gradientColor[3]
-                                                            .withOpacity(0.3)
-                                                        : Colors.grey.shade100),
-                                            onSelectChanged: (selected) {
-                                              Navigator.push(
-                                                      context,
-                                                      EmployeeRoute.details(
-                                                          _displayData![index],
-                                                          widget
-                                                              .regionDataControl))
-                                                  .whenComplete(
-                                                () => setState(() {
-                                                  _search.clear();
-                                                  _displayData = _viewModel
-                                                      .employeeDataControl
-                                                      .current;
-                                                }),
-                                              );
-                                            },
-                                            cells: _viewModel.template
-                                                .kDataCell(
-                                                    _displayData![index]))),
-                                  ),
-                                  if (!_showField) ...{dataControl()}
-                                ],
-                              ))
-                          : ListView(children: [
-                              if (!_showField) ...{
-                                dataControl(),
-                              },
-                              for (UserModel user in _displayData!) ...{
-                                MaterialButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                            context,
-                                            EmployeeRoute.details(
-                                                user, widget.regionDataControl))
-                                        .whenComplete(
-                                      () => setState(() {
-                                        _search.clear();
-                                        _displayData = _viewModel
-                                            .employeeDataControl.current;
-                                      }),
-                                    );
-                                  },
-                                  child:
-                                      _viewModel.template.kDataList(user: user),
+                              child: Scrollbar(
+                                isAlwaysShown: true,
+                                child: ListView(
+                                  physics: ClampingScrollPhysics(),
+                                  children: [
+                                    DataTable(
+                                      showBottomBorder: true,
+                                      columns: _viewModel.template.kDataColumn,
+                                      headingRowColor:
+                                          MaterialStateProperty.resolveWith(
+                                              (states) =>
+                                                  Palette.gradientColor[3]),
+                                      showCheckboxColumn: false,
+                                      rows: List.generate(
+                                          _displayData!.length,
+                                          (index) => DataRow(
+                                              color: MaterialStateProperty
+                                                  .resolveWith((states) =>
+                                                      index % 2 == 0
+                                                          ? Palette
+                                                              .gradientColor[3]
+                                                              .withOpacity(0.3)
+                                                          : Colors
+                                                              .grey.shade100),
+                                              onSelectChanged: (selected) {
+                                                Navigator.push(
+                                                        context,
+                                                        EmployeeRoute.details(
+                                                            _displayData![
+                                                                index],
+                                                            widget
+                                                                .regionDataControl))
+                                                    .whenComplete(
+                                                  () => setState(() {
+                                                    _search.clear();
+                                                    _displayData = _viewModel
+                                                        .employeeDataControl
+                                                        .current;
+                                                  }),
+                                                );
+                                              },
+                                              cells: _viewModel.template
+                                                  .kDataCell(
+                                                      _displayData![index]))),
+                                    ),
+                                    if (!_showField) ...{dataControl()}
+                                  ],
                                 ),
-                              }
-                              // List.generate(
-                              //   userList.data!.length,
-                              //       (index) =>
-                              // ),
-                            ])
+                              ))
+                          : Scrollbar(
+                              isAlwaysShown: true,
+                              child: ListView(children: [
+                                if (!_showField) ...{
+                                  dataControl(),
+                                },
+                                for (UserModel user in _displayData!) ...{
+                                  MaterialButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                              context,
+                                              EmployeeRoute.details(user,
+                                                  widget.regionDataControl))
+                                          .whenComplete(
+                                        () => setState(() {
+                                          _search.clear();
+                                          _displayData = _viewModel
+                                              .employeeDataControl.current;
+                                        }),
+                                      );
+                                    },
+                                    child: _viewModel.template
+                                        .kDataList(user: user),
+                                  ),
+                                }
+                                // List.generate(
+                                //   userList.data!.length,
+                                //       (index) =>
+                                // ),
+                              ]),
+                            )
                       : !userList.hasData || _displayData == null
                           ? GeneralTemplate.tableLoader(
                               _viewModel.template.kDataColumn.length,

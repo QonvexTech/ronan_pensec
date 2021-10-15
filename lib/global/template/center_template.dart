@@ -54,12 +54,14 @@ class CenterTemplate {
 
   Widget listView(context, List<CenterModel> _list, bool isSliver) => isSliver
       ? Scrollbar(
+          isAlwaysShown: true,
           child: SliverList(
             delegate: SliverChildListDelegate(List.generate(
                 _list.length, (index) => listData(context, _list, index))),
           ),
         )
       : Scrollbar(
+          isAlwaysShown: true,
           child: ListView.builder(
             itemCount: _list.length,
             shrinkWrap: true,
@@ -73,7 +75,7 @@ class CenterTemplate {
       );
   Text bodyText(String text) => Text(
         text,
-        style: TextStyle(color: Colors.black54, fontSize: 15),
+        style: TextStyle(color: Colors.black, fontSize: 15),
       );
   Widget tableView(context, List<CenterModel> sauce) => Column(
         children: [
@@ -90,28 +92,31 @@ class CenterTemplate {
                 r5: headerText("Email")),
           ),
           Expanded(
-            child: ListView(
-              children: List.generate(
-                sauce.length,
-                (index) => Container(
-                  width: double.infinity,
-                  height: 50,
-                  color: index % 2 == 0
-                      ? Colors.grey.shade200
-                      : Palette.gradientColor[0].withOpacity(0.3),
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: MaterialButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          CenterRoute.details(
-                              sauce[index], _regionDataControl));
-                    },
-                    child: tableFormat(
-                      r2: bodyText("${sauce[index].name}"),
-                      r3: bodyText("${sauce[index].address ?? "NON DÉFINI"}"),
-                      r4: bodyText("${sauce[index].mobile ?? "NON DÉFINI"}"),
-                      r5: bodyText("${sauce[index].email ?? "NON DÉFINI"}"),
+            child: Scrollbar(
+              isAlwaysShown: true,
+              child: ListView(
+                children: List.generate(
+                  sauce.length,
+                  (index) => Container(
+                    width: double.infinity,
+                    height: 50,
+                    color: index % 2 == 0
+                        ? Colors.grey.shade200
+                        : Palette.gradientColor[3].withOpacity(0.3),
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: MaterialButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            CenterRoute.details(
+                                sauce[index], _regionDataControl));
+                      },
+                      child: tableFormat(
+                        r2: bodyText("${sauce[index].name}"),
+                        r3: bodyText("${sauce[index].address ?? "NON DÉFINI"}"),
+                        r4: bodyText("${sauce[index].mobile ?? "NON DÉFINI"}"),
+                        r5: bodyText("${sauce[index].email ?? "NON DÉFINI"}"),
+                      ),
                     ),
                   ),
                 ),

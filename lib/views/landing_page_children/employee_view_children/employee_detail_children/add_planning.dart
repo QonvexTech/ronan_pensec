@@ -40,6 +40,7 @@ class _AddPlanningState extends State<AddPlanning> {
   }
 
   late Map _chosenType = _type[0];
+  late Map _chosenEndType = _type[0];
   @override
   void initState() {
     fetchCenters();
@@ -60,7 +61,7 @@ class _AddPlanningState extends State<AddPlanning> {
         : size.width * .3;
     return Container(
         width: width,
-        height: 200,
+        height: 250,
         child: Column(
           children: [
             Expanded(
@@ -95,40 +96,41 @@ class _AddPlanningState extends State<AddPlanning> {
                         const SizedBox(
                           height: 15,
                         ),
+                        Spacer(),
 
                         ///Dropdown for center
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.grey.shade200,
-                              borderRadius: BorderRadius.circular(2),
-                            ),
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            child: _displayData.isEmpty
-                                ? Center(
-                                    child: Text("Aucun centre disponible"
-                                        .toUpperCase()),
-                                  )
-                                : DropdownButtonHideUnderline(
-                                    child: DropdownButton<RawCenterModel>(
-                                    value: _chosenCenter,
-                                    isExpanded: true,
-                                    onChanged: (val) {
-                                      setState(() {
-                                        _chosenCenter = val!;
-                                      });
-                                    },
-                                    items: _displayData
-                                        .map(
-                                          (RawCenterModel e) =>
-                                              DropdownMenuItem<RawCenterModel>(
-                                            value: e,
-                                            child: Text("${e.name}"),
-                                          ),
-                                        )
-                                        .toList(),
-                                  )),
+                        Container(
+                          width: double.infinity,
+                          height: 38,
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade200,
+                            borderRadius: BorderRadius.circular(2),
                           ),
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: _displayData.isEmpty
+                              ? Center(
+                                  child: Text(
+                                      "Aucun centre disponible".toUpperCase()),
+                                )
+                              : DropdownButtonHideUnderline(
+                                  child: DropdownButton<RawCenterModel>(
+                                  value: _chosenCenter,
+                                  isExpanded: true,
+                                  onChanged: (val) {
+                                    setState(() {
+                                      _chosenCenter = val!;
+                                    });
+                                  },
+                                  items: _displayData
+                                      .map(
+                                        (RawCenterModel e) =>
+                                            DropdownMenuItem<RawCenterModel>(
+                                          value: e,
+                                          child: Text("${e.name}"),
+                                        ),
+                                      )
+                                      .toList(),
+                                )),
                         )
                       ],
                     ),
@@ -177,6 +179,48 @@ class _AddPlanningState extends State<AddPlanning> {
                                     "${_calendarController.dateAsText(chosenStart)}"),
                               ),
                             ),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Container(
+                              width: double.infinity,
+                              child: Text(
+                                "Taper",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey.shade600,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              width: double.infinity,
+                              height: 38,
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(2),
+                                color: Colors.grey.shade200,
+                              ),
+                              child: DropdownButtonHideUnderline(
+                                  child: DropdownButton(
+                                value: _chosenType,
+                                isExpanded: true,
+                                onChanged: (Map? val) {
+                                  setState(() {
+                                    _chosenType = val!;
+                                  });
+                                },
+                                items: _type
+                                    .map(
+                                      (e) => DropdownMenuItem<Map>(
+                                        value: e,
+                                        child: Text("${e['name']}"),
+                                      ),
+                                    )
+                                    .toList(),
+                              )),
+                            )
                           ],
                         ),
                         Column(
@@ -241,11 +285,11 @@ class _AddPlanningState extends State<AddPlanning> {
                               ),
                               child: DropdownButtonHideUnderline(
                                   child: DropdownButton(
-                                value: _chosenType,
+                                value: _chosenEndType,
                                 isExpanded: true,
                                 onChanged: (Map? val) {
                                   setState(() {
-                                    _chosenType = val!;
+                                    _chosenEndType = val!;
                                   });
                                 },
                                 items: _type
@@ -278,10 +322,13 @@ class _AddPlanningState extends State<AddPlanning> {
                     ? () async {
                         await _service
                             .create(
-                                userId: widget.user.id,
-                                centerId: _chosenCenter!.id,
-                                start: chosenStart,
-                                end: chosenEnd!)
+                          userId: widget.user.id,
+                          centerId: _chosenCenter!.id,
+                          start: chosenStart,
+                          end: chosenEnd!,
+                          endType: _chosenEndType['id'],
+                          startType: _chosenType['id'],
+                        )
                             .then((value) {
                           if (value != null) {
                             Navigator.of(context).pop(null);

@@ -19,6 +19,8 @@ class PlanningService {
       required int centerId,
       required DateTime start,
       required DateTime end,
+      required int startType,
+      required int endType,
       String? title}) async {
     try {
       Map body = {
@@ -26,6 +28,8 @@ class PlanningService {
         "center_id": centerId.toString(),
         "start_date": start.toString(),
         "end_date": end.toString(),
+        "start_date_Type": startType.toString(),
+        "end_Date_Type": endType.toString(),
       };
       if (title != null) {
         body.addAll({"title": "$title"});
