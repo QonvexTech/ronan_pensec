@@ -149,12 +149,12 @@ class UserPlanningDataView extends StatelessWidget {
                     height: 30,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.horizontal(
-                        left: planning.startType == 1 &&
+                        left: planning.startType <= 1 &&
                                 _calendarService.isSameDay(
                                     planning.startDate, currentDate)
                             ? Radius.circular(20)
                             : Radius.zero,
-                        right: planning.endType == 1 &&
+                        right: planning.endType <= 1 &&
                                 _calendarService.isSameDay(
                                     planning.endDate, currentDate)
                             ? Radius.circular(20)
