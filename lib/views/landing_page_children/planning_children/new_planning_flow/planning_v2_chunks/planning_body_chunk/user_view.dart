@@ -147,21 +147,43 @@ class UserView extends StatelessWidget {
                           }),
                       child: Tooltip(
                         message: "${planning.title}",
-                        child: Container(
-                          width: itemWidth / snapshotDate.length,
-                          height: 30,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.horizontal(
-                              left: _calendarService.isSameDay(
-                                      planning.startDate, snapshotDate[x])
-                                  ? Radius.circular(20)
-                                  : Radius.zero,
-                              right: _calendarService.isSameDay(
-                                      planning.endDate, snapshotDate[x])
-                                  ? Radius.circular(20)
-                                  : Radius.zero,
+                        child: ClipPath(
+                          clipper: _calendarService.isSameDay(
+                                      planning.startDate, snapshotDate[x]) &&
+                                  planning.startType == 2
+                              ? CalendarHalfDayMorningClip()
+                              : _calendarService.isSameDay(planning.startDate,
+                                          snapshotDate[x]) &&
+                                      planning.startType == 3
+                                  ? CalendarHalfdayClip()
+                                  : _calendarService.isSameDay(planning.endDate,
+                                              snapshotDate[x]) &&
+                                          planning.endType == 2
+                                      ? CalendarHalfDayMorningClip()
+                                      : _calendarService.isSameDay(
+                                                  planning.endDate,
+                                                  snapshotDate[x]) &&
+                                              planning.endType == 3
+                                          ? CalendarHalfdayClip()
+                                          : null,
+                          child: Container(
+                            width: itemWidth / snapshotDate.length,
+                            height: 30,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.horizontal(
+                                left: planning.startType <= 1 &&
+                                        _calendarService.isSameDay(
+                                            planning.startDate, snapshotDate[x])
+                                    ? Radius.circular(20)
+                                    : Radius.zero,
+                                right: planning.endType <= 1 &&
+                                        _calendarService.isSameDay(
+                                            planning.endDate, snapshotDate[x])
+                                    ? Radius.circular(20)
+                                    : Radius.zero,
+                              ),
+                              color: Colors.blue,
                             ),
-                            color: Colors.blue,
                           ),
                         ),
                       ),
