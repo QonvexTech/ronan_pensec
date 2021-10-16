@@ -94,6 +94,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
           onTap: () => FocusScope.of(context).unfocus(),
           child: Scaffold(
             body: Scrollbar(
+              isAlwaysShown: true,
               child: ListView(
                 physics: ClampingScrollPhysics(),
                 children: [

@@ -24,7 +24,7 @@ class _AddPlanningState extends State<AddPlanning> {
     {"id": 2, "name": "Demi-journée - matin"},
     {"id": 3, "name": "Demi-journée - après-midi"},
   ];
-  late RawCenterModel? _chosenCenter;
+  RawCenterModel? _chosenCenter;
   fetchCenters() async {
     await _centerViewModel.service
         .fetchAssignedCenter(userId: widget.user.id)
@@ -131,7 +131,20 @@ class _AddPlanningState extends State<AddPlanning> {
                                       )
                                       .toList(),
                                 )),
-                        )
+                        ),
+                        if (_chosenCenter == null) ...{
+                          SizedBox(
+                            width: double.infinity,
+                            child: Text(
+                              "Le centre ne peut pas être vide",
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontSize: 11.5,
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
+                          )
+                        }
                       ],
                     ),
                   ),
@@ -318,7 +331,7 @@ class _AddPlanningState extends State<AddPlanning> {
                 style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.resolveWith(
                         (states) => Palette.gradientColor[0])),
-                onPressed: chosenEnd != null
+                onPressed: chosenEnd != null && _chosenCenter != null
                     ? () async {
                         await _service
                             .create(

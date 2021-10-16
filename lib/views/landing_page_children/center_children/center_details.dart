@@ -639,6 +639,7 @@ class _CenterDetailsState extends State<CenterDetails> {
                     Container(
                       margin: const EdgeInsets.all(20),
                       child: Scrollbar(
+                        isAlwaysShown: true,
                         child: ListView(
                           physics: ClampingScrollPhysics(),
                           children: [

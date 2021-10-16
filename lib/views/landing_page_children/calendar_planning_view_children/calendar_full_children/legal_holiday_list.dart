@@ -28,42 +28,52 @@ class LegalHolidayList extends StatelessWidget {
             _displayData = List.from(snapshot.data!);
           }
           if (_displayData.length > 0) {
-            return Column(
-              children: [
-                for (LegalHolidayModel model in _displayData) ...{
-                  Expanded(
-                    child: Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              "${model.name}",
-                              style: TextStyle(
-                                  color: Colors.black54,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 1),
-                            ),
-                          ),
-                          Text(
-                            "${DateFormat.MMMMd('fr_FR').format(model.date)}"
-                                .toUpperCase(),
-                            style: TextStyle(
-                              color: Colors.black54,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 1,
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  )
-                }
-              ],
+            return Scrollbar(
+              isAlwaysShown: true,
+              child: ListView.builder(
+                itemCount: _displayData.length,
+                itemBuilder: (_, index) => ListTile(
+                    title: Text("${_displayData[index].name}"),
+                    subtitle: Text(
+                        "${DateFormat.MMMMd('fr_FR').format(_displayData[index].date)}")),
+              ),
             );
+            // return Column(
+            //   children: [
+            //     for (LegalHolidayModel model in _displayData) ...{
+            //       Expanded(
+            //         child: Container(
+            //           width: double.infinity,
+            //           padding: const EdgeInsets.symmetric(horizontal: 20),
+            //           child: Row(
+            //             children: [
+            //               Expanded(
+            //                 child: Text(
+            //                   "${model.name}",
+            //                   style: TextStyle(
+            //                       color: Colors.black54,
+            //                       fontSize: 16,
+            //                       fontWeight: FontWeight.w600,
+            //                       letterSpacing: 1),
+            //                 ),
+            //               ),
+            //               Text(
+            //                 "${DateFormat.MMMMd('fr_FR').format(model.date)}"
+            //                     .toUpperCase(),
+            //                 style: TextStyle(
+            //                   color: Colors.black54,
+            //                   fontSize: 16,
+            //                   fontWeight: FontWeight.w600,
+            //                   letterSpacing: 1,
+            //                 ),
+            //               )
+            //             ],
+            //           ),
+            //         ),
+            //       )
+            //     }
+            //   ],
+            // );
           } else {
             return Container(
               width: double.infinity,
