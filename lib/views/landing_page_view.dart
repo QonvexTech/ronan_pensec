@@ -114,9 +114,9 @@ class _LandingPageScreenWebState extends State<LandingPageView>
                                         currentTabIndex = index;
                                       });
                                     },
-                                    indicatorColor: Colors.white,
+                                    indicatorColor: Colors.orange,
                                     controller: _tabController,
-                                    labelColor: Colors.white,
+                                    labelColor: Colors.orange,
                                     unselectedLabelColor: Colors.white,
                                     physics: NeverScrollableScrollPhysics(),
                                     tabs: [
@@ -210,7 +210,7 @@ class _LandingPageScreenWebState extends State<LandingPageView>
                                 currentTabIndex = index;
                               });
                             },
-                            indicatorColor: Palette.textFieldColor,
+                            indicatorColor: Colors.orange,
                             controller: _tabController,
                             unselectedLabelColor: Colors.grey.shade400,
                             physics: NeverScrollableScrollPhysics(),
@@ -221,7 +221,7 @@ class _LandingPageScreenWebState extends State<LandingPageView>
                                     item.icon,
                                     color: tabItems.indexOf(item) ==
                                             currentTabIndex
-                                        ? Palette.textFieldColor
+                                        ? Colors.orange
                                         : Colors.grey.shade400,
                                   ),
                                 )

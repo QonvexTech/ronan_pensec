@@ -5,6 +5,8 @@ import 'package:ronan_pensec/global/controllers/PendingHolidayRequestController.
 import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/global/template/general_template.dart';
 import 'package:ronan_pensec/models/calendar/holiday_model.dart';
+import 'package:ronan_pensec/views/landing_page_children/calendar_children/pending_holiday_children/slidable_holiday_view.dart';
+import 'package:ronan_pensec/views/landing_page_children/calendar_children/pending_holiday_children/tabular_holiday_view.dart';
 
 class PendingHolidayRequests extends StatefulWidget {
   @override
@@ -120,6 +122,182 @@ class _PendingHolidayRequestsState extends State<PendingHolidayRequests> {
     super.initState();
   }
 
+  void onAccept(HolidayModel holiday) async {
+    setState(() {
+      _isLoading = true;
+    });
+    await requestController.service
+        .approve(context, holidayId: holiday.id)
+        .then((value) {
+      if (value) {
+        requestController.dataControl.remove(holiday.id);
+      } else {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }).whenComplete(() => setState(() => _isLoading = false));
+  }
+
+  void onReject(HolidayModel holiday, Size _size) {
+    GeneralTemplate.showDialog(context, onDismissed: () {
+      _reason.clear();
+    },
+        child: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              child: Text(
+                  "Pour rejeter complètement la demande, vous devez fournir une raison valable"),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Expanded(
+              child: Container(
+                child: TextField(
+                  controller: _reason,
+                  maxLines: 3,
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      hintText: "Raison",
+                      labelText: "Raison"),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Container(
+              width: double.infinity,
+              height: 50,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: MaterialButton(
+                      height: 50,
+                      onPressed: () {
+                        Navigator.of(context).pop(null);
+                      },
+                      color: Colors.grey.shade200,
+                      child: Center(
+                        child: Text(
+                          "ANNULER",
+                          style: TextStyle(
+                              letterSpacing: 1.5, fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                    child: MaterialButton(
+                      height: 50,
+                      onPressed: () async {
+                        Navigator.of(context).pop(null);
+                        setState(() {
+                          _isLoading = true;
+                        });
+                        await requestController.service
+                            .reject(context,
+                                holidayId: holiday.id, reason: _reason.text)
+                            .then((value) {
+                          if (value) {
+                            requestController.dataControl.remove(holiday.id);
+                          } else {
+                            setState(() {
+                              _isLoading = false;
+                            });
+                          }
+                        }).whenComplete(
+                                () => setState(() => _isLoading = false));
+                      },
+                      color: Palette.gradientColor[0],
+                      child: Center(
+                        child: Text(
+                          "VALIDER",
+                          style: TextStyle(
+                              letterSpacing: 1.5,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
+        width: _size.width,
+        height: 200,
+        title: Text("Rejeter la demande de congé?"));
+  }
+
+  void onPressed(HolidayModel holiday, Size _size) {
+    GeneralTemplate.showDialog(context,
+        child: Column(
+          children: [
+            Expanded(
+                child: ListView(
+              children: [
+                detailsDialog(
+                    label: "Date de début",
+                    subtitle:
+                        "${DateFormat.yMMMMd('fr_FR').format(holiday.startDate)}"
+                            .toUpperCase(),
+                    iconData: Icons.calendar_today_sharp),
+                detailsDialog(
+                    label: "Date de fin",
+                    subtitle:
+                        "${DateFormat.yMMMMd('fr_FR').format(holiday.endDate)}"
+                            .toUpperCase(),
+                    iconData: Icons.calendar_today_sharp),
+                detailsDialog(
+                    label: "Raison",
+                    subtitle: "${holiday.reason}",
+                    iconData: Icons.drive_file_rename_outline),
+                detailsDialog(
+                    label: "Nom de la demande",
+                    subtitle: "${holiday.requestName}",
+                    iconData: Icons.drive_file_rename_outline),
+                detailsDialog(
+                    label: "Remarque de l'administrateur",
+                    subtitle: "${holiday.adminComment ?? "NON DEFINI"}",
+                    iconData: Icons.comment_outlined),
+                detailsDialog(label: "Statut", subtitle: "En attente")
+              ],
+            )),
+          ],
+        ),
+        width: _size.width,
+        height: 300,
+        title: ListTile(
+          leading: Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: NetworkImage("${holiday.user!.image}"))),
+          ),
+          title: Text(
+            "${holiday.user!.fullName} Demande des congés".toUpperCase(),
+            style: TextStyle(fontWeight: FontWeight.w600, letterSpacing: 1.5),
+          ),
+          subtitle: Text("DÉTAILS DE LA DEMANDE DE LAISSER"),
+          trailing: IconButton(
+            icon: Icon(Icons.close),
+            onPressed: () => Navigator.of(context).pop(null),
+          ),
+        ));
+  }
+
   @override
   Widget build(BuildContext context) {
     final Size _size = MediaQuery.of(context).size;
@@ -133,303 +311,40 @@ class _PendingHolidayRequestsState extends State<PendingHolidayRequests> {
             builder: (_, snapshot) {
               if (snapshot.hasData && !snapshot.hasError) {
                 if (snapshot.data!.length > 0) {
-                  return ListView(
-                    children: [
-                      for (HolidayModel holiday in snapshot.data!) ...{
-                        Slidable(
-                            key: Key("${holiday.id}"),
-                            secondaryActions: [
-                              IconSlideAction(
-                                closeOnTap: true,
-                                onTap: () async {
-                                  setState(() {
-                                    _isLoading = true;
-                                  });
-                                  await requestController.service
-                                      .approve(context, holidayId: holiday.id)
-                                      .then((value) {
-                                    if (value) {
-                                      requestController.dataControl
-                                          .remove(holiday.id);
-                                    } else {
-                                      setState(() {
-                                        _isLoading = false;
-                                      });
-                                    }
-                                  }).whenComplete(() =>
-                                          setState(() => _isLoading = false));
-                                },
-                                caption: "J'accepte",
-                                icon: Icons.check,
-                                color: Colors.green,
-                              ),
-                              IconSlideAction(
-                                closeOnTap: true,
-                                onTap: () async {
-                                  GeneralTemplate.showDialog(context,
-                                      onDismissed: () {
-                                    _reason.clear();
-                                  },
-                                      child: Column(
-                                        children: [
-                                          Container(
-                                            width: double.infinity,
-                                            child: Text(
-                                                "Pour rejeter complètement la demande, vous devez fournir une raison valable"),
-                                          ),
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                          Expanded(
-                                            child: Container(
-                                              child: TextField(
-                                                controller: _reason,
-                                                maxLines: 3,
-                                                decoration: InputDecoration(
-                                                    border: OutlineInputBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              5),
-                                                    ),
-                                                    hintText: "Raison",
-                                                    labelText: "Raison"),
-                                              ),
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                          Container(
-                                            width: double.infinity,
-                                            height: 50,
-                                            child: Row(
-                                              children: [
-                                                Expanded(
-                                                  child: MaterialButton(
-                                                    height: 50,
-                                                    onPressed: () {
-                                                      Navigator.of(context)
-                                                          .pop(null);
-                                                    },
-                                                    color: Colors.grey.shade200,
-                                                    child: Center(
-                                                      child: Text(
-                                                        "ANNULER",
-                                                        style: TextStyle(
-                                                            letterSpacing: 1.5,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w600),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                const SizedBox(
-                                                  width: 10,
-                                                ),
-                                                Expanded(
-                                                  child: MaterialButton(
-                                                    height: 50,
-                                                    onPressed: () async {
-                                                      Navigator.of(context)
-                                                          .pop(null);
-                                                      setState(() {
-                                                        _isLoading = true;
-                                                      });
-                                                      await requestController
-                                                          .service
-                                                          .reject(context,
-                                                              holidayId:
-                                                                  holiday.id,
-                                                              reason:
-                                                                  _reason.text)
-                                                          .then((value) {
-                                                        if (value) {
-                                                          requestController
-                                                              .dataControl
-                                                              .remove(
-                                                                  holiday.id);
-                                                        } else {
-                                                          setState(() {
-                                                            _isLoading = false;
-                                                          });
-                                                        }
-                                                      }).whenComplete(() =>
-                                                              setState(() =>
-                                                                  _isLoading =
-                                                                      false));
-                                                    },
-                                                    color: Palette
-                                                        .gradientColor[0],
-                                                    child: Center(
-                                                      child: Text(
-                                                        "VALIDER",
-                                                        style: TextStyle(
-                                                            letterSpacing: 1.5,
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                            color:
-                                                                Colors.white),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                      width: _size.width,
-                                      height: 200,
-                                      title:
-                                          Text("Rejeter la demande de congé?"));
-                                },
-                                caption: "Rejeter",
-                                icon: Icons.close,
-                                color: Colors.red,
-                              )
-                            ],
-                            actionPane: SlidableDrawerActionPane(),
-                            controller: _slidableController,
-                            child: MaterialButton(
-                              onPressed: () {
-                                GeneralTemplate.showDialog(context,
-                                    child: Column(
-                                      children: [
-                                        Expanded(
-                                            child: ListView(
-                                          children: [
-                                            detailsDialog(
-                                                label: "Date de début",
-                                                subtitle:
-                                                    "${DateFormat.yMMMMd('fr_FR').format(holiday.startDate)}"
-                                                        .toUpperCase(),
-                                                iconData:
-                                                    Icons.calendar_today_sharp),
-                                            detailsDialog(
-                                                label: "Date de fin",
-                                                subtitle:
-                                                    "${DateFormat.yMMMMd('fr_FR').format(holiday.endDate)}"
-                                                        .toUpperCase(),
-                                                iconData:
-                                                    Icons.calendar_today_sharp),
-                                            detailsDialog(
-                                                label: "Raison",
-                                                subtitle: "${holiday.reason}",
-                                                iconData: Icons
-                                                    .drive_file_rename_outline),
-                                            detailsDialog(
-                                                label: "Nom de la demande",
-                                                subtitle:
-                                                    "${holiday.requestName}",
-                                                iconData: Icons
-                                                    .drive_file_rename_outline),
-                                            detailsDialog(
-                                                label:
-                                                    "Remarque de l'administrateur",
-                                                subtitle:
-                                                    "${holiday.adminComment ?? "NON DEFINI"}",
-                                                iconData:
-                                                    Icons.comment_outlined),
-                                            detailsDialog(
-                                                label: "Statut",
-                                                subtitle: "En attente")
-                                          ],
-                                        )),
-                                      ],
-                                    ),
-                                    width: _size.width,
-                                    height: 300,
-                                    title: ListTile(
-                                      leading: Container(
-                                        width: 40,
-                                        height: 40,
-                                        decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            image: DecorationImage(
-                                                fit: BoxFit.cover,
-                                                image: NetworkImage(
-                                                    "${holiday.user!.image}"))),
-                                      ),
-                                      title: Text(
-                                        "${holiday.user!.fullName} Demande des congés"
-                                            .toUpperCase(),
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            letterSpacing: 1.5),
-                                      ),
-                                      subtitle: Text(
-                                          "DÉTAILS DE LA DEMANDE DE LAISSER"),
-                                      trailing: IconButton(
-                                        icon: Icon(Icons.close),
-                                        onPressed: () =>
-                                            Navigator.of(context).pop(null),
-                                      ),
-                                    ));
-                              },
-                              color: Colors.grey.shade100,
-                              child: ListTile(
-                                leading: Tooltip(
-                                  message: "${holiday.user!.fullName}",
-                                  child: CircleAvatar(
-                                    backgroundColor: Colors.grey.shade200,
-                                    backgroundImage:
-                                        NetworkImage("${holiday.user!.image}"),
-                                  ),
-                                ),
-                                title: Text("${holiday.user!.fullName}"),
-                                subtitle: Column(
-                                  children: [
-                                    Container(
-                                      width: double.infinity,
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                              child: Text(
-                                            "De : ${DateFormat.yMMMMd('fr_FR').format(holiday.startDate)}",
-                                            textAlign: TextAlign.left,
-                                          )),
-                                          Expanded(
-                                              child: Text(
-                                            "Au : ${DateFormat.yMMMMd('fr_FR').format(holiday.endDate)}",
-                                            textAlign: TextAlign.right,
-                                          ))
-                                        ],
-                                      ),
-                                    ),
-                                    Container(
-                                      width: double.infinity,
-                                      child: RichText(
-                                        text: TextSpan(
-                                            text:
-                                                "Demandé par ${holiday.requestBy.fullName}",
-                                            style: TextStyle(
-                                                color: Colors.grey,
-                                                fontSize: 14.5),
-                                            children: [
-                                              TextSpan(
-                                                  text:
-                                                      " ( ${holiday.requestBy.roleId == 1 ? "Administrateur" : holiday.requestBy.roleId == 2 ? "Superviseur" : "Employé"} )",
-                                                  style: TextStyle(
-                                                      fontStyle:
-                                                          FontStyle.italic))
-                                            ]),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                                trailing: Container(
-                                  width: 10,
-                                  height: 10,
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.grey),
-                                ),
-                              ),
-                            ))
-                      }
-                    ],
-                  );
+                  if (_size.width <= 900) {
+                    return ListView(
+                      children: [
+                        for (HolidayModel holiday in snapshot.data!) ...{
+                          SlidableHolidayView(
+                            holidayModel: holiday,
+                            onPressed: () {
+                              onPressed(holiday, _size);
+                            },
+                            onAccept: () {
+                              onAccept(holiday);
+                            },
+                            onReject: () {
+                              onReject(holiday, _size);
+                            },
+                            slideController: _slidableController,
+                          )
+                        }
+                      ],
+                    );
+                  } else {
+                    return TabularHolidayView(
+                      holidayModels: snapshot.data!,
+                      onAccept: (HolidayModel value) {
+                        onAccept(value);
+                      },
+                      onPressed: (HolidayModel value) {
+                        onPressed(value, _size);
+                      },
+                      onReject: (HolidayModel value) {
+                        onReject(value, _size);
+                      },
+                    );
+                  }
                 } else {
                   return snapText(
                       image: Image.asset(

@@ -5,6 +5,8 @@ import 'package:ronan_pensec/global/controllers/PendingRTTRequestController.dart
 import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/global/template/general_template.dart';
 import 'package:ronan_pensec/models/calendar/rtt_model.dart';
+import 'package:ronan_pensec/views/landing_page_children/calendar_children/pending_rtt_children/slidable_view.dart';
+import 'package:ronan_pensec/views/landing_page_children/calendar_children/pending_rtt_children/tabular_view.dart';
 
 class PendingRTTRequests extends StatefulWidget {
   @override
@@ -12,8 +14,6 @@ class PendingRTTRequests extends StatefulWidget {
 }
 
 class _PendingRTTRequestsState extends State<PendingRTTRequests> {
-  final SlidableController _slidableController = SlidableController();
-
   final PendingRTTRequestController requestController =
       PendingRTTRequestController.instance;
 
@@ -129,6 +129,189 @@ class _PendingRTTRequestsState extends State<PendingRTTRequests> {
     super.initState();
   }
 
+  void onPressed(RTTModel rtt, Size _size) {
+    GeneralTemplate.showDialog(context,
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView(
+                children: [
+                  dialogDetailFormat(
+                      icon: Icons.calendar_today_outlined,
+                      title: header(context, "Date"),
+                      subTitle: body(context,
+                          "${DateFormat.yMMMMd('fr_FR').format(rtt.date)}")),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  dialogDetailFormat(
+                      icon: Icons.watch_later_outlined,
+                      title: header(context, "nombre d'heures"),
+                      subTitle: body(context, "${rtt.no_of_hrs} Heures")),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  dialogDetailFormat(
+                      icon: Icons.comment_rounded,
+                      title: header(context, "raison"),
+                      subTitle: body(context, "${rtt.comment}")),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        width: _size.width,
+        height: 230,
+        title: ListTile(
+          leading: Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: NetworkImage("${rtt.user!.image}"))),
+          ),
+          title: Text(
+            "${rtt.user!.full_name} Demande des widget.rtt_model".toUpperCase(),
+            style: TextStyle(fontWeight: FontWeight.w600, letterSpacing: 1.5),
+          ),
+          subtitle: Text("DÉTAILS DE LA DEMANDE widget.rtt_model"),
+          trailing: IconButton(
+            icon: Icon(Icons.close),
+            onPressed: () => Navigator.of(context).pop(null),
+          ),
+        ));
+  }
+
+  void onAccept(RTTModel rtt) async {
+    setState(() {
+      _isLoading = true;
+    });
+    await requestController.service
+        .approve(
+      context,
+      rttId: rtt.id,
+    )
+        .then((value) {
+      if (value) {
+        requestController.dataControl.remove(rtt.id);
+      } else {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }).whenComplete(() => setState(() => _isLoading = false));
+  }
+
+  void onReject(RTTModel rtt, Size _size) async {
+    GeneralTemplate.showDialog(context, onDismissed: () {
+      _reason.clear();
+    },
+        child: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              child: Text(
+                "Pour rejeter complètement la demande, vous devez fournir une raison valable",
+                textAlign: TextAlign.left,
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Expanded(
+              child: Container(
+                child: TextField(
+                  controller: _reason,
+                  maxLines: 3,
+                  decoration: InputDecoration(
+                      alignLabelWithHint: true,
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5)),
+                      hintText: "Raison",
+                      labelText: "Raison"),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Container(
+              width: double.infinity,
+              height: 50,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: MaterialButton(
+                      height: 50,
+                      onPressed: () {
+                        Navigator.of(context).pop(null);
+                      },
+                      color: Colors.grey.shade200,
+                      child: Center(
+                        child: Text(
+                          "ANNULER",
+                          style: TextStyle(
+                              letterSpacing: 1.5, fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                    child: MaterialButton(
+                      height: 50,
+                      onPressed: () async {
+                        Navigator.of(context).pop(null);
+                        setState(() {
+                          _isLoading = true;
+                        });
+                        await requestController.service
+                            .reject(
+                          context,
+                          rttId: rtt.id,
+                          reason: _reason.text,
+                        )
+                            .then((value) {
+                          if (value) {
+                            requestController.dataControl.remove(rtt.id);
+                          } else {
+                            setState(() {
+                              _isLoading = false;
+                            });
+                          }
+                        }).whenComplete(
+                                () => setState(() => _isLoading = false));
+                      },
+                      color: Palette.gradientColor[0],
+                      child: Center(
+                        child: Text(
+                          "VALIDER",
+                          style: TextStyle(
+                              letterSpacing: 1.5,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
+        width: _size.width,
+        height: 200,
+        title: Text("Rejeter la demande de widget.rtt_model?"));
+  }
+
+  final SlidableController _slidableController = SlidableController();
   @override
   Widget build(BuildContext context) {
     final Size _size = MediaQuery.of(context).size;
@@ -142,289 +325,40 @@ class _PendingRTTRequestsState extends State<PendingRTTRequests> {
             builder: (_, snapshot) {
               if (snapshot.hasData && !snapshot.hasError) {
                 if (snapshot.data!.length > 0) {
-                  return ListView(
-                    children: [
-                      for (RTTModel rtt in snapshot.data!) ...{
-                        Slidable(
-                          controller: _slidableController,
-                          key: Key("${rtt.id}"),
-                          secondaryActions: [
-                            IconSlideAction(
-                              closeOnTap: true,
-                              onTap: () async {
-                                setState(() {
-                                  _isLoading = true;
-                                });
-                                await requestController.service
-                                    .approve(context, rttId: rtt.id)
-                                    .then((value) {
-                                  if (value) {
-                                    requestController.dataControl
-                                        .remove(rtt.id);
-                                  } else {
-                                    setState(() {
-                                      _isLoading = false;
-                                    });
-                                  }
-                                }).whenComplete(() =>
-                                        setState(() => _isLoading = false));
-                              },
-                              caption: "J'accepte",
-                              icon: Icons.check,
-                              color: Colors.green,
-                            ),
-                            IconSlideAction(
-                              closeOnTap: true,
-                              onTap: () async {
-                                GeneralTemplate.showDialog(context,
-                                    onDismissed: () {
-                                  _reason.clear();
-                                },
-                                    child: Column(
-                                      children: [
-                                        Container(
-                                          width: double.infinity,
-                                          child: Text(
-                                            "Pour rejeter complètement la demande, vous devez fournir une raison valable",
-                                            textAlign: TextAlign.left,
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        Expanded(
-                                          child: Container(
-                                            child: TextField(
-                                              controller: _reason,
-                                              maxLines: 3,
-                                              decoration: InputDecoration(
-                                                  alignLabelWithHint: true,
-                                                  border: OutlineInputBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              5)),
-                                                  hintText: "Raison",
-                                                  labelText: "Raison"),
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        Container(
-                                          width: double.infinity,
-                                          height: 50,
-                                          child: Row(
-                                            children: [
-                                              Expanded(
-                                                child: MaterialButton(
-                                                  height: 50,
-                                                  onPressed: () {
-                                                    Navigator.of(context)
-                                                        .pop(null);
-                                                  },
-                                                  color: Colors.grey.shade200,
-                                                  child: Center(
-                                                    child: Text(
-                                                      "ANNULER",
-                                                      style: TextStyle(
-                                                          letterSpacing: 1.5,
-                                                          fontWeight:
-                                                              FontWeight.w600),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
-                                              Expanded(
-                                                child: MaterialButton(
-                                                  height: 50,
-                                                  onPressed: () async {
-                                                    Navigator.of(context)
-                                                        .pop(null);
-                                                    setState(() {
-                                                      _isLoading = true;
-                                                    });
-                                                    await requestController
-                                                        .service
-                                                        .reject(context,
-                                                            rttId: rtt.id,
-                                                            reason:
-                                                                _reason.text)
-                                                        .then((value) {
-                                                      if (value) {
-                                                        requestController
-                                                            .dataControl
-                                                            .remove(rtt.id);
-                                                      } else {
-                                                        setState(() {
-                                                          _isLoading = false;
-                                                        });
-                                                      }
-                                                    }).whenComplete(() =>
-                                                            setState(() =>
-                                                                _isLoading =
-                                                                    false));
-                                                  },
-                                                  color:
-                                                      Palette.gradientColor[0],
-                                                  child: Center(
-                                                    child: Text(
-                                                      "VALIDER",
-                                                      style: TextStyle(
-                                                          letterSpacing: 1.5,
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                          color: Colors.white),
-                                                    ),
-                                                  ),
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                    width: _size.width,
-                                    height: 200,
-                                    title: Text("Rejeter la demande de RTT?"));
-                              },
-                              caption: "Rejeter",
-                              icon: Icons.close,
-                              color: Colors.red,
-                            )
-                          ],
-                          actionPane: SlidableDrawerActionPane(),
-                          child: MaterialButton(
-                            color: Colors.grey.shade100,
+                  if (_size.width <= 900) {
+                    return ListView(
+                      children: [
+                        for (RTTModel rtt in snapshot.data!) ...{
+                          SlidableView(
+                            slideController: _slidableController,
+                            rtt_model: rtt,
                             onPressed: () {
-                              GeneralTemplate.showDialog(context,
-                                  child: Column(
-                                    children: [
-                                      Expanded(
-                                        child: ListView(
-                                          children: [
-                                            dialogDetailFormat(
-                                                icon: Icons
-                                                    .calendar_today_outlined,
-                                                title: header(context, "Date"),
-                                                subTitle: body(context,
-                                                    "${DateFormat.yMMMMd('fr_FR').format(rtt.date)}")),
-                                            const SizedBox(
-                                              height: 10,
-                                            ),
-                                            dialogDetailFormat(
-                                                icon:
-                                                    Icons.watch_later_outlined,
-                                                title: header(
-                                                    context, "nombre d'heures"),
-                                                subTitle: body(context,
-                                                    "${rtt.no_of_hrs} Heures")),
-                                            const SizedBox(
-                                              height: 10,
-                                            ),
-                                            dialogDetailFormat(
-                                                icon: Icons.comment_rounded,
-                                                title:
-                                                    header(context, "raison"),
-                                                subTitle: body(
-                                                    context, "${rtt.comment}")),
-                                            const SizedBox(
-                                              height: 10,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  width: _size.width,
-                                  height: 230,
-                                  title: ListTile(
-                                    leading: Container(
-                                      width: 40,
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          image: DecorationImage(
-                                              fit: BoxFit.cover,
-                                              image: NetworkImage(
-                                                  "${rtt.user!.image}"))),
-                                    ),
-                                    title: Text(
-                                      "${rtt.user!.full_name} Demande des RTT"
-                                          .toUpperCase(),
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w600,
-                                          letterSpacing: 1.5),
-                                    ),
-                                    subtitle: Text("DÉTAILS DE LA DEMANDE RTT"),
-                                    trailing: IconButton(
-                                      icon: Icon(Icons.close),
-                                      onPressed: () =>
-                                          Navigator.of(context).pop(null),
-                                    ),
-                                  ));
+                              onPressed(rtt, _size);
                             },
-                            padding: const EdgeInsets.all(0),
-                            child: ListTile(
-                              leading: Tooltip(
-                                message: "${rtt.user!.full_name}",
-                                child: CircleAvatar(
-                                  backgroundColor: Colors.grey.shade200,
-                                  backgroundImage:
-                                      NetworkImage("${rtt.user!.image}"),
-                                ),
-                              ),
-                              title: Text("${rtt.user!.full_name}"),
-// title: Text("${DateFormat.yMMMMd('fr_FR').format(rtt.date)}"),
-                              subtitle: Column(
-                                children: [
-                                  Container(
-                                      width: double.infinity,
-                                      child: RichText(
-                                        text: TextSpan(
-                                            style:
-                                                TextStyle(color: Colors.grey),
-                                            text:
-                                                "${DateFormat.yMMMMd('fr_FR').format(rtt.date)}",
-                                            children: <TextSpan>[
-                                              TextSpan(
-                                                  style: TextStyle(
-                                                      fontStyle:
-                                                          FontStyle.italic),
-                                                  text:
-                                                      " ( ${rtt.no_of_hrs} Heures )")
-                                            ]),
-                                      )),
-                                  Container(
-                                    width: double.infinity,
-                                    child: RichText(
-                                      text: TextSpan(
-                                          text:
-                                              "Demandé par ${rtt.requestBy.fullName}",
-                                          style: TextStyle(
-                                              color: Colors.grey,
-                                              fontSize: 14.5),
-                                          children: [
-                                            TextSpan(
-                                                text:
-                                                    " ( ${rtt.requestBy.roleId == 1 ? "Administrateur" : rtt.requestBy.roleId == 2 ? "Superviseur" : "Employé"} )",
-                                                style: TextStyle(
-                                                    fontStyle:
-                                                        FontStyle.italic))
-                                          ]),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        )
-                      }
-                    ],
-                  );
+                            onAccept: () {
+                              onAccept(rtt);
+                            },
+                            onReject: () {
+                              onReject(rtt, _size);
+                            },
+                          )
+                        }
+                      ],
+                    );
+                  } else {
+                    return TabularView(
+                      rttModels: snapshot.data!,
+                      onPressed: (rtt) {
+                        onPressed(rtt, _size);
+                      },
+                      onAccept: (rtt) {
+                        onAccept(rtt);
+                      },
+                      onReject: (rtt) {
+                        onReject(rtt, _size);
+                      },
+                    );
+                  }
                 } else {
                   return snapText(
                       image: Image.asset(
