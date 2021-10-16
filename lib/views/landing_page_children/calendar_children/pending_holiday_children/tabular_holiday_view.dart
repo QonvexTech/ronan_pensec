@@ -113,7 +113,7 @@ class TabularHolidayView extends StatelessWidget {
                             "${DateFormat.yMMMMd('fr_FR').format(holidayModels[index].startDate)}"),
                       ),
                       Expanded(
-                        flex: 1,
+                        flex: 2,
                         child: bodyText(
                             "${DateFormat.yMMMMd('fr_FR').format(holidayModels[index].endDate)}"),
                       ),
