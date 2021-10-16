@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ronan_pensec/global/palette.dart';
+import 'package:ronan_pensec/global/template/center_table_view.dart';
 import 'package:ronan_pensec/global/template/general_template.dart';
 import 'package:ronan_pensec/models/center_model.dart';
 import 'package:ronan_pensec/services/data_controls/region_data_control.dart';
@@ -215,10 +216,13 @@ class _CenterViewState extends State<CenterView> {
                               : Padding(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 20),
-                                  child:
-                                      _centerViewModel.centerTemplate.tableView(
-                                    context,
-                                    _displayData!,
+                                  // child: _centerViewModel.centerTemplate.table(
+                                  //   _displayData!,
+                                  // ),
+                                  child: CenterTableView(
+                                    sauce: _displayData!,
+                                    regionDataControl: _centerViewModel
+                                        .centerTemplate.regionDataControl,
                                   ),
                                 ),
                         );

@@ -126,7 +126,7 @@ class _ProfilePageState extends State<ProfilePage>
                           padding: const EdgeInsets.all(0),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10000)),
-                          onPressed: () => Navigator.of(context).pop(null),
+                          onPressed: () => Navigator.of(context).pop(),
                           child: Image.asset("assets/images/logo.png"),
                         ),
                       ),

@@ -51,6 +51,7 @@ class _EmployeeViewState extends State<EmployeeView> {
     super.initState();
   }
 
+  final ScrollController _scrollController = ScrollController();
   Future<void> fetcher(String subDomain) async {
     await _viewModel.service
         .getData(context, subDomain: subDomain)
@@ -439,8 +440,10 @@ class _EmployeeViewState extends State<EmployeeView> {
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 20),
                               child: Scrollbar(
+                                controller: _scrollController,
                                 isAlwaysShown: true,
                                 child: ListView(
+                                  controller: _scrollController,
                                   physics: ClampingScrollPhysics(),
                                   children: [
                                     DataTable(
