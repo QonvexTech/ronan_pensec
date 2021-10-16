@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:ronan_pensec/global/palette.dart';
+import 'package:ronan_pensec/global/template/center_table_view.dart';
 import 'package:ronan_pensec/models/center_model.dart';
 import 'package:ronan_pensec/route/center_route.dart';
 import 'package:ronan_pensec/services/data_controls/region_data_control.dart';
@@ -9,6 +10,7 @@ class CenterTemplate {
   CenterTemplate._privateConstructor();
 
   late RegionDataControl _regionDataControl;
+  RegionDataControl get regionDataControl => _regionDataControl;
   static final CenterTemplate _instance = CenterTemplate._privateConstructor();
 
   static CenterTemplate instance(
@@ -77,6 +79,10 @@ class CenterTemplate {
         text,
         style: TextStyle(color: Colors.black, fontSize: 15),
       );
+  Widget table(List<CenterModel> sauce) => CenterTableView(
+        regionDataControl: _regionDataControl,
+        sauce: sauce,
+      );
   Widget tableView(context, List<CenterModel> sauce) => Column(
         children: [
           ///HEADER
@@ -94,33 +100,57 @@ class CenterTemplate {
           Expanded(
             child: Scrollbar(
               isAlwaysShown: true,
-              child: ListView(
-                children: List.generate(
-                  sauce.length,
-                  (index) => Container(
-                    width: double.infinity,
-                    height: 50,
-                    color: index % 2 == 0
-                        ? Colors.grey.shade200
-                        : Palette.gradientColor[3].withOpacity(0.3),
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: MaterialButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            CenterRoute.details(
-                                sauce[index], _regionDataControl));
-                      },
-                      child: tableFormat(
-                        r2: bodyText("${sauce[index].name}"),
-                        r3: bodyText("${sauce[index].address ?? "NON DÉFINI"}"),
-                        r4: bodyText("${sauce[index].mobile ?? "NON DÉFINI"}"),
-                        r5: bodyText("${sauce[index].email ?? "NON DÉFINI"}"),
-                      ),
+              child: ListView.builder(
+                itemBuilder: (_, index) => Container(
+                  width: double.infinity,
+                  height: 50,
+                  color: index % 2 == 0
+                      ? Colors.grey.shade200
+                      : Palette.gradientColor[3].withOpacity(0.3),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: MaterialButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          CenterRoute.details(
+                              sauce[index], _regionDataControl));
+                    },
+                    child: tableFormat(
+                      r2: bodyText("${sauce[index].name}"),
+                      r3: bodyText("${sauce[index].address ?? "NON DÉFINI"}"),
+                      r4: bodyText("${sauce[index].mobile ?? "NON DÉFINI"}"),
+                      r5: bodyText("${sauce[index].email ?? "NON DÉFINI"}"),
                     ),
                   ),
                 ),
               ),
+              // child: ListView(
+              //   children: List.generate(
+              //     sauce.length,
+              // (index) => Container(
+              //   width: double.infinity,
+              //   height: 50,
+              //   color: index % 2 == 0
+              //       ? Colors.grey.shade200
+              //       : Palette.gradientColor[3].withOpacity(0.3),
+              //   padding: const EdgeInsets.symmetric(horizontal: 20),
+              //   child: MaterialButton(
+              //     onPressed: () {
+              //       Navigator.push(
+              //           context,
+              //           CenterRoute.details(
+              //               sauce[index], _regionDataControl));
+              //     },
+              //     child: tableFormat(
+              //       r2: bodyText("${sauce[index].name}"),
+              //       r3: bodyText("${sauce[index].address ?? "NON DÉFINI"}"),
+              //       r4: bodyText("${sauce[index].mobile ?? "NON DÉFINI"}"),
+              //       r5: bodyText("${sauce[index].email ?? "NON DÉFINI"}"),
+              //     ),
+              //   ),
+              //     ),
+              //   ),
+              // ),
             ),
           )
         ],

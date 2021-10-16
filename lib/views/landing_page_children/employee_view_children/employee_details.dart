@@ -84,6 +84,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
     super.dispose();
   }
 
+  final ScrollController _scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -94,8 +95,10 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
           onTap: () => FocusScope.of(context).unfocus(),
           child: Scaffold(
             body: Scrollbar(
+              controller: _scrollController,
               isAlwaysShown: true,
               child: ListView(
+                controller: _scrollController,
                 physics: ClampingScrollPhysics(),
                 children: [
                   Wrap(

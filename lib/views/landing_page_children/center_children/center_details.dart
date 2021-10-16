@@ -405,6 +405,7 @@ class _CenterDetailsState extends State<CenterDetails> {
           }
         ],
       ));
+  final ScrollController _scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
     final List<DropdownMenuItem<RegionModel>> _dropDownchoices = List.generate(
@@ -429,7 +430,9 @@ class _CenterDetailsState extends State<CenterDetails> {
                   height: size.height,
                   color: Colors.grey.shade100,
                   child: Scrollbar(
+                    controller: _scrollController,
                     child: ListView(
+                      controller: _scrollController,
                       physics: ClampingScrollPhysics(),
                       children: [
                         Container(

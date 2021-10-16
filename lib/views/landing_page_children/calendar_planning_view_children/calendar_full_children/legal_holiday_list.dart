@@ -11,7 +11,7 @@ class LegalHolidayList extends StatelessWidget {
   final DateTime? currentMonth;
 
   LegalHolidayList({Key? key, this.currentMonth}) : super(key: key);
-
+  static final ScrollController _scrollController = new ScrollController();
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<LegalHolidayModel>>(
@@ -29,8 +29,10 @@ class LegalHolidayList extends StatelessWidget {
           }
           if (_displayData.length > 0) {
             return Scrollbar(
+              controller: _scrollController,
               isAlwaysShown: true,
               child: ListView.builder(
+                controller: _scrollController,
                 itemCount: _displayData.length,
                 itemBuilder: (_, index) => ListTile(
                     title: Text("${_displayData[index].name}"),
