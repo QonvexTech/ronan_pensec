@@ -2,21 +2,35 @@ import 'package:flutter/material.dart';
 import 'package:ronan_pensec/global/controllers/calendar_controller.dart';
 import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/models/raw_center_model.dart';
+import 'package:ronan_pensec/models/raw_user_model.dart';
 import 'package:ronan_pensec/models/user_model.dart';
+import 'package:ronan_pensec/services/data_controls/employee_only_planning_data_control.dart';
 import 'package:ronan_pensec/services/planning_services.dart';
 import 'package:ronan_pensec/view_model/center_view_model.dart';
 
 class AddPlanning extends StatefulWidget {
   const AddPlanning({
     Key? key,
-    required this.user,
+    this.user,
+    this.chosenStart,
+    this.rawUser,
+    this.fromOnlyEmployee = false,
+    this.refetch,
   }) : super(key: key);
-  final UserModel user;
+  final UserModel? user;
+  final RawUserModel? rawUser;
+  final DateTime? chosenStart;
+  final bool fromOnlyEmployee;
+  final ValueChanged<bool>? refetch;
   @override
   _AddPlanningState createState() => _AddPlanningState();
 }
 
 class _AddPlanningState extends State<AddPlanning> {
+  final PlanningService planningService = new PlanningService();
+  final EmployeeOnlyPlanningControl _dataController =
+      EmployeeOnlyPlanningControl.instance;
+
   late final CenterViewModel _centerViewModel = CenterViewModel.loneInstance;
   late List<RawCenterModel> _displayData = [];
   List _type = [
@@ -27,7 +41,7 @@ class _AddPlanningState extends State<AddPlanning> {
   RawCenterModel? _chosenCenter;
   fetchCenters() async {
     await _centerViewModel.service
-        .fetchAssignedCenter(userId: widget.user.id)
+        .fetchAssignedCenter(userId: widget.rawUser?.id ?? widget.user!.id)
         .then((value) {
       if (value != null && value.length > 0) {
         setState(() {
@@ -49,7 +63,7 @@ class _AddPlanningState extends State<AddPlanning> {
 
   final CalendarController _calendarController = CalendarController.instance;
   final PlanningService _service = new PlanningService();
-  late DateTime chosenStart = DateTime.now();
+  late DateTime chosenStart = widget.chosenStart ?? DateTime.now();
   DateTime? chosenEnd;
   @override
   Widget build(BuildContext context) {
@@ -78,16 +92,17 @@ class _AddPlanningState extends State<AddPlanning> {
                               shape: BoxShape.circle,
                               image: DecorationImage(
                                   fit: BoxFit.fill,
-                                  image: NetworkImage("${widget.user.image}"))),
+                                  image: NetworkImage(
+                                      "${widget.rawUser?.image ?? widget.user!.image}"))),
                         ),
                         Text(
-                          "${widget.user.full_name}",
+                          "${widget.rawUser?.fullName ?? widget.user!.full_name}",
                           style: TextStyle(
                             fontSize: 14,
                           ),
                         ),
                         Text(
-                          "${widget.user.email}",
+                          "${widget.rawUser?.email ?? widget.user!.email}",
                           style: TextStyle(
                             fontSize: 12.5,
                             color: Colors.grey.shade400,
@@ -335,17 +350,18 @@ class _AddPlanningState extends State<AddPlanning> {
                     ? () async {
                         await _service
                             .create(
-                          userId: widget.user.id,
+                          userId: widget.rawUser?.id ?? widget.user!.id,
                           centerId: _chosenCenter!.id,
                           start: chosenStart,
                           end: chosenEnd!,
                           endType: _chosenEndType['id'],
                           startType: _chosenType['id'],
                         )
-                            .then((value) {
-                          if (value != null) {
-                            Navigator.of(context).pop(null);
+                            .whenComplete(() async {
+                          if (widget.fromOnlyEmployee) {
+                            widget.refetch!(true);
                           }
+                          Navigator.of(context).pop(null);
                         });
                       }
                     : null,

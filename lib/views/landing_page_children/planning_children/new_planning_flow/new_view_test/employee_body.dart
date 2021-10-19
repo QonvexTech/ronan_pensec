@@ -187,6 +187,9 @@ class _EmployeeViewBodyState extends State<EmployeeViewBody> {
                                         ),
                                       ),
                                       child: EmployeeOnlyPlanningDataView(
+                                        hasRefetched: (bool) async {
+                                          await fetch();
+                                        },
                                         currentDate: widget.snapDate[index],
                                         itemWidth:
                                             itemWidth / widget.snapDate.length,
