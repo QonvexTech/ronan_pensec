@@ -24,6 +24,7 @@ class EmployeePlanningModel {
         roleId: int.parse(
           parsedJson['role_id'].toString(),
         ),
+        email: parsedJson['email'].toString(),
       ),
       plannings: getList(parsedJson['planning']),
     );

@@ -39,7 +39,7 @@ class _LegalHolidaysViewState extends State<LegalHolidaysManager> {
     _name.dispose();
     super.dispose();
   }
-
+  
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
