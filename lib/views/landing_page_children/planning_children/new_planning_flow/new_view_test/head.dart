@@ -27,72 +27,77 @@ class TableHead extends StatelessWidget {
             child: Container(),
           ),
           Expanded(
-            child: ListView(
+            child: Scrollbar(
               controller: scrollController,
-              physics: ClampingScrollPhysics(),
-              scrollDirection: Axis.horizontal,
-              children: List.generate(daysDate.length, (index) {
-                return CustomTableCell(
-                  cellWidth: itemWidth / daysDate.length,
-                  cellHeight: 80,
-                  color: Colors.transparent,
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            color: Palette.gradientColor[0],
-                          ),
-                          child: Center(
-                            child: Text(
-                              "${_calendarController.topHeaderText(daysDate[index], _calendarController.type)}",
-                              style: TextStyle(
-                                color: Colors.white,
-                              ),
+              isAlwaysShown: true,
+              scrollbarOrientation: ScrollbarOrientation.top,
+              child: ListView(
+                controller: scrollController,
+                physics: ClampingScrollPhysics(),
+                scrollDirection: Axis.horizontal,
+                children: List.generate(daysDate.length, (index) {
+                  return CustomTableCell(
+                    cellWidth: itemWidth / daysDate.length,
+                    cellHeight: 80,
+                    color: Colors.transparent,
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: Palette.gradientColor[0],
                             ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Stack(
-                          children: [
-                            HolidaysView(
-                              currentDate: daysDate[index],
-                              itemWidth: itemWidth / daysDate.length,
-                            ),
-                            Container(
-                              color: _calendarController.type < 2
-                                  ? _calendarService.isSunday(daysDate[index])
-                                      ? Colors.grey.shade700
-                                      : _calendarService.isSameDay(
-                                              DateTime.now(), daysDate[index])
-                                          ? Palette.gradientColor[2]
-                                          : Colors.transparent
-                                  : Colors.transparent,
-                              child: Center(
-                                child: Text(
-                                  "${daysDate[index].day} ${_calendarController.type == 2 ? "- ${DateTime(daysDate[index].year, daysDate[index].month + 1, 0).day}" : ""}",
-                                  style: TextStyle(
-                                    color: _calendarController.type < 2 &&
-                                            (_calendarService.isSunday(
-                                                    daysDate[index]) ||
-                                                _calendarService.isSameDay(
-                                                    DateTime.now(),
-                                                    daysDate[index]))
-                                        ? Colors.white
-                                        : Colors.grey.shade800,
-                                  ),
+                            child: Center(
+                              child: Text(
+                                "${_calendarController.topHeaderText(daysDate[index], _calendarController.type)}",
+                                style: TextStyle(
+                                  color: Colors.white,
                                 ),
                               ),
                             ),
-                          ],
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                );
-              }),
+                        Expanded(
+                          child: Stack(
+                            children: [
+                              HolidaysView(
+                                currentDate: daysDate[index],
+                                itemWidth: itemWidth / daysDate.length,
+                              ),
+                              Container(
+                                color: _calendarController.type < 2
+                                    ? _calendarService.isSunday(daysDate[index])
+                                        ? Colors.grey.shade700
+                                        : _calendarService.isSameDay(
+                                                DateTime.now(), daysDate[index])
+                                            ? Palette.gradientColor[2]
+                                            : Colors.transparent
+                                    : Colors.transparent,
+                                child: Center(
+                                  child: Text(
+                                    "${daysDate[index].day} ${_calendarController.type == 2 ? "- ${DateTime(daysDate[index].year, daysDate[index].month + 1, 0).day}" : ""}",
+                                    style: TextStyle(
+                                      color: _calendarController.type < 2 &&
+                                              (_calendarService.isSunday(
+                                                      daysDate[index]) ||
+                                                  _calendarService.isSameDay(
+                                                      DateTime.now(),
+                                                      daysDate[index]))
+                                          ? Colors.white
+                                          : Colors.grey.shade800,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+              ),
             ),
           ),
         ],

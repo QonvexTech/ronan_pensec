@@ -177,7 +177,7 @@ class _CustomTableBodyState extends State<CustomTableBody> {
                     child: SingleChildScrollView(
                       controller: widget.scrollController,
                       scrollDirection: Axis.horizontal,
-                      physics: const NeverScrollableScrollPhysics(),
+                      physics: const ClampingScrollPhysics(),
                       child: SizedBox(
                         width: (itemWidth / widget.snapDate.length) *
                             (widget.snapDate.length),
