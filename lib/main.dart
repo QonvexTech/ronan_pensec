@@ -28,8 +28,8 @@ class MyApp extends StatelessWidget {
       title: 'Ronan Pensec',
       theme: ThemeData(
           scrollbarTheme: ScrollbarThemeData(
-            thumbColor: MaterialStateProperty.resolveWith(
-                (states) => Colors.grey.withOpacity(0.7)),
+            thumbColor:
+                MaterialStateProperty.resolveWith((states) => Colors.orange),
           ),
           fontFamily: "Noto_Sans",
           primaryColor: Palette.textFieldColor),
