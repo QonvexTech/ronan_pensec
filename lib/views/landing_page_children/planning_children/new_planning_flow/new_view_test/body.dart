@@ -126,6 +126,7 @@ class _CustomTableBodyState extends State<CustomTableBody> {
                     width: 300,
                     child: Scrollbar(
                       controller: _firstColumnController,
+                      isAlwaysShown: true,
                       child: ListView(
                         controller: _firstColumnController,
                         physics: ClampingScrollPhysics(),
