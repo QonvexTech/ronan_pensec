@@ -110,6 +110,10 @@ class EmployeeDetailsViewModel {
     _instance.appendToBody = {"role_id": _instance._roleId.toString()};
   }
 
+  //TODO: add PASSWORD CONTROLLER
+  //address should accept empty value
+  //can we edit password in admin
+
   TextEditingController firstName = new TextEditingController();
   TextEditingController address = new TextEditingController();
   TextEditingController ville = new TextEditingController();
