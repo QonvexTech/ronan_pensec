@@ -46,7 +46,7 @@ class EmployeeDetailsViewModel {
       if (_instance.firstName.text.isNotEmpty) {
         _instance.appendToBody = {"first_name": _instance.firstName.text};
       } else {
-        _instance.appendToBody = {"last_name": user.first_name};
+        _instance.appendToBody = {"first_name": user.first_name};
       }
     });
     _instance.lastName.addListener(() {
@@ -61,6 +61,13 @@ class EmployeeDetailsViewModel {
         _instance.appendToBody = {"address": _instance.address.text};
       } else {
         _instance.appendToBody = {"address": user.address};
+      }
+    });
+    _instance.ville.addListener(() {
+      if (_instance.address.text.isNotEmpty) {
+        _instance.appendToBody = {"city": _instance.ville.text};
+      } else {
+        _instance.appendToBody = {"city": user.city};
       }
     });
     _instance.mobile.addListener(() {
@@ -105,6 +112,7 @@ class EmployeeDetailsViewModel {
 
   TextEditingController firstName = new TextEditingController();
   TextEditingController address = new TextEditingController();
+  TextEditingController ville = new TextEditingController();
   TextEditingController lastName = new TextEditingController();
   TextEditingController mobile = new TextEditingController();
   TextEditingController email = new TextEditingController();
