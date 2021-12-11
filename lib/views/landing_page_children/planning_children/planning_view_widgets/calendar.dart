@@ -143,7 +143,8 @@ class _CalendarState extends State<Calendar> {
                                     vertical: 5, horizontal: 10),
                                 height: 30,
                                 decoration: BoxDecoration(
-                                  color: Palette.gradientColor[2],
+                                  color:
+                                      Palette.gradientColor[2].withOpacity(0.5),
                                   border: Border(
                                     bottom: BorderSide(
                                       color: Colors.grey.shade300,

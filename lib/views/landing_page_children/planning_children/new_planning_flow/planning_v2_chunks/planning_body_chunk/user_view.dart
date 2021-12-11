@@ -258,7 +258,7 @@ class UserView extends StatelessWidget {
                     height: 30,
                     color: _calendarService.isSunday(snapshotDate[x])
                         ? Colors.grey.shade700
-                        : Palette.gradientColor[2],
+                        : Palette.gradientColor[2].withOpacity(0.5),
                   )
                 }
               ],

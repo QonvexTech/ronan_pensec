@@ -45,7 +45,7 @@ class SundayAndHoliday extends StatelessWidget {
                   color: _calendarService.isSunday(snapDate[x])
                       ? Colors.grey.shade700
                       : _calendarService.isSameDay(DateTime.now(), snapDate[x])
-                          ? Palette.gradientColor[2]
+                          ? Palette.gradientColor[2].withOpacity(0.5)
                           : Colors.transparent,
                 ),
               }
