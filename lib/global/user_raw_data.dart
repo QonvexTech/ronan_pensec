@@ -18,8 +18,11 @@ class UserRawData {
   Stream<List<RawUserModel>>? get stream => _subject.stream;
   List<RawUserModel>? get current => _subject.value;
 
-  setUsers(List data) =>
-      _subject.add(data.map((e) => RawUserModel.fromJson(e)).toList());
+  setUsers(List data) {
+    _subject.add(data.map((e) => RawUserModel.fromJson(e)).toList());
+    _subject.value!.sort((a, b) => a.firstName.compareTo(b.firstName));
+  }
+
   // _rawUserList = data.map((e) => RawUserModel.fromJson(e)).toList();
 
   DropdownButtonHideUnderline showDropdown(

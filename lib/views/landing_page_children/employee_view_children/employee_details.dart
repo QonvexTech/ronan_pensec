@@ -42,7 +42,9 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
       _viewModel.firstName.text = widget.employee.first_name;
       _viewModel.lastName.text = widget.employee.last_name;
       _viewModel.address.text = widget.employee.address ?? "";
+      _viewModel.ville.text = widget.employee.city ?? "";
       _viewModel.mobile.text = widget.employee.mobile ?? "";
+      // _viewModel.mobile.text = widget.employee.mobile ?? "";
       _viewModel.email.text = widget.employee.email;
     });
   }
@@ -243,16 +245,18 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                           ),
                                         ),
                                         Container(
+                                          margin: const EdgeInsets.symmetric(
+                                              vertical: 10),
                                           width: double.infinity,
                                           child: TextField(
                                             controller: _viewModel.address,
                                             keyboardType:
                                                 TextInputType.multiline,
-                                            maxLines: 3,
+                                            maxLines: 1,
                                             decoration: InputDecoration(
                                                 alignLabelWithHint: true,
-                                                prefixIcon: Icon(Icons
-                                                    .location_city_outlined),
+                                                prefixIcon: Icon(
+                                                    Icons.location_on_outlined),
                                                 border: OutlineInputBorder(
                                                     borderRadius:
                                                         BorderRadius.circular(
@@ -264,6 +268,31 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                                       Icons.clear_all_outlined),
                                                   onPressed: () {
                                                     _viewModel.address.clear();
+                                                  },
+                                                )),
+                                          ),
+                                        ),
+                                        Container(
+                                          width: double.infinity,
+                                          child: TextField(
+                                            controller: _viewModel.ville,
+                                            keyboardType:
+                                                TextInputType.multiline,
+                                            maxLines: 1,
+                                            decoration: InputDecoration(
+                                                alignLabelWithHint: true,
+                                                prefixIcon: Icon(Icons
+                                                    .location_city_outlined),
+                                                border: OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5)),
+                                                hintText: "Ville",
+                                                suffixIcon: IconButton(
+                                                  icon: Icon(
+                                                      Icons.clear_all_outlined),
+                                                  onPressed: () {
+                                                    _viewModel.ville.clear();
                                                   },
                                                 )),
                                           ),
@@ -362,7 +391,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                                     await _viewModel
                                                         .userUpdate(
                                                             widget.employee.id)
-                                                        .then((value) {
+                                                        .then((value) async {
                                                       if (value != null) {
                                                         setState(() {
                                                           widget.employee =
@@ -371,7 +400,16 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                                                   .setIsEditing =
                                                               false;
                                                         });
-                                                        this.populate();
+
+                                                        fetcher(this
+                                                                .employeePagination
+                                                                .currentPageUrl)
+                                                            .whenComplete(() =>
+                                                                setState(() =>
+                                                                    _isLoading =
+                                                                        false))
+                                                            .then((value) =>
+                                                                this.populate());
                                                       }
                                                     });
                                                     // setState(() {
