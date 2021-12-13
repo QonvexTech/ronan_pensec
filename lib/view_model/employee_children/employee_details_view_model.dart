@@ -84,6 +84,10 @@ class EmployeeDetailsViewModel {
         _instance.appendToBody = {"email": user.email};
       }
     });
+
+    _instance.password.addListener(() {
+      _instance.appendToBody = {"password": _instance.password.text};
+    });
     return _instance;
   }
 
@@ -93,6 +97,8 @@ class EmployeeDetailsViewModel {
   @override
   void dispose() {
     email.clear();
+    password.clear();
+
     _isEditing = false;
   }
 
@@ -120,6 +126,8 @@ class EmployeeDetailsViewModel {
   TextEditingController lastName = new TextEditingController();
   TextEditingController mobile = new TextEditingController();
   TextEditingController email = new TextEditingController();
+  TextEditingController password = new TextEditingController();
+
   bool _isEditing = false;
   bool get isEditing => _isEditing;
   set setIsEditing(bool e) => _isEditing = e;
@@ -135,6 +143,7 @@ class EmployeeDetailsViewModel {
     if (body['birth_date'].toString() == "null") {
       body.remove("birth_date");
     }
+
     if (body['address'].toString() == "null") {
       body.remove("address");
     }
@@ -149,6 +158,9 @@ class EmployeeDetailsViewModel {
     }
     if (body['zip_code'].toString() == "null") {
       body.remove("zip_code");
+    }
+    if (body['password'].toString() == "null") {
+      body.remove("password");
     }
     print(body);
     return await _instance.service.update(body: body, userId: userId);
