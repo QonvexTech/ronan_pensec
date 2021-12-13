@@ -57,18 +57,10 @@ class EmployeeDetailsViewModel {
       }
     });
     _instance.address.addListener(() {
-      if (_instance.address.text.isNotEmpty) {
-        _instance.appendToBody = {"address": _instance.address.text};
-      } else {
-        _instance.appendToBody = {"address": user.address};
-      }
+      _instance.appendToBody = {"address": _instance.address.text};
     });
     _instance.ville.addListener(() {
-      if (_instance.address.text.isNotEmpty) {
-        _instance.appendToBody = {"city": _instance.ville.text};
-      } else {
-        _instance.appendToBody = {"city": user.city};
-      }
+      _instance.appendToBody = {"city": _instance.ville.text};
     });
     _instance.mobile.addListener(() {
       if (_instance.mobile.text.isNotEmpty) {
@@ -139,19 +131,20 @@ class EmployeeDetailsViewModel {
     _isSenior = i;
   }
 
+//TODO: address is not nullable
   Future<UserModel?> userUpdate(int userId) async {
     if (body['birth_date'].toString() == "null") {
       body.remove("birth_date");
     }
 
     if (body['address'].toString() == "null") {
-      body.remove("address");
+      body['address'] = "";
     }
     if (body['mobile'].toString() == "null") {
       body.remove("mobile");
     }
     if (body['city'].toString() == "null") {
-      body.remove("city");
+      body['city'] = "";
     }
     if (body['email'].toString() == "null") {
       body.remove("email");

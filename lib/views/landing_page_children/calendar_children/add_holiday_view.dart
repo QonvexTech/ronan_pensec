@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/models/raw_user_model.dart';
 import 'package:ronan_pensec/view_model/calendar_view_models/add_holiday_view_model.dart';
+import 'package:ronan_pensec/view_model/calendar_view_models/add_rtt_view_model.dart';
 
 class AddHolidayView extends StatefulWidget {
   final ValueChanged<bool> loadingCallback;
@@ -12,6 +13,7 @@ class AddHolidayView extends StatefulWidget {
 
 class _AddHolidayViewState extends State<AddHolidayView> {
   final AddHolidayViewModel _viewModel = AddHolidayViewModel.instance;
+
   @override
   void initState() {
     _viewModel.defaultData();

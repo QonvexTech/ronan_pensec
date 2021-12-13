@@ -31,6 +31,34 @@ class RTTService {
   static final RegionService regionService =
       RegionService.instance(_regionDataControl);
 
+  //TODO: api update
+  Future<bool> update(context, {required Map body}) async {
+    try {
+      print(body);
+      return await http.put(
+          Uri.parse("${BaseEnpoint.URL}${RTTEndpoint.update}"),
+          body: body,
+          headers: {
+            "Accept": "application/json",
+            HttpHeaders.authorizationHeader: "Bearer ${_auth.token}"
+          }).then((respo) {
+        if (respo.statusCode == 200 || respo.statusCode == 201) {
+          _notifier.showContextedBottomToast(context,
+              msg: "Mise à jour réussie");
+          return true;
+        }
+        _notifier.showContextedBottomToast(context,
+            msg:
+                "Une erreur s'est produite (${respo.statusCode}), veuillez réessayer plus tard ou contacter l'administrateur");
+        return false;
+      });
+    } catch (e) {
+      _notifier.showContextedBottomToast(context,
+          msg: "UPDATE ERROR Erreur $e");
+      return false;
+    }
+  }
+
   Future<void> create(context, {required Map body}) async {
     try {
       await http.post(Uri.parse("${BaseEnpoint.URL}${RTTEndpoint.adminCreate}"),

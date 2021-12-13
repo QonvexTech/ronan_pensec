@@ -1,6 +1,8 @@
 class RTTEndpoint {
   static final String _baseEndpoint = "api/rtts";
 
+  static String update() => "$_baseEndpoint/update";
+
   static String getEmployeeRTT({required employeeId}) =>
       "$_baseEndpoint/user_requests/$employeeId";
 
