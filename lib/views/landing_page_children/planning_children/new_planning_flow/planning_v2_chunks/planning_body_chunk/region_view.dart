@@ -64,7 +64,7 @@ class RegionView extends StatelessWidget {
                         ? Colors.grey.shade700
                         : _calendarService.isSameDay(
                                 DateTime.now(), snapshotDate[x])
-                            ? Palette.gradientColor[2]
+                            ? Palette.gradientColor[2].withOpacity(0.5)
                             : Colors.transparent,
                   ),
                 }

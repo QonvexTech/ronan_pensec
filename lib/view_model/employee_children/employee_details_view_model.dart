@@ -57,18 +57,10 @@ class EmployeeDetailsViewModel {
       }
     });
     _instance.address.addListener(() {
-      if (_instance.address.text.isNotEmpty) {
-        _instance.appendToBody = {"address": _instance.address.text};
-      } else {
-        _instance.appendToBody = {"address": user.address};
-      }
+      _instance.appendToBody = {"address": _instance.address.text};
     });
     _instance.ville.addListener(() {
-      if (_instance.address.text.isNotEmpty) {
-        _instance.appendToBody = {"city": _instance.ville.text};
-      } else {
-        _instance.appendToBody = {"city": user.city};
-      }
+      _instance.appendToBody = {"city": _instance.ville.text};
     });
     _instance.mobile.addListener(() {
       if (_instance.mobile.text.isNotEmpty) {
@@ -84,6 +76,10 @@ class EmployeeDetailsViewModel {
         _instance.appendToBody = {"email": user.email};
       }
     });
+
+    _instance.password.addListener(() {
+      _instance.appendToBody = {"password": _instance.password.text};
+    });
     return _instance;
   }
 
@@ -93,6 +89,8 @@ class EmployeeDetailsViewModel {
   @override
   void dispose() {
     email.clear();
+    password.clear();
+
     _isEditing = false;
   }
 
@@ -120,6 +118,8 @@ class EmployeeDetailsViewModel {
   TextEditingController lastName = new TextEditingController();
   TextEditingController mobile = new TextEditingController();
   TextEditingController email = new TextEditingController();
+  TextEditingController password = new TextEditingController();
+
   bool _isEditing = false;
   bool get isEditing => _isEditing;
   set setIsEditing(bool e) => _isEditing = e;
@@ -131,24 +131,29 @@ class EmployeeDetailsViewModel {
     _isSenior = i;
   }
 
+//TODO: address is not nullable
   Future<UserModel?> userUpdate(int userId) async {
     if (body['birth_date'].toString() == "null") {
       body.remove("birth_date");
     }
+
     if (body['address'].toString() == "null") {
-      body.remove("address");
+      body['address'] = "";
     }
     if (body['mobile'].toString() == "null") {
       body.remove("mobile");
     }
     if (body['city'].toString() == "null") {
-      body.remove("city");
+      body['city'] = "";
     }
     if (body['email'].toString() == "null") {
       body.remove("email");
     }
     if (body['zip_code'].toString() == "null") {
       body.remove("zip_code");
+    }
+    if (body['password'].toString() == "null") {
+      body.remove("password");
     }
     print(body);
     return await _instance.service.update(body: body, userId: userId);

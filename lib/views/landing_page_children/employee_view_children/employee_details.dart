@@ -25,6 +25,7 @@ class EmployeeDetails extends StatefulWidget {
 
 class _EmployeeDetailsState extends State<EmployeeDetails> {
   bool _isConverting = false;
+  bool _obsCure = true;
   late bool _isActive = widget.employee.isActive == 1;
   late final EmployeeDetailsViewModel _viewModel =
       EmployeeDetailsViewModel.instance(widget.employee);
@@ -360,6 +361,35 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                                       ? "2 - Superviseur"
                                                       : "3 - Employé",
                                             ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Container(
+                                          width: double.infinity,
+                                          child: TextField(
+                                            obscureText: _obsCure,
+                                            controller: _viewModel.password,
+                                            decoration: InputDecoration(
+                                                alignLabelWithHint: true,
+                                                prefixIcon:
+                                                    Icon(Icons.lock_outline),
+                                                border: OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5)),
+                                                hintText: "Mot de passe",
+                                                suffixIcon: IconButton(
+                                                  icon: Icon(_obsCure
+                                                      ? Icons.visibility_off
+                                                      : Icons.visibility),
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      _obsCure = !_obsCure;
+                                                    });
+                                                  },
+                                                )),
                                           ),
                                         ),
                                         Container(

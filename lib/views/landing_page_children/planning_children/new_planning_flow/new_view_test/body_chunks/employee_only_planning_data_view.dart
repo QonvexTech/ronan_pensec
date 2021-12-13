@@ -154,7 +154,7 @@ class EmployeeOnlyPlanningDataView extends StatelessWidget {
             height: 30,
             color: _calendarService.isSunday(currentDate)
                 ? Colors.grey.shade700
-                : Palette.gradientColor[2],
+                : Palette.gradientColor[2].withOpacity(0.5),
           )
         }
       ],

@@ -23,7 +23,7 @@ class CenterView extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
           height: 30,
           decoration: BoxDecoration(
-            color: Palette.gradientColor[2],
+            color: Palette.gradientColor[2].withOpacity(0.5),
             border: Border(
               bottom: BorderSide(
                 color: Colors.grey.shade300,
@@ -61,7 +61,7 @@ class CenterView extends StatelessWidget {
                         ? Colors.grey.shade700
                         : _calendarService.isSameDay(
                                 DateTime.now(), snapshotDate[x])
-                            ? Palette.gradientColor[2]
+                            ? Palette.gradientColor[2].withOpacity(0.5)
                             : Colors.transparent,
                   ),
                 }

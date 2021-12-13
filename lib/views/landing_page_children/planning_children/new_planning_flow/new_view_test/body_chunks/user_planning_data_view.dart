@@ -9,6 +9,7 @@ import 'package:ronan_pensec/models/planning_model.dart';
 import 'package:ronan_pensec/models/user_model.dart';
 import 'package:ronan_pensec/services/dashboard_services/calendar_service.dart';
 import 'package:ronan_pensec/view_model/calendar_half_day_clip.dart';
+import 'package:ronan_pensec/view_model/calendar_view_models/add_rtt_view_model.dart';
 import 'package:ronan_pensec/views/landing_page_children/planning_children/new_planning_flow/planning_v2_chunks/planning_body_chunk/popups/create_planning.dart';
 import 'package:ronan_pensec/views/landing_page_children/planning_children/new_planning_flow/planning_v2_chunks/planning_body_chunk/popups/show_planning.dart';
 import 'package:ronan_pensec/views/landing_page_children/planning_children/new_planning_flow/planning_v2_chunks/planning_body_chunk/user_view_chunk/holidays_view.dart';
@@ -28,8 +29,11 @@ class UserPlanningDataView extends StatelessWidget {
   static final CalendarController _calendarController =
       CalendarController.instance;
   static final CalendarService _calendarService = CalendarService.lone_instance;
+  static final AddRTTViewModel _rttViewModel = AddRTTViewModel.instance;
+
   @override
   Widget build(BuildContext context) {
+    final Size _size = MediaQuery.of(context).size;
     return Stack(
       children: [
         Container(
@@ -215,9 +219,17 @@ class UserPlanningDataView extends StatelessWidget {
                 _calendarService.isSameDay(currentDate, rtt.date)) ...{
               Tooltip(
                 message: "${rtt.no_of_hrs} hrs.",
-                child: Container(
-                  width: itemWidth,
-                  color: Colors.yellow,
+                child: MaterialButton(
+                  padding: EdgeInsets.all(0),
+                  onPressed: () {
+                    _rttViewModel.editRtt(rtt).then((value) =>
+                        _rttViewModel.showAddRtt(context,
+                            size: _size, loadingCallback: (bool b) {}));
+                  },
+                  child: Container(
+                    width: itemWidth,
+                    color: Colors.yellow,
+                  ),
                 ),
               )
             }
@@ -250,7 +262,7 @@ class UserPlanningDataView extends StatelessWidget {
             height: 30,
             color: _calendarService.isSunday(currentDate)
                 ? Colors.grey.shade700
-                : Palette.gradientColor[2],
+                : Palette.gradientColor[2].withOpacity(0.5),
           )
         }
       ],

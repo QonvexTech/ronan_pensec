@@ -72,6 +72,7 @@ class TableHead extends StatelessWidget {
                                         : _calendarService.isSameDay(
                                                 DateTime.now(), daysDate[index])
                                             ? Palette.gradientColor[2]
+                                                .withOpacity(0.5)
                                             : Colors.transparent
                                     : Colors.transparent,
                                 child: Center(
