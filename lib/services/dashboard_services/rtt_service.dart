@@ -32,12 +32,14 @@ class RTTService {
       RegionService.instance(_regionDataControl);
 
   //TODO: api update
-  Future<bool> update(context, {required Map body}) async {
+  Future<bool> update(context,
+      {required String hrs, required int rttId}) async {
     try {
-      print(body);
       return await http.put(
-          Uri.parse("${BaseEnpoint.URL}${RTTEndpoint.update}"),
-          body: body,
+          Uri.parse("${BaseEnpoint.URL}${RTTEndpoint.update(rttId: rttId)}"),
+          body: {
+            "no_of_hrs": hrs,
+          },
           headers: {
             "Accept": "application/json",
             HttpHeaders.authorizationHeader: "Bearer ${_auth.token}"

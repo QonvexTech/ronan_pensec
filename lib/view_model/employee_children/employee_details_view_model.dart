@@ -137,15 +137,10 @@ class EmployeeDetailsViewModel {
       body.remove("birth_date");
     }
 
-    if (body['address'].toString() == "null") {
-      body['address'] = "";
-    }
     if (body['mobile'].toString() == "null") {
       body.remove("mobile");
     }
-    if (body['city'].toString() == "null") {
-      body['city'] = "";
-    }
+
     if (body['email'].toString() == "null") {
       body.remove("email");
     }

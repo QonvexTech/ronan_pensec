@@ -12,6 +12,7 @@ import 'package:ronan_pensec/view_model/calendar_half_day_clip.dart';
 import 'package:ronan_pensec/view_model/calendar_view_models/add_rtt_view_model.dart';
 import 'package:ronan_pensec/views/landing_page_children/planning_children/new_planning_flow/planning_v2_chunks/planning_body_chunk/popups/create_planning.dart';
 import 'package:ronan_pensec/views/landing_page_children/planning_children/new_planning_flow/planning_v2_chunks/planning_body_chunk/popups/show_planning.dart';
+import 'package:ronan_pensec/views/landing_page_children/planning_children/new_planning_flow/planning_v2_chunks/planning_body_chunk/popups/updateRtt.dart';
 import 'package:ronan_pensec/views/landing_page_children/planning_children/new_planning_flow/planning_v2_chunks/planning_body_chunk/user_view_chunk/holidays_view.dart';
 
 class UserPlanningDataView extends StatelessWidget {
@@ -221,11 +222,42 @@ class UserPlanningDataView extends StatelessWidget {
                 message: "${rtt.no_of_hrs} hrs.",
                 child: MaterialButton(
                   padding: EdgeInsets.all(0),
-                  onPressed: () {
-                    _rttViewModel.editRtt(rtt).then((value) =>
-                        _rttViewModel.showAddRtt(context,
-                            size: _size, loadingCallback: (bool b) {}));
-                  },
+                  onPressed: () => showGeneralDialog(
+                      barrierColor: Colors.black.withOpacity(0.5),
+                      transitionBuilder: (context, a1, a2, widget) {
+                        return Transform.scale(
+                          scale: a1.value,
+                          child: Opacity(
+                            opacity: a1.value,
+                            child: AlertDialog(
+                                shape: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(16.0)),
+                                title: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text("RTT UPDATE"),
+                                    IconButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(null),
+                                      icon: Icon(Icons.close),
+                                    )
+                                  ],
+                                ),
+                                content: UpdateRtt(
+                                  rtt: rtt,
+                                  user: user,
+                                )),
+                          ),
+                        );
+                      },
+                      transitionDuration: Duration(milliseconds: 200),
+                      barrierDismissible: true,
+                      barrierLabel: '',
+                      context: context,
+                      pageBuilder: (context, animation1, animation2) {
+                        return Container();
+                      }),
                   child: Container(
                     width: itemWidth,
                     color: Colors.yellow,

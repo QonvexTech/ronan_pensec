@@ -46,8 +46,6 @@ class AddRTTViewModel {
 
   Map get body => _body;
 
-  bool _isEdit = false;
-
   set appendToBody(Map data) => _body.addAll(data);
 
   set bodyAll(Map data) => _body = data;
@@ -58,9 +56,6 @@ class AddRTTViewModel {
 
   String? _startTime;
 
-  int? _rttId;
-  int? get rttId => _rttId;
-
   String? get startTime => _startTime;
 
   set setStartTime(String? time) {
@@ -70,16 +65,6 @@ class AddRTTViewModel {
       _instance.body.remove("start_time");
     }
     _startTime = time;
-  }
-
-  Future editRtt(RTTModel rttToEdit) async {
-    _instance.setDate = rttToEdit.date;
-    _instance.setStartTime = rttToEdit.startTime;
-    _instance.setEndTime = rttToEdit.startTime;
-    _instance.reason.text = rttToEdit.comment!;
-    _instance.appendToBody = {"id": rttToEdit.id.toString()};
-
-    _isEdit = true;
   }
 
   String? _endTime;
@@ -453,71 +438,56 @@ class AddRTTViewModel {
                                       child: MaterialButton(
                                         height: 50,
                                         onPressed: () async {
-                                          if (_isEdit) {
-                                            print("UPDATE RTT");
+                                          if (_instance
+                                                  .auth.loggedUser!.roleId ==
+                                              1) {
+                                            print("ADMIN");
+                                            if (_instance.initDrpValue.id ==
+                                                _instance.auth.loggedUser!.id) {
+                                              print(
+                                                  "ADMIN DROP ${_instance.initDrpValue.id}");
+                                              Navigator.of(context).pop(null);
+                                              ToastNotifier.instance
+                                                  .showUnContextedBottomToast(
+                                                      msg:
+                                                          "Vous ne pouvez pas créer de demande pour vous-même");
+                                              return;
+                                            } else {
+                                              _instance.appendToBody = {
+                                                'user_id':
+                                                    initDrpValue.id.toString()
+                                              };
+                                            }
+                                          }
+                                          if (body.length == 5) {
                                             Navigator.of(context).pop(null);
                                             loadingCallback(true);
                                             if (_auth.loggedUser!.roleId == 1) {
                                               await _instance.service
-                                                  .update(context,
-                                                      body: _instance.body)
+                                                  .create(
+                                                    context,
+                                                    body: _instance.body,
+                                                  )
+                                                  .whenComplete(() =>
+                                                      loadingCallback(false));
+                                            } else {
+                                              await _instance.service
+                                                  .request(
+                                                      body: _instance.body,
+                                                      isMe: !isForOthers)
                                                   .whenComplete(() =>
                                                       loadingCallback(false));
                                             }
                                           } else {
-                                            if (_instance
-                                                    .auth.loggedUser!.roleId ==
-                                                1) {
-                                              print("ADMIN");
-                                              if (_instance.initDrpValue.id ==
-                                                  _instance
-                                                      .auth.loggedUser!.id) {
-                                                print(
-                                                    "ADMIN DROP ${_instance.initDrpValue.id}");
-                                                Navigator.of(context).pop(null);
-                                                ToastNotifier.instance
-                                                    .showUnContextedBottomToast(
-                                                        msg:
-                                                            "Vous ne pouvez pas créer de demande pour vous-même");
-                                                return;
-                                              } else {
-                                                _instance.appendToBody = {
-                                                  'user_id':
-                                                      initDrpValue.id.toString()
-                                                };
-                                              }
-                                            }
-                                            if (body.length == 5) {
-                                              Navigator.of(context).pop(null);
-                                              loadingCallback(true);
-                                              if (_auth.loggedUser!.roleId ==
-                                                  1) {
-                                                await _instance.service
-                                                    .create(
-                                                      context,
-                                                      body: _instance.body,
-                                                    )
-                                                    .whenComplete(() =>
-                                                        loadingCallback(false));
-                                              } else {
-                                                await _instance.service
-                                                    .request(
-                                                        body: _instance.body,
-                                                        isMe: !isForOthers)
-                                                    .whenComplete(() =>
-                                                        loadingCallback(false));
-                                              }
-                                            } else {
-                                              setState(() {
-                                                _instance.showMessage = true;
-                                              });
-                                            }
+                                            setState(() {
+                                              _instance.showMessage = true;
+                                            });
                                           }
                                         },
                                         color: Palette.gradientColor[0],
                                         child: Center(
                                           child: Text(
-                                            _isEdit ? "UPDATE" : "VALIDER",
+                                            "VALIDER",
                                             style: TextStyle(
                                                 letterSpacing: 1.5,
                                                 color: Colors.white,
