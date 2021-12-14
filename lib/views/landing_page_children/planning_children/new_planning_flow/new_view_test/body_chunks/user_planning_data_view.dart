@@ -130,7 +130,7 @@ class UserPlanningDataView extends StatelessWidget {
                     return Container();
                   }),
               child: Tooltip(
-                message: "${planning.title}",
+                message: "${center.name}",
                 child: ClipPath(
                   clipper: _calendarService.isSameDay(
                               planning.startDate, currentDate) &&
