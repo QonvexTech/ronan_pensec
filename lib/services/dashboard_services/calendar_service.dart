@@ -6,6 +6,7 @@ import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/global/constants.dart';
 import 'package:ronan_pensec/global/endpoints/leave_request_endpoint.dart';
 import 'package:ronan_pensec/models/center_model.dart';
+import 'package:ronan_pensec/models/planning_model.dart';
 import 'package:ronan_pensec/models/region_model.dart';
 import 'package:ronan_pensec/models/user_model.dart';
 import 'package:ronan_pensec/services/data_controls/calendar_data_control.dart';
@@ -40,6 +41,19 @@ class CalendarService {
       DateTime(currentYear, currentMonth + 1, 01)
           .difference(DateTime(currentYear, currentMonth, 01))
           .inDays;
+  bool isdayGotWork(CenterModel center, DateTime compare) {
+    bool dayInWorked = false;
+    for (UserModel user in center.users) {
+      for (PlanningModel plan in user.planning) {
+        if (isInRange(plan.startDate, plan.endDate, compare)) {
+          dayInWorked = true;
+        }
+      }
+    }
+
+    return dayInWorked;
+  }
+
   String topHeaderText(DateTime dateTime) =>
       DateFormat.EEEE("fr_FR")
           .format(dateTime)
