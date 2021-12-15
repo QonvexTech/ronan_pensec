@@ -109,7 +109,6 @@ class EmployeeService {
   Future<UserModel?> update({required Map body, required int userId}) async {
     try {
       print(body);
-      print(userId.toString());
       return await http.put(
           Uri.parse("${BaseEnpoint.URL}${UserEndpoint.update(userId)}"),
           body: body,

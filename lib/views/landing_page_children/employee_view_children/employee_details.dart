@@ -8,7 +8,6 @@ import 'package:ronan_pensec/services/data_controls/region_data_control.dart';
 import 'package:ronan_pensec/view_model/employee_children/employee_details_view_model.dart';
 import 'package:ronan_pensec/view_model/employee_view_model.dart';
 import 'package:ronan_pensec/views/landing_page_children/employee_view_children/employee_detail_children/add_planning.dart';
-
 import 'employee_detail_children/employee_demands.dart';
 
 class EmployeeDetails extends StatefulWidget {
@@ -45,9 +44,10 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
       _viewModel.address.text = widget.employee.address ?? "";
       _viewModel.ville.text = widget.employee.city ?? "";
       _viewModel.mobile.text = widget.employee.mobile ?? "";
-      // _viewModel.mobile.text = widget.employee.mobile ?? "";
       _viewModel.email.text = widget.employee.email;
     });
+    print("POPULATE");
+    print(widget.employee.id);
   }
 
   Future<void> fetcher(String subDomain) async {

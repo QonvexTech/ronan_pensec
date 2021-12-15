@@ -181,4 +181,25 @@ class HolidayService {
       return false;
     }
   }
+
+  //TODO"Add delete holiday here
+  Future delete(context, {required int holidayId}) async {
+    try {
+      await http.delete(
+          Uri.parse("${BaseEnpoint.URL}${HolidayEndpoint.base}/$holidayId"),
+          headers: {
+            "Accept": "application/json",
+            HttpHeaders.authorizationHeader: "Bearer ${_auth.token}"
+          }).then((response) {
+        print(response);
+        if (response.statusCode == 200) {
+          //TODO: remove in RTT
+          regionService.fetch(context);
+          print("DELETE HOLIDAY");
+        }
+      });
+    } catch (e) {
+      _notifier.showContextedBottomToast(context, msg: "Erreur $e");
+    }
+  }
 }

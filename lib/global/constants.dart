@@ -23,6 +23,4 @@ class ContextHolder {
   Size? _size;
   Size? get size => _size;
   set setSize(Size size) => _instance._size = size;
-
-  static final String URL = "${BaseEnpoint.URL}";
 }

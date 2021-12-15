@@ -32,12 +32,14 @@ class RTTService {
       RegionService.instance(_regionDataControl);
 
   //TODO: api update
-  Future<bool> update(context, {required Map body}) async {
+  Future<bool> update(context,
+      {required String hrs, required int rttId}) async {
     try {
-      print(body);
       return await http.put(
-          Uri.parse("${BaseEnpoint.URL}${RTTEndpoint.update}"),
-          body: body,
+          Uri.parse("${BaseEnpoint.URL}${RTTEndpoint.withId(rttId: rttId)}"),
+          body: {
+            "start_time": hrs,
+          },
           headers: {
             "Accept": "application/json",
             HttpHeaders.authorizationHeader: "Bearer ${_auth.token}"
@@ -100,7 +102,6 @@ class RTTService {
           return;
         }
         _notifier.showUnContextedBottomToast(msg: "${data['message']}");
-        // _notifier.showUnContextedBottomToast(msg: "Une erreur s'est produite (${response.statusCode}), veuillez réessayer plus tard");
         return;
       });
     } catch (e) {
@@ -178,7 +179,6 @@ class RTTService {
   }
 
   ///GET PENDING
-  ///
   Future<bool> get pending async {
     try {
       return await http
@@ -215,6 +215,28 @@ class RTTService {
       });
     } catch (e) {
       return null;
+    }
+  }
+
+  //TODO:DELETE RTT
+  Future delete(context, {required int rttID}) async {
+    try {
+      await http.delete(
+          Uri.parse(
+              "${BaseEnpoint.URL}${RTTEndpoint.withId(rttId: rttID.toString())}"),
+          headers: {
+            "Accept": "application/json",
+            HttpHeaders.authorizationHeader: "Bearer ${_auth.token}"
+          }).then((response) {
+        print(response);
+        if (response.statusCode == 200) {
+          //TODO: remove in RTT
+          regionService.fetch(context);
+          print("DELETE RTT");
+        }
+      });
+    } catch (e) {
+      _notifier.showContextedBottomToast(context, msg: "Erreur $e");
     }
   }
 }
