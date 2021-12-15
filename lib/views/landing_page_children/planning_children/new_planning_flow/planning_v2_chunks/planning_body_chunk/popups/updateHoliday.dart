@@ -1,32 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:ronan_pensec/global/controllers/calendar_controller.dart';
 import 'package:ronan_pensec/global/palette.dart';
-import 'package:ronan_pensec/models/calendar/rtt_model.dart';
+import 'package:ronan_pensec/models/calendar/holiday_model.dart';
 import 'package:ronan_pensec/models/raw_user_model.dart';
 import 'package:ronan_pensec/models/user_model.dart';
-import 'package:ronan_pensec/services/dashboard_services/rtt_service.dart';
+import 'package:ronan_pensec/services/dashboard_services/holiday_service.dart';
 
-class UpdateRtt extends StatefulWidget {
-  const UpdateRtt({
+class UpdateHoliday extends StatefulWidget {
+  const UpdateHoliday({
     Key? key,
-    required this.rtt,
+    required this.holiday,
     required this.user,
     this.rawUser,
   }) : super(key: key);
-  final RTTModel rtt;
+  final HolidayModel holiday;
   final UserModel? user;
   final RawUserModel? rawUser;
   @override
-  _UpdateRttState createState() => _UpdateRttState();
+  _UpdateHolidayState createState() => _UpdateHolidayState();
 }
 
-class _UpdateRttState extends State<UpdateRtt> {
+class _UpdateHolidayState extends State<UpdateHoliday> {
   final CalendarController _calendarController = CalendarController.instance;
-  final RTTService _service = RTTService.instance;
+  final HolidayService _service = HolidayService.instance;
   bool isEditing = false;
-  late String startTime = widget.rtt.startTime;
-  late String endTime = widget.rtt.endTime;
-  late DateTime date = widget.rtt.date;
+  late DateTime startTime = widget.holiday.startDate;
 
   //TODO: rtt hour
   Future<String?> selectTime(context) async {
@@ -57,7 +55,7 @@ class _UpdateRttState extends State<UpdateRtt> {
         : size.width * .3;
     return Container(
       width: width,
-      height: 250,
+      height: 200,
       child: Column(
         children: [
           Expanded(
@@ -120,47 +118,6 @@ class _UpdateRttState extends State<UpdateRtt> {
                                 Container(
                                   width: double.infinity,
                                   child: Text(
-                                    "Date",
-                                    style: TextStyle(
-                                      color: Colors.grey.shade600,
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ),
-                                MaterialButton(
-                                  onPressed: isEditing
-                                      ? () {
-                                          showDatePicker(
-                                            context: context,
-                                            firstDate: DateTime(
-                                                DateTime.now().year, 1, 1),
-                                            initialDate: date,
-                                            lastDate: DateTime(
-                                              DateTime.now().year + 1,
-                                              1,
-                                              1,
-                                            ),
-                                          ).then((DateTime? newStart) {
-                                            if (newStart != null) {
-                                              setState(() {
-                                                date = newStart;
-                                              });
-                                            }
-                                          });
-                                        }
-                                      : null,
-                                  child: Container(
-                                    width: double.infinity,
-                                    child: Text(
-                                        "${_calendarController.dateAsText(date)}"),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 5,
-                                ),
-                                Container(
-                                  width: double.infinity,
-                                  child: Text(
                                     "Start Time",
                                     style: TextStyle(
                                       color: Colors.grey.shade600,
@@ -172,11 +129,7 @@ class _UpdateRttState extends State<UpdateRtt> {
                                   height: 60,
                                   color: Colors.white54,
                                   onPressed: () async {
-                                    String? _selected =
-                                        await this.selectTime(context);
-                                    setState(() {
-                                      startTime = _selected!;
-                                    });
+                                    //TODO: select date
                                   },
                                   child: Row(
                                     children: [
@@ -187,43 +140,7 @@ class _UpdateRttState extends State<UpdateRtt> {
                                       const SizedBox(
                                         width: 10,
                                       ),
-                                      Expanded(child: Text(startTime))
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 5,
-                                ),
-                                Container(
-                                  width: double.infinity,
-                                  child: Text(
-                                    "End Time",
-                                    style: TextStyle(
-                                      color: Colors.grey.shade600,
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ),
-                                MaterialButton(
-                                  height: 60,
-                                  color: Colors.white54,
-                                  onPressed: () async {
-                                    String? _selected =
-                                        await this.selectTime(context);
-                                    setState(() {
-                                      endTime = _selected!;
-                                    });
-                                  },
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        Icons.timelapse_sharp,
-                                        color: Palette.gradientColor[0],
-                                      ),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      Expanded(child: Text(endTime))
+                                      Expanded(child: Text("DATE HOLIDAY"))
                                     ],
                                   ),
                                 ),
@@ -241,11 +158,11 @@ class _UpdateRttState extends State<UpdateRtt> {
                                     isEditing ? "Sauvegarder" : "Mise á jour",
                                 onPressed: () async {
                                   //TODO: update rtt button
+                                  Navigator.of(context).pop(null);
                                   print(startTime);
                                   if (isEditing) {
-                                    _service.update(context,
-                                        hrs: startTime, rttId: widget.rtt.id);
-                                    // Navigator.of(context).pop(null);
+                                    // _service.update(context,
+                                    //     hrs: hour, rttId: widget.rtt.id);
                                   }
                                   setState(() {
                                     isEditing = !isEditing;
@@ -262,10 +179,10 @@ class _UpdateRttState extends State<UpdateRtt> {
                               IconButton(
                                 tooltip: "Supprimer",
                                 onPressed: () async {
-                                  print("delete");
+                                  print("delete holiday");
                                   //TODO: delete
                                   _service.delete(context,
-                                      rttID: widget.rtt.id);
+                                      holidayId: widget.holiday.id);
                                   Navigator.pop(context);
                                 },
                                 icon: Icon(
