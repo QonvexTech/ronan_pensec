@@ -57,13 +57,18 @@ class _AddPlanningState extends State<AddPlanning> {
   late Map _chosenEndType = _type[0];
   @override
   void initState() {
+    print("DATE");
+    chosenStart = widget.chosenStart ?? DateTime.now();
     fetchCenters();
+
+    print(widget.chosenStart);
     super.initState();
   }
 
   final CalendarController _calendarController = CalendarController.instance;
   final PlanningService _service = new PlanningService();
-  late DateTime chosenStart = widget.chosenStart ?? DateTime.now();
+  late DateTime chosenStart;
+
   DateTime? chosenEnd;
   @override
   Widget build(BuildContext context) {
@@ -270,7 +275,7 @@ class _AddPlanningState extends State<AddPlanning> {
                                   firstDate: chosenStart,
                                   initialDate: chosenStart,
                                   lastDate: DateTime(
-                                    chosenStart.year + 1,
+                                    chosenStart.year + 2,
                                     1,
                                     1,
                                   ),

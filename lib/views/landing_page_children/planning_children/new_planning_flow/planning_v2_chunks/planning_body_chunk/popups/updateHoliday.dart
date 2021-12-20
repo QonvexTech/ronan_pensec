@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:ronan_pensec/global/controllers/calendar_controller.dart';
-import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/models/calendar/holiday_model.dart';
 import 'package:ronan_pensec/models/raw_user_model.dart';
 import 'package:ronan_pensec/models/user_model.dart';
@@ -10,7 +9,7 @@ class UpdateHoliday extends StatefulWidget {
   const UpdateHoliday({
     Key? key,
     required this.holiday,
-    required this.user,
+    this.user,
     this.rawUser,
   }) : super(key: key);
   final HolidayModel holiday;
@@ -24,27 +23,9 @@ class _UpdateHolidayState extends State<UpdateHoliday> {
   final CalendarController _calendarController = CalendarController.instance;
   final HolidayService _service = HolidayService.instance;
   bool isEditing = false;
-  late DateTime startTime = widget.holiday.startDate;
 
-  //TODO: rtt hour
-  Future<String?> selectTime(context) async {
-    return await showTimePicker(
-      context: context,
-      cancelText: "ANNULER",
-      confirmText: "OUI",
-      builder: (context, child) => MediaQuery(
-          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
-          child: child!),
-      initialTime: TimeOfDay.now(),
-    ).then((value) {
-      if (value != null) {
-        return "${value.hour.toString().padLeft(2, '0')}:${value.minute.toString().padLeft(2, '0')}:00";
-      } else {
-        return null;
-      }
-    });
-  }
-
+  late DateTime chosenStart = widget.holiday.startDate;
+  late DateTime chosenEnd = widget.holiday.endDate;
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -118,7 +99,7 @@ class _UpdateHolidayState extends State<UpdateHoliday> {
                                 Container(
                                   width: double.infinity,
                                   child: Text(
-                                    "Start Time",
+                                    "Date de début",
                                     style: TextStyle(
                                       color: Colors.grey.shade600,
                                       fontSize: 14,
@@ -126,22 +107,73 @@ class _UpdateHolidayState extends State<UpdateHoliday> {
                                   ),
                                 ),
                                 MaterialButton(
-                                  height: 60,
-                                  color: Colors.white54,
-                                  onPressed: () async {
-                                    //TODO: select date
-                                  },
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        Icons.timelapse_sharp,
-                                        color: Palette.gradientColor[0],
-                                      ),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      Expanded(child: Text("DATE HOLIDAY"))
-                                    ],
+                                  onPressed: isEditing
+                                      ? () {
+                                          showDatePicker(
+                                            context: context,
+                                            firstDate: DateTime(
+                                                DateTime.now().year, 1, 1),
+                                            initialDate:
+                                                widget.holiday.startDate,
+                                            lastDate: DateTime(
+                                              DateTime.now().year + 1,
+                                              1,
+                                              1,
+                                            ),
+                                          ).then((DateTime? newStart) {
+                                            if (newStart != null) {
+                                              setState(() {
+                                                chosenStart = newStart;
+                                              });
+                                            }
+                                          });
+                                        }
+                                      : null,
+                                  child: Container(
+                                    width: double.infinity,
+                                    child: Text(
+                                        "${_calendarController.dateAsText(chosenStart)}"),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                Container(
+                                  width: double.infinity,
+                                  child: Text(
+                                    "Date de fin",
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.grey.shade600,
+                                    ),
+                                  ),
+                                ),
+                                MaterialButton(
+                                  onPressed: isEditing
+                                      ? () {
+                                          showDatePicker(
+                                            context: context,
+                                            firstDate: DateTime(
+                                                DateTime.now().year, 1, 1),
+                                            initialDate: widget.holiday.endDate,
+                                            lastDate: DateTime(
+                                              DateTime.now().year + 1,
+                                              1,
+                                              1,
+                                            ),
+                                          ).then((DateTime? newEnd) {
+                                            if (newEnd != null) {
+                                              setState(() {
+                                                chosenEnd = newEnd;
+                                              });
+                                            }
+                                          });
+                                        }
+                                      : null,
+                                  child: Container(
+                                    width: double.infinity,
+                                    child: Text(
+                                        "${_calendarController.dateAsText(chosenEnd)}"),
                                   ),
                                 ),
                               ],
@@ -157,12 +189,23 @@ class _UpdateHolidayState extends State<UpdateHoliday> {
                                 tooltip:
                                     isEditing ? "Sauvegarder" : "Mise á jour",
                                 onPressed: () async {
-                                  //TODO: update rtt button
-                                  Navigator.of(context).pop(null);
-                                  print(startTime);
                                   if (isEditing) {
-                                    // _service.update(context,
-                                    //     hrs: hour, rttId: widget.rtt.id);
+                                    // await _service
+                                    //     .update(
+                                    //   start: chosenStart,
+                                    //   end: chosenEnd,
+                                    //   id: widget.planning.id,
+                                    // )
+                                    //     .then((value) {
+                                    //   if (value) {
+                                    //     setState(() {
+                                    //       widget.planning.startDate =
+                                    //           chosenStart;
+                                    //       widget.planning.endDate = chosenEnd;
+                                    //     });
+                                    //     Navigator.of(context).pop(null);
+                                    //   }
+                                    // });
                                   }
                                   setState(() {
                                     isEditing = !isEditing;
@@ -179,11 +222,9 @@ class _UpdateHolidayState extends State<UpdateHoliday> {
                               IconButton(
                                 tooltip: "Supprimer",
                                 onPressed: () async {
-                                  print("delete holiday");
-                                  //TODO: delete
-                                  _service.delete(context,
+                                  Navigator.of(context).pop(null);
+                                  await _service.delete(context,
                                       holidayId: widget.holiday.id);
-                                  Navigator.pop(context);
                                 },
                                 icon: Icon(
                                   Icons.delete_outline,

@@ -196,10 +196,10 @@ class _CreatePlanningState extends State<CreatePlanning> {
                             onPressed: () {
                               showDatePicker(
                                 context: context,
-                                firstDate: DateTime(DateTime.now().year, 1, 1),
-                                initialDate: chosenEnd ?? DateTime.now(),
+                                firstDate: chosenStart,
+                                initialDate: chosenStart,
                                 lastDate: DateTime(
-                                  DateTime.now().year + 1,
+                                  chosenStart.year + 1,
                                   1,
                                   1,
                                 ),

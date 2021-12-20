@@ -202,7 +202,7 @@ class UserPlanningDataView extends StatelessWidget {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       //TODO: change title holiday card
-                                      Text("HOLIDAY UPDATE"),
+                                      Text("Mettre à jour les vacances"),
                                       IconButton(
                                         onPressed: () =>
                                             Navigator.of(context).pop(null),
@@ -272,7 +272,7 @@ class UserPlanningDataView extends StatelessWidget {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text("RTT UPDATE"),
+                                    Text("Mettre à jour RTT"),
                                     IconButton(
                                       onPressed: () =>
                                           Navigator.of(context).pop(null),
