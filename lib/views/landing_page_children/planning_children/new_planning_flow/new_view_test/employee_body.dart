@@ -197,18 +197,9 @@ class _EmployeeViewBodyState extends State<EmployeeViewBody> {
                                     if ((_regionFromFilter
                                             .contains(region.id) ||
                                         _regionFromFilter.isEmpty)) ...{
-                                      SundayAndHoliday(
-                                        snapDate: widget.snapDate,
-                                        show: true,
-                                      ),
                                       if (region.show) ...{
                                         for (CenterModel center
                                             in region.centers!) ...{
-                                          SundayAndHoliday(
-                                            snapDate: widget.snapDate,
-                                            show: center.show,
-                                            centerData: center,
-                                          ),
                                           if (center.show) ...{
                                             for (UserModel user
                                                 in center.users) ...{
