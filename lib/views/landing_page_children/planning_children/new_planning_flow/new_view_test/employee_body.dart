@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
+import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/global/planning_filter.dart';
+import 'package:ronan_pensec/models/center_model.dart';
 import 'package:ronan_pensec/models/employee_planning_model.dart';
+import 'package:ronan_pensec/models/region_model.dart';
+import 'package:ronan_pensec/models/user_model.dart';
 import 'package:ronan_pensec/services/data_controls/employee_only_planning_data_control.dart';
 import 'package:ronan_pensec/services/planning_services.dart';
+import 'package:ronan_pensec/view_model/planning_view_model.dart';
 import 'package:ronan_pensec/views/landing_page_children/planning_children/new_planning_flow/new_view_test/body_chunks/employee_only_planning_data_view.dart';
 
+import 'body_chunks/sunday_and_holiday.dart';
 import 'body_chunks/user_planning_data_view.dart';
 
 class EmployeeViewBody extends StatefulWidget {
@@ -25,6 +31,7 @@ class _EmployeeViewBodyState extends State<EmployeeViewBody> {
   final PlanningService planningService = PlanningService();
   final EmployeeOnlyPlanningControl _dataController =
       EmployeeOnlyPlanningControl.instance;
+  PlanningViewModel _planningViewModel = PlanningViewModel.instance;
 
   final double itemWidth = (1920.0 - 300);
   List<int> _regionFromFilter = [];
@@ -134,8 +141,8 @@ class _EmployeeViewBodyState extends State<EmployeeViewBody> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    return StreamBuilder<List<EmployeePlanningModel>?>(
-      stream: _dataController.stream$,
+    return StreamBuilder<List<RegionModel>>(
+      stream: _planningViewModel.planningControl.stream$,
       builder: (_, snapshot) => snapshot.hasData && !snapshot.hasError
           ? snapshot.data!.length > 0
               ? SizedBox(
@@ -146,15 +153,27 @@ class _EmployeeViewBodyState extends State<EmployeeViewBody> {
                         width: 300,
                         child: Scrollbar(
                           controller: _firstColumnController,
-                          child: ListView.builder(
+                          child: ListView(
                             controller: _firstColumnController,
-                            itemCount: snapshot.data!.length,
-                            itemBuilder: (_, index) => titleHolder(
-                              title: snapshot.data![index].user.fullName,
-                              bgColor: Colors.grey.shade100,
-                              titleColor: Colors.grey.shade800,
-                              isBold: false,
-                            ),
+                            physics: ClampingScrollPhysics(),
+                            children: [
+                              for (RegionModel region in snapshot.data!) ...{
+                                if ((_regionFromFilter.contains(region.id) ||
+                                    _regionFromFilter.isEmpty)) ...{
+                                  for (CenterModel center
+                                      in region.centers!) ...{
+                                    for (UserModel user in center.users) ...{
+                                      titleHolder(
+                                        title: user.full_name,
+                                        bgColor: Colors.grey.shade100,
+                                        titleColor: Colors.grey.shade800,
+                                        isBold: false,
+                                      ),
+                                    }
+                                  },
+                                },
+                              }
+                            ],
                           ),
                         ),
                       ),
@@ -169,37 +188,68 @@ class _EmployeeViewBodyState extends State<EmployeeViewBody> {
                             child: Scrollbar(
                               isAlwaysShown: true,
                               controller: _restColumnsController,
-                              child: ListView.builder(
+                              child: ListView(
                                 controller: _restColumnsController,
                                 physics: const ClampingScrollPhysics(),
-                                itemCount: snapshot.data!.length,
-                                itemBuilder: (_, indexx) => Row(
-                                  children: List.generate(
-                                    widget.snapDate.length,
-                                    (index) => Container(
-                                      width: itemWidth / widget.snapDate.length,
-                                      height: 30,
-                                      decoration: BoxDecoration(
-                                        border: Border(
-                                          bottom: BorderSide(
-                                            color: Colors.grey.shade300,
+                                children: [
+                                  for (RegionModel region
+                                      in snapshot.data!) ...{
+                                    if ((_regionFromFilter
+                                            .contains(region.id) ||
+                                        _regionFromFilter.isEmpty)) ...{
+                                      SundayAndHoliday(
+                                        snapDate: widget.snapDate,
+                                        show: true,
+                                      ),
+                                      if (region.show) ...{
+                                        for (CenterModel center
+                                            in region.centers!) ...{
+                                          SundayAndHoliday(
+                                            snapDate: widget.snapDate,
+                                            show: center.show,
+                                            centerData: center,
                                           ),
-                                        ),
-                                      ),
-                                      child: EmployeeOnlyPlanningDataView(
-                                        hasRefetched: (bool) async {
-                                          await fetch();
-                                        },
-                                        currentDate: widget.snapDate[index],
-                                        itemWidth:
-                                            itemWidth / widget.snapDate.length,
-                                        user: snapshot.data![indexx].user,
-                                        plannings:
-                                            snapshot.data![indexx].plannings,
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                                          if (center.show) ...{
+                                            for (UserModel user
+                                                in center.users) ...{
+                                              Row(
+                                                children: List.generate(
+                                                  widget.snapDate.length,
+                                                  (index) => Container(
+                                                    width: itemWidth /
+                                                        widget.snapDate.length,
+                                                    height: 30,
+                                                    decoration: BoxDecoration(
+                                                      border: Border(
+                                                        bottom: BorderSide(
+                                                          color: Colors
+                                                              .grey.shade300,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    child:
+                                                        EmployeeOnlyPlanningDataView(
+                                                      hasRefetched:
+                                                          (bool) async {
+                                                        await fetch();
+                                                      },
+                                                      currentDate: widget
+                                                          .snapDate[index],
+                                                      itemWidth: itemWidth /
+                                                          widget
+                                                              .snapDate.length,
+                                                      user: user,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                ],
                               ),
                             ),
                           ),

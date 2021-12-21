@@ -120,7 +120,7 @@ class _UpdateRttState extends State<UpdateRtt> {
                                 Container(
                                   width: double.infinity,
                                   child: Text(
-                                    "Date",
+                                    "Date de mise à jour",
                                     style: TextStyle(
                                       color: Colors.grey.shade600,
                                       fontSize: 14,
@@ -161,7 +161,7 @@ class _UpdateRttState extends State<UpdateRtt> {
                                 Container(
                                   width: double.infinity,
                                   child: Text(
-                                    "Start Time",
+                                    "Heure de début",
                                     style: TextStyle(
                                       color: Colors.grey.shade600,
                                       fontSize: 14,
@@ -171,13 +171,15 @@ class _UpdateRttState extends State<UpdateRtt> {
                                 MaterialButton(
                                   height: 60,
                                   color: Colors.white54,
-                                  onPressed: () async {
-                                    String? _selected =
-                                        await this.selectTime(context);
-                                    setState(() {
-                                      startTime = _selected!;
-                                    });
-                                  },
+                                  onPressed: isEditing
+                                      ? () async {
+                                          String? _selected =
+                                              await this.selectTime(context);
+                                          setState(() {
+                                            startTime = _selected!;
+                                          });
+                                        }
+                                      : null,
                                   child: Row(
                                     children: [
                                       Icon(
@@ -197,7 +199,7 @@ class _UpdateRttState extends State<UpdateRtt> {
                                 Container(
                                   width: double.infinity,
                                   child: Text(
-                                    "End Time",
+                                    "Heure de fin",
                                     style: TextStyle(
                                       color: Colors.grey.shade600,
                                       fontSize: 14,
@@ -207,13 +209,15 @@ class _UpdateRttState extends State<UpdateRtt> {
                                 MaterialButton(
                                   height: 60,
                                   color: Colors.white54,
-                                  onPressed: () async {
-                                    String? _selected =
-                                        await this.selectTime(context);
-                                    setState(() {
-                                      endTime = _selected!;
-                                    });
-                                  },
+                                  onPressed: isEditing
+                                      ? () async {
+                                          String? _selected =
+                                              await this.selectTime(context);
+                                          setState(() {
+                                            endTime = _selected!;
+                                          });
+                                        }
+                                      : null,
                                   child: Row(
                                     children: [
                                       Icon(
@@ -241,7 +245,7 @@ class _UpdateRttState extends State<UpdateRtt> {
                                     isEditing ? "Sauvegarder" : "Mise á jour",
                                 onPressed: () async {
                                   //TODO: update rtt button
-                                  print(startTime);
+
                                   if (isEditing) {
                                     _service.update(context,
                                         hrs: startTime, rttId: widget.rtt.id);
