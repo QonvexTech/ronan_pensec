@@ -12,12 +12,11 @@ class CalendarDataControl {
   BehaviorSubject<List<UserModel>> _list = BehaviorSubject();
   Stream<List<UserModel>> get stream => _list.stream;
   List<UserModel> get current => _list.value!;
-  
 
-  populateAll(List data){
-    if(data is List<UserModel>){
+  populateAll(List data) {
+    if (data is List<UserModel>) {
       _list.add(data);
-    }else {
+    } else {
       _list.add(data.map((e) => UserModel.fromJson(parsedJson: e)).toList());
     }
   }

@@ -47,7 +47,7 @@ class PlanningService {
         var data = json.decode(response.body);
         _notifier.showUnContextedBottomToast(msg: "${data['message']}");
         if (response.statusCode == 200) {
-          await regionViewModel.service.fetchLone();
+          await regionViewModel.service.fetch();
           return PlanningModel.fromJson(data['data']);
         }
         return null;
@@ -79,6 +79,8 @@ class PlanningService {
           for (var datum in data) {
             _da.add(EmployeePlanningModel.fromJson(datum));
           }
+          print("EMPP");
+          print(_da.length);
           return _da;
         }
         return null;
@@ -140,7 +142,7 @@ class PlanningService {
         var data = json.decode(response.body);
         _notifier.showUnContextedBottomToast(msg: "${data['message']}");
         if (response.statusCode == 200) {
-          await regionViewModel.service.fetchLone();
+          await regionViewModel.service.fetch();
         }
         return response.statusCode == 200;
       });

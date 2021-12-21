@@ -49,7 +49,7 @@ class HolidayService {
     } catch (e) {
       print(e.toString());
     } finally {
-      regionService.fetch(context);
+      regionService.fetch(context: context);
     }
   }
 
@@ -194,7 +194,7 @@ class HolidayService {
         print(response);
         if (response.statusCode == 200) {
           //TODO: remove in RTT
-          regionService.fetch(context);
+          regionService.fetch(context: context);
           print("DELETE HOLIDAY");
         }
       });

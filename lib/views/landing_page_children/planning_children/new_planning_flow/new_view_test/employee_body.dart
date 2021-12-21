@@ -28,6 +28,7 @@ class _EmployeeViewBodyState extends State<EmployeeViewBody> {
       EmployeeOnlyPlanningControl.instance;
   PlanningViewModel _planningViewModel = PlanningViewModel.instance;
 
+//TODO: fixed duplication
   final double itemWidth = (1920.0 - 300);
   List<int> _regionFromFilter = [];
   void listenFilter() {
