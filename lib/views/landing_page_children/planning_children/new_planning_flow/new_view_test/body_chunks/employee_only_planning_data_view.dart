@@ -19,9 +19,8 @@ class EmployeeOnlyPlanningDataView extends StatelessWidget {
     required this.plannings,
     required this.user,
     required this.hasRefetched,
-    required this.center,
   }) : super(key: key);
-  final CenterModel center;
+
   final DateTime currentDate;
   final double itemWidth;
   final ValueChanged<bool> hasRefetched;
@@ -84,7 +83,6 @@ class EmployeeOnlyPlanningDataView extends StatelessWidget {
                             ],
                           ),
                           content: ShowPlanning(
-                            center: center,
                             rawUser: user,
                             planning: plan,
                           ),

@@ -13,12 +13,11 @@ class ShowPlanning extends StatefulWidget {
   const ShowPlanning({
     Key? key,
     required this.planning,
-    required this.center,
     this.user,
     this.rawUser,
   }) : super(key: key);
   final PlanningModel planning;
-  final CenterModel center;
+
   final UserModel? user;
   final RawUserModel? rawUser;
   @override

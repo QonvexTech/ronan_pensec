@@ -116,7 +116,6 @@ class UserPlanningDataView extends StatelessWidget {
                             ],
                           ),
                           content: ShowPlanning(
-                            center: center,
                             user: user,
                             planning: planning,
                           ),
