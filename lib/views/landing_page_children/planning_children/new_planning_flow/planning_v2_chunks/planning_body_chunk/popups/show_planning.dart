@@ -271,6 +271,7 @@ class _ShowPlanningState extends State<ShowPlanning> {
                                   if (isEditing) {
                                     await _service
                                         .update(
+                                      centerId: _chosenCenter!.id,
                                       start: chosenStart,
                                       end: chosenEnd,
                                       id: widget.planning.id,
