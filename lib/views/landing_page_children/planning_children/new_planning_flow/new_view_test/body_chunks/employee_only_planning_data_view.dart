@@ -4,6 +4,7 @@ import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/global/template/general_template.dart';
 import 'package:ronan_pensec/models/calendar/holiday_model.dart';
 import 'package:ronan_pensec/models/calendar/rtt_model.dart';
+import 'package:ronan_pensec/models/center_model.dart';
 import 'package:ronan_pensec/models/planning_model.dart';
 import 'package:ronan_pensec/models/user_model.dart';
 import 'package:ronan_pensec/services/dashboard_services/calendar_service.dart';
@@ -21,9 +22,11 @@ class EmployeeOnlyPlanningDataView extends StatelessWidget {
     required this.itemWidth,
     required this.user,
     required this.hasRefetched,
+    required this.center,
   }) : super(key: key);
   final DateTime currentDate;
   final double itemWidth;
+  final CenterModel center;
   final ValueChanged<bool> hasRefetched;
   static final CalendarController _calendarController =
       CalendarController.instance;
@@ -83,6 +86,7 @@ class EmployeeOnlyPlanningDataView extends StatelessWidget {
                             ],
                           ),
                           content: ShowPlanning(
+                            center: center,
                             user: user,
                             planning: plan,
                           ),

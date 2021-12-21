@@ -1,19 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:ronan_pensec/global/controllers/calendar_controller.dart';
+import 'package:ronan_pensec/models/center_model.dart';
 import 'package:ronan_pensec/models/planning_model.dart';
+import 'package:ronan_pensec/models/raw_center_model.dart';
 import 'package:ronan_pensec/models/raw_user_model.dart';
 import 'package:ronan_pensec/models/user_model.dart';
 import 'package:ronan_pensec/services/planning_services.dart';
+import 'package:ronan_pensec/view_model/center_view_model.dart';
 import 'package:ronan_pensec/view_model/planning_view_model.dart';
 
 class ShowPlanning extends StatefulWidget {
   const ShowPlanning({
     Key? key,
     required this.planning,
+    required this.center,
     this.user,
     this.rawUser,
   }) : super(key: key);
   final PlanningModel planning;
+  final CenterModel center;
   final UserModel? user;
   final RawUserModel? rawUser;
   @override
@@ -23,11 +28,35 @@ class ShowPlanning extends StatefulWidget {
 class _ShowPlanningState extends State<ShowPlanning> {
   final PlanningViewModel _planningViewModel = PlanningViewModel.instance;
   final CalendarController _calendarController = CalendarController.instance;
+  late final CenterViewModel _centerViewModel = CenterViewModel.loneInstance;
   final PlanningService _service = new PlanningService();
   bool isEditing = false;
 
   late DateTime chosenStart = widget.planning.startDate;
   late DateTime chosenEnd = widget.planning.endDate;
+  late List<RawCenterModel> _displayData = [];
+
+  RawCenterModel? _chosenCenter;
+  fetchCenters() async {
+    await _centerViewModel.service
+        .fetchAssignedCenter(userId: widget.rawUser?.id ?? widget.user!.id)
+        .then((value) {
+      if (value != null && value.length > 0) {
+        setState(() {
+          _displayData = List.from(value);
+          _chosenCenter = _displayData[0];
+        });
+        print(_displayData);
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    fetchCenters();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -38,7 +67,7 @@ class _ShowPlanningState extends State<ShowPlanning> {
         : size.width * .3;
     return Container(
       width: width,
-      height: 200,
+      height: 250,
       child: Column(
         children: [
           Expanded(
@@ -46,43 +75,91 @@ class _ShowPlanningState extends State<ShowPlanning> {
               children: [
                 Expanded(
                   child: Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.grey.shade200,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12,
-                          offset: Offset(2, 2),
-                          blurRadius: 5,
-                        )
-                      ],
-                    ),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
-                          width: size.width > 900 ? 115 : 95,
-                          height: size.width > 900 ? 115 : 95,
+                          width: 200 * .5,
+                          height: 200 * .5,
                           decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                              image: NetworkImage(
-                                "${widget.user?.image ?? widget.rawUser!.image}",
+                              color: Colors.grey.shade200,
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                  fit: BoxFit.fill,
+                                  image: NetworkImage(
+                                      "${widget.user?.image ?? widget.rawUser!.image}"))),
+                        ),
+                        Text(
+                          "${widget.user?.full_name ?? widget.rawUser!.fullName}",
+                          style: TextStyle(
+                            fontSize: 14,
+                          ),
+                        ),
+                        Text(
+                          "${widget.user?.email ?? "Vue des employés"}",
+                          style: TextStyle(
+                            fontSize: 12.5,
+                            color: Colors.grey.shade400,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        // Spacer(),
+                        // ListTile(
+                        //   title: Text("${widget.center.name}"),
+                        //   subtitle:
+                        //       Text("${widget.center.region?.name ?? "N/A"}"),
+                        //   leading: Icon(
+                        //     Icons.account_balance_rounded,
+                        //     color: Colors.grey.shade400,
+                        //   ),
+                        // ),
+                        Container(
+                          width: double.infinity,
+                          height: 38,
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade200,
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: _displayData.isEmpty
+                              ? Center(
+                                  child: Text(
+                                      "Aucun centre disponible".toUpperCase()),
+                                )
+                              : DropdownButtonHideUnderline(
+                                  child: DropdownButton<RawCenterModel>(
+                                  value: _chosenCenter,
+                                  isExpanded: true,
+                                  onChanged: (val) {
+                                    setState(() {
+                                      _chosenCenter = val!;
+                                    });
+                                  },
+                                  items: _displayData
+                                      .map(
+                                        (RawCenterModel e) =>
+                                            DropdownMenuItem<RawCenterModel>(
+                                          value: e,
+                                          child: Text("${e.name}"),
+                                        ),
+                                      )
+                                      .toList(),
+                                )),
+                        ),
+                        if (_chosenCenter == null) ...{
+                          SizedBox(
+                            width: double.infinity,
+                            child: Text(
+                              "Le centre ne peut pas être vide",
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontSize: 11.5,
+                                fontStyle: FontStyle.italic,
                               ),
                             ),
-                          ),
-                        ),
-                        ListTile(
-                          title: Text(
-                            "${widget.user?.full_name ?? widget.rawUser!.fullName}",
-                            textAlign: TextAlign.center,
-                          ),
-                          subtitle: Text(
-                            "${widget.user?.email ?? "Vue des employés"}",
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
+                          )
+                        }
                       ],
                     ),
                   ),

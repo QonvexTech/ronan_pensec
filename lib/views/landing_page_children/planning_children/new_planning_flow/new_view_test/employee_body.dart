@@ -1,18 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
-import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/global/planning_filter.dart';
 import 'package:ronan_pensec/models/center_model.dart';
-import 'package:ronan_pensec/models/employee_planning_model.dart';
 import 'package:ronan_pensec/models/region_model.dart';
 import 'package:ronan_pensec/models/user_model.dart';
 import 'package:ronan_pensec/services/data_controls/employee_only_planning_data_control.dart';
 import 'package:ronan_pensec/services/planning_services.dart';
 import 'package:ronan_pensec/view_model/planning_view_model.dart';
 import 'package:ronan_pensec/views/landing_page_children/planning_children/new_planning_flow/new_view_test/body_chunks/employee_only_planning_data_view.dart';
-
-import 'body_chunks/sunday_and_holiday.dart';
-import 'body_chunks/user_planning_data_view.dart';
 
 class EmployeeViewBody extends StatefulWidget {
   const EmployeeViewBody(
@@ -220,6 +215,7 @@ class _EmployeeViewBodyState extends State<EmployeeViewBody> {
                                                     ),
                                                     child:
                                                         EmployeeOnlyPlanningDataView(
+                                                      center: center,
                                                       hasRefetched:
                                                           (bool) async {
                                                         await fetch();
