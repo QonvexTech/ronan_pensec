@@ -125,12 +125,12 @@ class EmployeeOnlyPlanningDataView extends StatelessWidget {
                         left: plan.startType <= 1 &&
                                 _calendarService.isSameDay(
                                     plan.startDate, currentDate)
-                            ? Radius.circular(20)
+                            ? Radius.zero
                             : Radius.zero,
                         right: plan.endType <= 1 &&
                                 _calendarService.isSameDay(
                                     plan.endDate, currentDate)
-                            ? Radius.circular(20)
+                            ? Radius.zero
                             : Radius.zero,
                       ),
                       color: plan.isConflict
