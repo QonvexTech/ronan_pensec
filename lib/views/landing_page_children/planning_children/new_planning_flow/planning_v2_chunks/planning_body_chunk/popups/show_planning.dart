@@ -10,16 +10,14 @@ import 'package:ronan_pensec/view_model/center_view_model.dart';
 import 'package:ronan_pensec/view_model/planning_view_model.dart';
 
 class ShowPlanning extends StatefulWidget {
-  const ShowPlanning({
-    Key? key,
-    required this.planning,
-    this.user,
-    this.rawUser,
-  }) : super(key: key);
+  const ShowPlanning(
+      {Key? key, required this.planning, this.user, this.rawUser, this.center})
+      : super(key: key);
   final PlanningModel planning;
 
   final UserModel? user;
   final RawUserModel? rawUser;
+  final CenterModel? center;
   @override
   _ShowPlanningState createState() => _ShowPlanningState();
 }
@@ -100,52 +98,52 @@ class _ShowPlanningState extends State<ShowPlanning> {
                             color: Colors.grey.shade400,
                           ),
                         ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        // Spacer(),
-                        // ListTile(
-                        //   title: Text("${widget.center.name}"),
-                        //   subtitle:
-                        //       Text("${widget.center.region?.name ?? "N/A"}"),
-                        //   leading: Icon(
-                        //     Icons.account_balance_rounded,
-                        //     color: Colors.grey.shade400,
-                        //   ),
-                        // ),
-                        Container(
-                          width: double.infinity,
-                          height: 38,
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade200,
-                            borderRadius: BorderRadius.circular(2),
-                          ),
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: _displayData.isEmpty
-                              ? Center(
-                                  child: Text(
-                                      "Aucun centre disponible".toUpperCase()),
-                                )
-                              : DropdownButtonHideUnderline(
-                                  child: DropdownButton<RawCenterModel>(
-                                  value: _chosenCenter,
-                                  isExpanded: true,
-                                  onChanged: (val) {
-                                    setState(() {
-                                      _chosenCenter = val!;
-                                    });
-                                  },
-                                  items: _displayData
-                                      .map(
-                                        (RawCenterModel e) =>
-                                            DropdownMenuItem<RawCenterModel>(
-                                          value: e,
-                                          child: Text("${e.name}"),
-                                        ),
+                        Spacer(),
+                        widget.center != null
+                            ? ListTile(
+                                title: Text("${widget.center!.name}"),
+                                subtitle: Text(
+                                    "${widget.center!.region?.name ?? "N/A"}"),
+                                leading: Icon(
+                                  Icons.account_balance_rounded,
+                                  color: Colors.grey.shade400,
+                                ),
+                              )
+                            : Container(
+                                width: double.infinity,
+                                height: 38,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade200,
+                                  borderRadius: BorderRadius.circular(2),
+                                ),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                child: _displayData.isEmpty
+                                    ? Center(
+                                        child: Text("Aucun centre disponible"
+                                            .toUpperCase()),
                                       )
-                                      .toList(),
-                                )),
-                        ),
+                                    : DropdownButtonHideUnderline(
+                                        child: DropdownButton<RawCenterModel>(
+                                        value: _chosenCenter,
+                                        isExpanded: true,
+                                        onChanged: (val) {
+                                          setState(() {
+                                            _chosenCenter = val!;
+                                          });
+                                        },
+                                        items: _displayData
+                                            .map(
+                                              (RawCenterModel e) =>
+                                                  DropdownMenuItem<
+                                                      RawCenterModel>(
+                                                value: e,
+                                                child: Text("${e.name}"),
+                                              ),
+                                            )
+                                            .toList(),
+                                      )),
+                              ),
                         if (_chosenCenter == null) ...{
                           SizedBox(
                             width: double.infinity,
