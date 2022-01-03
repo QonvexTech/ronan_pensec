@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:ronan_pensec/global/controllers/calendar_controller.dart';
 import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/global/template/general_template.dart';
-import 'package:ronan_pensec/models/center_model.dart';
 import 'package:ronan_pensec/models/planning_model.dart';
 import 'package:ronan_pensec/models/raw_user_model.dart';
 import 'package:ronan_pensec/services/dashboard_services/calendar_service.dart';
