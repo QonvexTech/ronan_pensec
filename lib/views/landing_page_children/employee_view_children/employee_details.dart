@@ -187,8 +187,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             5)),
-                                                hintText:
-                                                    "Entrez votre nouveau email",
+                                                hintText: "Email",
                                                 prefixIcon:
                                                     Icon(Icons.email_outlined),
                                                 suffixIcon: IconButton(
@@ -211,8 +210,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             5)),
-                                                hintText:
-                                                    "Entrez votre nouveau prénom",
+                                                hintText: "Prénom",
                                                 prefixIcon: Icon(Icons.person),
                                                 suffixIcon: IconButton(
                                                   icon: Icon(Icons.clear),
@@ -235,8 +233,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             5)),
-                                                hintText:
-                                                    "Entrez votre nouveau nom",
+                                                hintText: "Nom",
                                                 suffixIcon: IconButton(
                                                   icon: Icon(Icons.clear),
                                                   onPressed: () {
@@ -262,8 +259,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             5)),
-                                                hintText:
-                                                    "Entrez votre nouveau adressé",
+                                                hintText: "Adresse",
                                                 suffixIcon: IconButton(
                                                   icon: Icon(
                                                       Icons.clear_all_outlined),
@@ -311,8 +307,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             5)),
-                                                hintText:
-                                                    "Entrez votre nouveau numéro",
+                                                hintText: "Numéro",
                                                 suffixIcon: IconButton(
                                                   icon: Icon(Icons.clear),
                                                   onPressed: () {

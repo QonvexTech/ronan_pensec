@@ -6,8 +6,6 @@ import 'package:ronan_pensec/services/data_controls/employee_only_planning_data_
 import 'package:ronan_pensec/services/planning_services.dart';
 import 'package:ronan_pensec/views/landing_page_children/planning_children/new_planning_flow/new_view_test/body_chunks/employee_only_planning_data_view.dart';
 
-import 'body_chunks/user_planning_data_view.dart';
-
 class EmployeeViewBody extends StatefulWidget {
   const EmployeeViewBody({
     Key? key,
