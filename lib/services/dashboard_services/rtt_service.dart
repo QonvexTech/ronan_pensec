@@ -78,7 +78,7 @@ class RTTService {
     } catch (e) {
       print(e.toString());
     } finally {
-      regionService.fetch(context);
+      regionService.fetch(context: context);
     }
   }
 
@@ -231,7 +231,7 @@ class RTTService {
         print(response);
         if (response.statusCode == 200) {
           //TODO: remove in RTT
-          regionService.fetch(context);
+          regionService.fetch(context: context);
           print("DELETE RTT");
         }
       });

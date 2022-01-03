@@ -28,7 +28,7 @@ class _WebDashboardState extends State<WebPlanning> {
   @override
   void initState() {
     if (!_regionViewModel.control.hasFetched) {
-      _regionViewModel.service.fetch(context).then((value) =>
+      _regionViewModel.service.fetch(context: context).then((value) =>
           setState(() => _regionViewModel.control.hasFetched = true));
     }
     if (_regionViewModel

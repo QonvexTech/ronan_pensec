@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/global/constants.dart';
@@ -69,38 +70,38 @@ class RegionService {
   //   }
   // }
 
-  Future<bool> fetchLone() async {
-    try {
-      String url = "${BaseEnpoint.URL}${RegionEndpoint.base}";
-      return await http.get(Uri.parse("$url"), headers: {
-        "Accept": "application/json",
-        HttpHeaders.authorizationHeader: "Bearer ${_auth.token}"
-      }).then((response) {
-        var data = json.decode(response.body);
-        if (response.statusCode == 200) {
-          if (_regionDataControl != null) {
-            if (data is List) {
-              _regionDataControl!.populateAll(data);
-            } else {
-              _regionDataControl!.populateAll(data['']);
-            }
-          }
-          return true;
-        } else {
-          _notifier.showUnContextedBottomToast(
-              msg:
-                  "REGION Erreur ${response.statusCode}, ${response.reasonPhrase}");
-          return false;
-        }
-      });
-    } catch (e) {
-      print("ERRErreur : $e");
-      _notifier.showUnContextedBottomToast(msg: "Erreur $e");
-      return false;
-    }
-  }
+  // Future<bool> fetchLone() async {
+  //   try {
+  //     String url = "${BaseEnpoint.URL}${RegionEndpoint.base}";
+  //     return await http.get(Uri.parse("$url"), headers: {
+  //       "Accept": "application/json",
+  //       HttpHeaders.authorizationHeader: "Bearer ${_auth.token}"
+  //     }).then((response) {
+  //       var data = json.decode(response.body);
+  //       if (response.statusCode == 200) {
+  //         if (_regionDataControl != null) {
+  //           if (data is List) {
+  //             _regionDataControl!.populateAll(data);
+  //           } else {
+  //             _regionDataControl!.populateAll(data['']);
+  //           }
+  //         }
+  //         return true;
+  //       } else {
+  //         _notifier.showUnContextedBottomToast(
+  //             msg:
+  //                 "REGION Erreur ${response.statusCode}, ${response.reasonPhrase}");
+  //         return false;
+  //       }
+  //     });
+  //   } catch (e) {
+  //     print("ERRErreur : $e");
+  //     _notifier.showUnContextedBottomToast(msg: "Erreur $e");
+  //     return false;
+  //   }
+  // }
 
-  Future<bool> fetch(context) async {
+  Future<bool> fetch({BuildContext? context}) async {
     try {
       String url = "${BaseEnpoint.URL}${RegionEndpoint.base}";
       return await http.get(Uri.parse("$url"), headers: {
@@ -118,15 +119,20 @@ class RegionService {
           }
           return true;
         } else {
-          _notifier.showContextedBottomToast(context,
-              msg:
-                  "REGION Erreur ${response.statusCode}, ${response.reasonPhrase}");
+          if (context != null) {
+            _notifier.showContextedBottomToast(context,
+                msg:
+                    "REGION Erreur ${response.statusCode}, ${response.reasonPhrase}");
+          }
+
           return false;
         }
       });
     } catch (e) {
       print("ERRErreur : $e");
-      _notifier.showContextedBottomToast(context, msg: "Erreur $e");
+      if (context != null) {
+        _notifier.showContextedBottomToast(context, msg: "Erreur $e");
+      }
       return false;
     }
   }

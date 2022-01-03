@@ -4,6 +4,7 @@ import 'package:ronan_pensec/models/raw_user_model.dart';
 class EmployeePlanningModel {
   final RawUserModel user;
   final List<PlanningModel> plannings;
+
   EmployeePlanningModel({
     required this.user,
     required this.plannings,

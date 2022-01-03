@@ -116,6 +116,7 @@ class UserPlanningDataView extends StatelessWidget {
                             ],
                           ),
                           content: ShowPlanning(
+                            center: center,
                             user: user,
                             planning: planning,
                           ),
@@ -158,12 +159,12 @@ class UserPlanningDataView extends StatelessWidget {
                         left: planning.startType <= 1 &&
                                 _calendarService.isSameDay(
                                     planning.startDate, currentDate)
-                            ? Radius.circular(20)
+                            ? Radius.zero
                             : Radius.zero,
                         right: planning.endType <= 1 &&
                                 _calendarService.isSameDay(
                                     planning.endDate, currentDate)
-                            ? Radius.circular(20)
+                            ? Radius.zero
                             : Radius.zero,
                       ),
                       color: planning.isConflict

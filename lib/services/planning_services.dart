@@ -6,6 +6,7 @@ import 'package:ronan_pensec/global/constants.dart';
 import 'package:ronan_pensec/models/employee_planning_model.dart';
 import 'package:ronan_pensec/models/planning_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:ronan_pensec/services/dashboard_services/employee_service.dart';
 import 'package:ronan_pensec/services/toast_notifier.dart';
 import 'package:ronan_pensec/view_model/region_view_model.dart';
 
@@ -13,6 +14,7 @@ class PlanningService {
   static final Auth _auth = Auth.instance;
   static final ToastNotifier _notifier = ToastNotifier.instance;
   final RegionViewModel regionViewModel = RegionViewModel.instance;
+  static final EmployeeService _employeeService = EmployeeService.rawInstance;
 
   Future<PlanningModel?> create(
       {required int userId,
@@ -47,7 +49,7 @@ class PlanningService {
         var data = json.decode(response.body);
         _notifier.showUnContextedBottomToast(msg: "${data['message']}");
         if (response.statusCode == 200) {
-          await regionViewModel.service.fetchLone();
+          await regionViewModel.service.fetch();
           return PlanningModel.fromJson(data['data']);
         }
         return null;
@@ -79,6 +81,8 @@ class PlanningService {
           for (var datum in data) {
             _da.add(EmployeePlanningModel.fromJson(datum));
           }
+          print("EMPP");
+          print(_da.length);
           return _da;
         }
         return null;
@@ -95,11 +99,16 @@ class PlanningService {
     }
   }
 
-  Future<bool> update({
-    required DateTime start,
-    required DateTime end,
-    required int id,
-  }) async {
+  //TODO: need to update in api to edit center
+  Future<bool> update(
+      {required DateTime start,
+      required DateTime end,
+      required int id,
+      required int centerId}) async {
+    print("update ID");
+    print(id);
+    print(start);
+    print(centerId);
     try {
       return await http.put(
         Uri.parse("${BaseEnpoint.URL}api/planning/update"),
@@ -111,10 +120,15 @@ class PlanningService {
           "start_date": start.toString(),
           "end_date": end.toString(),
           "id": id.toString(),
+          "center_id": centerId.toString()
         },
       ).then((response) {
         var data = json.decode(response.body);
+        print("update plan");
+        print(response.statusCode);
+        print(data);
         _notifier.showUnContextedBottomToast(msg: "${data['message']}");
+
         return response.statusCode == 200;
       });
     } on SocketException catch (e) {
@@ -140,7 +154,7 @@ class PlanningService {
         var data = json.decode(response.body);
         _notifier.showUnContextedBottomToast(msg: "${data['message']}");
         if (response.statusCode == 200) {
-          await regionViewModel.service.fetchLone();
+          await regionViewModel.service.fetch();
         }
         return response.statusCode == 200;
       });
