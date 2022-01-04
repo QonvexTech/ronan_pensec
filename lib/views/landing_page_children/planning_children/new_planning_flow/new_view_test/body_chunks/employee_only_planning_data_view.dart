@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ronan_pensec/global/controllers/calendar_controller.dart';
 import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/global/template/general_template.dart';
+import 'package:ronan_pensec/models/center_model.dart';
 import 'package:ronan_pensec/models/planning_model.dart';
 import 'package:ronan_pensec/models/raw_user_model.dart';
 import 'package:ronan_pensec/services/dashboard_services/calendar_service.dart';
@@ -13,6 +14,7 @@ import 'package:ronan_pensec/views/landing_page_children/planning_children/new_p
 class EmployeeOnlyPlanningDataView extends StatelessWidget {
   const EmployeeOnlyPlanningDataView({
     Key? key,
+    required this.center,
     required this.currentDate,
     required this.itemWidth,
     required this.plannings,
@@ -20,6 +22,7 @@ class EmployeeOnlyPlanningDataView extends StatelessWidget {
     required this.hasRefetched,
   }) : super(key: key);
 
+  final List<CenterModel>? center;
   final DateTime currentDate;
   final double itemWidth;
   final ValueChanged<bool> hasRefetched;
@@ -28,6 +31,7 @@ class EmployeeOnlyPlanningDataView extends StatelessWidget {
       CalendarController.instance;
   final RawUserModel user;
   static final CalendarService _calendarService = CalendarService.lone_instance;
+
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -36,6 +40,13 @@ class EmployeeOnlyPlanningDataView extends StatelessWidget {
         Container(
           width: itemWidth,
           height: 30,
+          decoration: BoxDecoration(
+            border: Border(
+              right: BorderSide(
+                color: Colors.grey.shade300,
+              ),
+            ),
+          ),
           child: MaterialButton(
             onPressed: () {
               GeneralTemplate.showDialog(
@@ -97,7 +108,11 @@ class EmployeeOnlyPlanningDataView extends StatelessWidget {
                     return Container();
                   }),
               child: Tooltip(
-                message: "${plan.title}",
+                message: center != null
+                    ? center!
+                        .singleWhere((element) => element.id == plan.centerId)
+                        .name
+                    : "",
                 child: ClipPath(
                   clipper:
                       _calendarService.isSameDay(plan.startDate, currentDate) &&

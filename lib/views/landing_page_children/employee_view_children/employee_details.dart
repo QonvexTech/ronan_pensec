@@ -307,7 +307,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             5)),
-                                                hintText: "Numéro",
+                                                hintText: "Mobile",
                                                 suffixIcon: IconButton(
                                                   icon: Icon(Icons.clear),
                                                   onPressed: () {
