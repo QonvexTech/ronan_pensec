@@ -22,7 +22,7 @@ class EmployeeOnlyPlanningDataView extends StatelessWidget {
     required this.hasRefetched,
   }) : super(key: key);
 
-  final List<CenterModel> center;
+  final List<CenterModel>? center;
   final DateTime currentDate;
   final double itemWidth;
   final ValueChanged<bool> hasRefetched;
@@ -40,6 +40,13 @@ class EmployeeOnlyPlanningDataView extends StatelessWidget {
         Container(
           width: itemWidth,
           height: 30,
+          decoration: BoxDecoration(
+            border: Border(
+              right: BorderSide(
+                color: Colors.grey.shade300,
+              ),
+            ),
+          ),
           child: MaterialButton(
             onPressed: () {
               GeneralTemplate.showDialog(
@@ -101,8 +108,11 @@ class EmployeeOnlyPlanningDataView extends StatelessWidget {
                     return Container();
                   }),
               child: Tooltip(
-                message:
-                    "${center.singleWhere((element) => element.id == plan.centerId).name}",
+                message: center != null
+                    ? center!
+                        .singleWhere((element) => element.id == plan.centerId)
+                        .name
+                    : "",
                 child: ClipPath(
                   clipper:
                       _calendarService.isSameDay(plan.startDate, currentDate) &&

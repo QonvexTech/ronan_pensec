@@ -26,7 +26,7 @@ class _EmployeeViewBodyState extends State<EmployeeViewBody> {
   late ScrollController _firstColumnController = _controllers.addAndGet();
   late ScrollController _restColumnsController = _controllers.addAndGet();
   late final CenterViewModel _centerViewModel = CenterViewModel.loneInstance;
-  late List<CenterModel>? _displayData;
+  late List<CenterModel>? _displayData = [];
   final PlanningService planningService = PlanningService();
   final EmployeeOnlyPlanningControl _dataController =
       EmployeeOnlyPlanningControl.instance;
