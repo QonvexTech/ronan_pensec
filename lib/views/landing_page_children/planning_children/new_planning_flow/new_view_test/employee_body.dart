@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:ronan_pensec/global/planning_filter.dart';
+import 'package:ronan_pensec/models/center_model.dart';
 import 'package:ronan_pensec/models/employee_planning_model.dart';
 import 'package:ronan_pensec/services/data_controls/employee_only_planning_data_control.dart';
 import 'package:ronan_pensec/services/planning_services.dart';
+import 'package:ronan_pensec/view_model/center_view_model.dart';
 import 'package:ronan_pensec/views/landing_page_children/planning_children/new_planning_flow/new_view_test/body_chunks/employee_only_planning_data_view.dart';
 
 class EmployeeViewBody extends StatefulWidget {
@@ -23,6 +25,8 @@ class _EmployeeViewBodyState extends State<EmployeeViewBody> {
   LinkedScrollControllerGroup _controllers = LinkedScrollControllerGroup();
   late ScrollController _firstColumnController = _controllers.addAndGet();
   late ScrollController _restColumnsController = _controllers.addAndGet();
+  late final CenterViewModel _centerViewModel = CenterViewModel.loneInstance;
+  late List<CenterModel>? _displayData;
   final PlanningService planningService = PlanningService();
   final EmployeeOnlyPlanningControl _dataController =
       EmployeeOnlyPlanningControl.instance;
@@ -76,6 +80,27 @@ class _EmployeeViewBodyState extends State<EmployeeViewBody> {
   void initState() {
     listenFilter();
     getData();
+    if (!_centerViewModel.centerDataControl.hasFetched) {
+      _centerViewModel.service
+          .fetch(context)
+          .then((value) => setState(
+              () => _centerViewModel.centerDataControl.hasFetched = value))
+          .whenComplete(() {
+        // setState(() {
+        //   _displayData = List.from(_centerViewModel.centerDataControl.current);
+        // });
+      });
+    } else {
+      // setState(() {
+      //   _displayData = List.from(_centerViewModel.centerDataControl.current);
+      // });
+    }
+    _centerViewModel.centerDataControl.stream
+        .listen((List<CenterModel> centersList) {
+      setState(() {
+        _displayData = List.from(_centerViewModel.centerDataControl.current);
+      });
+    });
     super.initState();
   }
 
@@ -191,6 +216,7 @@ class _EmployeeViewBodyState extends State<EmployeeViewBody> {
                                         hasRefetched: (bool) async {
                                           await fetch();
                                         },
+                                        center: _displayData!,
                                         currentDate: widget.snapDate[index],
                                         itemWidth:
                                             itemWidth / widget.snapDate.length,
