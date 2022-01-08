@@ -11,7 +11,6 @@ class EmployeePlanningModel {
   });
 
   factory EmployeePlanningModel.fromJson(Map<String, dynamic> parsedJson) {
-    // print(parsedJson['user']);
     return EmployeePlanningModel(
       user: RawUserModel(
         id: int.parse(parsedJson['id'].toString()),

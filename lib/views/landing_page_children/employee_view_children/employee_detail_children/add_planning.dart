@@ -28,8 +28,8 @@ class AddPlanning extends StatefulWidget {
 
 class _AddPlanningState extends State<AddPlanning> {
   final PlanningService planningService = new PlanningService();
-  final EmployeeOnlyPlanningControl _dataController =
-      EmployeeOnlyPlanningControl.instance;
+  // final EmployeeOnlyPlanningControl _dataController =
+  //     EmployeeOnlyPlanningControl.instance;
 
   late final CenterViewModel _centerViewModel = CenterViewModel.loneInstance;
   late List<RawCenterModel> _displayData = [];

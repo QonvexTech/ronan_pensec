@@ -1,11 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/global/constants.dart';
+import 'package:ronan_pensec/global/endpoints/region_endpoint.dart';
+import 'package:ronan_pensec/models/center_model.dart';
 import 'package:ronan_pensec/models/employee_planning_model.dart';
 import 'package:ronan_pensec/models/planning_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:ronan_pensec/models/region_model.dart';
+import 'package:ronan_pensec/models/user_model.dart';
 import 'package:ronan_pensec/services/dashboard_services/employee_service.dart';
 import 'package:ronan_pensec/services/toast_notifier.dart';
 import 'package:ronan_pensec/view_model/region_view_model.dart';
@@ -96,6 +101,58 @@ class PlanningService {
     } on FormatException catch (e) {
       _notifier.showUnContextedBottomToast(msg: "$e");
       return null;
+    }
+  }
+
+  Future<List<UserModel>?> fetchuserModel({BuildContext? context}) async {
+    try {
+      String url = "${BaseEnpoint.URL}${RegionEndpoint.base}";
+      return await http.get(Uri.parse("$url"), headers: {
+        "Accept": "application/json",
+        HttpHeaders.authorizationHeader: "Bearer ${_auth.token}"
+      }).then((response) {
+        var data = json.decode(response.body);
+        if (response.statusCode == 200) {
+          List _list = data.map((e) => RegionModel.fromJson(e)).toList();
+          List<UserModel> users = [];
+          List<UserModel> unUser = [];
+          for (RegionModel region in _list) {
+            for (CenterModel center in region.centers!) {
+              // print(center.users[0].attendances);
+              for (UserModel user in center.users) {
+                users.add(user);
+              }
+            }
+          }
+          for (UserModel user in users) {
+            bool found = false;
+            for (UserModel uuser in unUser) {
+              if (user.id == uuser.id) {
+                found = true;
+                uuser.rtts.addAll(user.rtts);
+                uuser.holidays.addAll(user.holidays);
+                uuser.planning.addAll(user.planning);
+                break;
+              }
+            }
+            if (!found) {
+              unUser.add(user);
+            }
+          }
+          return unUser;
+        } else {
+          if (context != null) {
+            _notifier.showContextedBottomToast(context,
+                msg:
+                    "REGION Erreur ${response.statusCode}, ${response.reasonPhrase}");
+          }
+        }
+      });
+    } catch (e) {
+      print("ERRErreur : $e");
+      if (context != null) {
+        _notifier.showContextedBottomToast(context, msg: "Erreur $e");
+      }
     }
   }
 

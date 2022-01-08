@@ -3,6 +3,7 @@ import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:ronan_pensec/global/planning_filter.dart';
 import 'package:ronan_pensec/models/center_model.dart';
 import 'package:ronan_pensec/models/employee_planning_model.dart';
+import 'package:ronan_pensec/models/user_model.dart';
 import 'package:ronan_pensec/services/data_controls/employee_only_planning_data_control.dart';
 import 'package:ronan_pensec/services/planning_services.dart';
 import 'package:ronan_pensec/view_model/center_view_model.dart';
@@ -51,7 +52,7 @@ class _EmployeeViewBodyState extends State<EmployeeViewBody> {
   }
 
   fetch() async {
-    await planningService.employeePlanning().then((value) {
+    await planningService.fetchuserModel().then((value) {
       if (value != null) {
         _dataController.populate(value);
         setState(() {
@@ -160,7 +161,7 @@ class _EmployeeViewBodyState extends State<EmployeeViewBody> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    return StreamBuilder<List<EmployeePlanningModel>?>(
+    return StreamBuilder<List<UserModel>?>(
       stream: _dataController.stream$,
       builder: (_, snapshot) => snapshot.hasData && !snapshot.hasError
           ? snapshot.data!.length > 0
@@ -176,7 +177,7 @@ class _EmployeeViewBodyState extends State<EmployeeViewBody> {
                             controller: _firstColumnController,
                             itemCount: snapshot.data!.length,
                             itemBuilder: (_, index) => titleHolder(
-                              title: snapshot.data![index].user.fullName,
+                              title: snapshot.data![index].full_name,
                               bgColor: Colors.grey.shade100,
                               titleColor: Colors.grey.shade800,
                               isBold: false,
@@ -220,9 +221,7 @@ class _EmployeeViewBodyState extends State<EmployeeViewBody> {
                                         currentDate: widget.snapDate[index],
                                         itemWidth:
                                             itemWidth / widget.snapDate.length,
-                                        user: snapshot.data![indexx].user,
-                                        plannings:
-                                            snapshot.data![indexx].plannings,
+                                        user: snapshot.data![indexx],
                                       ),
                                     ),
                                   ),
