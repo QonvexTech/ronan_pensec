@@ -5,6 +5,7 @@ import 'package:ronan_pensec/models/center_model.dart';
 import 'package:ronan_pensec/models/planning_model.dart';
 import 'package:ronan_pensec/models/region_model.dart';
 import 'package:ronan_pensec/models/user_model.dart';
+import 'package:ronan_pensec/services/data_controls/employee_only_planning_data_control.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'calendar_data_control.dart';
@@ -14,6 +15,9 @@ class RegionDataControl {
 
   static final RegionDataControl _instance = RegionDataControl._internal();
   late CalendarDataControl _calendarDataControl;
+
+  final EmployeeOnlyPlanningControl _empControl =
+      EmployeeOnlyPlanningControl.instance;
   CalendarDataControl get calendarDataControl => _calendarDataControl;
   set setCalendarDataController(CalendarDataControl control) =>
       _calendarDataControl = control;
@@ -35,6 +39,7 @@ class RegionDataControl {
   populateAll(List data) {
     _list.add(data.map((e) => RegionModel.fromJson(e)).toList());
     List<UserModel> users = [];
+
     for (RegionModel region in this.current) {
       for (CenterModel center in region.centers!) {
         // print(center.users[0].attendances);
@@ -43,6 +48,7 @@ class RegionDataControl {
         }
       }
     }
+
     _calendarDataControl.populateAll(users);
   }
 
