@@ -21,12 +21,14 @@ class UserPlanningDataView extends StatelessWidget {
     Key? key,
     required this.currentDate,
     required this.center,
+    required this.centers,
     required this.itemWidth,
     required this.user,
   }) : super(key: key);
   final DateTime currentDate;
   final double itemWidth;
   final CenterModel center;
+  final List<CenterModel> centers;
   final UserModel user;
   static final CalendarController _calendarController =
       CalendarController.instance;
@@ -117,6 +119,7 @@ class UserPlanningDataView extends StatelessWidget {
                           ),
                           content: ShowPlanning(
                             center: center,
+                            centers: centers,
                             user: user,
                             planning: planning,
                           ),
