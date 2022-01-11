@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/global/constants.dart';
@@ -132,6 +131,7 @@ class PlanningService {
                 uuser.rtts.addAll(user.rtts);
                 uuser.holidays.addAll(user.holidays);
                 uuser.planning.addAll(user.planning);
+                uuser.assignedCenters!.addAll(user.assignedCenters!);
                 break;
               }
             }

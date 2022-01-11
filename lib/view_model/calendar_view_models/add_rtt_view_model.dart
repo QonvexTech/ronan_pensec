@@ -1,12 +1,10 @@
 import 'dart:ui';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/global/palette.dart';
 import 'package:ronan_pensec/global/user_raw_data.dart';
-import 'package:ronan_pensec/models/calendar/rtt_model.dart';
 import 'package:ronan_pensec/models/raw_user_model.dart';
 import 'package:ronan_pensec/services/dashboard_services/rtt_service.dart';
 import 'package:ronan_pensec/services/toast_notifier.dart';
@@ -360,21 +358,34 @@ class AddRTTViewModel {
                                             height: 10,
                                           ),
                                           Container(
-                                            width: double.infinity,
-                                            child: _userRawData.showDropdown(
-                                                onChooseCallback:
-                                                    (RawUserModel chosen) {
-                                                  setState(() {
-                                                    initDrpValue = chosen;
-                                                    _instance.appendToBody = {
-                                                      "user_id":
-                                                          chosen.id.toString()
-                                                    };
-                                                  });
-                                                  print(body);
-                                                },
-                                                value: initDrpValue),
-                                          ),
+                                              width: double.infinity,
+                                              child: _userRawData.filterDrop(
+                                                  onChooseCallback:
+                                                      (RawUserModel chosen) {
+                                                    setState(() {
+                                                      initDrpValue = chosen;
+                                                      _instance.appendToBody = {
+                                                        "user_id":
+                                                            chosen.id.toString()
+                                                      };
+                                                    });
+                                                    print(body);
+                                                  },
+                                                  value: initDrpValue)
+                                              // _userRawData.showDropdown(
+                                              //     onChooseCallback:
+                                              //         (RawUserModel chosen) {
+                                              //       setState(() {
+                                              //         initDrpValue = chosen;
+                                              //         _instance.appendToBody = {
+                                              //           "user_id":
+                                              //               chosen.id.toString()
+                                              //         };
+                                              //       });
+                                              //       print(body);
+                                              //     },
+                                              //     value: initDrpValue),
+                                              ),
                                         },
                                         const SizedBox(
                                           height: 20,

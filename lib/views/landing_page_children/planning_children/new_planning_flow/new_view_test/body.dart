@@ -227,6 +227,7 @@ class _CustomTableBodyState extends State<CustomTableBody> {
                                                   currentDate:
                                                       widget.snapDate[index],
                                                   center: center,
+                                                  centers: region.centers!,
                                                   itemWidth: itemWidth /
                                                       widget.snapDate.length,
                                                   user: user,

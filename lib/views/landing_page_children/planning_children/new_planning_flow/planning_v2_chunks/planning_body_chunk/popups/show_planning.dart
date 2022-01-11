@@ -11,13 +11,19 @@ import 'package:ronan_pensec/view_model/planning_view_model.dart';
 
 class ShowPlanning extends StatefulWidget {
   const ShowPlanning(
-      {Key? key, required this.planning, this.user, this.rawUser, this.center})
+      {Key? key,
+      required this.planning,
+      this.user,
+      this.rawUser,
+      this.center,
+      this.centers})
       : super(key: key);
   final PlanningModel planning;
 
   final UserModel? user;
   final RawUserModel? rawUser;
   final CenterModel? center;
+  final List<CenterModel>? centers;
   @override
   _ShowPlanningState createState() => _ShowPlanningState();
 }
@@ -31,26 +37,26 @@ class _ShowPlanningState extends State<ShowPlanning> {
 
   late DateTime chosenStart = widget.planning.startDate;
   late DateTime chosenEnd = widget.planning.endDate;
-  late List<RawCenterModel> _displayData = [];
+  // late List<CenterModel> _displayData = [];
 
-  RawCenterModel? _chosenCenter;
-  fetchCenters() async {
-    await _centerViewModel.service
-        .fetchAssignedCenter(userId: widget.rawUser?.id ?? widget.user!.id)
-        .then((value) {
-      if (value != null && value.length > 0) {
-        setState(() {
-          _displayData = List.from(value);
-          _chosenCenter = _displayData[0];
-        });
-        print(_displayData);
-      }
-    });
-  }
+  CenterModel? _chosenCenter;
+  // fetchCenters() async {
+  //   await _centerViewModel.service
+  //       .fetchAssignedCenter(userId: widget.rawUser?.id ?? widget.user!.id)
+  //       .then((value) {
+  //     if (value != null && value.length > 0) {
+  //       setState(() {
+  //         _displayData = List.from(value);
+  //       });
+  //       print(_displayData);
+  //     }
+  //   });
+  // }
 
   @override
   void initState() {
-    fetchCenters();
+    _chosenCenter = widget.center;
+    // fetchCenters();
     super.initState();
   }
 
@@ -99,7 +105,7 @@ class _ShowPlanningState extends State<ShowPlanning> {
                           ),
                         ),
                         Spacer(),
-                        widget.center != null
+                        widget.center != null && !isEditing
                             ? ListTile(
                                 title: Text("${widget.center!.name}"),
                                 subtitle: Text(
@@ -118,13 +124,13 @@ class _ShowPlanningState extends State<ShowPlanning> {
                                 ),
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 10),
-                                child: _displayData.isEmpty
+                                child: widget.centers!.isEmpty
                                     ? Center(
                                         child: Text("Aucun centre disponible"
                                             .toUpperCase()),
                                       )
                                     : DropdownButtonHideUnderline(
-                                        child: DropdownButton<RawCenterModel>(
+                                        child: DropdownButton<CenterModel>(
                                         value: _chosenCenter,
                                         isExpanded: true,
                                         onChanged: (val) {
@@ -132,11 +138,10 @@ class _ShowPlanningState extends State<ShowPlanning> {
                                             _chosenCenter = val!;
                                           });
                                         },
-                                        items: _displayData
+                                        items: widget.centers!
                                             .map(
-                                              (RawCenterModel e) =>
-                                                  DropdownMenuItem<
-                                                      RawCenterModel>(
+                                              (CenterModel e) =>
+                                                  DropdownMenuItem<CenterModel>(
                                                 value: e,
                                                 child: Text("${e.name}"),
                                               ),

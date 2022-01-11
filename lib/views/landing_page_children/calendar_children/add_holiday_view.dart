@@ -218,19 +218,29 @@ class _AddHolidayViewState extends State<AddHolidayView> {
                           const SizedBox(
                             height: 10,
                           ),
-                          Container(
-                            width: double.infinity,
-                            child: _viewModel.userRawData.showDropdown(
-                                onChooseCallback: (RawUserModel chosen) {
-                                  setState(() {
-                                    _viewModel.initDrpValue = chosen;
-                                    _viewModel.appendBody = {
-                                      "user_id": chosen.id.toString()
-                                    };
-                                  });
-                                },
-                                value: _viewModel.initDrpValue),
-                          ),
+                          // Container(
+                          //   width: double.infinity,
+                          //   child: _viewModel.userRawData.showDropdown(
+                          //       onChooseCallback: (RawUserModel chosen) {
+                          //         setState(() {
+                          //           _viewModel.initDrpValue = chosen;
+                          //           _viewModel.appendBody = {
+                          //             "user_id": chosen.id.toString()
+                          //           };
+                          //         });
+                          //       },
+                          //       value: _viewModel.initDrpValue),
+                          // ),
+                          _viewModel.userRawData.filterDrop(
+                              onChooseCallback: (RawUserModel chosen) {
+                                setState(() {
+                                  _viewModel.initDrpValue = chosen;
+                                  _viewModel.appendBody = {
+                                    "user_id": chosen.id.toString()
+                                  };
+                                });
+                              },
+                              value: _viewModel.initDrpValue)
                         },
                         const SizedBox(
                           height: 20,

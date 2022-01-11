@@ -19,14 +19,14 @@ import 'package:ronan_pensec/views/landing_page_children/planning_children/new_p
 class EmployeeOnlyPlanningDataView extends StatelessWidget {
   const EmployeeOnlyPlanningDataView({
     Key? key,
-    required this.center,
+    required this.centers,
     required this.currentDate,
     required this.itemWidth,
     required this.user,
     required this.hasRefetched,
   }) : super(key: key);
 
-  final List<CenterModel>? center;
+  final List<CenterModel>? centers;
   final DateTime currentDate;
   final double itemWidth;
   final ValueChanged<bool> hasRefetched;
@@ -97,9 +97,11 @@ class EmployeeOnlyPlanningDataView extends StatelessWidget {
                             ],
                           ),
                           content: ShowPlanning(
-                            user: user,
-                            planning: plan,
-                          ),
+                              user: user,
+                              planning: plan,
+                              center: centers!.singleWhere(
+                                  (element) => element.id == plan.centerId),
+                              centers: centers),
                         ),
                       ),
                     );
@@ -112,8 +114,8 @@ class EmployeeOnlyPlanningDataView extends StatelessWidget {
                     return Container();
                   }),
               child: Tooltip(
-                message: center != null
-                    ? center!
+                message: centers != null
+                    ? centers!
                         .singleWhere((element) => element.id == plan.centerId)
                         .name
                     : "",

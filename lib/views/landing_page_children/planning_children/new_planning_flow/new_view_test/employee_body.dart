@@ -217,7 +217,7 @@ class _EmployeeViewBodyState extends State<EmployeeViewBody> {
                                         hasRefetched: (bool) async {
                                           await fetch();
                                         },
-                                        center: _displayData!,
+                                        centers: _displayData!,
                                         currentDate: widget.snapDate[index],
                                         itemWidth:
                                             itemWidth / widget.snapDate.length,

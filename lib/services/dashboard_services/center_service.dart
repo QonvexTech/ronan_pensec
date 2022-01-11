@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:ronan_pensec/global/auth.dart';
 import 'package:ronan_pensec/global/constants.dart';
 import 'package:ronan_pensec/global/endpoints/center_endpoint.dart';
+import 'package:ronan_pensec/models/center_model.dart';
 import 'package:ronan_pensec/models/raw_center_model.dart';
 import 'package:ronan_pensec/models/user_model.dart';
 import 'package:ronan_pensec/services/data_controls/center_data_control.dart';
@@ -32,8 +33,7 @@ class CenterService {
     return false;
   }
 
-  Future<List<RawCenterModel>?> fetchAssignedCenter(
-      {required int userId}) async {
+  Future<List<CenterModel>?> fetchAssignedCenter({required int userId}) async {
     try {
       return await http.get(
         Uri.parse(
@@ -47,9 +47,9 @@ class CenterService {
         print(data);
         if (response.statusCode == 200) {
           print("CENTER DATA : $data");
-          List<RawCenterModel> centers = [];
+          List<CenterModel> centers = [];
           for (var d in data) {
-            centers.add(RawCenterModel.fromJson(d));
+            centers.add(CenterModel.fromJson(d));
           }
           return centers;
         }
