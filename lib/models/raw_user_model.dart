@@ -50,4 +50,16 @@ class RawUserModel {
         'isActive': isActive,
         'email': email,
       };
+
+  bool userFilterByFullName(String filter) {
+    return this
+        .fullName
+        .toString()
+        .toLowerCase()
+        .contains(filter.toLowerCase());
+  }
+
+  String userAsString() {
+    return '${this.fullName}';
+  }
 }

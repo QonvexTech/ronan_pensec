@@ -60,6 +60,8 @@ dependencies:
   shared_preferences: ^2.0.5 #data cacher
   linked_scroll_controller: ^0.2.0
 
+  dropdown_search: ^2.0.1
+
 
 
 

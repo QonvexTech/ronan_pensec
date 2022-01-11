@@ -1,3 +1,4 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:ronan_pensec/models/raw_user_model.dart';
 import 'package:rxdart/rxdart.dart';
@@ -47,4 +48,27 @@ class UserRawData {
               .toList(),
         ),
       );
+
+  Future<List<RawUserModel>> getData(filter) async {
+    return _instance.current!
+        .where((element) => element.fullName.contains(filter.toString()))
+        .toList();
+  }
+
+  Widget filterDrop(
+      {required ValueChanged<RawUserModel> onChooseCallback,
+      required RawUserModel value}) {
+    return DropdownSearch<RawUserModel>(
+      showSearchBox: true,
+      selectedItem: value,
+      filterFn: (user, filter) => user!.userFilterByFullName(filter!),
+      onFind: (String? filter) => getData(filter),
+      itemAsString: (RawUserModel? u) => u!.userAsString(),
+      onChanged: (RawUserModel? value) {
+        if (value != null) {
+          onChooseCallback(value);
+        }
+      },
+    );
+  }
 }
